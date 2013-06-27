@@ -22,4 +22,4 @@ regardless of whether you are a Java shop, C++ shop, or .Net shop.
 Nightly builds of the framework are handled by Zed Builds and Bugs and pre-packaged downloads 
 are graciously hosted by Hericus Software, LLC.
 
-For further information about this package please contact: Steven M. Cherry <smc_atsign_hericus.com>
+For further information about this package please contact: Steven M. Cherry "smc_atsign_hericus.com"
