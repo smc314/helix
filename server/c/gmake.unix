@@ -1,0 +1,31 @@
+#
+# These are the common definitions that all of our gmake files include.
+###############################################################
+
+CC=g++
+LINK=g++
+OHEXT=o
+CP=cp
+RM=rm -f
+UNAME := $(shell uname)
+
+3PL=../../../../3rdParty
+SOCKET_LIB=
+
+
+GCFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I$(3PL)/slib/include
+
+ifeq ($(UNAME),Linux)
+	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -L$(3PL)/slib/lib -lSLib
+else
+	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L$(3PL)/slib/lib -lSLib
+endif
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	$(RM) $(DOTOH) *.$(OHEXT) core *.so

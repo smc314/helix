@@ -1,0 +1,28 @@
+#
+# This is the MS VC++ build version of the makefile
+# Use nmake -f Makefile.msvc to run this
+###############################################################
+
+include ../gmake.inc
+
+CFLAGS=$(GCFLAGS) -I ..\glob
+
+GLOBOBJS=..\glob\*.obj
+
+DOTOH=GenerateSqlClasses.obj \
+	AutoAsset.obj \
+	CopyIcons.obj \
+	CopyCommon.obj \
+	MakeMakefiles.obj \
+	CleanupHtml.obj \
+	GenerateSqlTests.obj
+
+all: $(DOTOH)
+	$(LINK) $(LFLAGS) /OUT:../../bin/GenerateSqlClasses.exe GenerateSqlClasses.obj $(GLOBOBJS) $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../../bin/GenerateSqlTests.exe GenerateSqlTests.obj $(GLOBOBJS) $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../../bin/AutoAsset.exe AutoAsset.obj $(GLOBOBJS) $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../../bin/CopyIcons.exe CopyIcons.obj $(GLOBOBJS) $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../../bin/CopyCommon.exe CopyCommon.obj $(GLOBOBJS) $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../../bin/MakeMakefiles.exe MakeMakefiles.obj $(GLOBOBJS) $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../../bin/CleanupHtml.exe CleanupHtml.obj $(GLOBOBJS) $(LLIBS)
+
