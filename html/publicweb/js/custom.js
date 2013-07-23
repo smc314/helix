@@ -4,7 +4,8 @@ function hideAllBenefits() {
 	document.getElementById("Benefit2").style.display = 'none';
 	document.getElementById("Benefit2_link").className = 'none';
 	document.getElementById("Benefit3").style.display = 'none';
-	document.getElementById("Benefit3_link").className = 'none';
+	document.getElementById("Benefit3_link").className = 'last';
+	/*
 	document.getElementById("Benefit4").style.display = 'none';
 	document.getElementById("Benefit4_link").className = 'none';
 	document.getElementById("Benefit5").style.display = 'none';
@@ -15,11 +16,12 @@ function hideAllBenefits() {
 	document.getElementById("Benefit7_link").className = 'none';
 	document.getElementById("Benefit8").style.display = 'none';
 	document.getElementById("Benefit8_link").className = 'last';
+	*/
 }
 function showBenefit(theID) {
 	hideAllBenefits();
 	document.getElementById(theID).style.display = 'block';
-	if(theID === "Benefit8"){
+	if(theID === "Benefit3"){
 		document.getElementById(theID + "_link").className = 'last current';
 	} else {
 		document.getElementById(theID + "_link").className = 'current';
