@@ -3,6 +3,8 @@ Helix
 
 Open Source MVC framework for building Web Applications using Java, C++, or C#
 
+Official Website now on-line: [http://www.helixsdk.org/](http://www.helixsdk.org/ "Helix SDK")
+
 While working at Hericus Software, LLC I created an MVC framework in both Java and C++
 that made it very easy to build a web application that targeted any type of back-end
 database system.
