@@ -1,0 +1,46 @@
+			return newObj;
+		}
+	},
+
+	statics : {
+
+		/** This will read all children of the given element and for
+		  * any that are found that are our type of XML node, we will
+		  * process them and return them in an array.
+		  *
+		  * @param elem {Object} The parent node that has children that match our name.
+		  */
+		readElementChildren : function ( elem ){
+			var ret = [];
+			var i, l;
+			for (i=0, l = elem.childNodes.length; i<l; i++) {
+				var node = elem.childNodes[i];
+				if(node.nodeName === "${shortName}") {
+					var obj = new ${package}.sqldo.${shortName}();
+					obj.readFromXML( node );
+					ret.push( obj );
+				}
+			}
+			return ret;
+		},
+
+		/** This will write all items in the given array, as child
+		  * nodes of the given XML element.
+		  *
+		  * @param list {Array} The array of objects to write.
+		  * @param elem {Object} The parent XML Node object that will hold the new children.
+		  */
+		writeArray : function ( list, elem ){
+			var i, l;
+			for (i=0, l = list.length; i<l; i++) {
+				list[i].createXMLElement(elem);
+			}
+		}
+
+
+	},
+
+	destruct : function() {
+
+	}
+});

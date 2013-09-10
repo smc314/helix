@@ -59,6 +59,10 @@ void addDataObjectMember(twine obj_name, twine name, twine datatype);
 twine& getDataObjectMemberType(twine& obj_name, twine& name);
 void generateExecuteNamedQuery() ;
 twine logExplain( const twine& stmt ) ;
+
+map<twine, twine> buildObjectParms( );
+map<twine, twine> buildStatementParms( xmlNodePtr stmt );
+
 void generateReturn(xmlNodePtr stmt);
 void generateReturnXML(xmlNodePtr stmt);
 void generateReturnDO(xmlNodePtr stmt);
@@ -90,7 +94,7 @@ twine convertArg(xmlNodePtr e);
 twine convertArg(twine type);
 twine convertType(xmlNodePtr e);
 twine convertType(twine type);
-twine nullForType(xmlNodePtr e);
+twine NULLForType(xmlNodePtr e);
 twine xmlSetForType(twine name, twine type, twine elemname);
 twine xmlGetForType(twine name, twine type, twine elemname);
 twine jsPropDefinition( twine name, twine type );
@@ -106,6 +110,8 @@ twine odbcBindInputForType5(size_t pos, twine name, twine type);
 twine replaceInputForType(twine name, twine type);
 twine replaceInputForType2(twine name, twine type);
 twine paramForType(twine name, twine type);
+twine loadTmpl(const twine& tmplName, map<twine, twine>* vars);
+twine replaceVars( const twine& tmplName, size_t lineIdx, twine line, map<twine, twine>* vars );
 
 int main (void)
 {
@@ -116,21 +122,21 @@ int main (void)
 		printf("=========================================================\n");
 		printf("Pass 1: Reading all files to build data objects in memory\n");
 		printf("=========================================================\n");
-		findAllSqlXmlFiles("../src", 1);
+		findAllSqlXmlFiles("..", 1);
 		dumpDataObjects();
 
 		printf("\n");
 		printf("=========================================================\n");
 		printf("Pass 2: Reading all files and generating code.           \n");
 		printf("=========================================================\n");
-		findAllSqlXmlFiles("../src", 2);
+		findAllSqlXmlFiles("..", 2);
 
 		printf("\n");
 		printf("=========================================================\n");
 		printf("Pass 3: Scanning cpp files for Javascript/C++ API Autogen\n");
 		printf("=========================================================\n");
 		initCPPApis();
-		findAllCPPFiles("../src");
+		findAllCPPFiles("..");
 		createAPIFiles();
 
 		//generateExecuteNamedQuery();
@@ -340,7 +346,7 @@ void buildJSApi(twine api, twine input)
 		"\t\t\tcompletionFunction, theThis\n"
 		"\t\t){\n"
 		"\t\t\t// First build the request XML Document\n"
-		"\t\t\tvar requestDoc = qx.xml.Document.create(null, \"" + shortApi + "\");\n"
+		"\t\t\tvar requestDoc = qx.xml.Document.create(NULL, \"" + shortApi + "\");\n"
 	);
 
 	if(input == "NULL"){
@@ -355,7 +361,7 @@ void buildJSApi(twine api, twine input)
 		for(size_t i = 0; i < howMany; i++){
 			twine tmp; tmp.format("inputObj%d", i);
 			out.append( 
-				"\t\t\tif( " + tmp + " !== undefined && " + tmp + " !== null){\n" 
+				"\t\t\tif( " + tmp + " !== undefined && " + tmp + " !== NULL){\n" 
 				"\t\t\t\t" + tmp + ".createXMLElement( requestRoot );\n"
 				"\t\t\t}\n"
 			);
@@ -457,21 +463,7 @@ void buildCPPApi(twine api, twine input)
 
 void initCPPApis()
 {
-	m_api_cpp_header.append(
-		"#ifndef HUBAPI_H\n"
-		"#define HUBAPI_H\n"
-		"\n"
-		"#include <twine.h>\n"
-		"#include <Log.h>\n"
-		"#include <EnEx.h>\n"
-		"#include <dptr.h>\n"
-		"#include <sptr.h>\n"
-		"#include <HttpClient.h>\n"
-		"#include <xmlinc.h>\n"
-		"using namespace SLib;\n"
-		"\n"
-		"// We need references to every single data object class here:\n"
-	);
+	m_api_cpp_header.append( loadTmpl( "CppApiHeader01.tmpl", NULL ) );
 
 	map<twine, map<twine, twine> >::iterator it;
 	for(it = m_data_objects.begin(); it != m_data_objects.end(); it++){
@@ -479,155 +471,9 @@ void initCPPApis()
 		m_api_cpp_header.append("#include <" + objName + ".h>\n" );
 	}
 
-	m_api_cpp_header.append(
-		"using namespace ViaSQL::Hub::Logic::ascfg;\n"
-		"using namespace ViaSQL::Hub::Logic::csa;\n"
-		"using namespace ViaSQL::Hub::Logic::dash;\n"
-		"using namespace ViaSQL::Hub::Logic::drvdep;\n"
-		"using namespace ViaSQL::Hub::Logic::ia;\n"
-		"using namespace ViaSQL::Hub::Logic::ldm;\n"
-		"using namespace ViaSQL::Hub::Logic::test;\n"
-		"using namespace ViaSQL::Hub::Logic::utils;\n"
-		"\n"
-		"namespace ViaSQL {\n"
-		"namespace Hub {\n"
-		"namespace Client {\n"
-		"\n"
-		"/** This API represents the C++ interface to the Hub server.  All API's that are\n"
-  		"* available to the Javascript client are also available here, and re-generated\n"
-  		"* each time the Hub is compiled.  Do Not Edit This Class directly.  Update the\n"
-  		"* code generator and make your edits there.\n"
-  		"*/\n"
-		"class HubApi : public HttpClient\n"
-		"{\n"
-		"\tpublic:\n"
-		"\n"
-		"\t\t/// Default Constructor requires the host and port of the Hub to which you want to connect.\n"
-		"\t\tHubApi(const twine& host, int port, bool useSSL = false);\n"
-		"\n"
-		"\t\t/// Standard destructor\n"
-		"\t\tvirtual ~HubApi();\n"
-		"\t\t/**\n"
-		"\t\t  * We override this method from the base class to allow us to track progress\n"
-		"\t\t  * and update internal long running task status values appropriately.\n"
-		"\t\t  */\n"
-		"\t\tvirtual int Progress(double dltotal, double dlnow, double ultotal, double ulnow);\n"
-		"\n"
-		"\t\t/** \n"
-		"\t\t  * Used to check the response from the Hub to see if it has errors.  Any errors found\n"
-		"\t\t  * will be converted into exceptions that are then thrown from this method.\n"
-		"\t\t  */\n"
-		"\t\tvoid returnHasErrors();\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * Checks to see if the return from the Hub is indicating that a DB connection \n"
-		"\t\t  * is required to perform the requested action.\n"
-		"\t\t  */\n"
-		"\t\tbool returnRequiresDB();\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * Sends a POST request to the Hub and checks the response for errors.\n"
-		"\t\t  */\n"
-		"\t\txmlDocPtr SendRequest( xmlDocPtr req, const twine& requestName );\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * Sends a GET request to the Hub and checks the response for errors.\n"
-		"\t\t  */\n"
-		"\t\txmlDocPtr LoadXMLDoc( const twine& requestName );\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * Sends a GET request to the Hub and does no response checking - use this for \n"
-		"\t\t  * requesting static content from the Hub such as web pages, images, etc.  Note, \n"
-		"\t\t  * this is an override of the HttpClient::Get method, where we change the \n"
-		"\t\t  * understanding of the input requestPath.  We do not require it to be a full URL, but\n"
-		"\t\t  * will build the URL based on the input host/port setup when creating this HubApi \n"
-		"\t\t  * object.\n"
-		"\t\t  */\n"
-		"\t\tvirtual char* Get( const twine& requestPath );\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * Sends a POST request to the Hub and expects to download the response as a binary\n"
-		"\t\t  * payload.  Note, this is an override of the HttpClient::PostRaw method, where we change the \n"
-		"\t\t  * understanding of the input requestPath.  We do not require it to be a full URL, but\n"
-		"\t\t  * will build the URL based on the input host/port setup when creating this HubApi \n"
-		"\t\t  * object.\n"
-		"\t\t  */\n"
-		"\t\tvirtual char* PostRaw( const twine& requestPath, const char* msg, size_t msgLen );\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * Allows the caller to retrieve our response document to directly examine anything of\n"
-		"\t\t  * interest to them.\n"
-		"\t\t  */\n"
-		"\t\txmlDocPtr ResponseDoc() { return m_response; }\n"
-		"\n"
-		"\t\t/**\n"
-		"\t\t  * When used internally by the Hub itself, this allows the invoker of this API to\n"
-		"\t\t  * tell us about a Long Running Task ID that we should update as our download\n"
-		"\t\t  * progresses.\n"
-		"\t\t  */\n"
-		"\t\tvoid SetLRTaskID( const twine& lrTaskID );\n"
-		"\n"
-		"\tprivate:\n"
-		"\n"
-		"\t\t/// Copy constructor is private to prevent use\n"
-		"\t\tHubApi(const HubApi& c) {}\n"
-		"\n"
-		"\t\t/// Assignment operator is private to prevent use\n"
-		"\t\tHubApi& operator=(const HubApi& c) {return *this;}\n"
-		"\n"
-		"\t\t/// Our target hub host name\n"
-		"\t\ttwine m_host;\n"
-		"\n"
-		"\t\t/// Our target hub port number\n"
-		"\t\tint m_port;\n"
-		"\n"
-		"\t\t/// Whether we should use an SSL connection\n"
-		"\t\tbool m_use_ssl;\n"
-		"\n"
-		"\t\t/// Our response document\n"
-		"\t\tsptr<xmlDoc, xmlFreeDoc> m_response;\n"
-		"\n"
-		"\t\t/// Our long running task ID\n"
-		"\t\ttwine m_lr_task_id;\n"
-		"\n"
-		"\t/* ******************************************************************************* */\n"
-		"\t/* This section declares all of the public api's that we provide for communicating */\n"
-		"\t/* with the Hub.                                                                   */\n"
-		"\t/* ******************************************************************************* */\n"
-		"\tpublic:\n"
-		"\n"
-	);
+	m_api_cpp_header.append( loadTmpl( "CppApiHeader02.tmpl", NULL ) );
 
-	m_api_cpp_body.append(
-		"/* ***************************************************************************\n"
-		"\n"
-   		"Copyright (c): 2008 - 2012 Viaserv, Inc.\n"
-		"\n"
-   		"License: Restricted\n"
-		"\n"
-   		"Authors: Steven M. Cherry, Stephen D. Sager\n"
-		"\n"
-		"*************************************************************************** */\n"
-		"\n"
-		"#include <twine.h>\n"
-		"#include <Log.h>\n"
-		"#include <EnEx.h>\n"
-		"#include <dptr.h>\n"
-		"#include <Timer.h>\n"
-		"#include <HttpClient.h>\n"
-		"using namespace SLib;\n"
-		"\n"
-		"#include \"HubApi.h\"\n"
-		"using namespace ViaSQL::Hub::Client;\n"
-		"\n"
-		"/* ***************************************************************************** */\n"
-		"/* The implementation of HubApi is broken up into 2 .cpp files.  This one is     */\n"
-		"/* auto-generated during the compile.                                            */\n"
-		"/* DO NOT EDIT THIS FILE.                                                        */\n"
-		"/* Edits to this file will be overwritten during the next compile.               */\n"
-		"/* ***************************************************************************** */\n"
-		"\n"
-	);
+	m_api_cpp_body.append( loadTmpl("CppApiBody01.tmpl", NULL ));
 }
 
 void createAPIFiles()
@@ -666,14 +512,7 @@ void createAPIFiles()
 		}
 	}
 
-	m_api_cpp_header.append(
-		"\n"
-		"}; // End HubApi class\n"
-		"\n"
-		"} } } // End ViaSQL::Hub::Client namespace stack\n"
-		"\n"
-		"#endif // HUBAPI_H Defined\n"
-	);
+	m_api_cpp_header.append( loadTmpl( "CppApiHeader99.tmpl", NULL ) );
 
 	File::writeToFile( "../src/client/HubApi.h", m_api_cpp_header );
 	File::writeToFile( "../src/client/HubApi_Part2.cpp", m_api_cpp_body );
@@ -707,32 +546,13 @@ void finalizeOutputFile()
 	ifdefName.ucase();
 	ifdefTestName.ucase();
 
-	m_output_header.append(
-		"\n" 
-		"};\n"
-		"\n"
-		"/** This typedef makes it easy to declare smart pointer vectors of the " + m_currentClass + "\n"
-		"  * object type.  Use this to keep your code clean and easy to read. For example:\n"
-		"  * <pre>\n"
-		"  * " + m_currentClass + "_svect myVect = " + m_currentClass + "::selectSomething(odbc);\n"
-		"  * </pre>\n"
-		"  */\n"
-		"typedef sptr< vector<" + m_currentClass + "*>, " + m_currentClass + "::deleteVector> " + 
-		m_currentClass + "_svect;\n"
-		"\n"
-		"}}}} // End Namespace stack\n"
-		"\n"
-		"#endif // " + ifdefName + " defined"
-		);
-	
-	m_output_test_header.append(
-		"\n"
-		"};\n"
-		"\n"
-		"}}}} // End Namespace stack\n"
-		"\n"
-		"#endif // " + ifdefTestName + " defined"
-	);
+	map<twine, twine> vars;
+	vars[ "m_currentClass" ] = m_currentClass;
+	vars[ "ifdefName" ] = ifdefName;
+	vars[ "ifdefTestName" ] = ifdefTestName;
+
+	m_output_header.append( loadTmpl( "CppObjHeader99.tmpl", &vars ) );
+	m_output_test_header.append( loadTmpl( "CppObjTestHeader99.tmpl", &vars ) );
 
 	try {
 		twine filename = "../src/" + m_currentPackage;
@@ -852,761 +672,45 @@ void dumpDataObjects()
 
 void beginCPPDataObject(twine& objName)
 {
-	map<twine, twine >& objAttrs = m_data_objects[objName];
-	map<twine, twine >& objChildren = m_do_children[objName];
-	
-	twine out;
-	twine shortName = objAttrs["short.object.name"];
-	twine ifdefName = shortName + "_H";
-	ifdefName.ucase();
-	twine shortPackage = m_currentPackage.split("/")[1];
+	map<twine, twine> vars = buildObjectParms( objName );
 
-	m_output_header.append(
-		"/* **************************************************************************\n"
-		"\n"
-		"   Copyright (c): 2008 - 2012 Viaserv, Inc.\n"
-		"\n"
-		"   License: Restricted\n"
-		"\n"
-		"   Authors: Steven M. Cherry, Stephen D. Sager\n"
-		"\n"
-		"************************************************************************** */\n"
-		"\n"
-		"#ifndef " + ifdefName + "\n"
-		"#define " + ifdefName + "\n"
-		"\n"
-		"#include <vector>\n"
-		"using namespace std;\n"
-		"\n"
-		"#include <twine.h>\n"
-		"#include <Date.h>\n"
-		"#include <xmlinc.h>\n"
-		"#include <sptr.h>\n"
-		"using namespace SLib;\n"
-		"\n"
-		"#include \"IOConn.h\"\n"
-		"#include \"OdbcObj.h\"\n"
-		"#include \"SqlDB.h\"\n"
-		"using namespace ViaSQL::Hub::Glob;\n"
-		"\n"
-	);
-
-
-	map<twine, twine>::iterator it;
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		//const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output_header.append("#include \"" + childType + ".h\"\n");
-	}
-
-	m_output_header.append(
-		"\n"
-		"namespace ViaSQL {\n"
-		"namespace Hub {\n"
-		"namespace Logic {\n"
-		"namespace " + shortPackage + " {\n"
-		"\n"
-		"/** This is a generated data object class that is used for interfacing with a\n"
-		"  * database.  This class was generated based on the settings in the file:\n"
-		"  * " + m_currentFile + "\n"
-		"  */\n"
-		"class " + shortName + "\n"
-		"{\n"
-		"\tpublic:\n"
-		"\n"
-		"\t\t/// All Data Members are public\n"
-		);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		twine& attrType = objAttrs[attrName];
-		
-		if(attrType == "cdata"){
-			m_output_header.append("\t\ttwine " + attrName + ";\n");
-		} else if(attrType == "base64"){
-			m_output_header.append("\t\ttwine " + attrName + ";\n");
-		} else if(attrType == "bin"){
-			m_output_header.append("\t\tMemBuf " + attrName + ";\n");
-		} else if(attrType == "int"){
-			m_output_header.append("\t\tintptr_t " + attrName + ";\n");
-		} else {
-			m_output_header.append("\t\t" + attrType + " " + attrName + ";\n");
-		}
-		
-	}
-
-	m_output_header.append(
-		"\n"
-		"\t\t/// Any Child Vectors will be defined here\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output_header.append("\t\t" + childType + "_svect " + childName + ";\n");
-	}
-
-	m_output_header.append(
-		"\n"
-		"\t\t/// Standard Constructor\n"
-		"\t\t" + shortName + "();\n"
-		"\n"
-		"\t\t/// Standard Copy Constructor\n"
-		"\t\t" + shortName + "(const " + shortName + "& c);\n"
-		"\n"
-		"\t\t/// Standard Assignment Operator\n"
-		"\t\t" + shortName + "& operator=(const " + shortName + "& c);\n"
-		"\n"
-		"\t\t/// Standard Destructor\n"
-		"\t\tvirtual ~" + shortName + "();\n"
-		"\n"
-		"\t\t/// Initialize this data object to have all empty or 0 values.\n"
-		"\t\t" + shortName + "& init();\n"
-		"\n"
-		"\t\t/// Call check_size() on all of our twine members.\n"
-		"\t\t" + shortName + "& checkSize();\n"
-		"\n"
-		"\t\t/// Construct from an XML Node\n"
-		"\t\t" + shortName + "(xmlNodePtr node);\n"
-		"\n"
-		"\t\t/// Read an XML Node to set our contents\n"
-		"\t\t" + shortName + "& readXmlNode(xmlNodePtr node);\n"
-		"\n"
-		"\t\t/// Create an XML Node as a child of the given parent\n"
-		"\t\txmlNodePtr createXmlNode(xmlNodePtr parent) const;\n"
-		"\n"
-		"\t\t/// Create an XML Document from this data object\n"
-		"\t\txmlDocPtr createXmlDoc() const;\n"
-		"\n"
-		"\t\t/// Create a series of these objects by reading all children of the given parent\n"
-		"\t\tstatic vector<" + shortName + "* >* readXmlChildren(xmlNodePtr parent);\n"
-		"\n"
-		"\t\t/// Create a series of xml child nodes based on the input vector\n"
-		"\t\tstatic void createXmlChildren(xmlNodePtr parent, vector<" + shortName + "* >* vect);\n"
-		"\n"
-		"\t\t/// Handle deleting a vector and its contents.\n"
-		"\t\tstatic void deleteVector( vector<" + shortName + "* >* vect);\n"
-		"\n"
-		"\t\t/// Static method to retrieve the name of this object.\n"
-		"\t\tstatic twine& Name();\n"
-		"\n"
-		"\n"
-		"\t\t/* ******************************************************************************** */\n"
-		"\t\t/* The following are a series of static methods created based on the SQL Statements */\n"
-		"\t\t/* defined in the file " + m_currentFile + " */\n"
-		"\t\t/* ******************************************************************************** */\n"
-		"\n"
-		"\n"
-	);
-		
-	m_output.append(
-		"/* **************************************************************************\n"
-		"\n"
-		"   Copyright (c): 2008 - 2012 Viaserv, Inc.\n"
-		"\n"
-		"   License: Restricted\n"
-		"\n"
-		"   Authors: Steven M. Cherry, Stephen D. Sager\n"
-		"\n"
-		"************************************************************************** */\n"
-		"\n"
-		"#include <AnException.h>\n"
-		"#include <EnEx.h>\n"
-		"#include <Log.h>\n"
-		"#include <XmlHelpers.h>\n"
-		"using namespace SLib;\n"
-		"\n"
-		"#include \"" + shortName + ".h\"\n"
-		"using namespace ViaSQL::Hub::Logic::" + shortPackage + ";\n"
-		"\n"
-		"#include \"Statics.h\"\n"
-		"using namespace ViaSQL::Hub::Logic::utils;\n"
-		"\n"
-		"/* ************************************************************************** */\n"
-		"/* This is a generated data object class that is used for interfacing with a  */\n"
-		"/* database.  This class was generated based on the settings in the file:     */\n"
-		"/* " + m_currentFile + " */\n"
-		"/* ************************************************************************** */\n"
-		"\n"
-		"// Our Object Name, which is also used to create Xml Elements\n"
-		"static twine " + shortName + "Name = \"" + shortName + "\";\n"
-		"\n"
-		"\n" +
-		shortName + "::" + shortName + "()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::" + shortName + "()\");\n"
-		"\n"
-		"\tinit();\n"
-		"\n"
-		"}\n"
-		"\n" + 
-		shortName + "::" + shortName + "(const " + shortName + "& c)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::" + shortName + "(const " + shortName + "& c)\");\n"
-		"\n"
-		);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		//twine& attrType = objAttrs[attrName];
-
-		m_output.append("\t" + attrName + " = c." + attrName + ";\n");
-	}
-
-	m_output.append(
-		"\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output.append(
-			"\t" + childName + " = new vector<" + childType + "*>();\n"
-			"\tfor(size_t i = 0; i < c." + childName + "->size(); i++){\n"
-			"\t\t" + childName + "->push_back( new " + childType + "( *(c." + childName + "->at( i )) ) );\n"
-			"\t}\n"
-		);
-	}
-
-
-	m_output.append(
-		"\n"
-		"}\n"
-		"\n" +
-		shortName + "& " + shortName + "::operator=(const " + shortName + "& c)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::operator=(const " + shortName + "& c)\");\n"
-		"\n"
-	);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		//twine& attrType = objAttrs[attrName];
-
-		m_output.append("\t" + attrName + " = c." + attrName + ";\n");
-	}
-
-	m_output.append(
-		"\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output.append(
-			"\t" + childName + " = new vector<" + childType + "*>();\n"
-			"\tfor(size_t i = 0; i < c." + childName + "->size(); i++){\n"
-			"\t\t" + childName + "->push_back( new " + childType + "( *(c." + childName + "->at( i )) ) );\n"
-			"\t}\n"
-		);
-	}
-
-	m_output.append(
-		"\n"
-		"\treturn *this;\n"
-		"}\n"
-		"\n" +
-		shortName + "::~" + shortName + "()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::~" + shortName + "()\");\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output.append(
-		shortName + "& " + shortName + "::init()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::init()\");\n"
-		"\n"
-	);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		twine& attrType = objAttrs[attrName];
-		if(attrType == "int"){
-			m_output.append("\t" + attrName + " = 0;\n");
-		} else if(attrType == "float"){
-			m_output.append("\t" + attrName + " = 0.0f;\n");
-		} else if(attrType == "twine" ||
-				attrType == "cdata" ||
-				attrType == "base64" ||
-				attrType == "bin"
-		){
-			m_output.append("\t" + attrName + ".erase();\n");
-		}
-	}
-
-	m_output.append(
-		"\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output.append(
-			"\t" + childName + " = new vector<" + childType + "*>();\n"
-		);
-	}
-
-	m_output.append(
-		"\n"
-		"\treturn *this;\n"
-		"\n"
-		"}\n"
-		"\n" +
-		shortName + "& " + shortName + "::checkSize()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::checkSize()\");\n"
-		"\n"
-	);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		twine& attrType = objAttrs[attrName];
-		if(attrType == "twine" ||
-			attrType == "cdata" ||
-			attrType == "base64"
-		){
-			m_output.append(
-				//"\tDEBUG(FL, \"Checking size for member: %s\", \"" + attrName + "\");\n"
-				"\t" + attrName + ".check_size();\n"
-				"\t" + attrName + ".rtrim();\n"
-			);
-		}
-	}
-
-
-	m_output.append(
-		"\n"
-		"\treturn *this;\n"
-		"\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Construct from an xmlNodePtr                                           */\n"
-		"/* ********************************************************************** */\n" +
-		shortName + "::" + shortName + "(xmlNodePtr node)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::" + shortName + "(xmlNodePtr node)\");\n"
-		"\n"
-		"\treadXmlNode(node);\n"
-		"\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Read from an xmlNodePtr                                                */\n"
-		"/* ********************************************************************** */\n" +
-		shortName + "& " + shortName + "::readXmlNode(xmlNodePtr node)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::readXmlNode(xmlNodePtr node)\");\n"
-		"\n"
-		"\tif(node == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"xmlNodePtr passed to construct " + shortName + " is NULL.\");\n"
-		"\t}\n"
-		"\n"
-	);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		twine& attrType = objAttrs[attrName];
-
-		m_output.append("\t" + xmlGetForType(attrName, attrType, "node") );
-	}
-
-	m_output.append(
-		"\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output.append(
-			"\t" + childName + " = " + childType + "::readXmlChildren( XmlHelpers::FindChild( node, \"" + childName + "\") );\n"
-		);
-	}
-
-	m_output.append(
-		"\n"
-		"\treturn *this;\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Create an xmlNodePtr child of the given parent node                    */\n"
-		"/* ********************************************************************** */\n"
-		"xmlNodePtr " + shortName + "::createXmlNode(xmlNodePtr parent) const\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::createXmlNode(xmlNodePtr parent)\");\n"
-		"\n"
-		"\tif(parent == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"xmlNodePtr passed to " + shortName + "::createXmlNode is NULL.\");\n"
-		"\t}\n"
-		"\n"
-		"\txmlNodePtr child = xmlNewChild(parent, NULL, (const xmlChar*)\"" + shortName + "\", NULL);\n"
-	);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		twine& attrType = objAttrs[attrName];
-
-		m_output.append("\t" + xmlSetForType(attrName, attrType, "child") );
-	}
-
-	m_output.append(
-		"\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output.append(
-			"\txmlNodePtr " + childName + "_node = xmlNewChild(child, NULL, (const xmlChar*)\"" +
-				childName + "\", NULL);\n"
-			"\t" + childType + "::createXmlChildren( " + childName + "_node, " + childName + " );\n"
-			"\n"
-		);
-	}
-
-	m_output.append(
-		"\n"
-		"\treturn child;\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Create an xmlDocPtr from our data object                               */\n"
-		"/* ********************************************************************** */\n"
-		"xmlDocPtr " + shortName + "::createXmlDoc() const\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::createXmlDoc()\");\n"
-		"\n"
-		"\txmlDocPtr doc = xmlNewDoc((const xmlChar*)\"1.0\");\n"
-		"\tdoc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)\"" + shortName + "\", NULL);\n"
-		"\txmlNodePtr child = xmlDocGetRootElement(doc);\n"
-	);
-
-	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
-		const twine& attrName = it->first;
-		if(attrName == "do.package.name" || 
-			attrName == "js.package.name" ||
-			attrName == "short.object.name"
-		){
-			continue; // skip these.
-		}
-		twine& attrType = objAttrs[attrName];
-
-		m_output.append("\t" + xmlSetForType(attrName, attrType, "child") );
-	}
-
-	m_output.append(
-		"\n"
-	);
-	for(it = objChildren.begin(); it != objChildren.end(); it++){
-		const twine& childName = it->first;
-		const twine& childType = it->second;
-		m_output.append(
-			"\txmlNodePtr " + childName + "_node = xmlNewChild(child, NULL, (const xmlChar*)\"" +
-				childName + "\", NULL);\n"
-			"\t" + childType + "::createXmlChildren( " + childName + "_node, " + childName + " );\n"
-			"\n"
-		);
-	}
-
-	m_output.append(
-		"\n"
-		"\treturn doc;\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Create a series of these objects by reading all children of the parent */\n"
-		"/* ********************************************************************** */\n"
-		"vector<" + shortName + "* >* " + shortName + "::readXmlChildren(xmlNodePtr parent)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::readXmlChildren(xmlNodePtr parent)\");\n"
-		"\n"
-		"\tif(parent == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"xmlNodePtr passed to " + shortName + "::readXmlChildren is NULL.\");\n"
-		"\t}\n"
-		"\n"
-		"\t// Use an sptr to ensure that if the method throws or causes an exception to be\n"
-		"\t// thrown the vector will be cleaned up before leaving this method.\n"
-		"\tsptr< vector<" + shortName + "* >, " + shortName + "::deleteVector> ret = new vector<" + shortName + "* >();\n"
-		"\n"
-		"\tfor(xmlNodePtr child = parent->xmlChildrenNode; child != NULL; child = child->next){\n"
-		"\t\tif(strcmp( (const char*)child->name, \"" + shortName + "\") == 0){\n"
-		"\t\t\tret->push_back( new " + shortName + "(child) );\n"
-		"\t\t}\n"
-		"\t}\n"
-		"\n"
-		"\t// When we return, ensure that we release the sptr, so that we don't accidentally\n"
-		"\t// delete the vector and its contents when leaving this method.\n"
-		"\treturn ret.release();\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Create a series of child nodes based on the input vector.              */\n"
-		"/* ********************************************************************** */\n"
-		"void " + shortName + "::createXmlChildren(xmlNodePtr parent, vector<" + shortName + "* >* vect)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::createXmlChildren(xmlNodePtr parent, vector<" + shortName + "* >* vect)\");\n"
-		"\n"
-		"\tif(parent == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"xmlNodePtr passed to " + shortName + "::createXmlChildren is NULL.\");\n"
-		"\t}\n"
-		"\n"
-		"\tfor(size_t i = 0; i < vect->size(); i++){\n"
-		"\t\t(*vect)[i]->createXmlNode(parent);\n"
-		"\t}\n"
-		"\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Handle deleting a vector and its contents.                             */\n"
-		"/* ********************************************************************** */\n"
-		"void " + shortName + "::deleteVector(vector<" + shortName + "* >* vect)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::deleteVector(vector<" + shortName + "* >* vect)\");\n"
-		"\n"
-		"\tif(vect == NULL){\n"
-		"\t\treturn; // quick bail-out\n"
-		"\t}\n"
-		"\n"
-		"\tfor(size_t i = 0; i < vect->size(); i++){\n"
-		"\t\tif( (*vect)[i] != NULL ){\n"
-		"\t\t\tdelete (*vect)[i];\n"
-		"\t\t}\n"
-		"\t}\n"
-		"\n"
-		"\tdelete vect;\n"
-		"\n"
-		"}\n"
-		"\n"
-		"/* ********************************************************************** */\n"
-		"/* Return the name of our object.                                         */\n"
-		"/* ********************************************************************** */\n"
-		"twine& " + shortName + "::Name()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "::Name()\");\n"
-		"\n"
-		"\treturn " + shortName + "Name;\n"
-		"\n"
-		"}\n"
-		"\n"
-
-
-
-	);
+	m_output_header.append( loadTmpl( "CppObjHeader.start.tmpl", &vars ) );
+	m_output.append( loadTmpl("CppObjBody.start.tmpl", &vars ) );
 
 }
 
 void beginCPPDataObjectTest(twine& objName, vector<xmlNodePtr>& statements)
 {
-	map<twine, twine >& objAttrs = m_data_objects[objName];
-	map<twine, twine >& objChildren = m_do_children[objName];
-	map<twine, twine>::iterator it;
+	map<twine, twine> vars = buildObjectParms( objName );
 	
-	twine out;
+	// Override the ifdef name
 	twine shortName = objAttrs["short.object.name"];
 	twine ifdefName = shortName + "_TEST_H";
 	ifdefName.ucase();
-	twine shortPackage = m_currentPackage.split("/")[1];
+	vars[ "ifdefName" ] = ifdefName;
 
 	m_output_test.erase();
 	m_output_test_header.erase();
 
-	m_output_test_header.append(
-		"/* **************************************************************************\n"
-		"\n"
-		"   Copyright (c): 2008 - 2013 GT Software, Inc.\n"
-		"\n"
-		"   License: Restricted\n"
-		"\n"
-		"   Authors: Steven M. Cherry, Stephen D. Sager\n"
-		"\n"
-		"************************************************************************** */\n"
-		"\n"
-		"#ifndef " + ifdefName + "\n"
-		"#define " + ifdefName + "\n"
-		"\n"
-		"#include \"IOConn.h\"\n"
-		"#include \"DataObjectTestClass.h\"\n"
-		"using namespace ViaSQL::Hub::Glob;\n"
-		"\n"
-		"#include \"" + shortName + ".h\"\n"
-		"using namespace ViaSQL::Hub::Logic::" + shortPackage + ";\n"
-		"\n"
-		"\n"
-		"namespace ViaSQL {\n"
-		"namespace Hub {\n"
-		"namespace Logic {\n"
-		"namespace " + shortPackage + " {\n"
-		"\n"
-		"/** This is a generated data object test class that is used for testing the data\n"
-		"  * object called " + shortName + ".\n"
-		"  */\n"
-		"class " + shortName + "Test : public DataObjectTestClass\n"
-		"{\n"
-		"\tprivate:\n"
-		"\t\t/// Copy constructor is private to prevent use\n"
-		"\t\t" + shortName + "Test(const " + shortName + "Test& c) {}\n"
-		"\n"
-		"\t\t/// Assignment operator is private to prevent use\n"
-		"\t\t" + shortName + "Test& operator=(const " + shortName + "Test& c) { return *this; }\n"
-		"\n"
-		"\t\t/// Registers us with the global factory map\n"
-		"\t\tstatic DataObjectTestClassRegister< " + shortName + "Test > reg;\n"
-		"\n"
-		"\tpublic:\n"
-		"\n"
-		"\t\t/// Standard Constructor\n"
-		"\t\t" + shortName + "Test();\n"
-		"\n"
-		"\t\t/// Standard Destructor\n"
-		"\t\tvirtual ~" + shortName + "Test();\n"
-		"\n"
-		"\t\t/// Runs the tests contained in the given xmlNode\n"
-		"\t\tvirtual void runTests( IOConn& ioc, xmlNodePtr node );\n"
-		"\n"
-		"\t\t/// Compare two objects to see if they are the same\n"
-		"\t\tstatic bool compareObjects( " + shortName + "* first, " + shortName + "* second);\n"
-		"\n"
-		"\t\t/// Compare two lists of objects to see if they are the same\n"
-		"\t\tstatic bool compareLists( vector< " + shortName + "* >* first, vector< " + shortName + "* >* second);\n"
-		"\n"
-		"\t\t/* ******************************************************************************** */\n"
-		"\t\t/* The following are a series of static methods created based on the SQL Statements */\n"
-		"\t\t/* defined in the file " + m_currentFile + " */\n"
-		"\t\t/* ******************************************************************************** */\n"
-		"\n"
-	);
-		
-	m_output_test.append(
-		"/* **************************************************************************\n"
-		"\n"
-		"   Copyright (c): 2008 - 2013 GT Software, Inc.\n"
-		"\n"
-		"   License: Restricted\n"
-		"\n"
-		"   Authors: Steven M. Cherry, Stephen D. Sager\n"
-		"\n"
-		"************************************************************************** */\n"
-		"\n"
-		"#include <AnException.h>\n"
-		"#include <EnEx.h>\n"
-		"#include <Log.h>\n"
-		"#include <XmlHelpers.h>\n"
-		"using namespace SLib;\n"
-		"\n"
-		"#include \"TheMain.h\"\n"
-		"#include \"OdbcObj.h\"\n"
-		"using namespace ViaSQL::Hub::Glob;\n"
-		"\n"
-		"#include \"" + shortName + "_test.h\"\n"
-		"using namespace ViaSQL::Hub::Logic::" + shortPackage + ";\n"
-		"\n"
-		"#include \"Statics.h\"\n"
-		"using namespace ViaSQL::Hub::Logic::utils;\n"
-		"\n"
-		"/* ************************************************************************** */\n"
-		"/* This is a generated data object test class that is used for testing a      */\n"
-		"/* data object.  This class was generated based on the settings in the file:  */\n"
-		"/* " + m_currentFile + " */\n"
-		"/* ************************************************************************** */\n"
-		"\n"
-		"// This adds us to the global data object test class registry\n"
-		"DataObjectTestClassRegister< " + shortName + "Test > " + shortName + "Test::reg( \"" + shortName + "Test\", \"/logic/" + shortPackage + "/" + shortName + "Test\" );\n"
-		"\n" +
-		shortName + "Test::" + shortName + "Test()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "Test::" + shortName + "Test()\");\n"
-		"\n"
-		"}\n"
-		"\n" + 
-		shortName + "Test::~" + shortName + "Test()\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "Test::~" + shortName + "Test()\");\n"
-		"\n"
-		"}\n"
-		"\n" + 
-		"void " + shortName + "Test::runTests(IOConn& ioc, xmlNodePtr node)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "Test::runTests(IOConn& ioc, xmlNodePtr node)\");\n"
-		"\n"
-		"\tif(node == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"xmlNodePtr passed to " + shortName + "Test::runTests is NULL.\");\n"
-		"\t}\n"
-		"\n"
-		"\tvector< xmlNodePtr > tests = XmlHelpers::FindChildren( node, \"Test\" );\n"
-		"\tfor(size_t i = 0; i < tests.size(); i++){\n"
-		"\t\ttwine testMethod( tests[i], \"method\" );\n"
-		"\n"
-		""
-	);
-
+	twine methodNameCheck;
 	for(size_t i = 0; i < statements.size(); i++){
 		twine methodName( statements[i], "methodName" );
 		twine target(statements[i], "target"); 
 		if( i == 0 ){
-			m_output_test.append( 
+			methodNameCheck.append( 
 				"\t\tif( testMethod == \"" + methodName + "\" ){\n"
 				"\t\t\t" + methodName + "( ioc, tests[i] );\n"
 			);
 		} else {
-			m_output_test.append( 
+			methodNameCheck.append( 
 				"\t\t} else if( testMethod == \"" + methodName + "\" ){\n"
 				"\t\t\t" + methodName + "( ioc, tests[i] );\n"
 			);
 		}
 	}
+	vars[ "MethodNameCheck" ] = methodNameCheck;
 
-	m_output_test.append(
-		"\t\t} else {\n"
-		"\t\t\tWARN(FL, \"Unknown test method (%s) given to " + shortName + "Test\", testMethod() );\n"
-		"\t\t}\n"
-		"\t}\n"
-		"}\n"
-		"\n"
-		"bool " + shortName + "Test::compareObjects( " + shortName + "* first, " + shortName + "* second)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "Test::compare( " + shortName + "* first, " + shortName + "* second)\" );\n"
-		"\n"
-	);
-
+	twine compareMembers;
 	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
 		const twine& attrName = it->first;
 		if(attrName == "do.package.name" || 
@@ -1618,49 +722,21 @@ void beginCPPDataObjectTest(twine& objName, vector<xmlNodePtr>& statements)
 		twine& attrType = objAttrs[attrName];
 		
 		if(attrType == "cdata"){
-			m_output_test.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
+			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		} else if(attrType == "base64"){
-			m_output_test.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
+			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		} else if(attrType == "bin"){
-			m_output_test.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
+			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		} else if(attrType == "int"){
-			m_output_test.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
+			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		} else {
-			m_output_test.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
+			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		}
 	}
+	vars[ "CompareMembers" ] = compareMembers;
 
-	m_output_test.append(
-		"\n"
-		"\treturn true; // everything matches\n"
-		"\n"
-		"}\n"
-		"\n"
-		"bool " + shortName + "Test::compareLists( vector< " + shortName + "* >* first, vector< " + shortName + "* >* second)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + shortName + "Test::compareLists( vector< " + shortName + "* >* first, vector< " + shortName + "* >* second)\" );\n"
-		"\n"
-		"\t//If the sizes don't match, then return false\n"
-		"\tif(first->size() != second->size()){\n"
-		"\t\treturn false;\n"
-		"\t}\n"
-		"\n"
-		"\t// Loop through and check each pair of objects\n"
-		"\tfor(size_t i = 0; i < first->size(); i++){\n"
-		"\t\tif(!" + shortName + "Test::compareObjects( first->at( i ), second->at( i ) ) ){\n"
-		"\t\t\treturn false;\n"
-		"\t\t}\n"
-		"\t}\n"
-		"\n"
-		"\t// If they all match, return true\n"
-		"\treturn true;\n"
-		"}\n"
-		"\n"
-	);
-
-
-
-
+	m_output_test_header.append( loadTmpl( "CppObjTestHeader.start.tmpl", &vars ) );
+	m_output_test.append( loadTmpl( "CppObjTestBody.start.tmpl", &vars ) );
 }
 
 void createDataObjectTestXml( twine& objName, vector<xmlNodePtr>& statements )
@@ -1686,7 +762,7 @@ void createDataObjectTestXml( twine& objName, vector<xmlNodePtr>& statements )
 		xmlSetProp( test, (const xmlChar*)"group", (const xmlChar*)"AutoGenerated");
 
 		xmlNodePtr input = xmlNewChild( test, NULL, (const xmlChar*)"Input", NULL);
-		xmlNodePtr output = xmlNewChild( test, NULL, (const xmlChar*)"Output", NULL);
+		xmlNewChild( test, NULL, (const xmlChar*)"Output", NULL);
 		xmlNodePtr results = xmlNewChild( test, NULL, (const xmlChar*)"Results", NULL);
 
 		xmlSetProp(results, (const xmlChar*)"success", (const xmlChar*)"false");
@@ -1867,19 +943,12 @@ void dumpJSDataObject(twine& objName)
 	//twine filename = "../qd/" + package + "/source/class/" + package + "/sqldo/" + shortName + ".js";
 	twine filename = "../qd/common/sqldo/" + shortName + ".js";
 
-	out.append(
-		"/**\n"
-		"  * Copyright (c) 2011 Viaserv, Inc.\n"
-		"  * All rights reserved.\n"
-		"  */\n"
-		"qx.Class.define(\"" + package + ".sqldo." + shortName + "\", {\n"
-		"\textend : qx.core.Object,\n"
-		"\n"
-		"\tconstruct : function() {\n"
-		"\t\tthis.base(arguments);\n"
-		"\t},"
-		"\n"
-		"\tproperties : {\n" );
+	map<twine, twine> vars;
+	vars[ "shortName" ] = shortName;
+	vars[ "package" ] = package;
+	vars[ "filename" ] = filename;
+
+	out.append( loadTmpl( "JsObj01.tmpl", &vars ) );
 	
 	map<twine, twine>::iterator it;
 	bool first = true;
@@ -1900,13 +969,7 @@ void dumpJSDataObject(twine& objName)
 		}
 		out.append("\t\t " + jsPropDefinition(attrName, attrType));
 	}
-	out.append("\n\t},\n");
-	
-	out.append(
-		"\n"
-		"\tmembers : {\n"
-		"\n"
-	);
+	out.append( loadTmpl( "JsObj02.tmpl", &vars ) );
 	for(it = objChildren.begin(); it != objChildren.end(); it++){
 		const twine& childName = it->first;
 		const twine& childType = it->second;
@@ -1918,16 +981,7 @@ void dumpJSDataObject(twine& objName)
 		);
 	}
 
-	out.append(
-		"\t\t/** Populates our object from the given XML node\n"
-		"\t\t  * \n"
-		"\t\t  * @param elem {Object} The XML node that we will read to populate our object.\n"
-		"\t\t  */\n"
-		"\t\treadFromXML : function( elem ){\n"
-		"\t\t\tif(elem.nodeName === null || elem.nodeName !== \"" + shortName + "\"){\n"
-		"\t\t\t\t// figure out how to throw an exception!\n"
-		"\t\t\t\treturn;\n"
-		"\t\t\t}\n" );
+	out.append( loadTmpl( "JsObj03.tmpl", &vars ) );
 	
 	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
 		const twine& attrName = it->first;
@@ -1951,21 +1005,7 @@ void dumpJSDataObject(twine& objName)
 		);
 	}
 
-	out.append("\t\t},\n\n");
-	
-	out.append(
-		"\t\t/** This will create a new xml element as a child of the given\n"
-		"\t\t  * parent that will have the same name as this object.  All\n"
-		"\t\t  * of this object's properties will be added to the XML element\n"
-		"\t\t  * created.\n"
-		"\t\t  *\n"
-		"\t\t  * @param parent {Object} The parent XML node that will hold our new child.\n"
-		"\t\t  */\n"
-		"\t\tcreateXMLElement : function( parent ) {\n"
-		"\t\t\tvar doc = parent.ownerDocument;\n"
-		"\t\t\tvar subElem = doc.createElement(\"" + shortName + "\");\n"
-		"\t\t\tparent.appendChild(subElem);\n"
-		"\n");
+	out.append( loadTmpl("JsObj04.tmpl", &vars ) );
 		
 	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
 		const twine& attrName = it->first;
@@ -1991,17 +1031,8 @@ void dumpJSDataObject(twine& objName)
 		);
 	}
 
-	out.append("\n\t\t\treturn subElem;\n\t\t},\n\n");
+	out.append( loadTmpl("JsObj05.tmpl", &vars) );
 	
-	out.append(
-		"\t\t/** This will create a duplicate object that has the same\n"
-		"\t\t  * settings as this object.\n"
-		"\t\t  *\n"
-		"\t\t  * @param newObj {Object} The new object that we will populate and return.\n"
-		"\t\t  */\n"
-		"\t\tcreateDuplicate : function( newObj ) {\n"
-		"\n");
-
 	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
 		const twine& attrName = it->first;
 		if(attrName == "do.package.name" || 
@@ -2015,58 +1046,7 @@ void dumpJSDataObject(twine& objName)
 
 		out.append("\t\t\tnewObj.set" + ucase + "( this.get" + ucase + "() );\n");
 	}
-	out.append("\n\t\t\treturn newObj;\n\t\t}\n\n");
-	
-	
-	out.append(
-		"\t},\n"
-		"\n"
-		"\tstatics : {\n"
-		"\n");
-
-	out.append(
-		"\t\t/** This will read all children of the given element and for\n"
-		"\t\t  * any that are found that are our type of XML node, we will\n"
-		"\t\t  * process them and return them in an array.\n"
-		"\t\t  *\n"
-		"\t\t  * @param elem {Object} The parent node that has children that match our name.\n"
-		"\t\t  */\n"
-		"\t\treadElementChildren : function ( elem ){\n"
-		"\t\t\tvar ret = [];\n"
-		"\t\t\tvar i, l;\n"
-		"\t\t\tfor (i=0, l = elem.childNodes.length; i<l; i++) {\n"
-		"\t\t\t\tvar node = elem.childNodes[i];\n"
-		"\t\t\t\tif(node.nodeName === \"" + shortName + "\") {\n"
-		"\t\t\t\t\tvar obj = new " + package + ".sqldo." + shortName + "();\n"
-		"\t\t\t\t\tobj.readFromXML( node );\n"
-		"\t\t\t\t\tret.push( obj );\n"
-		"\t\t\t\t}\n"
-		"\t\t\t}\n"
-		"\t\t\treturn ret;\n"
-		"\t\t},\n"
-		"\n"
-		"\t\t/** This will write all items in the given array, as child\n"
-		"\t\t  * nodes of the given XML element.\n"
-		"\t\t  *\n"
-		"\t\t  * @param list {Array} The array of objects to write.\n"
-		"\t\t  * @param elem {Object} The parent XML Node object that will hold the new children.\n"
-		"\t\t  */\n"
-		"\t\twriteArray : function ( list, elem ){\n"
-		"\t\t\tvar i, l;\n"
-		"\t\t\tfor (i=0, l = list.length; i<l; i++) {\n"
-		"\t\t\t\tlist[i].createXMLElement(elem);\n"
-		"\t\t\t}\n"
-		"\t\t}\n"
-		"\n");
-	
-	out.append(
-		"\n"
-		"\t},\n"
-		"\n"
-		"\tdestruct : function() {\n"
-		"\n"
-		"\t}\n"
-		"});\n");
+	out.append( loadTmpl("JsObj06.tmpl", &vars ) );
 	
 	try {
 		//printf("Creating: %s\n", filename());
@@ -2246,6 +1226,306 @@ twine logExplain( const twine& stmt )
 	
 }
 
+map<twine, twine> buildObjectParms( twine& objName )
+{
+	map<twine, twine >& objAttrs = m_data_objects[objName];
+	map<twine, twine >& objChildren = m_do_children[objName];
+	map<twine, twine>::iterator it;
+	
+	twine out;
+	twine shortName = objAttrs["short.object.name"];
+	twine ifdefName = shortName + "_H";
+	ifdefName.ucase();
+	twine shortPackage = m_currentPackage.split("/")[1];
+
+	map<twine, twine> vars;
+	vars[ "shortName" ] = shortName;
+	vars[ "ifdefName" ] = ifdefName;
+	vars[ "shortPackage" ] = shortPackage;
+	vars[ "m_currentFile" ] = m_currentFile;
+
+
+	twine childObjectIncludes;
+	for(it = objChildren.begin(); it != objChildren.end(); it++){
+		//const twine& childName = it->first;
+		const twine& childType = it->second;
+		childObjectIncludes.append("#include \"" + childType + ".h\"\n");
+	}
+	vars[ "ChildObjectIncludes" ] = childObjectIncludes;
+
+	twine defineDataMembers;
+	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
+		const twine& attrName = it->first;
+		if(attrName == "do.package.name" || 
+			attrName == "js.package.name" ||
+			attrName == "short.object.name"
+		){
+			continue; // skip these.
+		}
+		twine& attrType = objAttrs[attrName];
+		
+		if(attrType == "cdata"){
+			defineDataMembers.append("\t\ttwine " + attrName + ";\n");
+		} else if(attrType == "base64"){
+			defineDataMembers.append("\t\ttwine " + attrName + ";\n");
+		} else if(attrType == "bin"){
+			defineDataMembers.append("\t\tMemBuf " + attrName + ";\n");
+		} else if(attrType == "int"){
+			defineDataMembers.append("\t\tintptr_t " + attrName + ";\n");
+		} else {
+			defineDataMembers.append("\t\t" + attrType + " " + attrName + ";\n");
+		}
+	}
+	vars[ "DefineDataMembers" ] = defineDataMembers;
+
+	twine childVectorDefines;
+	for(it = objChildren.begin(); it != objChildren.end(); it++){
+		const twine& childName = it->first;
+		const twine& childType = it->second;
+		childVectorDefines.append("\t\t" + childType + "_svect " + childName + ";\n");
+	}
+	vars[ "ChildVectorDefines" ] = childVectorDefines;
+
+	twine memberCopyStatements;
+	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
+		const twine& attrName = it->first;
+		if(attrName == "do.package.name" || 
+			attrName == "js.package.name" ||
+			attrName == "short.object.name"
+		){
+			continue; // skip these.
+		}
+		//twine& attrType = objAttrs[attrName];
+
+		memberCopyStatements.append("\t" + attrName + " = c." + attrName + ";\n");
+	}
+	for(it = objChildren.begin(); it != objChildren.end(); it++){
+		const twine& childName = it->first;
+		const twine& childType = it->second;
+		memberCopyStatements.append(
+			"\t" + childName + " = new vector<" + childType + "*>();\n"
+			"\tfor(size_t i = 0; i < c." + childName + "->size(); i++){\n"
+			"\t\t" + childName + "->push_back( new " + childType + "( *(c." + childName + "->at( i )) ) );\n"
+			"\t}\n"
+		);
+	}
+	vars[ "MemberCopyStatements" ] = memberCopyStatements;
+
+	twine memberInitStatements;
+	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
+		const twine& attrName = it->first;
+		if(attrName == "do.package.name" || 
+			attrName == "js.package.name" ||
+			attrName == "short.object.name"
+		){
+			continue; // skip these.
+		}
+		twine& attrType = objAttrs[attrName];
+		if(attrType == "int"){
+			memberInitStatements.append("\t" + attrName + " = 0;\n");
+		} else if(attrType == "float"){
+			memberInitStatements.append("\t" + attrName + " = 0.0f;\n");
+		} else if(attrType == "twine" ||
+				attrType == "cdata" ||
+				attrType == "base64" ||
+				attrType == "bin"
+		){
+			memberInitStatements.append("\t" + attrName + ".erase();\n");
+		}
+	}
+	for(it = objChildren.begin(); it != objChildren.end(); it++){
+		const twine& childName = it->first;
+		const twine& childType = it->second;
+		memberInitStatements.append(
+			"\t" + childName + " = new vector<" + childType + "*>();\n"
+		);
+	}
+	vars[ "MemberInitStatements" ] = memberInitStatements;
+
+	twine memberCheckSizeStatements;
+	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
+		const twine& attrName = it->first;
+		if(attrName == "do.package.name" || 
+			attrName == "js.package.name" ||
+			attrName == "short.object.name"
+		){
+			continue; // skip these.
+		}
+		twine& attrType = objAttrs[attrName];
+		if(attrType == "twine" ||
+			attrType == "cdata" ||
+			attrType == "base64"
+		){
+			memberCheckSizeStatements.append(
+				//"\tDEBUG(FL, \"Checking size for member: %s\", \"" + attrName + "\");\n"
+				"\t" + attrName + ".check_size();\n"
+				"\t" + attrName + ".rtrim();\n"
+			);
+		}
+	}
+	vars[ "MemberCheckSizeStatements" ] = memberCheckSizeStatements;
+
+	twine xmlReadMembers;
+	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
+		const twine& attrName = it->first;
+		if(attrName == "do.package.name" || 
+			attrName == "js.package.name" ||
+			attrName == "short.object.name"
+		){
+			continue; // skip these.
+		}
+		twine& attrType = objAttrs[attrName];
+
+		xmlReadMembers.append("\t" + xmlGetForType(attrName, attrType, "node") );
+	}
+	for(it = objChildren.begin(); it != objChildren.end(); it++){
+		const twine& childName = it->first;
+		const twine& childType = it->second;
+		xmlReadMembers.append(
+			"\t" + childName + " = " + childType + "::readXmlChildren( XmlHelpers::FindChild( node, \"" + childName + "\") );\n"
+		);
+	}
+	vars[ "XmlReadMembers" ] = xmlReadMembers;
+
+	twine xmlWriteMembers;
+	for(it = objAttrs.begin(); it != objAttrs.end(); it++){
+		const twine& attrName = it->first;
+		if(attrName == "do.package.name" || 
+			attrName == "js.package.name" ||
+			attrName == "short.object.name"
+		){
+			continue; // skip these.
+		}
+		twine& attrType = objAttrs[attrName];
+
+		xmlWriteMembers.append("\t" + xmlSetForType(attrName, attrType, "child") );
+	}
+	for(it = objChildren.begin(); it != objChildren.end(); it++){
+		const twine& childName = it->first;
+		const twine& childType = it->second;
+		xmlWriteMembers.append(
+			"\txmlNodePtr " + childName + "_node = xmlNewChild(child, NULL, (const xmlChar*)\"" +
+				childName + "\", NULL);\n"
+			"\t" + childType + "::createXmlChildren( " + childName + "_node, " + childName + " );\n"
+			"\n"
+		);
+	}
+	vars[ "XmlWriteMembers" ] = xmlWriteMembers;
+
+	return vars;
+}
+
+map<twine, twine> buildStatementParms( xmlNodePtr stmt )
+{
+	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
+	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+
+	twine comment = XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") );
+	twine sql = XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") );
+	twine methodName( stmt, "methodName" );
+	twine target(stmt, "target"); 
+
+	map<twine, twine> vars;
+	vars[ "doName" ] = m_currentClass;
+	vars[ "comment" ] = comment;
+	vars[ "sql" ] = sql;
+	vars[ "methodName" ] = methodName;
+	vars[ "flatSql" ] = flattenSql(stmt);
+
+	twine typedParms;
+	twine untypedParms;
+	for(size_t i = 0; i < inputs.size(); i++){
+		xmlNodePtr input = inputs[i];
+		typedParms.append(paramForType(twine(input, "name"), twine(input, "type")) );
+		untypedParms.append( ", " + twine(input, "name") );
+	}
+	vars[ "TypedParms" ] = typedParms;
+	vars[ "UntypedParms" ] = untypedParms;
+	
+	twine odbcBindInputs;
+	twine sqldbBindInputs;
+	for(size_t i = 0; i < inputs.size(); i++){
+		twine i_1; i_1 = i+1;
+		xmlNodePtr input = inputs[i];
+		odbcBindInputs.append( odbcBindInputForType(i+1, twine(input, "name"), twine(input, "type") ) );
+		sqldbBindInputs.append( odbcBindInputForType4(i+1, twine(input, "name"), twine(input, "type") ));
+	}
+	vars[ "OdbcBindInputs" ] = odbcBindInputs;
+	vars[ "SqlDBBindInputs" ] = sqldbBindInputs;
+
+	twine sqlReplaceParms;
+	for(size_t i = 0; i < inputs.size(); i++){
+		xmlNodePtr input = inputs[i];
+		sqlReplaceParms.append(
+			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
+			"\tidx = stmt.find('?', idx);\n"
+			"\tif(idx != TWINE_NOT_FOUND){\n" +
+			replaceInputForType(twine(input, "name"), twine(input, "type")) +
+			"\t}\n"
+			"\n"
+			);
+	}
+	vars[ "SqlReplaceParms" ] = sqlReplaceParms;
+
+	twine inputDOParms;
+	for(size_t i = 0; i < inputs.size(); i++){
+		inputDOParms.append( ", inputDO." + twine( inputs[i], "name" ) );
+	}
+	vars[ "InputDOParms" ] = inputDOParms;
+
+	if(target == "sqldb" ){
+		vars[ "TestDBConnection" ] = "\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");" ;
+		vars[ "PrepareDBTest" ] = "";
+	} else {
+		vars[ "TestDBConnection" ] = "\tOdbcObj& odbc = *ioc.getDBConnection();" ;
+		vars[ "PrepareDBTest" ] = 
+			"\t// Prepare the statement\n"
+			"\ttwine stmt = " + m_currentClass + "::" + methodName + "_prepSQL( ioc
+	}
+
+	if(target == "sqldb" ){
+		m_output_test.append(
+			"\t// Get a connection to our database:\n"
+			"\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");\n"
+			"\n"
+			"\t// Execute the statement:\n"
+			"\t" + doName + "::" + methodName + "(sqldb"
+		);
+		for(size_t i = 0; i < inputs.size(); i++){
+			m_output_test.append(
+				", inputDO." + twine( inputs[i], "name" )
+			);
+		}
+	} else {
+
+		m_output_test.append(
+			"\t// Get a connection to our database:\n"
+			"\tOdbcObj& odbc = *ioc.getDBConnection();\n"
+			"\n"
+			"\t// Prepare and execute the statement\n"
+			"\ttwine stmt = " + doName + "::" + methodName + "_prepSQL( ioc"
+		);
+
+		for(size_t i = 0; i < inputs.size(); i++){
+			m_output_test.append(
+				", inputDO." + twine( inputs[i], "name" )
+			);
+		}
+
+		m_output_test.append(
+			" );\n"
+			"\t" + doName + "::" + methodName + "( odbc, stmt, false"
+		);
+
+		for(size_t i = 0; i < inputs.size(); i++){
+			m_output_test.append(
+				", inputDO." + twine( inputs[i], "name" )
+			);
+		}
+	}
+	return vars;
+}
+
 void generateReturn(xmlNodePtr stmt)
 {
 
@@ -2301,7 +1581,7 @@ void generateReturn(xmlNodePtr stmt)
 		"\t\tif(rs.next()){\n"
 		"\t\t\tret = rs.get" + convertType(stmt) + "(1);\n"
 		"\t\t} else {\n"
-		"\t\t\tret = " + nullForType(stmt) + "; // no result set.\n"
+		"\t\t\tret = " + NULLForType(stmt) + "; // no result set.\n"
 		"\t\t}\n"
 		"\t\trs.close();\n"
 		"\t\tstmt.close();\n"
@@ -2382,7 +1662,7 @@ void generateReturnXML(xmlNodePtr stmt)
 		"\t\tif(rs.next()){\n"
 		"\t\t\toutputNode.setAttribute(\"return\", rs.gettwine(1) );\n"
 		"\t\t} else {\n"
-		"\t\t\toutputNode.setAttribute(\"return\", \"" + nullForType(stmt) + "\" ); // no result set.\n"
+		"\t\t\toutputNode.setAttribute(\"return\", \"" + NULLForType(stmt) + "\" ); // no result set.\n"
 		"\t\t}\n"
 		"\t\trs.close();\n"
 		"\t\tstmt.close();\n"
@@ -2445,7 +1725,7 @@ void generateReturnDO(xmlNodePtr stmt)
 		"\t\tif(rs.next()){\n"
 		"\t\t\toutputNode.setAttribute(\"return\", rs.gettwine(1) );\n"
 		"\t\t} else {\n"
-		"\t\t\toutputNode.setAttribute(\"return\", \"" + nullForType(stmt) + "\" ); // no result set.\n"
+		"\t\t\toutputNode.setAttribute(\"return\", \"" + NULLForType(stmt) + "\" ); // no result set.\n"
 		"\t\t}\n"
 		"\t\trs.close();\n"
 		"\t\tstmt.close();\n"
@@ -2458,445 +1738,18 @@ void generateReturnDO(xmlNodePtr stmt)
 
 void generateUpdateDO(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-
-	m_output_header.append(
-		"\t\t/** This is an UPDATE method.  It is designed to run a single update\n"
-		"\t\t  * statement and return. If something goes wrong, we will throw AnException.\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Developer Comments:\n"
-		"\t\t  * <P>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Sql Statement:\n"
-		"\t\t  * <pre>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n"
-		"\t\t  * </pre>\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(OdbcObj& odbc");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is an UPDATE method.  It is designed to run a single update                       */\n"
-		"/* statement and return.  If something  goes wrong, we will throw AnException.            */\n"
-		"/*                                                                                        */\n"
-		"/* Developer Comments:                                                                    */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* Sql Statement:                                                                         */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n */\n"
-		"/*                                                                                        */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\n"
-		"\t" + doName + "::" + twine(stmt, "methodName") + "(odbc, stmt, true"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-		m_output.append(", " + twine(input, "name") );
-	}
-	m_output.append(
-		");\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-	
-	m_output_header.append(
-		"\t\t/** This one matches the above in functionality, but allows you to pass in the sql\n"
-		"\t\t  * statement and a flag to indicate whether the input parameters will be used.\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This one matches the above in functionality, but allows you to pass in the sql         */\n"
-		"/* statement and a flag to indicate whether the input parameters will be used.            */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\tif(odbc.isConnected() == 0){\n"
-		"\t\tthrow AnException(0, FL, \"OdbcObj passed into " + doName + "::" + twine(stmt, "methodName") + " is not connected.\");\n"
-		"\t}\n"
-		"\n"
-		"\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\todbc.SetStmt(stmt, SQL_TYPE_UPDATE);\n"
-		"\n"
-		"\t{ // Used for scope for the timing object.\n"
-		"\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t// Bind the inputs\n"
-		"\t\tif(useInputs){\n"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		m_output.append( odbcBindInputForType(i+1, twine(input, "name"), twine(input, "type") )
-		);
-	}
-	
-	m_output.append(
-		"\t\t} // if(useInputs)\n"
-		"\n"
-		"\t\t// Execute the statement\n"
-		"\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\todbc.ExecStmt();\n"
-		"\t}\n"
-	);
-	
-	m_output.append(
-		"\n"
-		"\t// That's it.\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	// This is for the "prepare" method which will do the parameter replacement in our
-	// code, rather than in the driver code.
-
-	m_output_header.append(
-		"\n"
-		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
-		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
-		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
-		"\t\t  * work with parameter markers.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc"
-	);
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This method will do a replacement of all of the parameter markers in                   */\n"
-		"/* the sql statement with the standard parameter list that is defined.                    */\n"
-		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
-		"/* work with parameter markers.                                                           */\n"
-		"/* ************************************************************************************** */\n"
-		"twine " + doName + "::" + twine(stmt, "methodName") + 
-		"_prepSQL(IOConn& ioc"
-
-	);
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(
-		")\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
-		"\n"
-		"\tsize_t idx = 0;\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
-		"\n"
-	);
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output.append(
-			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
-			"\tidx = stmt.find('?', idx);\n"
-			"\tif(idx != TWINE_NOT_FOUND){\n" +
-			replaceInputForType(twine(input, "name"), twine(input, "type")) +
-			"\t}\n"
-			"\n"
-			);
-	}
-	m_output.append(
-		"\t// Also take a look at the statement and replace any session variables\n"
-		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
-		"\n"
-		"\treturn stmt;\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output_header.append(
-		"\t\t/** This method returns the sql statement that is used by the above functions.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_getSQL() {\n"
-		"\t\t\treturn \"" + flattenSql(stmt) + "\";\n"
-		"\t\t}\n"
-		"\n"
-	);
-
+	m_output.append( loadTmpl("CppObjBody.update.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjHeader.update.tmpl", &vars ) );
 }
 
 void generateUpdateDOSqlDB(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-
-	m_output_header.append(
-		"\t\t/** This is an UPDATE method.  It is designed to run a single update\n"
-		"\t\t  * statement and return. If something goes wrong, we will throw AnException.\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Developer Comments:\n"
-		"\t\t  * <P>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Sql Statement:\n"
-		"\t\t  * <pre>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n"
-		"\t\t  * </pre>\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is an UPDATE method.  It is designed to run a single update                       */\n"
-		"/* statement and return.  If something  goes wrong, we will throw AnException.            */\n"
-		"/*                                                                                        */\n"
-		"/* Developer Comments:                                                                    */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* Sql Statement:                                                                         */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n */\n"
-		"/*                                                                                        */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\n"
-		"\t" + doName + "::" + twine(stmt, "methodName") + "(sqldb, stmt, true"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-		m_output.append(", " + twine(input, "name") );
-	}
-	m_output.append(
-		");\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-	
-	m_output_header.append(
-		"\t\t/** This one matches the above in functionality, but allows you to pass in the sql\n"
-		"\t\t  * statement and a flag to indicate whether the input parameters will be used.\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt, bool useInputs");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This one matches the above in functionality, but allows you to pass in the sql         */\n"
-		"/* statement and a flag to indicate whether the input parameters will be used.            */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt, bool useInputs");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\tsqlite3* db = sqldb.GetDatabase();\n"
-		"\tsqlite3_stmt* db_stmt = NULL;\n"
-		"\n"
-		"\ttry {\n"
-		"\t\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\t\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\t\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\t\tsqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );\n"
-		"\n"
-		"\t\t{ // Used for scope for the timing object.\n"
-		"\t\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t\t// Bind the inputs\n"
-		"\t\t\tif(useInputs){\n"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		m_output.append( odbcBindInputForType4(i+1, twine(input, "name"), twine(input, "type") )
-		);
-	}
-	
-	m_output.append(
-		"\t\t\t} // if(useInputs)\n"
-		"\n"
-		"\t\t\t// Execute the statement\n"
-		"\t\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\t\tsqldb.check_err( sqlite3_step( db_stmt ));\n"
-		"\t\t}\n"
-	);
-	
-	m_output.append(
-		"\n"
-		"\t} catch (AnException& e){\n"
-		"\t\t// Ensure that no matter the exception we release the database back to the object.\n"
-		"\t\tif(db_stmt != NULL){\n"
-		"\t\t\tsqlite3_finalize( db_stmt );\n"
-		"\t\t}\n"
-		"\t\tsqldb.ReleaseDatabase();\n"
-		"\t\tthrow e; // re-throw the exception\n"
-		"\t}\n"
-		"\n"
-		"\t// That's it.\n"
-		"\tif(db_stmt != NULL){\n"
-		"\t\tsqlite3_finalize( db_stmt );\n"
-		"\t}\n"
-		"\tsqldb.ReleaseDatabase();\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	// This is for the "prepare" method which will do the parameter replacement in our
-	// code, rather than in the driver code.
-
-	m_output_header.append(
-		"\n"
-		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
-		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
-		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
-		"\t\t  * work with parameter markers.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc"
-	);
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This method will do a replacement of all of the parameter markers in                   */\n"
-		"/* the sql statement with the standard parameter list that is defined.                    */\n"
-		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
-		"/* work with parameter markers.                                                           */\n"
-		"/* ************************************************************************************** */\n"
-		"twine " + doName + "::" + twine(stmt, "methodName") + 
-		"_prepSQL(IOConn& ioc"
-
-	);
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(
-		")\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
-		"\n"
-		"\tsize_t idx = 0;\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
-		"\n"
-	);
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output.append(
-			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
-			"\tidx = stmt.find('?', idx);\n"
-			"\tif(idx != TWINE_NOT_FOUND){\n" +
-			replaceInputForType(twine(input, "name"), twine(input, "type")) +
-			"\t}\n"
-			"\n"
-			);
-	}
-	m_output.append(
-		"\t// Also take a look at the statement and replace any session variables\n"
-		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
-		"\n"
-		"\treturn stmt;\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output_header.append(
-		"\t\t/** This method returns the sql statement that is used by the above functions.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_getSQL() {\n"
-		"\t\t\treturn \"" + flattenSql(stmt) + "\";\n"
-		"\t\t}\n"
-		"\n"
-	);
-
+	m_output.append( loadTmpl("CppObjBody.update.sqldb.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjHeader.update.sqldb.tmpl", &vars ) );
 }
 
 void generateUpdateDOTest(xmlNodePtr stmt)
@@ -4860,7 +3713,7 @@ twine convertType(twine type)
 	}
 }
 
-twine nullForType(xmlNodePtr e)
+twine NULLForType(xmlNodePtr e)
 {
 	twine type(e, "type");
 	if(type == "int" || type == "autogen"){
@@ -5193,3 +4046,52 @@ twine jsSetForType(twine name, twine type, twine elemname)
 	}
 }
 
+twine loadTmpl(const twine& tmplName, map<twine, twine>* vars)
+{
+	if(!File::Exists("../build/" + tmplName)){
+		twine err; err.format( "!! Template %s not found !!\n", tmplName() );
+		printf("%s", err() );
+		return err;
+	}
+	File tmpl( "../build/" + tmplName );
+	vector<twine> lines = tmpl.readLines();
+	twine ret;
+	for(size_t i = 0; i < lines.size(); i++){
+		if(vars == NULL){
+			ret += lines[i];
+		} else {
+			ret += replaceVars( tmplName, i, lines[i], vars );
+		}
+	}
+	return ret;
+}
+
+twine replaceVars( const twine& tmplName, size_t lineIdx, twine line, map<twine, twine>* vars )
+{
+	if(vars == NULL){ // just in case
+		return line;
+	}
+	size_t idx1 = 0, idx2 = 0;
+	while(idx1 < line.length() ){
+		idx1 = line.find("${", idx1);
+		if(idx1 == TWINE_NOT_FOUND){
+			break; // nothing to do
+		}
+		idx1 += 2; // just past ${
+		idx2 = line.find("}", idx1);
+		if(idx2 == TWINE_NOT_FOUND){
+			continue; // nothing to do
+		}
+		twine varName = line.substr(idx1, idx2-idx1);
+		idx1 -= 2; // back to where it was - at ${
+		if(vars->count( varName ) != 0){
+			line.replace(idx1, idx2-idx1+1, (*vars)[ varName ] );
+		} else {
+			printf("Template %s: Unknown variable %s referenced on line %d\n",
+				tmplName(), varName(), (int)lineIdx );
+			idx1 += 2; // past ${
+		}
+	}
+
+	return line;
+}

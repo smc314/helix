@@ -1,0 +1,10 @@
+		} else {
+			WARN(FL, "Unknown test method (%s) given to ${shortName}Test", testMethod() );
+		}
+	}
+}
+
+bool ${shortName}Test::compareObjects( ${shortName}* first, ${shortName}* second)
+{
+	EnEx ee(FL, "${shortName}Test::compare( ${shortName}* first, ${shortName}* second)" );
+

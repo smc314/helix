@@ -1,0 +1,9 @@
+		/** Populates our object from the given XML node
+		  * 
+		  * @param elem {Object} The XML node that we will read to populate our object.
+		  */
+		readFromXML : function( elem ){
+			if(elem.nodeName === null || elem.nodeName !== "${shortName}"){
+				// figure out how to throw an exception!
+				return;
+			}

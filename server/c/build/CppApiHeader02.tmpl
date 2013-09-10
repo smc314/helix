@@ -1,0 +1,115 @@
+using namespace Helix::Logic::ascfg;
+using namespace Helix::Logic::csa;
+using namespace Helix::Logic::dash;
+using namespace Helix::Logic::drvdep;
+using namespace Helix::Logic::ia;
+using namespace Helix::Logic::ldm;
+using namespace Helix::Logic::test;
+using namespace Helix::Logic::utils;
+
+namespace Helix {
+namespace Client {
+
+/** This API represents the C++ interface to the Hub server.  All API's that are
+* available to the Javascript client are also available here, and re-generated
+* each time the Hub is compiled.  Do Not Edit This Class directly.  Update the
+* code generator and make your edits there.
+*/
+class HubApi : public HttpClient
+{
+	public:
+
+		/// Default Constructor requires the host and port of the Hub to which you want to connect.
+		HubApi(const twine& host, int port, bool useSSL = false);
+
+		/// Standard destructor
+		virtual ~HubApi();
+		/**
+		  * We override this method from the base class to allow us to track progress
+		  * and update internal long running task status values appropriately.
+		  */
+		virtual int Progress(double dltotal, double dlnow, double ultotal, double ulnow);
+
+		/** 
+		  * Used to check the response from the Hub to see if it has errors.  Any errors found
+		  * will be converted into exceptions that are then thrown from this method.
+		  */
+		void returnHasErrors();
+
+		/**
+		  * Checks to see if the return from the Hub is indicating that a DB connection 
+		  * is required to perform the requested action.
+		  */
+		bool returnRequiresDB();
+
+		/**
+		  * Sends a POST request to the Hub and checks the response for errors.
+		  */
+		xmlDocPtr SendRequest( xmlDocPtr req, const twine& requestName );
+
+		/**
+		  * Sends a GET request to the Hub and checks the response for errors.
+		  */
+		xmlDocPtr LoadXMLDoc( const twine& requestName );
+
+		/**
+		  * Sends a GET request to the Hub and does no response checking - use this for 
+		  * requesting static content from the Hub such as web pages, images, etc.  Note, 
+		  * this is an override of the HttpClient::Get method, where we change the 
+		  * understanding of the input requestPath.  We do not require it to be a full URL, but
+		  * will build the URL based on the input host/port setup when creating this HubApi 
+		  * object.
+		  */
+		virtual char* Get( const twine& requestPath );
+
+		/**
+		  * Sends a POST request to the Hub and expects to download the response as a binary
+		  * payload.  Note, this is an override of the HttpClient::PostRaw method, where we change the 
+		  * understanding of the input requestPath.  We do not require it to be a full URL, but
+		  * will build the URL based on the input host/port setup when creating this HubApi 
+		  * object.
+		  */
+		virtual char* PostRaw( const twine& requestPath, const char* msg, size_t msgLen );
+
+		/**
+		  * Allows the caller to retrieve our response document to directly examine anything of
+		  * interest to them.
+		  */
+		xmlDocPtr ResponseDoc() { return m_response; }
+
+		/**
+		  * When used internally by the Hub itself, this allows the invoker of this API to
+		  * tell us about a Long Running Task ID that we should update as our download
+		  * progresses.
+		  */
+		void SetLRTaskID( const twine& lrTaskID );
+
+	private:
+
+		/// Copy constructor is private to prevent use
+		HubApi(const HubApi& c) {}
+
+		/// Assignment operator is private to prevent use
+		HubApi& operator=(const HubApi& c) {return *this;}
+
+		/// Our target hub host name
+		twine m_host;
+
+		/// Our target hub port number
+		int m_port;
+
+		/// Whether we should use an SSL connection
+		bool m_use_ssl;
+
+		/// Our response document
+		sptr<xmlDoc, xmlFreeDoc> m_response;
+
+		/// Our long running task ID
+		twine m_lr_task_id;
+
+	/* ******************************************************************************* */
+	/* This section declares all of the public api's that we provide for communicating */
+	/* with the Hub.                                                                   */
+	/* ******************************************************************************* */
+	public:
+

@@ -1,0 +1,58 @@
+/* **************************************************************************
+
+   Copyright (c): 2008 - 2013 GT Software, Inc.
+
+   License: Restricted
+
+   Authors: Steven M. Cherry, Stephen D. Sager
+
+************************************************************************** */
+
+#include <AnException.h>
+#include <EnEx.h>
+#include <Log.h>
+#include <XmlHelpers.h>
+using namespace SLib;
+
+#include "TheMain.h"
+#include "OdbcObj.h"
+using namespace Helix::Glob;
+
+#include "${shortName}_test.h"
+using namespace Helix::Logic::${shortPackage};
+
+#include "Statics.h"
+using namespace Helix::Logic::utils;
+
+/* ************************************************************************** */
+/* This is a generated data object test class that is used for testing a      */
+/* data object.  This class was generated based on the settings in the file:  */
+/* ${m_currentFile} */
+/* ************************************************************************** */
+
+// This adds us to the global data object test class registry
+DataObjectTestClassRegister< ${shortName}Test > ${shortName}Test::reg( "${shortName}Test", "/logic/${shortPackage}/${shortName}Test" );
+
+${shortName}Test::${shortName}Test()
+{
+	EnEx ee(FL, "${shortName}Test::${shortName}Test()");
+
+}
+
+${shortName}Test::~${shortName}Test()
+{
+	EnEx ee(FL, "${shortName}Test::~${shortName}Test()");
+
+}
+
+void ${shortName}Test::runTests(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "${shortName}Test::runTests(IOConn& ioc, xmlNodePtr node)");
+
+	if(node == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to ${shortName}Test::runTests is NULL.");
+	}
+
+	vector< xmlNodePtr > tests = XmlHelpers::FindChildren( node, "Test" );
+	for(size_t i = 0; i < tests.size(); i++){
+		twine testMethod( tests[i], "method" );

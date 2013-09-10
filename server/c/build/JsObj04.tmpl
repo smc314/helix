@@ -1,0 +1,14 @@
+		},
+
+		/** This will create a new xml element as a child of the given
+		  * parent that will have the same name as this object.  All
+		  * of this object's properties will be added to the XML element
+		  * created.
+		  *
+		  * @param parent {Object} The parent XML node that will hold our new child.
+		  */
+		createXMLElement : function( parent ) {
+			var doc = parent.ownerDocument;
+			var subElem = doc.createElement("${shortName}");
+			parent.appendChild(subElem);
+

@@ -33,7 +33,7 @@ int main (void)
 	printf("============================================================================\n");
 	printf("Auto-Asset analyzing all javascript files to create the asset header tags.  \n");
 	printf("============================================================================\n");
-	findAllJSFiles("../qd");
+	findAllJSFiles("../../../qd");
 
 	return 0;
 }
@@ -63,12 +63,12 @@ void findAllJSFiles(twine start)
 void processFile( twine& file_name ) 
 {
 	vector<twine> pathElements = file_name.split("/");
-	if(pathElements[3] != "source" ||
-		pathElements[4] != "class"
+	if(pathElements[5] != "source" ||
+		pathElements[6] != "class"
 	){
 		return; // skip this file
 	}
-	m_currentPackage = pathElements[2];
+	m_currentPackage = pathElements[4];
 	//printf("Processing JavaScript File: %s\n", file_name() );
 
 	vector<twine> lines;

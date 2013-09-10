@@ -1,0 +1,25 @@
+
+	return true; // everything matches
+
+}
+
+bool ${shortName}Test::compareLists( vector< ${shortName}* >* first, vector< ${shortName}* >* second)
+{
+	EnEx ee(FL, "${shortName}Test::compareLists( vector< ${shortName}* >* first, vector< ${shortName}* >* second)" );
+
+	// If the sizes don't match, then return false
+	if(first->size() != second->size()){
+		return false;
+	}
+
+	// Loop through and check each pair of objects
+	for(size_t i = 0; i < first->size(); i++){
+		if(!${shortName}Test::compareObjects( first->at( i ), second->at( i ) ) ){
+			return false;
+		}
+	}
+
+	// If they all match, return true
+	return true;
+}
+

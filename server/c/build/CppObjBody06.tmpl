@@ -1,0 +1,16 @@
+
+	return *this;
+}
+
+/* ********************************************************************** */
+/* Create an xmlNodePtr child of the given parent node                    */
+/* ********************************************************************** */
+xmlNodePtr ${shortName}::createXmlNode(xmlNodePtr parent) const
+{
+	EnEx ee(FL, "${shortName}::createXmlNode(xmlNodePtr parent)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to ${shortName}::createXmlNode is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild(parent, NULL, (const xmlChar*)"${shortName}", NULL);

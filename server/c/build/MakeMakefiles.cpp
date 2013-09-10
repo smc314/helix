@@ -65,10 +65,10 @@ int main (void)
 	printf("Generating src/logic makefiles based on a %s platform.\n", m_platform());
 	printf("============================================================================\n");
 
-	findAllSLFolders("../src/logic");
+	findAllSLFolders("../logic");
 
-	createGlobMakefile("../src/glob");
-	createClientMakefile("../src/client");
+	createGlobMakefile("../glob");
+	createClientMakefile("../client");
 
 	return 0;
 }

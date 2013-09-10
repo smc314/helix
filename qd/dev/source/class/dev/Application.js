@@ -10,6 +10,7 @@
 
 /* ************************************************************************
 
+#asset(dev/test.png)
 #asset(dev/*)
 
 ************************************************************************ */
@@ -32,9 +33,9 @@ qx.Class.define("dev.Application",
   members :
   {
     /**
-     * This method contains the initial application code and gets called 
+     * This method contains the initial application code and gets called
      * during startup of the application
-     * 
+     *
      * @lint ignoreDeprecated(alert)
      */
     main : function()

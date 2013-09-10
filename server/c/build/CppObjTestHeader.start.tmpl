@@ -1,0 +1,63 @@
+/* **************************************************************************
+
+   Copyright (c): 2013 Hericus Software, LLC
+
+   License: The MIT License (MIT)
+
+   Authors: Steven M. Cherry
+
+************************************************************************** */
+
+#ifndef ${ifdefName}
+#define ${ifdefName}
+
+#include "IOConn.h"
+#include "DataObjectTestClass.h"
+using namespace Helix::Glob;
+
+#include "${shortName}.h"
+using namespace Helix::Logic::${shortPackage};
+
+
+namespace ViaSQL {
+namespace Hub {
+namespace Logic {
+namespace ${shortPackage} {
+
+/** This is a generated data object test class that is used for testing the data
+  * object called ${shortName}.
+  */
+class ${shortName}Test : public DataObjectTestClass
+{
+	private:
+		/// Copy constructor is private to prevent use
+		${shortName}Test(const ${shortName}Test& c) {}
+
+		/// Assignment operator is private to prevent use
+		${shortName}Test& operator=(const ${shortName}Test& c) { return *this; }
+
+		/// Registers us with the global factory map
+		static DataObjectTestClassRegister< ${shortName}Test > reg;
+
+	public:
+
+		/// Standard Constructor
+		${shortName}Test();
+
+		/// Standard Destructor
+		virtual ~${shortName}Test();
+
+		/// Runs the tests contained in the given xmlNode
+		virtual void runTests( IOConn& ioc, xmlNodePtr node );
+
+		/// Compare two objects to see if they are the same
+		static bool compareObjects( ${shortName}* first, ${shortName}* second);
+
+		/// Compare two lists of objects to see if they are the same
+		static bool compareLists( vector< ${shortName}* >* first, vector< ${shortName}* >* second);
+
+		/* ******************************************************************************** */
+		/* The following are a series of static methods created based on the SQL Statements */
+		/* defined in the file ${m_currentFile} */
+		/* ******************************************************************************** */
+

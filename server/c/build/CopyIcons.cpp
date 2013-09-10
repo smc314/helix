@@ -41,11 +41,11 @@ int main(void)
 	m_sizes.push_back("256x256/plain");
 	m_sizes.push_back("256x256/shadow");
 	
-	m_prefix = "../qd/admin/source/resource/admin/icon/";
+	m_prefix = "../../../qd/admin/source/resource/admin/icon/";
 	run();
-	m_prefix = "../qd/dev/source/resource/dev/icon/";
+	m_prefix = "../../../qd/dev/source/resource/dev/icon/";
 	run();
-	m_prefix = "../qd/welcome/source/resource/welcome/icon/";
+	m_prefix = "../../../qd/welcome/source/resource/welcome/icon/";
 	run();
 
 }

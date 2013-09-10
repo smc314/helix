@@ -1,0 +1,91 @@
+/* ************************************************************************************** */
+/* This is an UPDATE method.  It is designed to run a single update                       */
+/* statement and return.  If something  goes wrong, we will throw AnException.            */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* ${comment} */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* ${sql} */
+/*                                                                                        */
+/* ************************************************************************************** */
+void ${doName}::${methodName}(SqlDB& sqldb${TypedParms} )
+{
+	EnEx ee(FL, "${doName}::${methodName}()");
+
+	twine stmt = "${flatSql}";
+
+	${doName}::${methodName}(sqldb, stmt, true${UntypedParms} );
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+void ${doName}::${methodName}(SqlDB& odbc, twine& stmt, bool useInputs${TypedParms} )
+{
+	EnEx ee(FL, "${doName}::${methodName}()");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("${doName}::${methodName}()-BindExecStmt");
+
+			// Bind the inputs
+			if(useInputs){
+${SqlDBBindInputs}
+			} // if(useInputs)
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for ${doName}::${methodName}");
+			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+	
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine ${doName}::${methodName}_prepSQL(IOConn& ioc${TypedParms} )
+{
+	EnEx ee(FL, "${doName}::${methodName}_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "${flatSql}";
+
+${SqlReplaceParms}
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+

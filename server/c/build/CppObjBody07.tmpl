@@ -1,0 +1,14 @@
+
+	return child;
+}
+
+/* ********************************************************************** */
+/* Create an xmlDocPtr from our data object                               */
+/* ********************************************************************** */
+xmlDocPtr ${shortName}::createXmlDoc() const
+{
+	EnEx ee(FL, "${shortName}::createXmlDoc()");
+
+	xmlDocPtr doc = xmlNewDoc((const xmlChar*)"1.0");
+	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)"${shortName}", NULL);
+	xmlNodePtr child = xmlDocGetRootElement(doc);

@@ -32,9 +32,9 @@ int main (void)
 	printf(" CopyCommon copying in global javascript files to each application.         \n");
 	printf("============================================================================\n");
 
-	m_currentPackage = "admin"; findAllJSFiles("../qd/common");
-	m_currentPackage = "dev"; findAllJSFiles("../qd/common");
-	m_currentPackage = "welcome"; findAllJSFiles("../qd/common");
+	m_currentPackage = "admin"; findAllJSFiles("../../../qd/common");
+	m_currentPackage = "dev"; findAllJSFiles("../../../qd/common");
+	m_currentPackage = "welcome"; findAllJSFiles("../../../qd/common");
 
 
 	return 0;
@@ -67,12 +67,12 @@ void processFile( twine& file_name )
 	vector<twine> pathElements = file_name.split("/");
 
 	twine targetPath;
-	if(pathElements.size() == 4){
-		targetPath = "../qd/" + m_currentPackage + "/source/class/" + m_currentPackage + "/" +
-			pathElements[3];
+	if(pathElements.size() == 6){
+		targetPath = "../../../qd/" + m_currentPackage + "/source/class/" + m_currentPackage + "/" +
+			pathElements[5];
 	} else {
-		targetPath = "../qd/" + m_currentPackage + "/source/class/" + m_currentPackage + "/" +
-			pathElements[3] + "/" + pathElements[4];
+		targetPath = "../../../qd/" + m_currentPackage + "/source/class/" + m_currentPackage + "/" +
+			pathElements[5] + "/" + pathElements[6];
 	}
 	// printf("Copy (%s) to (%s)\n", file_name(), targetPath() );
 

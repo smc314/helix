@@ -1,0 +1,43 @@
+/* **************************************************************************
+
+   Copyright (c): 2008 - 2012 Viaserv, Inc.
+
+   License: Restricted
+
+   Authors: Steven M. Cherry, Stephen D. Sager
+
+************************************************************************** */
+
+#include <AnException.h>
+#include <EnEx.h>
+#include <Log.h>
+#include <XmlHelpers.h>
+using namespace SLib;
+
+#include "${shortName}.h"
+using namespace Helix::Logic::${shortPackage};
+
+#include "Statics.h"
+using namespace Helix::Logic::utils;
+
+/* ************************************************************************** */
+/* This is a generated data object class that is used for interfacing with a  */
+/* database.  This class was generated based on the settings in the file:     */
+/* ${m_currentFile} */
+/* ************************************************************************** */
+
+// Our Object Name, which is also used to create Xml Elements
+static twine ${shortName}Name = "${shortName}";
+
+${shortName}::${shortName}()
+{
+	EnEx ee(FL, "${shortName}::${shortName}()");
+
+	init();
+
+}
+
+${shortName}::${shortName}(const ${shortName}& c)
+{
+	EnEx ee(FL, "${shortName}::${shortName}(const ${shortName}& c)");
+

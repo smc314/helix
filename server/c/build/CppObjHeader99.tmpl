@@ -1,0 +1,14 @@
+
+};
+
+/** This typedef makes it easy to declare smart pointer vectors of the ${m_currentClass}
+  * object type.  Use this to keep your code clean and easy to read. For example:
+  * <pre>
+  * ${m_currentClass}_svect myVect = ${m_currentClass}::selectSomething(odbc);
+  * </pre>
+  */
+typedef sptr< vector< ${m_currentClass}* >, ${m_currentClass}::deleteVector> ${m_currentClass}_svect;
+
+}}}} // End Namespace stack
+
+#endif // ${ifdefName} defined

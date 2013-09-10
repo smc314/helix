@@ -1,0 +1,76 @@
+
+	return doc;
+}
+
+/* ********************************************************************** */
+/* Create a series of these objects by reading all children of the parent */
+/* ********************************************************************** */
+vector<${shortName}* >* ${shortName}::readXmlChildren(xmlNodePtr parent)
+{
+	EnEx ee(FL, "${shortName}::readXmlChildren(xmlNodePtr parent)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to ${shortName}::readXmlChildren is NULL.");
+	}
+
+	// Use an sptr to ensure that if the method throws or causes an exception to be
+	// thrown the vector will be cleaned up before leaving this method.
+	sptr< vector<${shortName}* >, ${shortName}::deleteVector> ret = new vector<${shortName}* >();
+
+	for(xmlNodePtr child = parent->xmlChildrenNode; child != NULL; child = child->next){
+		if(strcmp( (const char*)child->name, "${shortName}") == 0){
+			ret->push_back( new ${shortName}(child) );
+		}
+	}
+
+	// When we return, ensure that we release the sptr, so that we don't accidentally
+	// delete the vector and its contents when leaving this method.
+	return ret.release();
+}
+
+/* ********************************************************************** */
+/* Create a series of child nodes based on the input vector.              */
+/* ********************************************************************** */
+void ${shortName}::createXmlChildren(xmlNodePtr parent, vector<${shortName}* >* vect)
+{
+	EnEx ee(FL, "${shortName}::createXmlChildren(xmlNodePtr parent, vector<${shortName}* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to ${shortName}::createXmlChildren is NULL.");
+	}
+
+	for(size_t i = 0; i < vect->size(); i++){
+		(*vect)[i]->createXmlNode(parent);
+	}
+
+}
+
+/* ********************************************************************** */
+/* Handle deleting a vector and its contents.                             */
+/* ********************************************************************** */
+void ${shortName}::deleteVector(vector<${shortName}* >* vect)
+{
+	EnEx ee(FL, "${shortName}::deleteVector(vector<${shortName}* >* vect)");
+
+	if(vect == NULL){
+		return; // quick bail-out
+	}
+
+	for(size_t i = 0; i < vect->size(); i++){
+		if( (*vect)[i] != NULL ){
+			delete (*vect)[i];
+		}
+	}
+
+	delete vect;
+
+}
+
+/* ********************************************************************** */
+/* Return the name of our object.                                         */
+/* ********************************************************************** */
+twine& ${shortName}::Name()
+{
+	return ${shortName}Name;
+}
+

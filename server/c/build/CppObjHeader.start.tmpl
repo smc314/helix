@@ -1,0 +1,95 @@
+/* **************************************************************************
+
+   Copyright (c): 2013 Hericus Software, Inc.
+
+   License: The MIT License (MIT)
+
+   Authors: Steven M. Cherry
+
+************************************************************************** */
+
+#ifndef ${ifdefName}
+#define ${ifdefName}
+
+#include <vector>
+using namespace std;
+
+#include <twine.h>
+#include <Date.h>
+#include <xmlinc.h>
+#include <sptr.h>
+using namespace SLib;
+
+#include "IOConn.h"
+#include "OdbcObj.h"
+#include "SqlDB.h"
+using namespace Helix::Glob;
+
+${ChildObjectIncludes}
+
+namespace Helix {
+namespace Logic {
+namespace ${shortPackage} {
+
+/** This is a generated data object class that is used for interfacing with a
+  * database.  This class was generated based on the settings in the file:
+  * ${m_currentFile}
+  */
+class ${shortName}
+{
+	public:
+
+		/// All Data Members are public
+${DefineDataMembers}
+
+		/// Any Child Vectors will be defined here
+${ChildVectorDefines}
+
+		/// Standard Constructor
+		${shortName}();
+
+		/// Standard Copy Constructor
+		${shortName}(const ${shortName}& c);
+
+		/// Standard Assignment Operator
+		${shortName}& operator=(const ${shortName}& c);
+
+		/// Standard Destructor
+		virtual ~${shortName}();
+
+		/// Initialize this data object to have all empty or 0 values.
+		${shortName}& init();
+
+		/// Call check_size() on all of our twine members.
+		${shortName}& checkSize();
+
+		/// Construct from an XML Node
+		${shortName}(xmlNodePtr node);
+
+		/// Read an XML Node to set our contents
+		${shortName}& readXmlNode(xmlNodePtr node);
+
+		/// Create an XML Node as a child of the given parent
+		xmlNodePtr createXmlNode(xmlNodePtr parent) const;
+
+		/// Create an XML Document from this data object
+		xmlDocPtr createXmlDoc() const;
+
+		/// Create a series of these objects by reading all children of the given parent
+		static vector<${shortName}* >* readXmlChildren(xmlNodePtr parent);
+
+		/// Create a series of xml child nodes based on the input vector
+		static void createXmlChildren(xmlNodePtr parent, vector<${shortName}* >* vect);
+
+		/// Handle deleting a vector and its contents.
+		static void deleteVector( vector<${shortName}* >* vect);
+
+		/// Static method to retrieve the name of this object.
+		static twine& Name();
+
+		/* ******************************************************************************** */
+		/* The following are a series of static methods created based on the SQL Statements */
+		/* defined in the file ${m_currentFile} */
+		/* ******************************************************************************** */
+
+
