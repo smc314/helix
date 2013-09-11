@@ -1,0 +1,173 @@
+/* ************************************************************************************** */
+/* This is an INSERT method.  It is designed to run a single insert                       */
+/* statement and return.  If something  goes wrong, we will throw AnException.            */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* ${comment} */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* ${sql} */
+/*                                                                                        */
+/* ************************************************************************************** */
+void ${doName}::${methodName}(SqlDB& sqldb, ${doName}& obj )
+{
+	EnEx ee(FL, "${doName}::${methodName}()");
+
+	twine stmt = "${flatSql}";
+
+	${doName}::${methodName}(sqldb, stmt, true, obj );
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+void ${doName}::${methodName}(SqlDB& odbc, twine& stmt, bool useInputs, ${doName}& obj )
+{
+	EnEx ee(FL, "${doName}::${methodName}()");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("${doName}::${methodName}()-BindExecStmt");
+
+			// Bind the inputs
+			if(useInputs){
+${SqlDBBindObjInputs}
+			} // if(useInputs)
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for ${doName}::${methodName}");
+			sqldb.check_err( sqlite3_step( db_stmt ) );
+${RecordAutoGenValue}
+
+		} // End the Timing scope
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+	
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This is the version that accepts an array of inputs and ensures that they are all      */
+/* written to the database with a single transaction                                      */
+/* ************************************************************************************** */
+void ${doName}::${methodName}(SqlDB& odbc, vector< ${doName}* >* v)
+{
+	EnEx ee(FL, "${doName}::${methodName}(SqlDB& sqldb, vector<*>* v)");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+	sqlite3_stmt* db_begin = NULL;
+	sqlite3_stmt* db_commit = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		twine stmt = "${flatSql}";
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("${doName}::${methodName}()-BindExecStmt");
+
+			// Begin our transaction here:
+			DEBUG(FL, "Beginning the vector insert transaction" );
+			twine beginSql = "begin transaction;";
+			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+			sqldb.check_err( sqlite3_step( db_begin ) );
+
+			// Loop through the vector of inputs
+			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
+${SqlDBBindVObjInputs}
+
+				// Execute the statement
+				DEBUG(FL, "Executing the statement for ${doName}::${methodName}");
+				sqldb.check_err( sqlite3_step( db_stmt ) );
+${RecordVAutoGenValue}
+
+				// Reset the statement so that we can bind/execute again:
+				sqlite3_reset( db_stmt );
+			} // loop through all of the inputs
+
+			// Commit our transaction here:
+			DEBUG(FL, "Committing the vector insert transaction" );
+			twine commitSql = "commit transaction;";
+			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+			sqldb.check_err( sqlite3_step( db_commit ) );
+
+		} // End the Timing scope
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		if(db_begin != NULL){
+			sqlite3_finalize( db_begin );
+		}
+		if(db_commit != NULL){
+			sqlite3_finalize( db_commit );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+	
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	if(db_begin != NULL){
+		sqlite3_finalize( db_begin );
+	}
+	if(db_commit != NULL){
+		sqlite3_finalize( db_commit );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine ${doName}::${methodName}_prepSQL(IOConn& ioc, ${doName}& obj )
+{
+	EnEx ee(FL, "${doName}::${methodName}_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "${flatSql}";
+
+${SqlReplaceObjParms}
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+

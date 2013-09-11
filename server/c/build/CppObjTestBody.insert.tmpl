@@ -1,0 +1,35 @@
+void ${doName}::${methodName}(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "${doName}::${methodName}(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in ${doName}::${methodName} test.");
+	}
+
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object:
+	${doName} inputDO( XmlHelpers::FindChild( inputNode, ${doName}::Name()() ) );
+
+	// Get a connection to our database
+${TestDBConnection}
+
+${PrepareDBTest}
+
+	// Execute the statement
+	${doName}::${methodName}(${ExecuteParms}, inputDO );
+
+	if(m_recordMode){
+		// If we are recording, then there is nothing to save in our output node.
+	} else {
+		XmlHelpers::setBoolAttr( resultsNode, "success", true );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", 0 );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", 0 );
+	}
+}
+

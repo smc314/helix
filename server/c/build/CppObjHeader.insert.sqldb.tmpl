@@ -1,0 +1,36 @@
+		/** This is an INSERT method.  It is designed to run a single insert
+		  * statement and return. If something goes wrong, we will throw AnException.
+		  * <P>
+		  * Developer Comments:
+		  * <P>${comment}
+		  * <P>
+		  * Sql Statement:
+		  * <pre>${sql}
+		  * </pre>
+		  */
+		static void ${methodName}(SqlDB& sqldb, ${doName}& obj );
+
+		/** This one matches the above in functionality, but allows you to pass in the sql
+		  * statement and a flag to indicate whether the input parameters will be used.
+		  */
+		static void ${methodName}(SqlDB& sqldb, twine& stmt, bool useInputs, ${doName}& obj );
+
+		/** This version of the method allows you to pass in a vector of objects to be
+		  * inserted, and we will ensure that all of them are inserted within a single commit
+		  * block within Sqlite.
+		  */
+		static void ${methodName}(SqlDB& sqldb, vector< ${doName}* >* v);
+
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine ${methodName}_prepSQL(IOConn& ioc, ${doName}& obj );
+
+		/** This method returns the sql statement that is used by the above functions.
+		  */
+		static twine ${methodName}_getSQL() {
+			return "${flatSql}";
+		}
+

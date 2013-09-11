@@ -1443,17 +1443,61 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 	vars[ "UntypedParms" ] = untypedParms;
 	
 	twine odbcBindInputs;
+	twine odbcBindObjInputs;
 	twine sqldbBindInputs;
+	twine sqldbBindObjInputs;
+	twine sqldbBindVObjInputs;
+	bool has_autogen = false;
+	twine autogen_name = "";
+	int autogen_offset = 0;
 	for(size_t i = 0; i < inputs.size(); i++){
 		twine i_1; i_1 = i+1;
 		xmlNodePtr input = inputs[i];
-		odbcBindInputs.append( odbcBindInputForType(i+1, twine(input, "name"), twine(input, "type") ) );
-		sqldbBindInputs.append( odbcBindInputForType4(i+1, twine(input, "name"), twine(input, "type") ));
+		twine inputName( input, "name" );
+		twine inputType( input, "type" );
+
+		odbcBindInputs.append( odbcBindInputForType(i+1, inputName, inputType ) );
+		sqldbBindInputs.append( odbcBindInputForType4(i+1, inputName, inputType ));
+		odbcBindObjInputs.append( odbcBindInputForType2(i+1, inputName, inputType ) );
+
+		if(inputType == "autogen"){
+			has_autogen = true;
+			autogen_offset = 1;
+			autogen_name = inputName;
+		} else {
+			sqldbBindObjInputs.append( odbcBindInputForType3(i+1 - autogen_offset, inputName, inputType ));
+			sqldbBindVObjInputs.append( odbcBindInputForType5(i+1 - autogen_offset, inputName, inputType ));
+		}
 	}
 	vars[ "OdbcBindInputs" ] = odbcBindInputs;
+	vars[ "OdbcBindObjInputs" ] = odbcBindObjInputs;
 	vars[ "SqlDBBindInputs" ] = sqldbBindInputs;
+	vars[ "SqlDBBindObjInputs" ] = sqldbBindObjInputs;
+	vars[ "SqlDBBindVObjInputs" ] = sqldbBindVObjInputs;
+
+
+	if(has_autogen){
+		twine recordAutoGenValue;
+		twine recordVAutoGenValue;
+		recordAutoGenValue.append(
+			"\n"
+			"\t\t\t// Update the insert object to pick up the new autogen value:\n"
+			"\t\t\tobj." + autogen_name + " = sqlite3_last_insert_rowid( db );\n"
+		);
+		vars[ "RecordAutoGenValue" ] = recordAutoGenValue;
+		recordVAutoGenValue.append(
+			"\n"
+			"\t\t\t\t// Update the insert object to pick up the new autogen value:\n"
+			"\t\t\t\tv->at( v_i )->" + autogen_name + " = sqlite3_last_insert_rowid( db );\n"
+		);
+		vars[ "RecordVAutoGenValue" ] = recordVAutoGenValue;
+	} else {
+		vars[ "RecordAutoGenValue" ] = "";
+		vars[ "RecordVAutoGenValue" ] = "";
+	}
 
 	twine sqlReplaceParms;
+	twine sqlReplaceObjParms;
 	for(size_t i = 0; i < inputs.size(); i++){
 		xmlNodePtr input = inputs[i];
 		sqlReplaceParms.append(
@@ -1464,8 +1508,17 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 			"\t}\n"
 			"\n"
 			);
+		sqlReplaceObjParms.append(
+			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
+			"\tidx = stmt.find('?', idx);\n"
+			"\tif(idx != TWINE_NOT_FOUND){\n" +
+			replaceInputForType2(twine(input, "name"), twine(input, "type")) +
+			"\t}\n"
+			"\n"
+			);
 	}
 	vars[ "SqlReplaceParms" ] = sqlReplaceParms;
+	vars[ "SqlReplaceObjParms" ] = sqlReplaceObjParms;
 
 	twine inputDOParms;
 	for(size_t i = 0; i < inputs.size(); i++){
@@ -1476,53 +1529,15 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 	if(target == "sqldb" ){
 		vars[ "TestDBConnection" ] = "\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");" ;
 		vars[ "PrepareDBTest" ] = "";
+		vars[ "ExecuteParms" ] = "sqldb";
 	} else {
 		vars[ "TestDBConnection" ] = "\tOdbcObj& odbc = *ioc.getDBConnection();" ;
 		vars[ "PrepareDBTest" ] = 
 			"\t// Prepare the statement\n"
-			"\ttwine stmt = " + m_currentClass + "::" + methodName + "_prepSQL( ioc
+			"\ttwine stmt = " + m_currentClass + "::" + methodName + "_prepSQL( ioc" + inputDOParms + ");\n" ;
+		vars[ "ExecuteParms" ] = "odbc, stmt, false";
 	}
 
-	if(target == "sqldb" ){
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");\n"
-			"\n"
-			"\t// Execute the statement:\n"
-			"\t" + doName + "::" + methodName + "(sqldb"
-		);
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-	} else {
-
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tOdbcObj& odbc = *ioc.getDBConnection();\n"
-			"\n"
-			"\t// Prepare and execute the statement\n"
-			"\ttwine stmt = " + doName + "::" + methodName + "_prepSQL( ioc"
-		);
-
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-
-		m_output_test.append(
-			" );\n"
-			"\t" + doName + "::" + methodName + "( odbc, stmt, false"
-		);
-
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-	}
 	return vars;
 }
 
@@ -1754,1217 +1769,59 @@ void generateUpdateDOSqlDB(xmlNodePtr stmt)
 
 void generateUpdateDOTest(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	twine methodName(stmt, "methodName" );
-	twine target(stmt, "target"); 
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-	m_output_test_header.append(
-		"\t\t/** This method will use our input XML document to prepare for and test\n"
-		"\t\t  * the " + doName + "." + methodName + " method.  We will use our list of output\n"
-		"\t\t  * xml documents to verify the output of this method.  If the list of ourput\n"
-		"\t\t  * documents is empty, we will simply ensure that no exceptions are thrown using\n"
-		"\t\t  * the given XML input document.\n"
-		"\t\t  */\n"
-		"\t\tvoid " + methodName + "(IOConn& ioc, xmlNodePtr node);\n"
-		"\n"
-	);
-
-	m_output_test.append(
-		"void " + doName + "Test::" + methodName + "(IOConn& ioc, xmlNodePtr node)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "Test::" + methodName + "(IOConn& ioc, xmlNodePtr node)\");\n"
-		"\n"
-		"\txmlNodePtr inputNode = XmlHelpers::FindChild( node, \"Input\" );\n"
-		"\txmlNodePtr resultsNode = XmlHelpers::FindChild( node, \"Results\" );\n"
-		"\tif(inputNode == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"No input node found in " + methodName + " test.\");\n"
-		"\t}\n"
-		"\tif(resultsNode == NULL){\n"
-		"\t\t// Add it in:\n"
-		"\t\tresultsNode = xmlNewChild( node, NULL, (const xmlChar*)\"Results\", NULL);\n"
-		"\t}\n"
-		"\n"
-		"\t// Pick up our input data object\n"
-		"\t" + doName + " inputDO( XmlHelpers::FindChild( inputNode, " + doName + "::Name()() ) );\n"
-		"\n"
-	);
-
-	if(target == "sqldb" ){
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");\n"
-			"\n"
-			"\t// Execute the statement:\n"
-			"\t" + doName + "::" + methodName + "(sqldb"
-		);
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-	} else {
-
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tOdbcObj& odbc = *ioc.getDBConnection();\n"
-			"\n"
-			"\t// Prepare and execute the statement\n"
-			"\ttwine stmt = " + doName + "::" + methodName + "_prepSQL( ioc"
-		);
-
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-
-		m_output_test.append(
-			" );\n"
-			"\t" + doName + "::" + methodName + "( odbc, stmt, false"
-		);
-
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-	}
-
-	m_output_test.append(
-		" );\n"
-		"\n"
-		"\tif(m_recordMode){\n"
-		"\t\t// If we are recording, then there is nothing to save in our output node.\n"
-		"\t} else {\n"
-		"\t\tXmlHelpers::setBoolAttr( resultsNode, \"success\", \"true\" );\n"
-		"\t\tXmlHelpers::setIntAttr( resultsNode, \"savedResults\", 0 );\n"
-		"\t\tXmlHelpers::setIntAttr( resultsNode, \"liveResults\", 0 );\n"
-		"\t}\n"
-		"\n"	
-		"}\n"
-		"\n"
-	);
+	m_output.append( loadTmpl("CppObjTestBody.update.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjTestHeader.update.tmpl", &vars ) );
 }
-
 
 void generateInsertDO(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-
-	m_output_header.append(
-		"\t\t/** This is an INSERT method.  It is designed to run a single insert\n"
-		"\t\t  * statement and return. If something goes wrong, we will throw AnException.\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Developer Comments:\n"
-		"\t\t  * <P>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Sql Statement:\n"
-		"\t\t  * <pre>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n"
-		"\t\t  * </pre>\n"
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(OdbcObj& odbc, " + doName + "& obj);\n"
-		"\n"
-		"\t\t/** This mimics the above in functionality, but allows you to pass in your own\n"
-		"\t\t  * sql statement for us to execute.  You can tell us whether to use or ignore\n"
-		"\t\t  * the inputs as well.\n"
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs, " + doName + "& obj);\n"
-		"\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is an INSERT method.  It is designed to run a single insert                       */\n"
-		"/* statement and return.  If something  goes wrong, we will throw AnException.            */\n"
-		"/*                                                                                        */\n"
-		"/* Developer Comments:                                                                    */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* Sql Statement:                                                                         */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* ************************************************************************************** */\n"
-	);
-	m_output.append(
-		"void " + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc, " + doName + "& obj)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\t" + doName + "::" + twine(stmt, "methodName") + "(odbc, stmt, true, obj);\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This mimics the above in functionality, but allows you to pass in your own             */\n"
-		"/* sql statement for us to execute.  You can tell us whether to use or ignore             */\n"
-		"/* the inputs as well.                                                                    */\n"
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs, " + doName + "& obj)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt)\");\n"
-		"\n"
-		"\tif(odbc.isConnected() == 0){\n"
-		"\t\tthrow AnException(0, FL, \"OdbcObj passed into " + doName + "::" + twine(stmt, "methodName") + " is not connected.\");\n"
-		"\t}\n"
-		"\n"
-		"\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\todbc.SetStmt(stmt, SQL_TYPE_UPDATE);\n"
-		"\n"
-		"\t{ // Used for scope for the timing object.\n"
-		"\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t// Bind the inputs\n"
-		"\t\tif(useInputs){\n"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		m_output.append( odbcBindInputForType2(i+1, twine(input, "name"), twine(input, "type") )
-		);
-	}
-	
-	m_output.append(
-		"\t\t} // if(useInputs)\n"
-		"\n"
-		"\t\t// Execute the statement\n"
-		"\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\todbc.ExecStmt();\n"
-		"\t}\n"
-	);
-	
-	m_output.append(
-		"\n"
-		"\t// That's it.\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	// This is for the "prepare" method which will do the parameter replacement in our
-	// code, rather than in the driver code.
-
-	m_output_header.append(
-		"\n"
-		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
-		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
-		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
-		"\t\t  * work with parameter markers.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc, " + doName + "& obj);\n\n"
-	);
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This method will do a replacement of all of the parameter markers in                   */\n"
-		"/* the sql statement with the standard parameter list that is defined.                    */\n"
-		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
-		"/* work with parameter markers.                                                           */\n"
-		"/* ************************************************************************************** */\n"
-		"twine " + doName + "::" + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc, " + doName + "& obj)\n"
-
-	);
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
-		"\n"
-		"\tsize_t idx = 0;\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
-		"\n"
-	);
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output.append(
-			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
-			"\tidx = stmt.find('?', idx);\n"
-			"\tif(idx != TWINE_NOT_FOUND){\n" +
-			replaceInputForType2(twine(input, "name"), twine(input, "type")) +
-			"\t}\n"
-			"\n"
-			);
-	}
-	m_output.append(
-		"\t// Also take a look at the statement and replace any session variables\n"
-		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
-		"\n"
-		"\treturn stmt;\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output_header.append(
-		"\t\t/** This method returns the sql statement that is used by the above functions.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_getSQL() {\n"
-		"\t\t\treturn \"" + flattenSql(stmt) + "\";\n"
-		"\t\t}\n"
-		"\n"
-	);
-
+	m_output.append( loadTmpl("CppObjBody.insert.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjHeader.insert.tmpl", &vars ) );
 }
 
 void generateInsertDOSqlDB(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-
-	m_output_header.append(
-		"\t\t/** This is an INSERT method.  It is designed to run a single insert\n"
-		"\t\t  * statement and return. If something goes wrong, we will throw AnException.\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Developer Comments:\n"
-		"\t\t  * <P>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Sql Statement:\n"
-		"\t\t  * <pre>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n"
-		"\t\t  * </pre>\n"
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb, " + doName + "& obj);\n"
-		"\n"
-		"\t\t/** This mimics the above in functionality, but allows you to pass in your own\n"
-		"\t\t  * sql statement for us to execute.  You can tell us whether to use or ignore\n"
-		"\t\t  * the inputs as well.\n"
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt, bool useInputs, " + doName + "& obj);\n"
-		"\n"
-		"\t\t/** This version of the method allows you to pass in a vector of objects to be\n"
-		"\t\t  * inserted, and we will ensure that all of them are inserted within a single commit\n"
-		"\t\t  * block within Sqlite.\n"
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb, vector< " + doName + "* >* v);\n"
-		"\n"
-
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is an INSERT method.  It is designed to run a single insert                       */\n"
-		"/* statement and return.  If something  goes wrong, we will throw AnException.            */\n"
-		"/*                                                                                        */\n"
-		"/* Developer Comments:                                                                    */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* Sql Statement:                                                                         */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* ************************************************************************************** */\n"
-	);
-	m_output.append(
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, " + doName + "& obj)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\t" + doName + "::" + twine(stmt, "methodName") + "(sqldb, stmt, true, obj);\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This mimics the above in functionality, but allows you to pass in your own             */\n"
-		"/* sql statement for us to execute.  You can tell us whether to use or ignore             */\n"
-		"/* the inputs as well.                                                                    */\n"
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt, bool useInputs, " + doName + "& obj)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt)\");\n"
-		"\n"
-		"\tsqlite3* db = sqldb.GetDatabase();\n"
-		"\tsqlite3_stmt* db_stmt = NULL;\n"
-		"\n"
-		"\ttry {\n"
-		"\t\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\t\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\t\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\t\tsqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL ) );\n"
-		"\n"
-		"\t\t{ // Used for scope for the timing object.\n"
-		"\t\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t\t// Bind the inputs\n"
-		"\t\t\tif(useInputs){\n"
-	);
-	
-	bool has_autogen = false;
-	twine autogen_name = "";
-	int autogen_offset = 0;
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		twine inputName( input, "name" );
-		twine inputType( input, "type" );
-
-		if(inputType == "autogen"){
-			has_autogen = true;
-			autogen_offset = 1;
-			autogen_name = inputName;
-		} else {
-			m_output.append( odbcBindInputForType3(i+1-autogen_offset, inputName, inputType ));
-		}
-	}
-	
-	m_output.append(
-		"\t\t\t} // if(useInputs)\n"
-		"\n"
-		"\t\t\t// Execute the statement\n"
-		"\t\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\t\tsqldb.check_err( sqlite3_step( db_stmt ));\n"
-	);
-
-	if(has_autogen){
-		m_output.append(
-			"\n"
-			"\t\t\t// Update the insert object to pick up the new autogen value:\n"
-			"\t\t\tobj." + autogen_name + " = sqlite3_last_insert_rowid( db );\n"
-		);
-	}
-
-	m_output.append(
-		"\t\t} // End the Timing scope\n"
-		"\n"
-		"\t} catch (AnException& e){\n"
-		"\t\t// Ensure that no matter the exception we release the database back to the object.\n"
-		"\t\tif(db_stmt != NULL){\n"
-		"\t\t\tsqlite3_finalize( db_stmt );\n"
-		"\t\t}\n"
-		"\t\tsqldb.ReleaseDatabase();\n"
-		"\t\tthrow e; // re-throw the exception\n"
-		"\t}\n"
-		"\n"
-		"\t// That's it.\n"
-		"\tif(db_stmt != NULL){\n"
-		"\t\tsqlite3_finalize( db_stmt );\n"
-		"\t}\n"
-		"\tsqldb.ReleaseDatabase();\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is the version that accepts an array of inputs and ensures that they are all      */\n"
-		"/* written to the database with a single transaction.                                     */\n"
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, vector< " + doName + "* >* v)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, vector<*>* v)\");\n"
-		"\n"
-		"\tsqlite3* db = sqldb.GetDatabase();\n"
-		"\tsqlite3_stmt* db_stmt = NULL;\n"
-		"\tsqlite3_stmt* db_begin = NULL;\n"
-		"\tsqlite3_stmt* db_commit = NULL;\n"
-		"\n"
-		"\ttry {\n"
-		"\t\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\t\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\t\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\t\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\t\tsqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL ) );\n"
-		"\n"
-		"\t\t{ // Used for scope for the timing object.\n"
-		"\t\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t\t// Begin our transaction here:\n"
-		"\t\t\tDEBUG(FL, \"Beginning the vector insert transaction\" );\n"
-		"\t\t\ttwine beginSql = \"begin transaction;\";\n"
-		"\t\t\tsqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL ) );\n"
-		"\t\t\tsqldb.check_err( sqlite3_step( db_begin ) );\n"
-		"\n"
-		"\t\t\t// Loop through the vector of inputs\n"
-		"\t\t\tfor(size_t v_i = 0; v_i < v->size(); v_i++){\n"
-	);
-	
-	has_autogen = false;
-	autogen_name = "";
-	autogen_offset = 0;
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		twine inputName( input, "name" );
-		twine inputType( input, "type" );
-
-		if(inputType == "autogen"){
-			has_autogen = true;
-			autogen_offset = 1;
-			autogen_name = inputName;
-		} else {
-			m_output.append( odbcBindInputForType5(i+1-autogen_offset, inputName, inputType ));
-		}
-	}
-	
-	m_output.append(
-		"\n"
-		"\t\t\t\t// Execute the statement\n"
-		"\t\t\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\t\t\tsqldb.check_err( sqlite3_step( db_stmt ));\n"
-	);
-
-	if(has_autogen){
-		m_output.append(
-			"\n"
-			"\t\t\t\t// Update the insert object to pick up the new autogen value:\n"
-			"\t\t\t\tv->at( v_i )->" + autogen_name + " = sqlite3_last_insert_rowid( db );\n"
-		);
-	}
-
-	m_output.append(
-		"\n"
-		"\t\t\t\t// Reset the statement so that we can bind/execute again:\n"
-		"\t\t\t\tsqlite3_reset( db_stmt );\n"
-		"\n"
-		"\t\t\t} // loop through all of the inputs\n"
-		"\n"
-		"\t\t\t// Commit our transaction here:\n"
-		"\t\t\tDEBUG(FL, \"Committing the vector insert transaction\" );\n"
-		"\t\t\ttwine commitSql = \"commit transaction;\";\n"
-		"\t\t\tsqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );\n"
-		"\t\t\tsqldb.check_err( sqlite3_step( db_commit ) );\n"
-		"\n"
-	);
-
-	m_output.append(
-		"\t\t} // End the Timing scope\n"
-		"\n"
-		"\t} catch (AnException& e){\n"
-		"\t\t// Ensure that no matter the exception we release the database back to the object.\n"
-		"\t\tif(db_stmt != NULL){\n"
-		"\t\t\tsqlite3_finalize( db_stmt );\n"
-		"\t\t}\n"
-		"\t\tif(db_begin != NULL){\n"
-		"\t\t\tsqlite3_finalize( db_begin );\n"
-		"\t\t}\n"
-		"\t\tif(db_commit != NULL){\n"
-		"\t\t\tsqlite3_finalize( db_commit );\n"
-		"\t\t}\n"
-		"\t\tsqldb.ReleaseDatabase();\n"
-		"\t\tthrow e; // re-throw the exception\n"
-		"\t}\n"
-		"\n"
-		"\t// That's it.\n"
-		"\tif(db_stmt != NULL){\n"
-		"\t\tsqlite3_finalize( db_stmt );\n"
-		"\t}\n"
-		"\tif(db_begin != NULL){\n"
-		"\t\tsqlite3_finalize( db_begin );\n"
-		"\t}\n"
-		"\tif(db_commit != NULL){\n"
-		"\t\tsqlite3_finalize( db_commit );\n"
-		"\t}\n"
-		"\tsqldb.ReleaseDatabase();\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	// This is for the "prepare" method which will do the parameter replacement in our
-	// code, rather than in the driver code.
-
-	m_output_header.append(
-		"\n"
-		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
-		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
-		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
-		"\t\t  * work with parameter markers.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc, " + doName + "& obj);\n\n"
-	);
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This method will do a replacement of all of the parameter markers in                   */\n"
-		"/* the sql statement with the standard parameter list that is defined.                    */\n"
-		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
-		"/* work with parameter markers.                                                           */\n"
-		"/* ************************************************************************************** */\n"
-		"twine " + doName + "::" + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc, " + doName + "& obj)\n"
-
-	);
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
-		"\n"
-		"\tsize_t idx = 0;\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
-		"\n"
-	);
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output.append(
-			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
-			"\tidx = stmt.find('?', idx);\n"
-			"\tif(idx != TWINE_NOT_FOUND){\n" +
-			replaceInputForType2(twine(input, "name"), twine(input, "type")) +
-			"\t}\n"
-			"\n"
-			);
-	}
-	m_output.append(
-		"\t// Also take a look at the statement and replace any session variables\n"
-		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
-		"\n"
-		"\treturn stmt;\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output_header.append(
-		"\t\t/** This method returns the sql statement that is used by the above functions.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_getSQL() {\n"
-		"\t\t\treturn \"" + flattenSql(stmt) + "\";\n"
-		"\t\t}\n"
-		"\n"
-	);
+	m_output.append( loadTmpl("CppObjBody.insert.sqldb.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjHeader.insert.sqldb.tmpl", &vars ) );
 
 }
 
 void generateInsertDOTest(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	twine methodName(stmt, "methodName" );
-	twine target(stmt, "target");
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-	m_output_test_header.append(
-		"\t\t/** This method will use our input XML document to prepare for and test\n"
-		"\t\t  * the " + doName + "." + methodName + " method.  We will use our list of output\n"
-		"\t\t  * xml documents to verify the output of this method.  If the list of ourput\n"
-		"\t\t  * documents is empty, we will simply ensure that no exceptions are thrown using\n"
-		"\t\t  * the given XML input document.\n"
-		"\t\t  */\n"
-		"\t\tvoid " + methodName + "(IOConn& ioc, xmlNodePtr node);\n"
-		"\n"
-	);
-
-	m_output_test.append(
-		"void " + doName + "Test::" + methodName + "(IOConn& ioc, xmlNodePtr node)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "Test::" + methodName + "(IOConn& ioc, xmlNodePtr node)\");\n"
-		"\n"
-		"\txmlNodePtr inputNode = XmlHelpers::FindChild( node, \"Input\" );\n"
-		"\txmlNodePtr resultsNode = XmlHelpers::FindChild( node, \"Results\" );\n"
-		"\tif(inputNode == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"No input node found in " + methodName + " test.\");\n"
-		"\t}\n"
-		"\tif(resultsNode == NULL){\n"
-		"\t\t// Add it in:\n"
-		"\t\tresultsNode = xmlNewChild( node, NULL, (const xmlChar*)\"Results\", NULL);\n"
-		"\t}\n"
-		"\n"
-		"\t// Pick up our input data object\n"
-		"\t" + doName + " inputDO( XmlHelpers::FindChild( inputNode, " + doName + "::Name()() ) );\n"
-		"\n"
-	);
-
-	if(target == "sqldb" ){
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");\n"
-			"\n"
-			"\t// Execute the statement:\n"
-			"\t" + doName + "::" + methodName + "(sqldb, inputDO );\n"
-		);
-	} else {
-
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tOdbcObj& odbc = *ioc.getDBConnection();\n"
-			"\n"
-			"\t// Prepare and execute the statement\n"
-			"\ttwine stmt = " + doName + "::" + methodName + "_prepSQL( ioc, inputDO );\n"
-			"\t" + doName + "::" + methodName + "( odbc, stmt, false, inputDO );\n"
-		);
-
-	}
-
-	m_output_test.append(
-		"\n"
-		"\tif(m_recordMode){\n"
-		"\t\t// If we are recording, then there is nothing to save in our output node.\n"
-		"\t} else {\n"
-		"\t\tXmlHelpers::setBoolAttr( resultsNode, \"success\", \"true\" );\n"
-		"\t\tXmlHelpers::setIntAttr( resultsNode, \"savedResults\", 0 );\n"
-		"\t\tXmlHelpers::setIntAttr( resultsNode, \"liveResults\", 0 );\n"
-		"\t}\n"
-		"\n"	
-		"}\n"
-		"\n"
-	);
+	m_output.append( loadTmpl("CppObjTestBody.insert.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjTestHeader.insert.tmpl", &vars ) );
 }
 
 void generateDeleteDO(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-
-	m_output_header.append(
-		"\t\t/** This is a DELETE method.  It is designed to run a single delete\n"
-		"\t\t  * statement and return. If something goes wrong, we will throw AnException.\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Developer Comments:\n"
-		"\t\t  * <P>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Sql Statement:\n"
-		"\t\t  * <pre>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n"
-		"\t\t  * </pre>\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(OdbcObj& odbc");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is a DELETE method.  It is designed to run a single delete                        */\n"
-		"/* statement and return.  If something  goes wrong, we will throw AnException.            */\n"
-		"/*                                                                                        */\n"
-		"/* Developer Comments:                                                                    */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* Sql Statement:                                                                         */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n */\n"
-		"/*                                                                                        */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\n"
-		"\t" + doName + "::" + twine(stmt, "methodName") + "(odbc, stmt, true"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-		m_output.append(", " + twine(input, "name") );
-	}
-	m_output.append(
-		");\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-	
-	m_output_header.append(
-		"\t\t/** This one matches the above in functionality, but allows you to pass in the sql\n"
-		"\t\t  * statement and a flag to indicate whether the input parameters will be used.\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This one matches the above in functionality, but allows you to pass in the sql         */\n"
-		"/* statement and a flag to indicate whether the input parameters will be used.            */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\tif(odbc.isConnected() == 0){\n"
-		"\t\tthrow AnException(0, FL, \"OdbcObj passed into " + doName + "::" + twine(stmt, "methodName") + " is not connected.\");\n"
-		"\t}\n"
-		"\n"
-		"\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\todbc.SetStmt(stmt, SQL_TYPE_UPDATE);\n"
-		"\n"
-		"\t{ // Used for scope for the timing object.\n"
-		"\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t// Bind the inputs\n"
-		"\t\tif(useInputs){\n"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		m_output.append( odbcBindInputForType(i+1, twine(input, "name"), twine(input, "type") )
-		);
-	}
-	
-	m_output.append(
-		"\t\t} // if(useInputs)\n"
-		"\n"
-		"\t\t// Execute the statement\n"
-		"\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\todbc.ExecStmt();\n"
-		"\t}\n"
-	);
-	
-	m_output.append(
-		"\n"
-		"\t// That's it.\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	// This is for the "prepare" method which will do the parameter replacement in our
-	// code, rather than in the driver code.
-
-	m_output_header.append(
-		"\n"
-		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
-		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
-		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
-		"\t\t  * work with parameter markers.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc"
-	);
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This method will do a replacement of all of the parameter markers in                   */\n"
-		"/* the sql statement with the standard parameter list that is defined.                    */\n"
-		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
-		"/* work with parameter markers.                                                           */\n"
-		"/* ************************************************************************************** */\n"
-		"twine " + doName + "::" + twine(stmt, "methodName") + 
-		"_prepSQL(IOConn& ioc"
-
-	);
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(
-		")\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
-		"\n"
-		"\tsize_t idx = 0;\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
-		"\n"
-	);
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output.append(
-			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
-			"\tidx = stmt.find('?', idx);\n"
-			"\tif(idx != TWINE_NOT_FOUND){\n" +
-			replaceInputForType(twine(input, "name"), twine(input, "type")) +
-			"\t}\n"
-			"\n"
-			);
-	}
-	m_output.append(
-		"\t// Also take a look at the statement and replace any session variables\n"
-		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
-		"\n"
-		"\treturn stmt;\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output_header.append(
-		"\t\t/** This method returns the sql statement that is used by the above functions.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_getSQL() {\n"
-		"\t\t\treturn \"" + flattenSql(stmt) + "\";\n"
-		"\t\t}\n"
-		"\n"
-	);
-
+	m_output.append( loadTmpl("CppObjBody.delete.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjHeader.delete.tmpl", &vars ) );
 }
 
 void generateDeleteDOSqlDB(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-
-	m_output_header.append(
-		"\t\t/** This is a DELETE method.  It is designed to run a single delete\n"
-		"\t\t  * statement and return. If something goes wrong, we will throw AnException.\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Developer Comments:\n"
-		"\t\t  * <P>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n"
-		"\t\t  * <P>\n"
-		"\t\t  * Sql Statement:\n"
-		"\t\t  * <pre>" + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n"
-		"\t\t  * </pre>\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This is a DELETE method.  It is designed to run a single delete                        */\n"
-		"/* statement and return.  If something  goes wrong, we will throw AnException.            */\n"
-		"/*                                                                                        */\n"
-		"/* Developer Comments:                                                                    */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") ) + "\n */\n"
-		"/*                                                                                        */\n"
-		"/* Sql Statement:                                                                         */\n"
-		"/* " + XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") ) + "\n */\n"
-		"/*                                                                                        */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n" 
-		"\n"
-		"\t" + doName + "::" + twine(stmt, "methodName") + "(sqldb, stmt, true"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-		m_output.append(", " + twine(input, "name") );
-	}
-	m_output.append(
-		");\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-	
-	m_output_header.append(
-		"\t\t/** This one matches the above in functionality, but allows you to pass in the sql\n"
-		"\t\t  * statement and a flag to indicate whether the input parameters will be used.\n"
-	);
-
-	m_output_header.append(
-		"\t\t  */\n"
-		"\t\tstatic void " + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt, bool useInputs");
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This one matches the above in functionality, but allows you to pass in the sql         */\n"
-		"/* statement and a flag to indicate whether the input parameters will be used.            */\n"
-	);
-
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"void " + doName + "::" + twine(stmt, "methodName") + "(SqlDB& sqldb, twine& stmt, bool useInputs");
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(")\n");
-
-	m_output.append(
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
-		"\n"
-		"\tsqlite3* db = sqldb.GetDatabase();\n"
-		"\tsqlite3_stmt* db_stmt = NULL;\n"
-		"\n"
-		"\ttry {\n"
-		"\t\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\t\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
-		"\n"
-		"\t\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
-		"\t\tsqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );\n"
-		"\n"
-		"\t\t{ // Used for scope for the timing object.\n"
-		"\t\t\tEnEx eeExe(\"" + doName + "::" + twine(stmt, "methodName") + "()-BindExecStmt\");\n"
-		"\n"
-		"\t\t\t// Bind the inputs\n"
-		"\t\t\tif(useInputs){\n"
-	);
-	
-	for(size_t i = 0; i < inputs.size(); i++){
-		twine i_1; i_1 = i+1;
-		xmlNodePtr input = inputs[i];
-
-		m_output.append( odbcBindInputForType4(i+1, twine(input, "name"), twine(input, "type") )
-		);
-	}
-	
-	m_output.append(
-		"\t\t\t} // if(useInputs)\n"
-		"\n"
-		"\t\t\t// Execute the statement\n"
-		"\t\t\tDEBUG(FL, \"Executing the statement for " + doName + "::" + twine(stmt, "methodName") + "\");\n"
-		"\t\t\tsqldb.check_err( sqlite3_step( db_stmt ));\n"
-		"\t\t}\n"
-	);
-	
-	m_output.append(
-		"\n"
-		"\t} catch (AnException& e){\n"
-		"\t\t// Ensure that no matter the exception we release the database back to the object.\n"
-		"\t\tif(db_stmt != NULL){\n"
-		"\t\t\tsqlite3_finalize( db_stmt );\n"
-		"\t\t}\n"
-		"\t\tsqldb.ReleaseDatabase();\n"
-		"\t\tthrow e; // re-throw the exception\n"
-		"\t}\n"
-		"\n"
-		"\t// That's it.\n"
-		"\tif(db_stmt != NULL){\n"
-		"\t\tsqlite3_finalize( db_stmt );\n"
-		"\t}\n"
-		"\tsqldb.ReleaseDatabase();\n"
-		"\treturn;\n"
-		"}\n"
-		"\n" 
-	);
-
-	// This is for the "prepare" method which will do the parameter replacement in our
-	// code, rather than in the driver code.
-
-	m_output_header.append(
-		"\n"
-		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
-		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
-		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
-		"\t\t  * work with parameter markers.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(IOConn& ioc"
-	);
-	m_output.append(
-		"/* ************************************************************************************** */\n"
-		"/* This method will do a replacement of all of the parameter markers in                   */\n"
-		"/* the sql statement with the standard parameter list that is defined.                    */\n"
-		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
-		"/* work with parameter markers.                                                           */\n"
-		"/* ************************************************************************************** */\n"
-		"twine " + doName + "::" + twine(stmt, "methodName") + 
-		"_prepSQL(IOConn& ioc"
-
-	);
-
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
-	}
-	m_output_header.append(");\n\n");
-	m_output.append(
-		")\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
-		"\n"
-		"\tsize_t idx = 0;\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
-		"\n"
-	);
-	for(size_t i = 0; i < inputs.size(); i++){
-		xmlNodePtr input = inputs[i];
-		m_output.append(
-			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
-			"\tidx = stmt.find('?', idx);\n"
-			"\tif(idx != TWINE_NOT_FOUND){\n" +
-			replaceInputForType(twine(input, "name"), twine(input, "type")) +
-			"\t}\n"
-			"\n"
-			);
-	}
-	m_output.append(
-		"\t// Also take a look at the statement and replace any session variables\n"
-		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
-		"\n"
-		"\treturn stmt;\n"
-		"\n"
-		"}\n"
-		"\n"
-	);
-
-	m_output_header.append(
-		"\t\t/** This method returns the sql statement that is used by the above functions.\n"
-		"\t\t  */\n"
-		"\t\tstatic twine " + twine(stmt, "methodName") + "_getSQL() {\n"
-		"\t\t\treturn \"" + flattenSql(stmt) + "\";\n"
-		"\t\t}\n"
-		"\n"
-	);
-
+	m_output.append( loadTmpl("CppObjBody.delete.sqldb.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjHeader.delete.sqldb.tmpl", &vars ) );
 }
 
 void generateDeleteDOTest(xmlNodePtr stmt)
 {
-	twine doName = m_currentClass;
-	twine methodName(stmt, "methodName" );
-	twine target(stmt, "target");
-	//map<twine, twine >& objAttrs = m_data_objects[doName];
-	
-	vector<xmlNodePtr> outputs = XmlHelpers::FindChildren(stmt, "Output");
-	vector<xmlNodePtr> inputs = XmlHelpers::FindChildren(stmt, "Input");
+	map<twine, twine> vars = buildStatementParms( stmt );
 
-	m_output_test_header.append(
-		"\t\t/** This method will use our input XML document to prepare for and test\n"
-		"\t\t  * the " + doName + "." + methodName + " method.  We will use our list of output\n"
-		"\t\t  * xml documents to verify the output of this method.  If the list of ourput\n"
-		"\t\t  * documents is empty, we will simply ensure that no exceptions are thrown using\n"
-		"\t\t  * the given XML input document.\n"
-		"\t\t  */\n"
-		"\t\tvoid " + methodName + "(IOConn& ioc, xmlNodePtr node);\n"
-		"\n"
-	);
-
-	m_output_test.append(
-		"void " + doName + "Test::" + methodName + "(IOConn& ioc, xmlNodePtr node)\n"
-		"{\n"
-		"\tEnEx ee(FL, \"" + doName + "Test::" + methodName + "(IOConn& ioc, xmlNodePtr node)\");\n"
-		"\n"
-		"\txmlNodePtr inputNode = XmlHelpers::FindChild( node, \"Input\" );\n"
-		"\txmlNodePtr resultsNode = XmlHelpers::FindChild( node, \"Results\" );\n"
-		"\tif(inputNode == NULL){\n"
-		"\t\tthrow AnException(0, FL, \"No input node found in " + methodName + " test.\");\n"
-		"\t}\n"
-		"\tif(resultsNode == NULL){\n"
-		"\t\t// Add it in:\n"
-		"\t\tresultsNode = xmlNewChild( node, NULL, (const xmlChar*)\"Results\", NULL);\n"
-		"\t}\n"
-		"\n"
-		"\t// Pick up our input data object\n"
-		"\t" + doName + " inputDO( XmlHelpers::FindChild( inputNode, " + doName + "::Name()() ) );\n"
-		"\n"
-	);
-
-	if(target == "sqldb" ){
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tSqlDB& sqldb = TheMain::getInstance()->GetSqlDB(\"hubconfig\");\n"
-			"\n"
-			"\t// Execute the statement:\n"
-			"\t" + doName + "::" + methodName + "(sqldb"
-		);
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-	} else {
-
-		m_output_test.append(
-			"\t// Get a connection to our database:\n"
-			"\tOdbcObj& odbc = *ioc.getDBConnection();\n"
-			"\n"
-			"\t// Prepare and execute the statement\n"
-			"\ttwine stmt = " + doName + "::" + methodName + "_prepSQL( ioc"
-		);
-
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-
-		m_output_test.append(
-			" );\n"
-			"\t" + doName + "::" + methodName + "( odbc, stmt, false"
-		);
-
-		for(size_t i = 0; i < inputs.size(); i++){
-			m_output_test.append(
-				", inputDO." + twine( inputs[i], "name" )
-			);
-		}
-	}
-
-	m_output_test.append(
-		" );\n"
-		"\n"
-		"\tif(m_recordMode){\n"
-		"\t\t// If we are recording, then there is nothing to save in our output node.\n"
-		"\t} else {\n"
-		"\t\tXmlHelpers::setBoolAttr( resultsNode, \"success\", \"true\" );\n"
-		"\t\tXmlHelpers::setIntAttr( resultsNode, \"savedResults\", 0 );\n"
-		"\t\tXmlHelpers::setIntAttr( resultsNode, \"liveResults\", 0 );\n"
-		"\t}\n"
-		"\n"	
-		"}\n"
-		"\n"
-	);
+	m_output.append( loadTmpl("CppObjTestBody.delete.tmpl", &vars ) );
+	m_output_header.append( loadTmpl("CppObjTestHeader.delete.tmpl", &vars ) );
 }
 
 void generateSelectToDO(xmlNodePtr stmt) 
