@@ -34,11 +34,13 @@ LOGICOBJS=../logic/ascfg/*.o \
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
+	HelixApi_Part2.o
 
 APIOH=HubApi_Part1.o HubApi_Part2.o
 LINKOBJ=$(APIOH) $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)
 
 all: $(DOTOH) $(APIOH)
+	$(LINK) -o ../../bin/HelixApi_Part2 HelixApi_Part2.o $(LINKOBJ) $(LFLAGS)
 
 clean:
 	rm -f $(DOTOH) *.o *.obj core *.so

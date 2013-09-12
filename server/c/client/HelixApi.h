@@ -1,3 +1,16 @@
+#ifndef HELIXAPI_H
+#define HELIXAPI_H
+
+#include <twine.h>
+#include <Log.h>
+#include <EnEx.h>
+#include <dptr.h>
+#include <sptr.h>
+#include <HttpClient.h>
+#include <xmlinc.h>
+using namespace SLib;
+
+// We need references to every single data object class here:
 using namespace Helix::Logic::admin;
 using namespace Helix::Logic::dev;
 using namespace Helix::Logic::test;
@@ -26,14 +39,14 @@ class HelixApi : public HttpClient
 		  */
 		virtual int Progress(double dltotal, double dlnow, double ultotal, double ulnow);
 
-		/** 
+		/**
 		  * Used to check the response from the Hub to see if it has errors.  Any errors found
 		  * will be converted into exceptions that are then thrown from this method.
 		  */
 		void returnHasErrors();
 
 		/**
-		  * Checks to see if the return from the Hub is indicating that a DB connection 
+		  * Checks to see if the return from the Hub is indicating that a DB connection
 		  * is required to perform the requested action.
 		  */
 		bool returnRequiresDB();
@@ -49,20 +62,20 @@ class HelixApi : public HttpClient
 		xmlDocPtr LoadXMLDoc( const twine& requestName );
 
 		/**
-		  * Sends a GET request to the Hub and does no response checking - use this for 
-		  * requesting static content from the Hub such as web pages, images, etc.  Note, 
-		  * this is an override of the HttpClient::Get method, where we change the 
+		  * Sends a GET request to the Hub and does no response checking - use this for
+		  * requesting static content from the Hub such as web pages, images, etc.  Note,
+		  * this is an override of the HttpClient::Get method, where we change the
 		  * understanding of the input requestPath.  We do not require it to be a full URL, but
-		  * will build the URL based on the input host/port setup when creating this HelixApi 
+		  * will build the URL based on the input host/port setup when creating this HelixApi
 		  * object.
 		  */
 		virtual char* Get( const twine& requestPath );
 
 		/**
 		  * Sends a POST request to the Hub and expects to download the response as a binary
-		  * payload.  Note, this is an override of the HttpClient::PostRaw method, where we change the 
+		  * payload.  Note, this is an override of the HttpClient::PostRaw method, where we change the
 		  * understanding of the input requestPath.  We do not require it to be a full URL, but
-		  * will build the URL based on the input host/port setup when creating this HelixApi 
+		  * will build the URL based on the input host/port setup when creating this HelixApi
 		  * object.
 		  */
 		virtual char* PostRaw( const twine& requestPath, const char* msg, size_t msgLen );
@@ -109,3 +122,9 @@ class HelixApi : public HttpClient
 	/* ******************************************************************************* */
 	public:
 
+
+}; // End HelixApi class
+
+} } // End Helix::Client namespace stack
+
+#endif // HELIXAPI_H Defined

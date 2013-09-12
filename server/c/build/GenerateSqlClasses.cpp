@@ -60,7 +60,7 @@ twine& getDataObjectMemberType(twine& obj_name, twine& name);
 void generateExecuteNamedQuery() ;
 twine logExplain( const twine& stmt ) ;
 
-map<twine, twine> buildObjectParms( );
+map<twine, twine> buildObjectParms( twine& objName );
 map<twine, twine> buildStatementParms( xmlNodePtr stmt );
 
 void generateReturn(xmlNodePtr stmt);
@@ -156,7 +156,7 @@ void findAllSqlXmlFiles(twine start, int pass)
 	for(size_t i = 0; i < files.size(); i++){
 		File child = File(start + "/" + files[i]);
 		if(child.name().endsWith(twine(".sql.xml"))){
-			//printf("Found sql.xml file (%s)\n", child.name()() );
+			printf("Found sql.xml file (%s)\n", child.name()() );
 			//fflush(stdout);
 			m_currentFile = child.name();
 			processFile(child.name(), pass);
@@ -224,7 +224,7 @@ void processFile(twine file_name, int pass)
 		name.getAttribute(statement, "methodName"); 
 		type.getAttribute(statement, "methodType"); 
 		target.getAttribute(statement, "target"); 
-		//printf("Creating method (%s)::(%s) of type (%s)\n", m_currentClass(), name(), type());
+		printf("Creating method (%s)::(%s) of type (%s)\n", m_currentClass(), name(), type());
 		
 		if(type != "MULTIINSERT"){
 			xmlNodePtr qdRoot = xmlDocGetRootElement(m_namedQueryDoc);
@@ -281,7 +281,7 @@ void checkCPPFile(twine fileName)
 	){
 		return; // this is us, or something ignorable.  skip it.
 	}
-	//printf("Checking cpp file: %s\n", fileName() );
+	printf("Checking cpp file: %s\n", fileName() );
 
 	File cppFile(fileName);
 	twine contents = cppFile.readContentsAsTwine();
@@ -304,7 +304,7 @@ void checkCPPFile(twine fileName)
 			input = contents.substr(idx, idx2-idx);
 		}
 
-		//printf("Found API (%s), Input (%s)\n", api(), input() );
+		printf("Found API (%s), Input (%s)\n", api(), input() );
 		buildJSApi(api, input);
 		buildCPPApi(api, input);
 		idx = contents.find("// LOGICCODEGEN API=", idx2);
@@ -408,26 +408,26 @@ void buildCPPApi(twine api, twine input)
 		"\t\t  */\n"
 		"\t\txmlDocPtr " + shortApi + "( "
 	);
-	m_api_cpp_body.append( "xmlDocPtr HubApi::" + shortApi + "( ");
+	m_api_cpp_body.append( "xmlDocPtr HelixApi::" + shortApi + "( ");
 	
 	if(input == "NULL"){
 		// No inputs.
 		m_api_cpp_header.append(");\n\n");
 		m_api_cpp_body.append( ")\n"
 			"{\n"
-			"\tEnEx ee(FL, \"HubApi::" + shortApi + "( )\");\n\n"
+			"\tEnEx ee(FL, \"HelixApi::" + shortApi + "( )\");\n\n"
 		);
 	} else if(input == "ID"){
 		m_api_cpp_header.append("int idVal );\n\n");
 		m_api_cpp_body.append( "int idVal )\n"
 			"{\n"
-			"\tEnEx ee(FL, \"HubApi::" + shortApi + "( int idVal )\");\n\n"
+			"\tEnEx ee(FL, \"HelixApi::" + shortApi + "( int idVal )\");\n\n"
 		);
 	} else {
 		m_api_cpp_header.append("const " + input + "& dataObj );\n\n");
 		m_api_cpp_body.append( "const " + input + "& dataObj )\n"
 			"{\n"
-			"\tEnEx ee(FL, \"HubApi::" + shortApi + "( const " + input + "& dataObj )\");\n\n"
+			"\tEnEx ee(FL, \"HelixApi::" + shortApi + "( const " + input + "& dataObj )\");\n\n"
 		);
 	}
 
@@ -514,14 +514,14 @@ void createAPIFiles()
 
 	m_api_cpp_header.append( loadTmpl( "CppApiHeader99.tmpl", NULL ) );
 
-	File::writeToFile( "../src/client/HubApi.h", m_api_cpp_header );
-	File::writeToFile( "../src/client/HubApi_Part2.cpp", m_api_cpp_body );
+	File::writeToFile( "../client/HelixApi.h", m_api_cpp_header );
+	File::writeToFile( "../client/HelixApi_Part2.cpp", m_api_cpp_body );
 	
 }
 
 void beginOutputFile(vector<xmlNodePtr>& statements)
 {
-	//printf("Creating file: (%s) in package (%s)\n", m_currentClass(), m_currentPackage() );
+	printf("Creating file: (%s) in package (%s)\n", m_currentClass(), m_currentPackage() );
 	
 	//xmlNodePtr qdRoot = xmlDocGetRootElement(m_namedQueryDoc);
 	//xmlNodePtr an_import = xmlNewChild(qdRoot, NULL, (const xmlChar*)"Import", NULL);
@@ -682,6 +682,8 @@ void beginCPPDataObject(twine& objName)
 void beginCPPDataObjectTest(twine& objName, vector<xmlNodePtr>& statements)
 {
 	map<twine, twine> vars = buildObjectParms( objName );
+	map<twine, twine >& objAttrs = m_data_objects[objName];
+	map<twine, twine>::iterator it;
 	
 	// Override the ifdef name
 	twine shortName = objAttrs["short.object.name"];
@@ -1049,7 +1051,7 @@ void dumpJSDataObject(twine& objName)
 	out.append( loadTmpl("JsObj06.tmpl", &vars ) );
 	
 	try {
-		//printf("Creating: %s\n", filename());
+		printf("Creating: %s\n", filename());
 		File::writeToFile(filename, out);
 		
 	} catch (AnException& e) {
@@ -2919,6 +2921,7 @@ twine loadTmpl(const twine& tmplName, map<twine, twine>* vars)
 		} else {
 			ret += replaceVars( tmplName, i, lines[i], vars );
 		}
+		ret += "\n";
 	}
 	return ret;
 }

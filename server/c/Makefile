@@ -67,7 +67,7 @@ glob_dir:
 	cd glob && $(GMAKE) -f Makefile all
 
 server_dir:
-	cd server && $(GMAKE) -f Makefile.mac all
+	cd server && $(GMAKE) -f Makefile all
 
 admin_dir:
 	cd logic/admin && $(GMAKE) -f Makefile all
