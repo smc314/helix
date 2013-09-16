@@ -408,7 +408,7 @@ void TheMain::GenConfig(void)
 	// Adaptive Logging
 	xmlNodePtr al = xmlNewChild(root, NULL, (const xmlChar*)"AdaptiveLogs",
 		NULL);
-	xmlSetProp(al, (const xmlChar*)"filename", (const xmlChar*)"ihd.log");
+	xmlSetProp(al, (const xmlChar*)"filename", (const xmlChar*)"helix.log");
 	xmlSetProp(al, (const xmlChar*)"buffer_size", (const xmlChar*)"1000");
 	xmlSetProp(al, (const xmlChar*)"max_file_size", (const xmlChar*)"52428800");
 
@@ -479,10 +479,6 @@ void TheMain::GenConfig(void)
 	xmlNodePtr db = xmlNewChild(storage, NULL, (const xmlChar*)"DB", NULL);
 	xmlSetProp(db, (const xmlChar*)"name", (const xmlChar*)"helixconfig");
 	xmlSetProp(db, (const xmlChar*)"layout", (const xmlChar*)"helix.db.xml");
-
-	db = xmlNewChild(storage, NULL, (const xmlChar*)"DB", NULL);
-	xmlSetProp(db, (const xmlChar*)"name", (const xmlChar*)"mflog");
-	xmlSetProp(db, (const xmlChar*)"layout", (const xmlChar*)"mflog.db.xml");
 
 	// Now save the file
 	m_config_file_name = "./helix.xml";

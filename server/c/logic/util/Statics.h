@@ -59,15 +59,6 @@ class Statics
 		/// If the input is "1" then convert to "ON", otherwise to "OFF"
 		static void ConvertToOnOff( twine& flag );
 
-		/// Implements our password scrambling method.
-		static twine encryptPwd( twine& pass, int len);
-
-		/// Implements our password un-scrambling method.
-		static twine decryptPwd( twine& pass );
-
-		/// This password descrambling is used by our CSA methods
-		static twine decryptCSAPwd( twine& pass );
-
 		/// Converts an IP address as an int into a string in dotted quad notation
 		static twine convertIP( unsigned int ipAddr );
 

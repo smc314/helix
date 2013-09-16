@@ -106,12 +106,6 @@
 				<Column name="TaskName"/>
 			</Index>
 			<SqlCreate>
-				insert into schedule (id, TaskName, TaskUrl, InputDocument, isActive, runEvery, LastRun,
-					useInterval, RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday, dowThursday,
-					dowFriday, dowSaturday)
-				values ( 1, 'Poll Server Statistics', '/logic/dash/PollServerStats', NULL, 1, 6, NULL,
-					1, NULL, 1, 1, 1, 1, 1,
-					1, 1);
 			</SqlCreate>
 			<SqlChange/>
 		</Table>

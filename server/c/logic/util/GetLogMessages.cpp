@@ -203,13 +203,13 @@ twine GetLogMessages::BuildFilter(LogMessageFilter& filter)
 		// They are all on - don't include a channel filter at all
 	} else {
 		twine cList;
-		if(filter.Panic) if(cList.size() != 0) cList.append(", 0"); else cList.append("0");
-		if(filter.Error) if(cList.size() != 0) cList.append(", 1"); else cList.append("1");
-		if(filter.Warn) if(cList.size() != 0) cList.append(", 2"); else cList.append("2");
-		if(filter.Info) if(cList.size() != 0) cList.append(", 3"); else cList.append("3");
-		if(filter.Debug) if(cList.size() != 0) cList.append(", 4"); else cList.append("4");
-		if(filter.Trace) if(cList.size() != 0) cList.append(", 5"); else cList.append("5");
-		if(filter.SqlTrace) if(cList.size() != 0) cList.append(", 6"); else cList.append("6");
+		if(filter.Panic) { if(cList.size() != 0) cList.append(", 0"); else cList.append("0"); }
+		if(filter.Error) { if(cList.size() != 0) cList.append(", 1"); else cList.append("1"); }
+		if(filter.Warn) { if(cList.size() != 0) cList.append(", 2"); else cList.append("2"); }
+		if(filter.Info) { if(cList.size() != 0) cList.append(", 3"); else cList.append("3"); }
+		if(filter.Debug) { if(cList.size() != 0) cList.append(", 4"); else cList.append("4"); }
+		if(filter.Trace) { if(cList.size() != 0) cList.append(", 5"); else cList.append("5"); }
+		if(filter.SqlTrace) { if(cList.size() != 0) cList.append(", 6"); else cList.append("6"); }
 
 		channelCol.append( " channel in (" + cList + ") " );
 	}

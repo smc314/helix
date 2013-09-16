@@ -108,21 +108,21 @@ void ActionHtml::ExecuteRequest(IOConn& ioc)
 			if(testLayouts != TWINE_NOT_FOUND){
 				html_page.replace( testLayouts, 10, "/build" );
 			}
-			html.open(".." + html_page);
+			html.open("../../.." + html_page);
 			// don't expire these pages, they change all the time
 			expires.AddDay(-2);
 		} else if(html_page.startsWith("/qooxdoo_toolkit")){
 			html.open(".." + html_page);
 			// these are static, expires is just fine.
-			expires.Year(2012);
+			expires.AddYear(1);
 		} else if(html_page.startsWith("/qooxdoo-contrib")){
 			html.open(".." + html_page);
 			// these are static, expires is just fine.
-			expires.Year(2012);
+			expires.AddYear(1);
 		} else if(html_page.startsWith("/3rdParty/qooxdoo")){
 			html.open("../../../.." + html_page);
 			// these are static, expires is just fine.
-			expires.Year(2012);
+			expires.AddYear(1);
 		} else if(html_page.startsWith("/logfile/")){
 			html.open("." + html_page.substr(8));
 			// don't expire these pages, let the last-modified checks work.
@@ -133,7 +133,7 @@ void ActionHtml::ExecuteRequest(IOConn& ioc)
 			expires.AddDay(-2);
 		} else {
 			// Load the page from our html folder:
-			html.open("../html" + html_page);
+			html.open("../../../html" + html_page);
 			// don't expire these pages, let the last-modified checks work.
 			expires.AddDay(-2);
 		}
