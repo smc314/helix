@@ -1,0 +1,22 @@
+<SQLXml generateClass="LogOn" package="logic/util">
+	<SqlStatement methodName="unusedSqlStmt" methodType="SELECTTOXML">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to determine log on credentials.
+		</Comment>
+		<Sql>
+			-- Nothing here
+		</Sql>
+		<Input name="Host" type="twine"/>
+		<Input name="Port" type="twine"/>
+		<Input name="User" type="twine"/>
+		<Input name="Pass" type="twine"/>
+		<Input name="Alias" type="twine"/>
+		<Output name="Host"/>
+		<Output name="Port"/>
+		<Output name="User"/>
+		<Output name="Pass"/>
+		<Output name="ConnName"/>
+		<Output name="Alias"/>
+	</SqlStatement>
+</SQLXml>

@@ -132,22 +132,17 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../../" + extraDotDot + "3rdParty\n"
+		"3PL=../../../../../" + extraDotDot + "3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"\n"
 		"CFLAGS=" + win64CFlags +
 		"-I ../../" + extraDotDot + "glob "
 		"-I ../../" + extraDotDot + "client "
-		"-I ../" + extraDotDot + "utils "
-		"-I ../" + extraDotDot + "ascfg "
-		"-I ../" + extraDotDot + "dash "
-		"-I ../" + extraDotDot + "csa "
-		"-I ../" + extraDotDot + "drvdep "
-		"-I ../" + extraDotDot + "ia "
-		"-I ../" + extraDotDot + "ldm "
+		"-I ../" + extraDotDot + "util "
+		"-I ../" + extraDotDot + "admin "
+		"-I ../" + extraDotDot + "dev "
 		"-I ../" + extraDotDot + "test "
-		"-I ../" + extraDotDot + "test/vsqdir "
 		"\n"
 		"\n"
 		"%.obj: %.cpp\n"
@@ -224,22 +219,17 @@ void createWin32Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../../" + extraDotDot + "3rdParty\n"
+		"3PL=../../../../../" + extraDotDot + "3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"\n"
 		"CFLAGS=" + win32CFlags +
 		"-I ../../" + extraDotDot + "glob "
 		"-I ../../" + extraDotDot + "client "
-		"-I ../" + extraDotDot + "utils "
-		"-I ../" + extraDotDot + "ascfg "
-		"-I ../" + extraDotDot + "dash "
-		"-I ../" + extraDotDot + "csa "
-		"-I ../" + extraDotDot + "drvdep "
-		"-I ../" + extraDotDot + "ia "
-		"-I ../" + extraDotDot + "ldm "
+		"-I ../" + extraDotDot + "util "
+		"-I ../" + extraDotDot + "admin "
+		"-I ../" + extraDotDot + "dev "
 		"-I ../" + extraDotDot + "test "
-		"-I ../" + extraDotDot + "test/vsqdir "
 		"\n"
 		"\n"
 		"%.obj: %.cpp\n"
@@ -316,21 +306,16 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../../" + extraDotDot + "3rdParty\n"
+		"3PL=../../../../../" + extraDotDot + "3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"\n"
 		"CFLAGS=" + lin64CFlags +
 		"-I ../../" + extraDotDot + "glob "
 		"-I ../../" + extraDotDot + "client "
-		"-I ../" + extraDotDot + "utils "
-		"-I ../" + extraDotDot + "ascfg "
-		"-I ../" + extraDotDot + "dash "
-		"-I ../" + extraDotDot + "csa "
-		"-I ../" + extraDotDot + "drvdep "
-		"-I ../" + extraDotDot + "ia "
-		"-I ../" + extraDotDot + "ldm "
+		"-I ../" + extraDotDot + "util "
+		"-I ../" + extraDotDot + "admin "
+		"-I ../" + extraDotDot + "dev "
 		"-I ../" + extraDotDot + "test "
-		"-I ../" + extraDotDot + "test/vsqdir "
 		"\n"
 		"\n"
 		"%.o: %.cpp\n"
@@ -419,14 +404,14 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"#\n"
 		"# This is a Win64 Makefile generated for folder " + targetFolder + "\n"
-		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
+		"# To adjust the settings in this makefile, please edit server/c/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../3rdParty\n"
+		"3PL=../../../../3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"\n"
-		"CFLAGS=" + win64CFlags + " -I ../logic/utils -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\"\n"
+		"CFLAGS=" + win64CFlags + " -I ../logic/util -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\"\n"
 		"\n"
 		"\n"
 		"%.obj: %.cpp\n"
@@ -490,14 +475,14 @@ void createGlobWin32Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"#\n"
 		"# This is a Win32 Makefile generated for folder " + targetFolder + "\n"
-		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
+		"# To adjust the settings in this makefile, please edit server/c/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../3rdParty\n"
+		"3PL=../../../../3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"\n"
-		"CFLAGS=" + win32CFlags + " -I ../logic/utils -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\" \n"
+		"CFLAGS=" + win32CFlags + " -I ../logic/util -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\" \n"
 		"\n"
 		"\n"
 		"%.obj: %.cpp\n"
@@ -561,13 +546,13 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"#\n"
 		"# This is a Lin64 Makefile generated for folder " + targetFolder + "\n"
-		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
+		"# To adjust the settings in this makefile, please edit server/c/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../3rdParty\n"
+		"3PL=../../../../3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"\n"
-		"CFLAGS=" + lin64CFlags + " -I ../logic/utils -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
+		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
 		"\n"
 		"\n"
 		"%.o: %.cpp\n"
@@ -656,25 +641,20 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 	output.append(
 		"#\n"
 		"# This is a Win64 Makefile generated for folder " + targetFolder + "\n"
-		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
+		"# To adjust the settings in this makefile, please edit server/c/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../3rdParty\n"
+		"3PL=../../../../3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"LINK=link.exe\n"
 		"\n"
 		"CFLAGS=" + win64CFlags + " -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\" "
 		"-I ../glob "
-		"-I ../logic/ascfg "
-		"-I ../logic/dash "
-		"-I ../logic/csa "
-		"-I ../logic/drvdep "
-		"-I ../logic/ia "
-		"-I ../logic/ldm "
+		"-I ../logic/admin "
+		"-I ../logic/dev "
 		"-I ../logic/test "
-		"-I ../logic/test/vsqdir "
-		"-I ../logic/utils "
+		"-I ../logic/util "
 		"\n"
 		"\n"
 		"SSLLIBS=$(3PL)/x64/lib/libeay32.lib $(3PL)/x64/lib/ssleay32.lib \\\n"
@@ -691,22 +671,17 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
 		"GLOBOBJS=../glob/*.obj\n"
-		"LOGICOBJS=../logic/ascfg/*.obj \\\n"
-		"\t../logic/dash/*.obj \\\n"
-		"\t../logic/csa/*.obj \\\n"
-		"\t../logic/drvdep/*.obj \\\n"
-		"\t../logic/ia/*.obj \\\n"
-		"\t../logic/ldm/*.obj \\\n"
+		"LOGICOBJS=../logic/admin/*.obj \\\n"
+		"\t../logic/dev/*.obj \\\n"
 		"\t../logic/test/*.obj \\\n"
-		"\t../logic/test/vsqdir/*.obj \\\n"
-		"\t../logic/utils/*.obj \n"
+		"\t../logic/util/*.obj \n"
 		"\n"
-		"APIOH=HubApi_Part1.obj HubApi_Part2.obj\n"
+		"APIOH=HelixApi_Part1.obj HelixApi_Part2.obj\n"
 		"DOTOH=\\\n"
 	);
 
 	for(size_t i = 0; i < objFiles.size(); i++){
-		if(objFiles[i].startsWith("HubApi_")){
+		if(objFiles[i].startsWith("HelixApi_")){
 			continue; // skip these
 		}
 		vector<twine> splits = objFiles[i].split(".");
@@ -724,7 +699,7 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"all: $(DOTOH) $(APIOH)\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
-		if(objFiles[i].startsWith("HubApi_")){
+		if(objFiles[i].startsWith("HelixApi_")){
 			continue; // skip these
 		}
 		vector<twine> splits = objFiles[i].split(".");
@@ -763,25 +738,20 @@ void createClientWin32Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 	output.append(
 		"#\n"
 		"# This is a Win32 Makefile generated for folder " + targetFolder + "\n"
-		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
+		"# To adjust the settings in this makefile, please edit server/c/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../3rdParty\n"
+		"3PL=../../../../3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"LINK=link.exe\n"
 		"\n"
 		"CFLAGS=" + win32CFlags + " -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\" "
 		"-I ../glob "
-		"-I ../logic/ascfg "
-		"-I ../logic/dash "
-		"-I ../logic/csa "
-		"-I ../logic/drvdep "
-		"-I ../logic/ia "
-		"-I ../logic/ldm "
+		"-I ../logic/admin "
+		"-I ../logic/dev "
 		"-I ../logic/test "
-		"-I ../logic/test/vsqdir "
-		"-I ../logic/utils "
+		"-I ../logic/util "
 		"\n"
 		"\n"
 		"SSLLIBS=$(3PL)/lib/libeay32.lib $(3PL)/lib/ssleay32.lib \\\n"
@@ -798,21 +768,16 @@ void createClientWin32Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
 		"GLOBOBJS=../glob/*.obj\n"
-		"LOGICOBJS=../logic/ascfg/*.obj \\\n"
-		"\t../logic/dash/*.obj \\\n"
-		"\t../logic/csa/*.obj \\\n"
-		"\t../logic/drvdep/*.obj \\\n"
-		"\t../logic/ia/*.obj \\\n"
-		"\t../logic/ldm/*.obj \\\n"
+		"LOGICOBJS=../logic/admin/*.obj \\\n"
+		"\t../logic/dev/*.obj \\\n"
 		"\t../logic/test/*.obj \\\n"
-		"\t../logic/test/vsqdir/*.obj \\\n"
-		"\t../logic/utils/*.obj \n"
+		"\t../logic/util/*.obj \n"
 		"\n"
 		"DOTOH=\\\n"
 	);
 
 	for(size_t i = 0; i < objFiles.size(); i++){
-		if(objFiles[i].startsWith("HubApi_")){
+		if(objFiles[i].startsWith("HelixApi_")){
 			continue; // skip these
 		}
 		vector<twine> splits = objFiles[i].split(".");
@@ -825,13 +790,13 @@ void createClientWin32Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 
 	output.append(
 		"\n"
-		"APIOH=HubApi_Part1.obj HubApi_Part2.obj\n"
+		"APIOH=HelixApi_Part1.obj HelixApi_Part2.obj\n"
 		"LINKOBJ=$(APIOH) $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
-		if(objFiles[i].startsWith("HubApi_")){
+		if(objFiles[i].startsWith("HelixApi_")){
 			continue; // skip these
 		}
 		vector<twine> splits = objFiles[i].split(".");
@@ -870,25 +835,20 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 	output.append(
 		"#\n"
 		"# This is a Lin64 Makefile generated for folder " + targetFolder + "\n"
-		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
+		"# To adjust the settings in this makefile, please edit server/c/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../3rdParty\n"
+		"3PL=../../../../3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"LINK=g++\n"
 		"UNAME := $(shell uname)\n"
 		"\n"
 		"CFLAGS=" + lin64CFlags + " -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux "
 		"-I ../glob "
-		"-I ../logic/ascfg "
-		"-I ../logic/dash "
-		"-I ../logic/csa "
-		"-I ../logic/drvdep "
-		"-I ../logic/ia "
-		"-I ../logic/ldm "
+		"-I ../logic/admin "
+		"-I ../logic/dev "
 		"-I ../logic/test "
-		"-I ../logic/test/vsqdir "
-		"-I ../logic/utils "
+		"-I ../logic/util "
 		"\n"
 		"\n"
 		"ifeq ($(UNAME),Linux)\n"
@@ -898,15 +858,10 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"endif\n"
 		"\n"
 		"GLOBOBJS=../glob/*.o\n"
-		"LOGICOBJS=../logic/ascfg/*.o \\\n"
-		"\t../logic/dash/*.o \\\n"
-		"\t../logic/csa/*.o \\\n"
-		"\t../logic/drvdep/*.o \\\n"
-		"\t../logic/ia/*.o \\\n"
-		"\t../logic/ldm/*.o \\\n"
+		"LOGICOBJS=../logic/admin/*.o \\\n"
+		"\t../logic/dev/*.o \\\n"
 		"\t../logic/test/*.o \\\n"
-		"\t../logic/test/vsqdir/*.o \\\n"
-		"\t../logic/utils/*.o \n"
+		"\t../logic/util/*.o \n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -918,7 +873,7 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 	);
 
 	for(size_t i = 0; i < objFiles.size(); i++){
-		if(objFiles[i].startsWith("HubApi_")){
+		if(objFiles[i].startsWith("HelixApi_")){
 			continue; // skip these
 		}
 		if(objFiles[i].startsWith("NetTest")){
@@ -934,13 +889,13 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 
 	output.append(
 		"\n"
-		"APIOH=HubApi_Part1.o HubApi_Part2.o\n"
+		"APIOH=HelixApi_Part1.o HelixApi_Part2.o\n"
 		"LINKOBJ=$(APIOH) $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
-		if(objFiles[i].startsWith("HubApi_")){
+		if(objFiles[i].startsWith("HelixApi_")){
 			continue; // skip these
 		}
 		if(objFiles[i].startsWith("NetTest")){

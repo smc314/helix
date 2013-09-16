@@ -22,7 +22,7 @@ using namespace Helix::Glob;
 using namespace Helix::Logic::${shortPackage};
 
 #include "Statics.h"
-using namespace Helix::Logic::utils;
+using namespace Helix::Logic::util;
 
 /* ************************************************************************** */
 /* This is a generated data object test class that is used for testing a      */
@@ -55,8 +55,8 @@ void ${shortName}Test::runTests(IOConn& ioc, xmlNodePtr node)
 
 	vector< xmlNodePtr > tests = XmlHelpers::FindChildren( node, "Test" );
 	for(size_t i = 0; i < tests.size(); i++){
-${MethodNameCheck}
 		twine testMethod( tests[i], "method" );
+${MethodNameCheck}
 		} else {
 			WARN(FL, "Unknown test method (%s) given to ${shortName}Test", testMethod() );
 		}

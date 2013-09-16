@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DatabaseSetup>
+	<Comment>
+		This is the main setup file that we use to create our database.  We load this file
+		at startup and use it to ensure that our database schema is always up to date.
+		
+		Note, this file only manages the layout of our schema and not the installation of
+		any stored procedures.
+	</Comment>
+	<Tables>
+		<Table name="user">
+			<Comment>
+				This is where we define users in our system.
+			</Comment>
+			<Column name="id" type="integer primary key autoincrement" delete="false"/>
+			<Column name="user" type="varchar(32) not null"/>
+			<Column name="fullname" type="varchar(255) not null"/>
+			<Column name="email" type="varchar(255) not null"/>
+			<Column name="active" type="int"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_user1" unique="true">
+				<Column name="user"/>
+			</Index>
+			<Index name="ix_user2" unique="true">
+				<Column name="fullname"/>
+			</Index>
+			<Index name="ix_user3" unique="true">
+				<Column name="email"/>
+			</Index>
+			<SqlCreate>
+				insert into user values (1, 'admin', 'Administrative User', 'admin@nowhere.com', 1);
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="userauth">
+			<Comment>
+				This is the table that stores the user authentication credentials.
+			</Comment>
+			<Column name="userid" type="int NOT NULL" pk="true"/>
+			<Column name="authmechanism" type="int not null" pk="true"/>
+			<Column name="password" type="varchar(256) not null"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate>
+				insert into userauth values (1, 'admin', 0);
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="groups">
+			<Comment>
+				This is a group of users.
+			</Comment>
+			<Column name="id" type="integer primary key autoincrement"/>
+			<Column name="name" type="varchar(255) not null"/>
+			<Column name="description" type="varchar(1024)"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_group1" unique="true">
+				<Column name="name"/>
+			</Index>
+			<SqlCreate>
+				insert into groups values (1, 'Admin', 'Administrators Group');
+				insert into groups values (2, 'Users', 'Website Users Group');
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="usergroup">
+			<Comment>
+				Maps users to groups.
+			</Comment>
+			<Column name="userid" type="integer NOT NULL" pk="true"/>
+			<Column name="groupid" type="integer NOT NULL" pk="true"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate>
+				insert into usergroup values (1, 1);
+				insert into usergroup values (1, 2);
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="schedule">
+			<Comment>
+				This is a list of scheduled tasks that the system will run on a periodic basis.
+			</Comment>
+			<Column name="id" type="integer primary key autoincrement"/>
+			<Column name="TaskName" type="varchar(16) not null"/>
+			<Column name="TaskUrl" type="varchar(16) not null"/>
+			<Column name="InputDocument" type="varchar(16)"/>
+			<Column name="isActive" type="int not null"/>
+			<Column name="runEvery" type="int not null">
+				<Comment>Measured In Minutes</Comment>
+			</Column>
+			<Column name="LastRun" type="varchar(20)"/>
+			<Column name="useInterval" type="int not null"/>
+			<Column name="RunAtTime" type="varchar(6)"/>
+			<Column name="dowSunday" type="int not null"/>
+			<Column name="dowMonday" type="int not null"/>
+			<Column name="dowTuesday" type="int not null"/>
+			<Column name="dowWednesday" type="int not null"/>
+			<Column name="dowThursday" type="int not null"/>
+			<Column name="dowFriday" type="int not null"/>
+			<Column name="dowSaturday" type="int not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_schedule1" unique="true">
+				<Column name="TaskName"/>
+			</Index>
+			<SqlCreate>
+				insert into schedule (id, TaskName, TaskUrl, InputDocument, isActive, runEvery, LastRun,
+					useInterval, RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday, dowThursday,
+					dowFriday, dowSaturday)
+				values ( 1, 'Poll Server Statistics', '/logic/dash/PollServerStats', NULL, 1, 6, NULL,
+					1, NULL, 1, 1, 1, 1, 1,
+					1, 1);
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+	</Tables>
+
+</DatabaseSetup>

@@ -1,0 +1,18 @@
+<SQLXml generateClass="LRTask" package="logic/util">
+	<SqlStatement methodName="unusedSqlStmt" methodType="INSERT">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to request state of Long running tasks.
+		</Comment>
+		<Sql>
+			-- Nothing here
+		</Sql>
+		<Input name="TaskID" type="twine"/>
+		<Input name="TaskName" type="twine"/>
+		<Input name="TaskStart" type="int"/>
+		<Input name="TaskFinish" type="int"/>
+		<Input name="TaskCurrent" type="int"/>
+		<Input name="TaskMsg" type="twine"/>
+		<Input name="TaskResponse" type="base64"/>
+	</SqlStatement>
+</SQLXml>

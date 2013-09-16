@@ -1,0 +1,38 @@
+<SQLXml generateClass="LogSettings" package="logic/util">
+	<SqlStatement methodName="unusedSqlStmt" methodType="INSERT">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to specify log file settings.
+		</Comment>
+		<Sql>
+			-- Nothing here
+		</Sql>
+		<!-- General Log Settings -->
+		<Input name="LogFile" type="twine"/>
+		<Input name="MaxSize" type="int"/>
+		<Input name="BufferSize" type="int"/>
+
+		<!-- Channel Settings -->
+		<Input name="panic" type="int"/>
+		<Input name="panicCapture" type="int"/>
+		<Input name="panicDump" type="int"/>
+		<Input name="error" type="int"/>
+		<Input name="errorCapture" type="int"/>
+		<Input name="errorDump" type="int"/>
+		<Input name="warn" type="int"/>
+		<Input name="warnCapture" type="int"/>
+		<Input name="warnDump" type="int"/>
+		<Input name="info" type="int"/>
+		<Input name="infoCapture" type="int"/>
+		<Input name="infoDump" type="int"/>
+		<Input name="debug" type="int"/>
+		<Input name="debugCapture" type="int"/>
+		<Input name="debugDump" type="int"/>
+		<Input name="trace" type="int"/>
+		<Input name="traceCapture" type="int"/>
+		<Input name="traceDump" type="int"/>
+		<Input name="sql" type="int"/>
+		<Input name="sqlCapture" type="int"/>
+		<Input name="sqlDump" type="int"/>
+	</SqlStatement>
+</SQLXml>

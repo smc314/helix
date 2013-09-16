@@ -1,0 +1,23 @@
+<SQLXml generateClass="LogObj" package="logic/util">
+	<SqlStatement methodName="unusedSqlStmt" methodType="INSERT">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth as a log message
+		</Comment>
+		<Sql>
+			-- Nothing here
+		</Sql>
+		<Input name="id" type="int"/>
+		<Input name="file" type="twine"/>
+		<Input name="line" type="int"/>
+		<Input name="tid" type="int"/>
+		<Input name="timestamp_a" type="int"/>
+		<Input name="timestamp_b" type="int"/>
+		<Input name="timestamp_c" type="twine"/>
+		<Input name="channel" type="int"/>
+		<Input name="appName" type="twine"/>
+		<Input name="SUID" type="twine"/>
+		<Input name="machineName" type="twine"/>
+		<Input name="msg" type="base64"/>
+	</SqlStatement>
+</SQLXml>

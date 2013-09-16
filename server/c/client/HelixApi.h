@@ -11,9 +11,17 @@
 using namespace SLib;
 
 // We need references to every single data object class here:
-using namespace Helix::Logic::admin;
-using namespace Helix::Logic::dev;
-using namespace Helix::Logic::test;
+#include <HitMap.h>
+#include <LRTask.h>
+#include <LogMessageFilter.h>
+#include <LogObj.h>
+#include <LogOn.h>
+#include <LogSettings.h>
+#include <SQLStatement.h>
+#include <SchedItem.h>
+//using namespace Helix::Logic::admin;
+//using namespace Helix::Logic::dev;
+//using namespace Helix::Logic::test;
 using namespace Helix::Logic::util;
 
 namespace Helix {
@@ -121,6 +129,91 @@ class HelixApi : public HttpClient
 	/* with the Hub.                                                                   */
 	/* ******************************************************************************* */
 	public:
+
+		/** This method will call the /logic/util/CleanoutLRTask
+		  * server API.
+		  */
+		xmlDocPtr CleanoutLRTask( const LRTask& dataObj );
+
+		/** This method will call the /logic/util/CloseConnection
+		  * server API.
+		  */
+		xmlDocPtr CloseConnection( );
+
+		/** This method will call the /logic/util/ExecuteGenericSQL
+		  * server API.
+		  */
+		xmlDocPtr ExecuteGenericSQL( const SQLStatement& dataObj );
+
+		/** This method will call the /logic/util/FindLogMessage
+		  * server API.
+		  */
+		xmlDocPtr FindLogMessage( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/GetAllLayouts
+		  * server API.
+		  */
+		xmlDocPtr GetAllLayouts( );
+
+		/** This method will call the /logic/util/GetAllLRTasks
+		  * server API.
+		  */
+		xmlDocPtr GetAllLRTasks( );
+
+		/** This method will call the /logic/util/GetHitMap
+		  * server API.
+		  */
+		xmlDocPtr GetHitMap( );
+
+		/** This method will call the /logic/util/GetLogFiles
+		  * server API.
+		  */
+		xmlDocPtr GetLogFiles( );
+
+		/** This method will call the /logic/util/GetLogMessages
+		  * server API.
+		  */
+		xmlDocPtr GetLogMessages( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/GetLogMessagesByRange
+		  * server API.
+		  */
+		xmlDocPtr GetLogMessagesByRange( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/GetLogMsgCount
+		  * server API.
+		  */
+		xmlDocPtr GetLogMsgCount( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/GetLogSettings
+		  * server API.
+		  */
+		xmlDocPtr GetLogSettings( );
+
+		/** This method will call the /logic/util/GetOneLRTask
+		  * server API.
+		  */
+		xmlDocPtr GetOneLRTask( const LRTask& dataObj );
+
+		/** This method will call the /logic/util/GetProfile
+		  * server API.
+		  */
+		xmlDocPtr GetProfile( );
+
+		/** This method will call the /logic/util/SaveLogMsg
+		  * server API.
+		  */
+		xmlDocPtr SaveLogMsg( const LogObj& dataObj );
+
+		/** This method will call the /logic/util/SwitchServerConnection
+		  * server API.
+		  */
+		xmlDocPtr SwitchServerConnection( const LogOn& dataObj );
+
+		/** This method will call the /logic/util/UpdateLogSettings
+		  * server API.
+		  */
+		xmlDocPtr UpdateLogSettings( const LogSettings& dataObj );
 
 
 }; // End HelixApi class

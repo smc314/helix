@@ -1,10 +1,10 @@
-void ${doName}::${methodName}(IOConn& ioc, xmlNodePtr node)
+void ${doName}Test::${methodName}(IOConn& ioc, xmlNodePtr node)
 {
-	EnEx ee(FL, "${doName}::${methodName}(IOConn& ioc, xmlNodePtr node)");
+	EnEx ee(FL, "${doName}Test::${methodName}(IOConn& ioc, xmlNodePtr node)");
 
 	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
 	if(inputNode == NULL){
-		throw AnException(0, FL, "No input node found in ${doName}::${methodName} test.");
+		throw AnException(0, FL, "No input node found in ${doName}Test::${methodName} test.");
 	}
 
 	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );

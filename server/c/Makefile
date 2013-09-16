@@ -22,9 +22,9 @@ ARCH := $(shell uname -p)
 CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
 
 ifeq ($(UNAME),Linux)
-	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lodbc -lz -L../bin -lSLib
+	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lodbc -lz -L./bin -lSLib
 else
-	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L../bin -lSLib
+	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L./bin -lSLib
 endif
 
 %.o:	%.cpp
@@ -34,13 +34,10 @@ endif
 	$(CC) $(CFLAGS) -c $< -o $@
 
 ALLOH=glob/*.o \
-	logic/admin/*.o \
-	logic/dev/*.o \
-	logic/test/*.o \
 	logic/util/*.o \
 	client/HelixApi_Part1.o client/HelixApi_Part2.o
 
-all: install buildPrep subdirs HelixMain HelixSvc install
+all: install buildPrep subdirs HelixMain HelixDaemon install
 
 buildPrep:
 	cd build && $(GMAKE) -f Makefile.unix all
@@ -56,10 +53,10 @@ buildPrep:
 HelixMain:
 	$(LINK) -o bin/HelixMain server/HelixMain.o $(ALLOH) $(LFLAGS)
 
-# HelixSvc should have none of our libraries required for it.  We don't want it dependent on
+# HelixDaemon should have none of our libraries required for it.  We don't want it dependent on
 # SLib or anything else that can be upgraded.  It only depends on native linux libraries.
-HelixSvc:
-	$(LINK) -o bin/HelixSvc server/HelixSvc.o 
+HelixDaemon:
+	$(LINK) -o bin/HelixDaemon server/HelixDaemon.o 
 
 subdirs: glob_dir server_dir admin_dir dev_dir test_dir util_dir client_dir
 
@@ -85,7 +82,7 @@ client_dir:
 	cd client && $(GMAKE) -f Makefile all
 
 clean: subdirs_clean 
-	cd bin && $(RM) *.o core *.so 
+	cd bin && $(RM) *.o core *.so HelixMain HelixDaemon
 
 subdirs_clean: build_clean glob_clean server_clean admin_clean dev_clean test_clean util_clean client_clean 
 
@@ -96,7 +93,7 @@ glob_clean:
 	cd glob && $(GMAKE) -f Makefile clean
 
 server_clean:
-	cd server && $(GMAKE) -f Makefile.unix clean
+	cd server && $(GMAKE) -f Makefile clean
 
 admin_clean:
 	cd logic/admin && $(GMAKE) -f Makefile clean

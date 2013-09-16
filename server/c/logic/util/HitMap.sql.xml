@@ -1,0 +1,16 @@
+<SQLXml generateClass="HitMap" package="logic/util">
+	<SqlStatement methodName="dummy" methodType="INSERT">
+		<Comment>
+			This is a dummy statement used to define our data object.
+		</Comment>
+		<Sql>
+			-- empty on purpose
+		</Sql>
+		<Input name="MethodName" type="twine"/>
+		<Input name="TotalHits" type="int"/>
+		<Input name="AverageCycles" type="int"/>
+		<Input name="MinCycles" type="int"/>
+		<Input name="MaxCycles" type="int"/>
+		<Input name="TotalCycles" type="int"/>
+	</SqlStatement>
+</SQLXml>

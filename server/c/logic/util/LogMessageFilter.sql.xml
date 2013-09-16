@@ -1,0 +1,59 @@
+<SQLXml generateClass="LogMessageFilter" package="logic/util">
+	<SqlStatement methodName="unusedSqlStmt" methodType="INSERT">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to determine log filtering settings.
+		</Comment>
+		<Sql>
+			-- Nothing here
+		</Sql>
+		<Input name="LogFile" type="twine"/>
+		<Input name="StartId" type="int"/>
+		<Input name="Forward" type="int"/>
+		<Input name="GetMax" type="int"/>
+		<Input name="MachineName" type="twine"/>
+		<Input name="AppName" type="twine"/>
+		<Input name="ThreadID" type="int"/>
+		<Input name="SUID" type="twine"/>
+		<Input name="Message" type="twine"/>
+		<Input name="Panic" type="int"/>
+		<Input name="Error" type="int"/>
+		<Input name="Warn" type="int"/>
+		<Input name="Info" type="int"/>
+		<Input name="Debug" type="int"/>
+		<Input name="Trace" type="int"/>
+		<Input name="SqlTrace" type="int"/>
+		<Input name="DispId" type="int"/>
+		<Input name="DispDate" type="int"/>
+		<Input name="DispMachine" type="int"/>
+		<Input name="DispApp" type="int"/>
+		<Input name="DispThread" type="int"/>
+		<Input name="DispFile" type="int"/>
+		<Input name="DispLine" type="int"/>
+		<Input name="DispChannel" type="int"/>
+		<Input name="ShowColIcon" type="int"/>
+		<Input name="ShowColID" type="int"/>
+		<Input name="ShowColDate" type="int"/>
+		<Input name="ShowColMachine" type="int"/>
+		<Input name="ShowColApplication" type="int"/>
+		<Input name="ShowColThread" type="int"/>
+		<Input name="ShowColSUID" type="int"/>
+		<Input name="ShowColFile" type="int"/>
+		<Input name="ShowColLine" type="int"/>
+		<Input name="ShowColChannel" type="int"/>
+		<Input name="ShowColMessage" type="int"/>
+
+		<Input name="FirstRow" type="int"/>
+		<Input name="LastRow" type="int"/>
+
+		<!-- These are some stats about the log file itself. -->
+		<Input name="LogFileOldestID" type="int"/>
+		<Input name="LogFileNewestID" type="int"/>
+		<Input name="FilterMatchCount" type="int"/>
+
+		<!-- These are used when the user is searching for a specific record in the logs -->
+		<Input name="FindByID" type="int"/>
+		<Input name="FindByDate" type="twine"/>
+		<Input name="FindByMsg" type="twine"/>
+	</SqlStatement>
+</SQLXml>

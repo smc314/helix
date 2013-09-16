@@ -485,7 +485,7 @@ void createAPIFiles()
 		try {
 			twine header;
 			try {
-				File apiBase("../qd/common/Api.base");
+				File apiBase("../../../qd/common/Api.base");
 				header = apiBase.readContentsAsTwine();
 			} catch (AnException& e){
 				printf("Error reading Api.base for package %s:\n%s", package(), e.Msg() );
@@ -504,7 +504,7 @@ void createAPIFiles()
 				"});\n"
 			);
 
-			twine outputFile = "../qd/common/Api.js";
+			twine outputFile = "../../../qd/common/Api.js";
 			File::writeToFile(outputFile, header );
 
 		} catch (AnException& e){
@@ -555,7 +555,7 @@ void finalizeOutputFile()
 	m_output_test_header.append( loadTmpl( "CppObjTestHeader99.tmpl", &vars ) );
 
 	try {
-		twine filename = "../src/" + m_currentPackage;
+		twine filename = "../" + m_currentPackage;
 		twine headername = filename + "/" + m_currentClass + ".h";
 		twine headertestname = filename + "/" + m_currentClass + "_test.h";
 		twine bodyname = filename + "/" + m_currentClass + ".cpp";
@@ -943,7 +943,7 @@ void dumpJSDataObject(twine& objName)
 	twine& shortName = objAttrs["short.object.name"];
 	twine package = "PACKAGE"; //objAttrs["js.package.name"].split("/")[1];
 	//twine filename = "../qd/" + package + "/source/class/" + package + "/sqldo/" + shortName + ".js";
-	twine filename = "../qd/common/sqldo/" + shortName + ".js";
+	twine filename = "../../../qd/common/sqldo/" + shortName + ".js";
 
 	map<twine, twine> vars;
 	vars[ "shortName" ] = shortName;
@@ -1424,6 +1424,7 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 
 	twine comment = XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Comment") );
 	twine sql = XmlHelpers::getTextNodeValue( XmlHelpers::FindChild(stmt, "Sql") );
+	twine methodType( stmt, "methodType" );
 	twine methodName( stmt, "methodName" );
 	twine target(stmt, "target"); 
 
@@ -1534,9 +1535,15 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 		vars[ "ExecuteParms" ] = "sqldb";
 	} else {
 		vars[ "TestDBConnection" ] = "\tOdbcObj& odbc = *ioc.getDBConnection();" ;
-		vars[ "PrepareDBTest" ] = 
-			"\t// Prepare the statement\n"
-			"\ttwine stmt = " + m_currentClass + "::" + methodName + "_prepSQL( ioc" + inputDOParms + ");\n" ;
+		if(methodType == "INSERT"){
+			vars[ "PrepareDBTest" ] = 
+				"\t// Prepare the statement\n"
+				"\ttwine stmt = " + m_currentClass + "::" + methodName + "_prepSQL( ioc, inputDO);\n" ;
+		} else {
+			vars[ "PrepareDBTest" ] = 
+				"\t// Prepare the statement\n"
+				"\ttwine stmt = " + m_currentClass + "::" + methodName + "_prepSQL( ioc" + inputDOParms + ");\n" ;
+		}
 		vars[ "ExecuteParms" ] = "odbc, stmt, false";
 	}
 
@@ -1773,8 +1780,8 @@ void generateUpdateDOTest(xmlNodePtr stmt)
 {
 	map<twine, twine> vars = buildStatementParms( stmt );
 
-	m_output.append( loadTmpl("CppObjTestBody.update.tmpl", &vars ) );
-	m_output_header.append( loadTmpl("CppObjTestHeader.update.tmpl", &vars ) );
+	m_output_test.append( loadTmpl("CppObjTestBody.update.tmpl", &vars ) );
+	m_output_test_header.append( loadTmpl("CppObjTestHeader.update.tmpl", &vars ) );
 }
 
 void generateInsertDO(xmlNodePtr stmt)
@@ -1798,8 +1805,8 @@ void generateInsertDOTest(xmlNodePtr stmt)
 {
 	map<twine, twine> vars = buildStatementParms( stmt );
 
-	m_output.append( loadTmpl("CppObjTestBody.insert.tmpl", &vars ) );
-	m_output_header.append( loadTmpl("CppObjTestHeader.insert.tmpl", &vars ) );
+	m_output_test.append( loadTmpl("CppObjTestBody.insert.tmpl", &vars ) );
+	m_output_test_header.append( loadTmpl("CppObjTestHeader.insert.tmpl", &vars ) );
 }
 
 void generateDeleteDO(xmlNodePtr stmt)
@@ -1822,8 +1829,8 @@ void generateDeleteDOTest(xmlNodePtr stmt)
 {
 	map<twine, twine> vars = buildStatementParms( stmt );
 
-	m_output.append( loadTmpl("CppObjTestBody.delete.tmpl", &vars ) );
-	m_output_header.append( loadTmpl("CppObjTestHeader.delete.tmpl", &vars ) );
+	m_output_test.append( loadTmpl("CppObjTestBody.delete.tmpl", &vars ) );
+	m_output_test_header.append( loadTmpl("CppObjTestHeader.delete.tmpl", &vars ) );
 }
 
 void generateSelectToDO(xmlNodePtr stmt) 

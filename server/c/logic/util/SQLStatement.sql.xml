@@ -1,0 +1,13 @@
+<SQLXml generateClass="SQLStatement" package="logic/util">
+	<SqlStatement methodName="unusedSqlStmt" methodType="INSERT">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to determine log on credentials.
+		</Comment>
+		<Sql>
+			-- Nothing here
+		</Sql>
+		<Input name="Sql" type="twine"/>
+		<Input name="HostDB" type="twine"/>
+	</SqlStatement>
+</SQLXml>

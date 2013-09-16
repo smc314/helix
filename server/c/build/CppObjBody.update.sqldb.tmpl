@@ -23,7 +23,7 @@ void ${doName}::${methodName}(SqlDB& sqldb${TypedParms} )
 /* This one matches the above in functionality, but allows you to pass in the sql         */
 /* statement and a flag to indicate whether the input parameters will be used.            */
 /* ************************************************************************************** */
-void ${doName}::${methodName}(SqlDB& odbc, twine& stmt, bool useInputs${TypedParms} )
+void ${doName}::${methodName}(SqlDB& sqldb, twine& stmt, bool useInputs${TypedParms} )
 {
 	EnEx ee(FL, "${doName}::${methodName}()");
 
