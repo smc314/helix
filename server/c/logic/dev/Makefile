@@ -15,10 +15,39 @@ CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
+	DObject.o \
+	DOStmt.o \
+	Screen_test.o \
+	Project_test.o \
+	ProjectData_test.o \
+	Application_test.o \
+	Api_test.o \
+	Screen.o \
+	GetProject.o \
+	DOStmtInput_test.o \
+	Project.o \
+	DOChild_test.o \
+	DOStmtOutput_test.o \
+	TableCol_test.o \
+	DOStmt_test.o \
+	ProjectTable.o \
+	DOStmtInput.o \
+	ProjectData.o \
+	Api.o \
+	DObject_test.o \
+	Application.o \
+	SaveProject.o \
+	GetProjectList.o \
+	DOChild.o \
+	ProjectTable_test.o \
+	TableCol.o \
+	DOStmtOutput.o
 
 all: $(DOTOH)
+	cd test && $(GMAKE) -f Makefile all
 
 clean:
 	rm -f $(DOTOH) *.o *.obj core *.so
 	touch -c *.sql.xml
+	cd test && $(GMAKE) -f Makefile clean
 

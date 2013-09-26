@@ -1,0 +1,54 @@
+<SQLXml generateClass="DObject" package="logic/dev" >
+
+	<ChildVector name="DOChildren" type="DOChild" />
+	<ChildVector name="DOStmts" type="DOStmt" />
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new data object entry to our database
+		</Comment>
+		<Sql>
+			insert into dataobject (guid, projappguid, DataObjectName)
+			values ( ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projappguid" type="twine"/>
+		<Input name="DataObjectName" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given data object in the database
+		</Comment>
+		<Sql>
+			update dataobject
+			set DataObjectName = ?
+			where guid = ?
+		</Sql>
+		<Input name="DataObjectName" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a data object by id
+		</Comment>
+		<Sql>
+			delete from dataobject
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForApp" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all data objects for a given application
+		</Comment>
+		<Sql>
+			select guid, projappguid, DataObjectName
+			from dataobject
+			where projappguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projappguid" type="twine"/>
+		<Output name="DataObjectName" type="twine"/>
+		<Input name="projappguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

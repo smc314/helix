@@ -1,0 +1,94 @@
+<SQLXml generateClass="ProjectData" package="logic/dev" >
+
+	<ChildVector name="Tables" type="ProjectTable" />
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new project data entry to our database
+		</Comment>
+		<Sql>
+			insert into projdata (guid, projguid, DataName, Description, DataType, 
+				ConnectionString, DevTimeUser, DevTimePass)
+			values ( ?, ?, ?, ?, ?,
+				?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projguid" type="twine"/>
+		<Input name="DataName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="DataType" type="int"/>
+		<Input name="ConnectionString" type="twine"/>
+		<Input name="DevTimeUser" type="twine"/>
+		<Input name="DevTimePass" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given project data entry in the database
+		</Comment>
+		<Sql>
+			update projdata
+			set DataName = ?,
+				Description = ?,
+				DataType = ?,
+				ConnectionString = ?,
+				DevTimeUser = ?,
+				DevTimePass = ?
+			where guid = ?
+		</Sql>
+		<Input name="DataName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="DataType" type="int"/>
+		<Input name="ConnectionString" type="twine"/>
+		<Input name="DevTimeUser" type="twine"/>
+		<Input name="DevTimePass" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a project data entry by guid
+		</Comment>
+		<Sql>
+			delete from projdata
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForProj" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all project data entries for a given project
+		</Comment>
+		<Sql>
+			select guid, projguid, DataName, Description, DataType, 
+				ConnectionString, DevTimeUser, DevTimePass
+			from projdata
+			where projguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projguid" type="twine"/>
+		<Output name="DataName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Output name="DataType" type="int"/>
+		<Output name="ConnectionString" type="twine"/>
+		<Output name="DevTimeUser" type="twine"/>
+		<Output name="DevTimePass" type="twine"/>
+		<Input name="projguid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects a single project data entry by id
+		</Comment>
+		<Sql>
+			select guid, projguid, DataName, Description, DataType, 
+				ConnectionString, DevTimeUser, DevTimePass
+			from projdata
+			where guid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="ProjName" type="twine"/>
+		<Output name="ShortName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Output name="Deployment" type="twine"/>
+		<Output name="Location" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

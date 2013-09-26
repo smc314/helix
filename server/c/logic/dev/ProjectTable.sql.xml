@@ -1,0 +1,62 @@
+<SQLXml generateClass="ProjectTable" package="logic/dev" >
+
+	<ChildVector name="Columns" type="TableCol" />
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new project table entry to our database
+		</Comment>
+		<Sql>
+			insert into projtable (guid, projdataguid, TableName, Description)
+			values ( ?, ?, ?, ?)
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projdataguid" type="twine"/>
+		<Input name="TableName" type="twine"/>
+		<Input name="Description" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given project table in the database
+		</Comment>
+		<Sql>
+			update projtable
+			set TableName = ?,
+				Description = ?
+			where guid = ?
+		</Sql>
+		<Input name="TableName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a project table by guid
+		</Comment>
+		<Sql>
+			delete from projtable
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForProject" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all project tables in the database for a given project
+		</Comment>
+		<Sql>
+			select projtable.guid, project.guid, projdata.guid, projdata.DataName, TableName, projtable.Description
+			from project, projdata, projtable
+			where project.guid = projdata.projguid
+			and   projdata.guid = projtabl.projdataguid
+			order by projdata.DataName, TableName
+			where project.guid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projguid" type="twine"/>
+		<Output name="projdataguid" type="twine"/>
+		<Output name="DataName" type="twine"/>
+		<Output name="TableName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Input name="projguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

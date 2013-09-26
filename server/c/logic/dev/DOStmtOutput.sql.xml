@@ -1,0 +1,65 @@
+<SQLXml generateClass="DOStmtOutput" package="logic/dev" >
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new data object statement output entry to our database
+		</Comment>
+		<Sql>
+			insert into dostmtoutput (guid, dostmtguid, VarName, VarType)
+			values ( ?, ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="dostmtguid" type="twine"/>
+		<Input name="VarName" type="twine"/>
+		<Input name="VarType" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given data object statement output in the database
+		</Comment>
+		<Sql>
+			update dostmtoutput
+			set VarName = ?,
+				VarType = ?
+			where guid = ?
+		</Sql>
+		<Input name="VarName" type="twine"/>
+		<Input name="VarType" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a data object statement output by id
+		</Comment>
+		<Sql>
+			delete from dostmtoutput
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByStmtID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes all data object statement outputs for a given data object statement
+		</Comment>
+		<Sql>
+			delete from dostmtoutput
+			where dostmtguid = ?
+		</Sql>
+		<Input name="dostmtguid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForDOStmt" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all data object statement outputs for a given data object stmt
+		</Comment>
+		<Sql>
+			select guid, dostmtguid, VarName, VarType
+			from dostmtoutput
+			where dostmtguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="dostmtguid" type="twine"/>
+		<Output name="VarName" type="twine"/>
+		<Output name="VarType" type="twine"/>
+		<Input name="dostmtguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

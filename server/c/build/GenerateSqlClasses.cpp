@@ -346,7 +346,7 @@ void buildJSApi(twine api, twine input)
 		"\t\t\tcompletionFunction, theThis\n"
 		"\t\t){\n"
 		"\t\t\t// First build the request XML Document\n"
-		"\t\t\tvar requestDoc = qx.xml.Document.create(NULL, \"" + shortApi + "\");\n"
+		"\t\t\tvar requestDoc = qx.xml.Document.create(null, \"" + shortApi + "\");\n"
 	);
 
 	if(input == "NULL"){
@@ -361,7 +361,7 @@ void buildJSApi(twine api, twine input)
 		for(size_t i = 0; i < howMany; i++){
 			twine tmp; tmp.format("inputObj%d", i);
 			out.append( 
-				"\t\t\tif( " + tmp + " !== undefined && " + tmp + " !== NULL){\n" 
+				"\t\t\tif( " + tmp + " !== undefined && " + tmp + " !== null){\n" 
 				"\t\t\t\t" + tmp + ".createXMLElement( requestRoot );\n"
 				"\t\t\t}\n"
 			);

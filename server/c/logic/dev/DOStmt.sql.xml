@@ -1,0 +1,80 @@
+<SQLXml generateClass="DOStmt" package="logic/dev" >
+
+	<ChildVector name="DOStmtInputs" type="DOStmtInput"/>
+	<ChildVector name="DOStmtOutputs" type="DOStmtOutput"/>
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new data object statement entry to our database
+		</Comment>
+		<Sql>
+			insert into dostmt (guid, doguid, StmtName, StmtType, projdataguid, Comment, Sql)
+			values ( ?, ?, ?, ?, ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="doguid" type="twine"/>
+		<Input name="StmtName" type="twine"/>
+		<Input name="StmtType" type="twine"/>
+		<Input name="projdataguid" type="twine"/>
+		<Input name="Comment" type="twine"/>
+		<Input name="Sql" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given data object statement in the database
+		</Comment>
+		<Sql>
+			update dostmt
+			set StmtName = ?,
+				StmtType = ?,
+				projdataguid = ?,
+				Comment = ?,
+				Sql = ?
+			where guid = ?
+		</Sql>
+		<Input name="StmtName" type="twine"/>
+		<Input name="StmtType" type="twine"/>
+		<Input name="projdataguid" type="twine"/>
+		<Input name="Comment" type="twine"/>
+		<Input name="Sql" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a data object statement by id
+		</Comment>
+		<Sql>
+			delete from dostmt
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByDOID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes all data object statements for a given data object
+		</Comment>
+		<Sql>
+			delete from dostmt
+			where doguid = ?
+		</Sql>
+		<Input name="doguid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForDO" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all data object statements for a given data object
+		</Comment>
+		<Sql>
+			select guid, doguid, StmtName, StmtType, projdataguid, Comment, Sql
+			from dostmt
+			where doguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="doguid" type="twine"/>
+		<Output name="StmtName" type="twine"/>
+		<Output name="StmtType" type="twine"/>
+		<Output name="projdataguid" type="twine"/>
+		<Output name="Comment" type="twine"/>
+		<Output name="Sql" type="twine"/>
+		<Input name="doguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

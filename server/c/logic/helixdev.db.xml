@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DatabaseSetup>
+	<Comment>
+		This is the main setup file that we use to create our database.  We load this file
+		at startup and use it to ensure that our database schema is always up to date.
+		
+		Note, this file only manages the layout of our schema and not the installation of
+		any stored procedures.
+	</Comment>
+	<Tables>
+		<Table name="project">
+			<Comment>
+				This is where we define projects in our system.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="ProjName" type="varchar(64) not null"/>
+			<Column name="ShortName" type="varchar(64) not null"/>
+			<Column name="Description" type="varchar(255)"/>
+			<Column name="Deployment" type="varchar(32) not null">
+				<Comment>
+					Valid Deployment values are:
+					"C++ Standalone"
+					"C++ Apache"
+					"Java Standalone"
+					"Java War File"
+					".Net Standalone"
+					".Net IIS"
+				</Comment>
+			</Column>
+			<Column name="Location" type="varchar(255)"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_project1" unique="false">
+				<Column name="ProjName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="projapp">
+			<Comment>
+				This is the list of applications that are contained within a given project.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projguid" type="varchar(32) NOT NULL"/>
+			<Column name="AppName" type="varchar(64) not null"/>
+			<Column name="Description" type="varchar(255)"/>
+			<Column name="PackageName" type="varchar(32) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_projectapps1" unique="true">
+				<Column name="projguid"/>
+				<Column name="AppName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="projdata">
+			<Comment>
+				This is this list of database connections that a project will utilize and refer to.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projguid" type="varchar(32) NOT NULL"/>
+			<Column name="DataName" type="varchar(32) not null"/>
+			<Column name="Description" type="varchar(255)"/>
+			<Column name="DataType" type="integer NOT NULL">
+				<Comment>
+					This can be:
+					1 == Embedded SQLite3 database
+					2 == ODBC/JDBC DSN connection
+				</Comment>
+			</Column>
+			<Column name="ConnectionString" type="varchar(1024)"/>
+			<Column name="DevTimeUser" type="varchar(32)"/>
+			<Column name="DevTimePass" type="varchar(32)"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_projectdata1" unique="true">
+				<Column name="projguid"/>
+				<Column name="DataName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="projtable">
+			<Comment>
+				Defines tables that will be created and maintained for each project.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projdataguid" type="varchar(32) NOT NULL"/>
+			<Column name="TableName" type="varchar(128) not null"/>
+			<Column name="Description" type="varchar(255)"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_projecttables1" unique="true">
+				<Column name="projdataguid"/>
+				<Column name="TableName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="projcol">
+			<Comment>
+				Defines table columns for our project tables.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projtableguid" type="varchar(32) NOT NULL"/>
+			<Column name="ColName" type="varchar(128) not null"/>
+			<Column name="ColType" type="varchar(255) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_projcols1" unique="true">
+				<Column name="projtableguid"/>
+				<Column name="ColName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="dataobject">
+			<Comment>
+				Defines data objects that represent queries on our database.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projappguid" type="varchar(32) NOT NULL"/>
+			<Column name="DataObjectName" type="varchar(128) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_dataobject1" unique="true">
+				<Column name="projappguid"/>
+				<Column name="DataObjectName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="dochildvect">
+			<Comment>
+				Defines data object children relationship
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="doguid" type="varchar(32) NOT NULL"/>
+			<Column name="VectorName" type="varchar(128) not null"/>
+			<Column name="VectorType" type="varchar(128) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_dochildvect1" unique="true">
+				<Column name="doguid"/>
+				<Column name="VectorName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="dostmt">
+			<Comment>
+				Defines a data object sql statement
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="doguid" type="varchar(32) NOT NULL"/>
+			<Column name="StmtName" type="varchar(128) not null"/>
+			<Column name="StmtType" type="varchar(128) not null"/>
+			<Column name="projdataguid" type="varchar(32) not null"/>
+			<Column name="Comment" type="varchar(255)"/>
+			<Column name="Sql" type="varchar(255) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_dostmt1" unique="true">
+				<Column name="doguid"/>
+				<Column name="StmtName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="dostmtinput">
+			<Comment>
+				Defines a data object sql statement input parameter
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="dostmtguid" type="varchar(32) NOT NULL"/>
+			<Column name="VarName" type="varchar(128) not null"/>
+			<Column name="VarType" type="varchar(128) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_dostmtinput1" unique="true">
+				<Column name="dostmtguid"/>
+				<Column name="VarName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="dostmtoutput">
+			<Comment>
+				Defines a data object sql statement output result
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="dostmtguid" type="varchar(32) NOT NULL"/>
+			<Column name="VarName" type="varchar(128) not null"/>
+			<Column name="VarType" type="varchar(128) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_dostmtoutput1" unique="true">
+				<Column name="dostmtguid"/>
+				<Column name="VarName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="screen">
+			<Comment>
+				Defines screen layouts.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projappguid" type="varchar(32) NOT NULL"/>
+			<Column name="ScreenName" type="varchar(128) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_screen1" unique="true">
+				<Column name="projappguid"/>
+				<Column name="ScreenName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="api">
+			<Comment>
+				Defines server api entries.
+			</Comment>
+			<Column name="guid" type="varchar(32) not null" pk="true"/>
+			<Column name="projappguid" type="varchar(32) NOT NULL"/>
+			<Column name="ApiName" type="varchar(128) not null"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_api1" unique="true">
+				<Column name="projappguid"/>
+				<Column name="ApiName"/>
+			</Index>
+			<SqlCreate>
+			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+	</Tables>
+
+</DatabaseSetup>

@@ -10,12 +10,11 @@
 
 /* ************************************************************************
 
-#asset(dev/test.png)
-#asset(dev/*)
 #asset(dev/icon/128x128/shadow/components.png)
 #asset(dev/icon/128x128/shadow/data_gear.png)
 #asset(dev/icon/128x128/shadow/window_sidebar.png)
 #asset(dev/icon/128x128/shadow/server_client_exchange.png)
+#asset(dev/*)
 
 ************************************************************************ */
 
@@ -73,24 +72,28 @@ qx.Class.define("dev.Application",
 			tabPage.setIcon( "dev/icon/128x128/shadow/components.png" );
 			tabButton.setFont( largeFont );
 			tabButton.setIconPosition( "top" );
+			tabPage.add( new dev.proj.ProjectPage(0), {flex: 10} );
 
 			tabPage = dev.Statics.addTabPage( this.rootTabView, "My Data", false, false );
 			tabButton = tabPage.getChildControl( "button" );
 			tabPage.setIcon( "dev/icon/128x128/shadow/data_gear.png" );
 			tabButton.setFont( largeFont );
 			tabButton.setIconPosition( "top" );
+			tabPage.add( new dev.data.DataPage(0), {flex: 10} );
 
 			tabPage = dev.Statics.addTabPage( this.rootTabView, "My Screens", false, false );
 			tabButton = tabPage.getChildControl( "button" );
 			tabPage.setIcon( "dev/icon/128x128/shadow/window_sidebar.png" );
 			tabButton.setFont( largeFont );
 			tabButton.setIconPosition( "top" );
+			tabPage.add( new dev.screens.ScreensPage(0), {flex: 10} );
 
 			tabPage = dev.Statics.addTabPage( this.rootTabView, "My API's", false, false );
 			tabButton = tabPage.getChildControl( "button" );
 			tabPage.setIcon( "dev/icon/128x128/shadow/server_client_exchange.png" );
 			tabButton.setFont( largeFont );
 			tabButton.setIconPosition( "top" );
+			tabPage.add( new dev.apis.ApiPage(0), {flex: 10} );
 		}
 	}
 });

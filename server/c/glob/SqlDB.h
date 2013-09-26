@@ -126,6 +126,18 @@ class SqlDB {
 		  */
 		static int GetDataType( int sqlite3_dbtype );
 
+		/** This will begin a transaction on the current database.
+		  */
+		void BeginTransaction();
+
+		/** This will commit a transaction on the current database.
+		  */
+		void CommitTransaction();
+
+		/** This will roll-back a transaction on the current database.
+		  */
+		void RollbackTransaction();
+
 	protected:
 
 		/** This method does the work of closing our db, archiving it, and creating a new db file.

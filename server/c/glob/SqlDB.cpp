@@ -336,6 +336,69 @@ void SqlDB::ReleaseDatabase()
 	m_mutex->unlock();
 }
 
+void SqlDB::BeginTransaction()
+{
+	EnEx ee(FL, "SqlDB::BeginTransaction()");
+
+	// Note that this is not running within our mutex - so it must be done between
+	// a call to GetDatabase()/ReleaseDatabase()
+	sqlite3_stmt* stmt = NULL;
+	twine sql = "begin transaction;";
+	try {
+		check_err( sqlite3_prepare( m_db, sql(), (int)sql.length(), &stmt, NULL ) );
+		check_err( sqlite3_step( stmt ) );
+		sqlite3_finalize( stmt );
+		stmt = NULL;
+	} catch (AnException& e){
+		if(stmt != NULL){
+			sqlite3_finalize( stmt );
+		}
+		throw;
+	}
+}
+
+void SqlDB::CommitTransaction()
+{
+	EnEx ee(FL, "SqlDB::CommitTransaction()");
+
+	// Note that this is not running within our mutex - so it must be done between
+	// a call to GetDatabase()/ReleaseDatabase()
+	sqlite3_stmt* stmt = NULL;
+	twine sql = "commit transaction;";
+	try {
+		check_err( sqlite3_prepare( m_db, sql(), (int)sql.length(), &stmt, NULL ) );
+		check_err( sqlite3_step( stmt ) );
+		sqlite3_finalize( stmt );
+		stmt = NULL;
+	} catch (AnException& e){
+		if(stmt != NULL){
+			sqlite3_finalize( stmt );
+		}
+		throw;
+	}
+}
+
+void SqlDB::RollbackTransaction()
+{
+	EnEx ee(FL, "SqlDB::RollbackTransaction()");
+
+	// Note that this is not running within our mutex - so it must be done between
+	// a call to GetDatabase()/ReleaseDatabase()
+	sqlite3_stmt* stmt = NULL;
+	twine sql = "rollback transaction;";
+	try {
+		check_err( sqlite3_prepare( m_db, sql(), (int)sql.length(), &stmt, NULL ) );
+		check_err( sqlite3_step( stmt ) );
+		sqlite3_finalize( stmt );
+		stmt = NULL;
+	} catch (AnException& e){
+		if(stmt != NULL){
+			sqlite3_finalize( stmt );
+		}
+		throw;
+	}
+}
+
 
 int SqlDB::check_err( int rc )
 {

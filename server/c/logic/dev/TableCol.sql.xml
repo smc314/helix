@@ -1,0 +1,63 @@
+<SQLXml generateClass="TableCol" package="logic/dev" >
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new table column entry to our database
+		</Comment>
+		<Sql>
+			insert into projcol (guid, projtableguid, ColName, ColType )
+			values ( ?, ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projtableguid" type="twine"/>
+		<Input name="ColName" type="twine"/>
+		<Input name="ColType" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given table column in the database
+		</Comment>
+		<Sql>
+			update projcol
+			set ColName = ?,
+				ColType= ?
+			where guid = ?
+		</Sql>
+		<Input name="ColName" type="twine"/>
+		<Input name="ColType" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a table column by guid
+		</Comment>
+		<Sql>
+			delete from projcol
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByTable" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes all columns for a given table
+		</Comment>
+		<Sql>
+			delete from projcol
+			where projtableguid = ?
+		</Sql>
+		<Input name="projtableguid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForTable" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all columns for a given table 
+		</Comment>
+		<Sql>
+			select guid, projtableguid, ColName, ColType
+			from projcol
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projtableguid" type="twine"/>
+		<Output name="ColName" type="twine"/>
+		<Output name="ColType" type="twine"/>
+	</SqlStatement>
+</SQLXml>

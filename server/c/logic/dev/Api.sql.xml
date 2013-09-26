@@ -1,0 +1,51 @@
+<SQLXml generateClass="Api" package="logic/dev" >
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new Api entry to our database
+		</Comment>
+		<Sql>
+			insert into api (guid, projappguid, ApiName)
+			values ( ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projappguid" type="twine"/>
+		<Input name="ApiShortName" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given api in the database
+		</Comment>
+		<Sql>
+			update api
+			set ApiName = ?
+			where guid = ?
+		</Sql>
+		<Input name="ApiShortName" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a api by id
+		</Comment>
+		<Sql>
+			delete from api
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForApp" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all api's for a given application
+		</Comment>
+		<Sql>
+			select guid, projappguid, ApiName
+			from api
+			where projappguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projappguid" type="twine"/>
+		<Output name="ApiShortName" type="twine"/>
+		<Input name="projappguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

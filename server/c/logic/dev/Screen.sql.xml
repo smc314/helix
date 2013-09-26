@@ -1,0 +1,51 @@
+<SQLXml generateClass="Screen" package="logic/dev" >
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new screen entry to our database
+		</Comment>
+		<Sql>
+			insert into screen (guid, projappguid, ScreenName)
+			values ( ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projappguid" type="twine"/>
+		<Input name="ScrnName" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given screen in the database
+		</Comment>
+		<Sql>
+			update screen
+			set ScreenName = ?
+			where guid = ?
+		</Sql>
+		<Input name="ScrnName" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a screen by id
+		</Comment>
+		<Sql>
+			delete from screen
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForApp" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all screens for a given application
+		</Comment>
+		<Sql>
+			select guid, projappguid, ScreenName
+			from screen
+			where projappguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projappguid" type="twine"/>
+		<Output name="ScrnName" type="twine"/>
+		<Input name="projappguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

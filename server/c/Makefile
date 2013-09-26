@@ -34,6 +34,7 @@ endif
 	$(CC) $(CFLAGS) -c $< -o $@
 
 ALLOH=glob/*.o \
+	logic/dev/*.o \
 	logic/util/*.o \
 	client/HelixApi_Part1.o client/HelixApi_Part2.o
 

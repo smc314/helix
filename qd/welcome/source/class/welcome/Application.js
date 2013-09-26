@@ -11,10 +11,10 @@ Authors:
 /* ************************************************************************
 
 #asset(welcome/Helix_Cropped_1024_844.jpg)
-#asset(welcome/Helix_Cropped_256_211.jpg)
-#asset(welcome/Helix_Blue_Cropped_256_256.jpg)
-#asset(welcome/icon/256x256/shadow/toolbox.png)
 #asset(welcome/icon/256x256/shadow/astrologer.png)
+#asset(welcome/Helix_Cropped_256_211.jpg)
+#asset(welcome/icon/256x256/shadow/toolbox.png)
+#asset(welcome/Helix_Blue_Cropped_256_256.jpg)
 
 ************************************************************************ */
 
@@ -96,15 +96,15 @@ qx.Class.define("welcome.Application",
 
 			// Application Development
 			var dev = this.createButton("Development",
-				//"welcome/icon/256x256/shadow/astrologer.png", 
-				"welcome/Helix_Cropped_256_211.jpg", 
+				//"welcome/icon/256x256/shadow/astrologer.png",
+				"welcome/Helix_Cropped_256_211.jpg",
 				"/qd/dev/build/index.html");
 			this.getRoot().add(dev, {left : 20, top: 80 } );
 
 			// Administration
 			var admin = this.createButton("Administration",
-				//"welcome/icon/256x256/shadow/toolbox.png", 
-				"welcome/Helix_Blue_Cropped_256_256.jpg", 
+				//"welcome/icon/256x256/shadow/toolbox.png",
+				"welcome/Helix_Blue_Cropped_256_256.jpg",
 				"/qd/admin/build/index.html");
 			this.getRoot().add(admin, {right: 20, bottom: 80 } );
 

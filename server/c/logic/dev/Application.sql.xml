@@ -1,0 +1,79 @@
+<SQLXml generateClass="Application" package="logic/dev" >
+
+	<ChildVector name="DataObjects" type="DObject" />
+	<ChildVector name="Screens" type="Screen" />
+	<ChildVector name="Apis" type="Api" />
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new project application entry to our database
+		</Comment>
+		<Sql>
+			insert into projapp (guid, projguid, AppName, Description, PackageName)
+			values ( ?, ?, ?, ?, ?)
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="projguid" type="twine"/>
+		<Input name="AppName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="PackageName" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given project application in the database
+		</Comment>
+		<Sql>
+			update projapp
+			set AppName = ?,
+				Description = ?,
+				PackageName = ?
+			where guid = ?
+		</Sql>
+		<Input name="AppName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="PackageName" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a project application by id
+		</Comment>
+		<Sql>
+			delete from projapp
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForProject" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all project applications for a given project
+		</Comment>
+		<Sql>
+			select guid, projguid, AppName, Description, PackageName
+			from projapp
+			where projguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projguid" type="twine"/>
+		<Output name="AppName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Output name="PackageName" type="twine"/>
+		<Input name="projguid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects a single project application by id
+		</Comment>
+		<Sql>
+			select guid, projguid, AppName, Description, PackageName
+			from projapp
+			where guid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="projguid" type="twine"/>
+		<Output name="AppName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Output name="PackageName" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

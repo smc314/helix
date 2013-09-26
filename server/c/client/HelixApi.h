@@ -11,16 +11,28 @@
 using namespace SLib;
 
 // We need references to every single data object class here:
+#include <Api.h>
+#include <Application.h>
+#include <DOChild.h>
+#include <DOStmt.h>
+#include <DOStmtInput.h>
+#include <DOStmtOutput.h>
+#include <DObject.h>
 #include <HitMap.h>
 #include <LRTask.h>
 #include <LogMessageFilter.h>
 #include <LogObj.h>
 #include <LogOn.h>
 #include <LogSettings.h>
+#include <Project.h>
+#include <ProjectData.h>
+#include <ProjectTable.h>
 #include <SQLStatement.h>
 #include <SchedItem.h>
+#include <Screen.h>
+#include <TableCol.h>
 //using namespace Helix::Logic::admin;
-//using namespace Helix::Logic::dev;
+using namespace Helix::Logic::dev;
 //using namespace Helix::Logic::test;
 using namespace Helix::Logic::util;
 
@@ -129,6 +141,21 @@ class HelixApi : public HttpClient
 	/* with the Hub.                                                                   */
 	/* ******************************************************************************* */
 	public:
+
+		/** This method will call the /logic/dev/GetProject
+		  * server API.
+		  */
+		xmlDocPtr GetProject( const Project& dataObj );
+
+		/** This method will call the /logic/dev/SaveProject
+		  * server API.
+		  */
+		xmlDocPtr SaveProject( const Project& dataObj );
+
+		/** This method will call the /logic/dev/GetProjectList
+		  * server API.
+		  */
+		xmlDocPtr GetProjectList( );
 
 		/** This method will call the /logic/util/GetLogMsgCount
 		  * server API.

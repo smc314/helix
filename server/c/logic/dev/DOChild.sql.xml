@@ -1,0 +1,65 @@
+<SQLXml generateClass="DOChild" package="logic/dev" >
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new data object child entry to our database
+		</Comment>
+		<Sql>
+			insert into dochildvect (guid, doguid, VectorName, VectorType)
+			values ( ?, ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="doguid" type="twine"/>
+		<Input name="VectorName" type="twine"/>
+		<Input name="VectorType" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given data object child in the database
+		</Comment>
+		<Sql>
+			update dochildvect
+			set VectorName = ?,
+				VectorType = ?
+			where guid = ?
+		</Sql>
+		<Input name="VectorName" type="twine"/>
+		<Input name="VectorType" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a data object child by id
+		</Comment>
+		<Sql>
+			delete from dochildvect
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByDOID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes all data object children for the given data object id
+		</Comment>
+		<Sql>
+			delete from dochildvect
+			where doguid = ?
+		</Sql>
+		<Input name="doguid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAllForDO" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all data objects children for a given data object
+		</Comment>
+		<Sql>
+			select guid, doguid, VectorName, VectorType
+			from dochildvect
+			where doguid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="doguid" type="twine"/>
+		<Output name="VectorName" type="twine"/>
+		<Output name="VectorType" type="twine"/>
+		<Input name="doguid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

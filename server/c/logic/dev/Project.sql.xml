@@ -1,0 +1,83 @@
+<SQLXml generateClass="Project" package="logic/dev" >
+
+	<ChildVector name="Apps" type="Application" />
+	<ChildVector name="Data" type="ProjectData" />
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This adds a new project entry to our database
+		</Comment>
+		<Sql>
+			insert into project (guid, ProjName, ShortName, Description, Deployment, Location )
+			values ( ?, ?, ?, ?, ?, ?)
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="ProjName" type="twine"/>
+		<Input name="ShortName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="Deployment" type="twine"/>
+		<Input name="Location" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This updates the settings for a given project in the database
+		</Comment>
+		<Sql>
+			update project
+			set ProjName = ?,
+				ShortName = ?,
+				Description = ?,
+				Deployment = ?,
+				Location = ?
+			where guid = ?
+		</Sql>
+		<Input name="ProjName" type="twine"/>
+		<Input name="ShortName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="Deployment" type="twine"/>
+		<Input name="Location" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This removes a project by guid
+		</Comment>
+		<Sql>
+			delete from project
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects all projects in the database
+		</Comment>
+		<Sql>
+			select guid, ProjName, ShortName, Description, Deployment, Location
+			from project
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="ProjName" type="twine"/>
+		<Output name="ShortName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Output name="Deployment" type="twine"/>
+		<Output name="Location" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This selects a single project by id
+		</Comment>
+		<Sql>
+			select guid, ProjName, ShortName, Description, Deployment, Location
+			from project
+			where guid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="ProjName" type="twine"/>
+		<Output name="ShortName" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Output name="Deployment" type="twine"/>
+		<Output name="Location" type="twine"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

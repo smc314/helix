@@ -26,6 +26,50 @@ using namespace Helix::Client;
 /* Edits to this file will be overwritten during the next compile.               */
 /* ***************************************************************************** */
 
+xmlDocPtr HelixApi::GetProject( const Project& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetProject( const Project& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetProject", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/dev/GetProject");
+}
+
+xmlDocPtr HelixApi::SaveProject( const Project& dataObj )
+{
+	EnEx ee(FL, "HelixApi::SaveProject( const Project& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"SaveProject", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/dev/SaveProject");
+}
+
+xmlDocPtr HelixApi::GetProjectList( )
+{
+	EnEx ee(FL, "HelixApi::GetProjectList( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetProjectList", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/dev/GetProjectList");
+}
+
 xmlDocPtr HelixApi::GetLogMsgCount( const LogMessageFilter& dataObj )
 {
 	EnEx ee(FL, "HelixApi::GetLogMsgCount( const LogMessageFilter& dataObj )");

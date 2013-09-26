@@ -525,6 +525,52 @@ qx.Class.define("welcome.Api", {
 
 
 
+		/** This function will call the /logic/dev/GetProject
+		  * server API.
+		  */
+		GetProject : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetProject");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			welcome.Api.SendRequest(requestDoc, "/logic/dev/GetProject",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/dev/SaveProject
+		  * server API.
+		  */
+		SaveProject : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "SaveProject");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			welcome.Api.SendRequest(requestDoc, "/logic/dev/SaveProject",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/dev/GetProjectList
+		  * server API.
+		  */
+		GetProjectList : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetProjectList");
+
+			// Now send the request to the server.
+			welcome.Api.SendRequest(requestDoc, "/logic/dev/GetProjectList",
+				completionFunction, theThis);
+		},
+
 		/** This function will call the /logic/util/GetLogMsgCount
 		  * server API.
 		  */
@@ -532,7 +578,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetLogMsgCount");
+			var requestDoc = qx.xml.Document.create(null, "GetLogMsgCount");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -548,7 +594,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "CloseConnection");
+			var requestDoc = qx.xml.Document.create(null, "CloseConnection");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/CloseConnection",
@@ -562,7 +608,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetAllLayouts");
+			var requestDoc = qx.xml.Document.create(null, "GetAllLayouts");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/GetAllLayouts",
@@ -576,7 +622,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetLogSettings");
+			var requestDoc = qx.xml.Document.create(null, "GetLogSettings");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/GetLogSettings",
@@ -590,7 +636,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetLogMessagesByRange");
+			var requestDoc = qx.xml.Document.create(null, "GetLogMessagesByRange");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -606,7 +652,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetHitMap");
+			var requestDoc = qx.xml.Document.create(null, "GetHitMap");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/GetHitMap",
@@ -620,7 +666,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "CleanoutLRTask");
+			var requestDoc = qx.xml.Document.create(null, "CleanoutLRTask");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -636,7 +682,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetAllLRTasks");
+			var requestDoc = qx.xml.Document.create(null, "GetAllLRTasks");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/GetAllLRTasks",
@@ -650,7 +696,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "SaveLogMsg");
+			var requestDoc = qx.xml.Document.create(null, "SaveLogMsg");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -666,7 +712,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "FindLogMessage");
+			var requestDoc = qx.xml.Document.create(null, "FindLogMessage");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -682,7 +728,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "UpdateLogSettings");
+			var requestDoc = qx.xml.Document.create(null, "UpdateLogSettings");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -698,7 +744,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetProfile");
+			var requestDoc = qx.xml.Document.create(null, "GetProfile");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/GetProfile",
@@ -712,7 +758,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetOneLRTask");
+			var requestDoc = qx.xml.Document.create(null, "GetOneLRTask");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -728,7 +774,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "SwitchServerConnection");
+			var requestDoc = qx.xml.Document.create(null, "SwitchServerConnection");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -744,7 +790,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "ExecuteGenericSQL");
+			var requestDoc = qx.xml.Document.create(null, "ExecuteGenericSQL");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -760,7 +806,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetLogMessages");
+			var requestDoc = qx.xml.Document.create(null, "GetLogMessages");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
@@ -776,7 +822,7 @@ qx.Class.define("welcome.Api", {
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(NULL, "GetLogFiles");
+			var requestDoc = qx.xml.Document.create(null, "GetLogFiles");
 
 			// Now send the request to the server.
 			welcome.Api.SendRequest(requestDoc, "/logic/util/GetLogFiles",
