@@ -15,44 +15,44 @@ CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	SystemProperties.o \
-	GetLogMsgCount.o \
-	HitMap.o \
-	SchedItem.o \
-	LogOn.o \
-	CloseConnection.o \
-	LRTask.o \
-	LogMessageFilter.o \
-	GetAllLayouts.o \
-	GetLogSettings.o \
-	GetLogMessagesByRange.o \
-	SQLStatement.o \
-	GetHitMap.o \
 	CleanoutLRTask.o \
+	CloseConnection.o \
 	ConnectToServer.o \
+	ExecuteGenericSQL.o \
+	FindLogMessage.o \
+	GetAllLayouts.o \
 	GetAllLRTasks.o \
-	SaveLogMsg.o \
+	GetHitMap.o \
+	GetLogFiles.o \
+	GetLogMessages.o \
+	GetLogMessagesByRange.o \
+	GetLogMsgCount.o \
+	GetLogSettings.o \
+	GetOneLRTask.o \
+	GetProfile.o \
+	HitMap.o \
+	HitMap_test.o \
+	LogMessageFilter.o \
+	LogMessageFilter_test.o \
 	LogObj.o \
 	LogObj_test.o \
+	LogOn.o \
+	LogOn_test.o \
+	LogSettings.o \
+	LogSettings_test.o \
+	LRTask.o \
+	LRTask_test.o \
+	SaveLayout.o \
+	SaveLogMsg.o \
+	SchedItem.o \
+	SchedItem_test.o \
+	SQLStatement.o \
 	SQLStatement_test.o \
 	Statics.o \
-	FindLogMessage.o \
-	LogSettings_test.o \
-	UpdateLogSettings.o \
-	GetProfile.o \
-	GetOneLRTask.o \
-	LRTask_test.o \
-	UserProperties.o \
 	SwitchServerConnection.o \
-	LogMessageFilter_test.o \
-	ExecuteGenericSQL.o \
-	LogSettings.o \
-	HitMap_test.o \
-	GetLogMessages.o \
-	SchedItem_test.o \
-	SaveLayout.o \
-	GetLogFiles.o \
-	LogOn_test.o
+	SystemProperties.o \
+	UpdateLogSettings.o \
+	UserProperties.o
 
 all: $(DOTOH)
 	cd test && $(GMAKE) -f Makefile all

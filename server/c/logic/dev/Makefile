@@ -15,33 +15,33 @@ CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	DObject.o \
-	DOStmt.o \
-	Screen_test.o \
-	Project_test.o \
-	ProjectData_test.o \
-	Application_test.o \
-	Api_test.o \
-	Screen.o \
-	GetProject.o \
-	DOStmtInput_test.o \
-	Project.o \
-	DOChild_test.o \
-	DOStmtOutput_test.o \
-	TableCol_test.o \
-	DOStmt_test.o \
-	ProjectTable.o \
-	DOStmtInput.o \
-	ProjectData.o \
 	Api.o \
-	DObject_test.o \
+	Api_test.o \
 	Application.o \
-	SaveProject.o \
-	GetProjectList.o \
+	Application_test.o \
+	DObject.o \
+	DObject_test.o \
 	DOChild.o \
+	DOChild_test.o \
+	DOStmt.o \
+	DOStmt_test.o \
+	DOStmtInput.o \
+	DOStmtInput_test.o \
+	DOStmtOutput.o \
+	DOStmtOutput_test.o \
+	GetProject.o \
+	GetProjectList.o \
+	Project.o \
+	Project_test.o \
+	ProjectData.o \
+	ProjectData_test.o \
+	ProjectTable.o \
 	ProjectTable_test.o \
+	SaveProject.o \
+	Screen.o \
+	Screen_test.o \
 	TableCol.o \
-	DOStmtOutput.o
+	TableCol_test.o
 
 all: $(DOTOH)
 	cd test && $(GMAKE) -f Makefile all

@@ -12,6 +12,7 @@ Authors: Steven M. Cherry
 #asset(dev/icon/16x16/plain/components.png)
 #asset(dev/icon/16x16/plain/delete2.png)
 #asset(dev/icon/16x16/plain/components.png)
+#asset(dev/icon/16x16/plain/components.png)
 ************************************************************************ */
 qx.Class.define("dev.proj.ProjectPage", {
 	extend: qx.ui.container.Composite,

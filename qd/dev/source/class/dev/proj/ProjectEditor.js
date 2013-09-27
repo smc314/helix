@@ -8,7 +8,10 @@
 
 ************************************************************************ */
 /* ************************************************************************
+#asset(dev/icon/16x16/plain/refresh.png)
 #asset(dev/icon/64x64/shadow/control_panel2.png)
+#asset(dev/icon/16x16/plain/barcode.png)
+#asset(dev/icon/16x16/plain/control_panel2.png)
 ************************************************************************ */
 qx.Class.define("dev.proj.ProjectEditor", {
 	extend: dev.ObjectEdit,
@@ -39,7 +42,7 @@ qx.Class.define("dev.proj.ProjectEditor", {
 
 			// Then add any other actions that you would like here:
 			var part = new qx.ui.toolbar.Part;
-			
+
 			dev.Statics.addToToolbarWithShortcut( part, "dev/icon/16x16/plain/refresh.png",
 				"Reload the project from the filesystem", this.doReload, this, this, null, "Reload");
 
@@ -66,18 +69,25 @@ qx.Class.define("dev.proj.ProjectEditor", {
 		  */
 		createMainTab: function(tab_page)
 		{
-			var live = this.createOverviewLayout( tab_page, "Helix Project", 
+			var live = this.createOverviewLayout( tab_page, "Helix Project",
 				"dev/icon/64x64/shadow/control_panel2.png",
 				this.m_object_id === 0 ? "NEW1" : this.m_object_id.getProjName() );
 
 			this.addStatusHeading("General");
-			this.overview_label1 = this.addStatusItem("Overview Label1:", 
+			this.overview_label1 = this.addStatusItem("Overview Label1:",
 				"dev/icon/16x16/plain/barcode.png");
 
 
 			dev.LayoutEngine.renderLayout( this,
 				this.getDynamicLayout("ProjectEditor.MainPage.xml"),
 				live );
+
+			dev.Statics.addToDropDown( this.DeploymentField, "C++ Standalone", "C++ Standalone" );
+			dev.Statics.addToDropDown( this.DeploymentField, "C++ Apache", "C++ Apache" );
+			dev.Statics.addToDropDown( this.DeploymentField, "Java Standalone", "Java Standalone" );
+			dev.Statics.addToDropDown( this.DeploymentField, "Java War File", "Java War File" );
+			dev.Statics.addToDropDown( this.DeploymentField, ".Net Standalone", ".Net Standalone" );
+			dev.Statics.addToDropDown( this.DeploymentField, ".Net IIS", ".Net IIS" );
 
 		},
 
@@ -108,7 +118,7 @@ qx.Class.define("dev.proj.ProjectEditor", {
 			this.dataObject.setLocation( "./" );
 			this.dataObject.setProjName( "New Project" );
 			this.dataObject.setShortName( "proj1" );
-			
+
 			var firstApp = new dev.sqldo.Application();
 			this.dataObject.Apps.push( firstApp );
 			firstApp.setGuid( "NEW" );
@@ -161,7 +171,7 @@ qx.Class.define("dev.proj.ProjectEditor", {
 			/* ******************************************************* */
 			/* Handle the overview form here directly.                 */
 			/* ******************************************************* */
-			this.overview_label1.setLabel("Overview Label1: " + 
+			this.overview_label1.setLabel("Overview Label1: " +
 				this.dataObject.getProjName());
 
 			/* ******************************************************* */
@@ -223,7 +233,7 @@ qx.Class.define("dev.proj.ProjectEditor", {
 					this.isNewObject = false;
 
 					// Updates our tab name, and the overview name
-					this.resetTabName( this.dataObject.getTName() ); 
+					this.resetTabName( this.dataObject.getTName() );
 
 					this.loadDataIntoForm(); // Gets all of our overview labels
 
