@@ -1,37 +1,44 @@
 <VerticalBoxLayout spacing="0" flex="1">
-	<GroupBox legend="Second tab page description">
+	<GroupBox legend="Project Data Sources" flex="1">
+		<StandardTable varName="dsTable" flex="1">
+			<Column title="Name" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Description" width="1*" minWidth="60"/>
+			<Column title="Type" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Connection String" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Dev User" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Dev Pass" width="1*" minWidth="60" maxWidth="100"/>
+		</StandardTable>
+	</GroupBox>
+	<GroupBox legend="Data Source Details" flex="3">
 		<FieldArea columns="2" first="80" second="80">
 			<DoubleField 
-				varName1="varName4Field" label1="First Label:" type1="TextField"
-				tooltip1="First field tooltip if required"
-				verify1="true" verify1type="string" verify1min="1" verify1max="4"
-				upper1="true" required1="true"
-				varName2="varName5Field" label2="Second Label:" type2="TextField"
-				tooltip2="Second field tooltip if required"
-				verify2="true" verify2type="string" verify2min="1" verify2max="4"
-				upper2="true" required2="true"
+				varName1="DSNameField" label1="Name:" type1="TextField"
+				tooltip1="Data Source Name - The name by which the Data Objects referr to this Data Source."
+				verify1="true" verify1type="string" verify1min="1" verify1max="32"
+				upper1="false" required1="true"
+
+				varName2="DSTypeField" label2="Type:" type2="ComboBox"
+				tooltip2="Data Source Type - determines which code is generated/used for SQL Statements for this source."
 			/>
 			<SpanField 
-				varName1="varName6Field" label1="Third Label:" type1="TextField"
-				tooltip1="This field goes all the way across both columns."
+				varName1="DSDescriptionField" label1="Description:" type1="TextField"
+				tooltip1="A description for the given data source.."
 			/>
-			<RadioGroup3 groupName="radioGroup2VarName"
-				varName1="firstRadio2Field" label1="First Radio Choice"
-				varName2="secondRadio2Field" label2="Second Radio Choice"
-				varName3="thirdRadio2Field" label3="Third Radio Choice"
+			<SpanField 
+				varName1="DSConnectionField" label1="Connection:" type1="TextField"
+				tooltip1="For SQLite3 sources - this is the name of the database, for ODBC/JDBC this is the full connection string we'll use to connect to the data source."
 			/>
-			<SingleCheck varName1="singleCheck2Field" label1="Checkbox Option"
+			<DoubleField 
+				varName1="DSDevUserField" label1="Dev User:" type1="TextField"
+				tooltip1="At development time, the SDK will use this to connect to the data source.  This is not used at run-time."
+				verify1="true" verify1type="string" verify1min="1" verify1max="32"
+				upper1="false" required1="false"
+
+				varName2="DSDevPassField" label2="Dev Pass:" type2="PasswordField"
+				tooltip2="At development time, the SDK will use this to connect to the data source.  This is not used at run-time."
+				verify2="true" verify2type="string" verify2min="1" verify2max="32"
+				upper2="false" required2="false"
 			/>
 		</FieldArea>
-		<Label text="Standalone Label" paddingTop="3"/>
-		<TextArea varName="textArea2Field" flex="3" wrap="true" allowGrowX="true" allowGrowY="true"/>
-	</GroupBox>
-	<GroupBox legend="Table Information Description" flex="1">
-		<StandardTable varName="tableName2" flex="1">
-			<Column title="Column 1 Title" width="1*" minWidth="60" maxWidth="100"/>
-			<Column title="Column 2 Title" width="1*" minWidth="60" maxWidth="100"/>
-			<Column title="Column 3 Title" width="1*" minWidth="60" maxWidth="100"/>
-			<Column title="Column 4 Title" width="1*" minWidth="60" maxWidth="100"/>
-		</StandardTable>
 	</GroupBox>
 </VerticalBoxLayout>
