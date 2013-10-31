@@ -15,30 +15,27 @@
  *
  * @lint ignoreUndefined(simulator)
  */
-qx.Class.define("dev.simulation.DemoSimulation", {
+qx.Class.define("dev.simulation.DemoSimulation",
+{
+	extend : simulator.unit.TestCase,
+	members :
+	{
+		/*
+		---------------------------------------------------------------------------
+		  TESTS
+		---------------------------------------------------------------------------
+		*/
 
-  extend : simulator.unit.TestCase,
+		/** Check if a widget is present (part of the DOM) */
+		testButtonPresent : function() {
+			this.assertNotNull(this.getSimulation().getWidgetOrNull("qxh=qx.ui.form.Button"), "Button widget not present!");
+		},
 
-  members :
-  {
-    /*
-    ---------------------------------------------------------------------------
-      TESTS
-    ---------------------------------------------------------------------------
-    */
-
-    /** Check if a widget is present (part of the DOM) */
-    testButtonPresent : function()
-    {
-      this.assertNotNull(this.getSimulation().getWidgetOrNull("qxh=qx.ui.form.Button"), "Button widget not present!");
-    },
-
-    /** Click a button and check if an alert box pops up */
-    testButtonClick : function()
-    {
-      this.getQxSelenium().qxClick("qxh=qx.ui.form.Button");
-      this.assertEquals("true", String(this.getQxSelenium().isAlertPresent()));
-    }
-  }
-
+		/** Click a button and check if an alert box pops up */
+		testButtonClick : function()
+		{
+			this.getQxSelenium().qxClick("qxh=qx.ui.form.Button");
+			this.assertEquals("true", String(this.getQxSelenium().isAlertPresent()));
+		}
+	}
 });

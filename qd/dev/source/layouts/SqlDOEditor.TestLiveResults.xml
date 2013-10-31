@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.TestLiveResults.xml">
+	<GroupBox flex="1">
+		<HorizontalBoxLayout flex="1">
+			<VerticalBoxLayout paddingTop="20">
+				<Button varName="liveResultsCompare" icon="dash/icon/16x16/plain/scales.png"/>
+				<Button varName="liveResultsSave" icon="dash/icon/16x16/plain/floppy_disk_yellow.png"/>
+			</VerticalBoxLayout>
+			<StandardTable varName="liveResultsTable" flex="1">
+				<Column title="Row" width="1*" minWidth="50"/>
+			</StandardTable>
+		</HorizontalBoxLayout>
+	</GroupBox>
+</VerticalBoxLayout>

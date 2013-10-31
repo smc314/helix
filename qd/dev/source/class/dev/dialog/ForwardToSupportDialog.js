@@ -7,12 +7,12 @@ License: The MIT License (MIT)
 Authors: Steven M. Cherry
 
 ************************************************************************ */
+
 /* ************************************************************************
 #asset(dev/icon/64x64/shadow/user_headset.png)
 #asset(dev/icon/16x16/plain/download.png)
 #asset(dev/icon/16x16/plain/server_from_client.png)
 ************************************************************************ */
-
 
 /** This class defines a dialog that presents choice for the user in how they want to forward
   * something to Ivory Support.  They can either download that file and e-mail it to us, or
@@ -33,63 +33,56 @@ Authors: Steven M. Cherry
   * choose to do any clean-up, listen for the forwardFinished event, and that's when you'll know it's
   * ok to clean things up.
   */
-qx.Class.define("dev.dialog.ForwardToSupportDialog", {
+qx.Class.define("dev.dialog.ForwardToSupportDialog",
+{
 	extend : dev.dialog.CancelDialog,
 
 	/** You may pass in window title, icon, and label values.
 	  */
-	construct : function ( forwardToSupportFileName ) {
+	construct : function(forwardToSupportFileName)
+	{
 		this.forwardFile = forwardToSupportFileName;
 		this.icon = "dev/icon/64x64/shadow/user_headset.png";
-		this.label = "If your Ivory Director server has internet connectivity, you can " +
-			"choose the 'Use Direct Send' button below, and we will send the contents " +
-			"directly to Ivory Support using an encrypted connection.<br/>" +
-			"<p>" +
-			"If you can't use the Direct Send option because of firewall restrictions, " +
-			"use the Download Zip option, and your browser will download a zip file with " +
-			"the contents that you can then e-mail or otherwise upload to support.<br/>" +
-			"<p>" +
-			"Ivory Support can be reached here: <a href=\"mailto:support@gtsoftware.com?Subject=Ivory%20Director%20Support%20Bundle\">support@gtsoftware.com</a>";
-
+		this.label = "If your Ivory Director server has internet connectivity, you can " + "choose the 'Use Direct Send' button below, and we will send the contents " + "directly to Ivory Support using an encrypted connection.<br/>" + "<p>" + "If you can't use the Direct Send option because of firewall restrictions, " + "use the Download Zip option, and your browser will download a zip file with " + "the contents that you can then e-mail or otherwise upload to support.<br/>" + "<p>" + "Ivory Support can be reached here: <a href=\"mailto:support@gtsoftware.com?Subject=Ivory%20Director%20Support%20Bundle\">support@gtsoftware.com</a>";
 
 		// Call the parent constructor:
-		this.base( arguments, "Forward to Support");
+		this.base(arguments, "Forward to Support");
 
 		// Change the name of the "Cancel" button to "Close"
-		this.cancel_btn.setLabel( "Close" );
+		this.cancel_btn.setLabel("Close");
 
 		// Add our extra buttons:
-		this.downloadBtn = this.addButton( "Download Zip", "dev/icon/16x16/plain/download.png" );
-		this.forwardBtn = this.addButton( "Use Direct Send", "dev/icon/16x16/plain/server_from_client.png" );
-
-		this.downloadBtn.addListener( "execute", this.handleDownload, this );
-		this.forwardBtn.addListener( "execute", this.handleForward, this );
+		this.downloadBtn = this.addButton("Download Zip", "dev/icon/16x16/plain/download.png");
+		this.forwardBtn = this.addButton("Use Direct Send", "dev/icon/16x16/plain/server_from_client.png");
+		this.downloadBtn.addListener("execute", this.handleDownload, this);
+		this.forwardBtn.addListener("execute", this.handleForward, this);
 
 		// Add our seperate iframe for file downloads
 		this._dlFrame = new qx.ui.embed.Iframe("");
-		this.add( this._dlFrame );
-		this._dlFrame.set({width: 0, height: 0, decorator: null});
-
-		this.addListener( "close", function(event){
-			this.fireEvent( "forwardFinished" );
-		}, this );
-
+		this.add(this._dlFrame);
+		this._dlFrame.set(
+		{
+			width : 0,
+			height : 0,
+			decorator : null
+		});
+		this.addListener("close", function(event) {
+			this.fireEvent("forwardFinished");
+		}, this);
 	},
-
 	events : {
 		/** When this dialog is closed by the user, we'll fire this event so that you can handle
 		  * any type of cleanup of the support bundles that is required.
 		  */
 		forwardFinished : "qx.event.type.Event"
-
 	},
-
-	members : {
-
+	members :
+	{
 		/** This method is used to allow child classes to override the size
 		  * of this dialog box.
 		  */
-		doSetSpace : function () {
+		doSetSpace : function()
+		{
 			this.setWidth(400);
 			this.setHeight(300);
 		},
@@ -97,36 +90,30 @@ qx.Class.define("dev.dialog.ForwardToSupportDialog", {
 		/** This method is used to allow child classes to add objects to our
 		  * main layout.
 		  */
-		doFormLayout : function ( layout ) {
-			var a1 = new qx.ui.basic.Atom(this.label, this.icon );
-			a1.setRich( true );
+		doFormLayout : function(layout)
+		{
+			var a1 = new qx.ui.basic.Atom(this.label, this.icon);
+			a1.setRich(true);
 			layout.add(a1);
-
 		},
-
-		handleDownload: function() {
+		handleDownload : function()
+		{
 			var url = "/forwardtosupport/" + this.forwardFile;
-			if(this._dlFrame.getSource() === url){
+			if (this._dlFrame.getSource() === url) {
 				this._dlFrame.resetSource();
 			}
-			this._dlFrame.setSource( url );
+			this._dlFrame.setSource(url);
 		},
-
-		handleForward: function() {
+		handleForward : function()
+		{
 			var fileObj = new dev.sqldo.SupportBundle;
-			fileObj.setFileName( this.forwardFile );
-			dev.Api.ForwardFileToSupport( fileObj, function(response) {
-				dev.Statics.doAlertGreen(
-					"Zip file has been sent to Ivory Support.",
-					"Direct Send Successful."
-				);
-			}, this );
+			fileObj.setFileName(this.forwardFile);
+			dev.Api.ForwardFileToSupport(fileObj, function(response) {
+				dev.Statics.doAlertGreen("Zip file has been sent to Ivory Support.", "Direct Send Successful.");
+			}, this);
 		}
-
 	},
-
 	destruct : function() {
-		this._disposeObjects( "downloadBtn", "forwardBtn", "_dlFrame" );
+		this._disposeObjects("downloadBtn", "forwardBtn", "_dlFrame");
 	}
-
 });

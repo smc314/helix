@@ -13,28 +13,24 @@
  */
 qx.Class.define("dev.LinkCellRenderer",
 {
-  extend : qx.ui.table.cellrenderer.Default,
+	extend : qx.ui.table.cellrenderer.Default,
 
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
+	/*
+	*****************************************************************************
+	   MEMBERS
+	*****************************************************************************
+	*/
+	members :
+	{
+		// overridden
+		_getContentHtml : function(cellInfo)
+		{
+			return "<a href=\"/DownloadBuildStatusFile?historyid=" + this.buildHistoryID + "&fileName=" + cellInfo.value + "\">" + cellInfo.value + "</a>";
 
-  members :
-  {
-    // overridden
-    _getContentHtml : function(cellInfo) {
-    	return "<a href=\"/DownloadBuildStatusFile?historyid=" +
-				this.buildHistoryID + "&fileName=" + cellInfo.value +
-				"\">" + cellInfo.value + "</a>";
-      //return qx.html.String.escape(this._formatValue(cellInfo));
-    },
-
-	setBuildHistoryID : function(id){
-		this.buildHistoryID = id;
+			//return qx.html.String.escape(this._formatValue(cellInfo));
+		},
+		setBuildHistoryID : function(id) {
+			this.buildHistoryID = id;
+		}
 	}
-
-
-  }
 });

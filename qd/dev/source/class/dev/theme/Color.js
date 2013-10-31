@@ -7,12 +7,10 @@
    Authors:
 
 ************************************************************************ */
-
 qx.Theme.define("dev.theme.Color",
 {
-  extend : qx.theme.modern.Color,
+	extend : qx.theme.modern.Color,
+	colors : {
 
-  colors :
-  {
-  }
+	}
 });

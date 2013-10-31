@@ -37,7 +37,7 @@
   "let" :
   {
     "APPLICATION"  : "dev",
-    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-2.0.2-sdk",
+    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-3.0-sdk",
     "QXTHEME"      : "dev.theme.Theme",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
     "LOCALES"      : [ "en" ],
@@ -50,36 +50,37 @@
 
   "jobs" :
   {
-    // Uncomment the following entry to add a contrib or library to your
-    // project; make sure to adapt the path to the Manifest.json; if you are
-    // using a contrib: library, it will be downloaded into the path specified
-    // by the 'cache/downloads' config key
-    /*
-    "libraries" : 
-    {
-      "library" :
-      [
-        {
-          "manifest" : "contrib://SkeletonApplication/trunk/Manifest.json"
-        }
-      ]
-    }
-    */
+	"pretty" :
+	{
+		"pretty-print" : {
+			"general" :
+			{
+				"indent-string" : "\t"
+			},
+			"comments" :
+			{
+				"block" :
+				{
+					"add" : true
+				},
+				"trailing" :
+				{
+					"keep-column" : false,
+					"comment-cols" : [50,70,90],
+					"padding" : "  "
+				}
+			},
+			"code" :
+			{
+				"align-with-curlies" : false,
+				"open-curly" :
+				{
+					"newline-before" : "m",
+					"indent-before" : false
+				}
+			}
+		}
+	}
 
-    // If you want to tweak a job setting, see the following sample where
-    // the "format" feature of the "build-script" job is overridden.
-    // To see a list of available jobs, invoke 'generate.py x'.
-	/*
-    ,"build-script" :
-    {
-      "compile-options" : 
-      {
-        "code" :
-        {
-          "format" : false
-        }
-      }
-    }
-    */
   }
 }

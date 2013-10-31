@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.SqlMetaPage.xml">
+	<VerticalSplitPane leftsize="1" rightsize="1" flex="1">
+		<VerticalSplitPaneTop>
+			<VerticalBoxLayout spacing="0" flex="1">
+				<GroupBox legend="Results Metadata" flex="1">
+					<HorizontalBoxLayout flex="1">
+						<VerticalBoxLayout paddingTop="20">
+							<Button varName="ioFieldsCopyFromMeta2" icon="dash/icon/16x16/plain/objects_transform.png"/>
+						</VerticalBoxLayout>
+						<StandardTable varName="stmtMetaTable" flex="1">
+							<Column title="Column Position" width="1*" minWidth="50" maxWidth="120"/>
+							<Column title="Column Name" width="1*" minWidth="50"/>
+							<Column title="Data Type" width="1*" minWidth="50"/>
+						</StandardTable>
+					</HorizontalBoxLayout>
+				</GroupBox>
+			</VerticalBoxLayout>
+		</VerticalSplitPaneTop>
+		<VerticalSplitPaneBottom>
+			<VerticalBoxLayout spacing="0" flex="1">
+				<GroupBox legend="Results Data" flex="1">
+					<StandardTable varName="stmtResultsTable" flex="1">
+						<Column title="Row" width="1*" minWidth="50"/>
+					</StandardTable>
+				</GroupBox>
+			</VerticalBoxLayout>
+		</VerticalSplitPaneBottom>
+	</VerticalSplitPane>
+</VerticalBoxLayout>
