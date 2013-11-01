@@ -7,127 +7,126 @@ License: The MIT License (MIT)
 Authors: Steven M. Cherry
 
 ************************************************************************ */
-
 /* ************************************************************************
 ************************************************************************ */
-qx.Class.define("dev.test.TestStatics",
-{
-	type : "static",
-	statics :
-	{
+qx.Class.define("dev.test.TestStatics", {
+
+	type: "static",
+
+	statics: {
+
 		/** We need a hand-full of synchronous requests to go back and forth to the server.  We
 		 * re-implement dev.Api.SendRequest in order to accomplish this.
 		 */
-		SendRequest : function(requestDoc, requestName)
-		{
+		SendRequest : function (requestDoc, requestName){
+
 			var resp = null;
 			var req = new qx.bom.request.Xhr;
-			req.onreadystatechange = qx.lang.Function.bind(function()
-			{
-				if (req.readyState != 4) {
+			req.onreadystatechange = qx.lang.Function.bind(function() {
+				if(req.readyState != 4){
 					return;
 				}
-				if (!req.responseXML)
-				{
+				if(!req.responseXML){
 					dev.Statics.doAlert("Server is not responding.");
 					return;
 				}
 				resp = req.responseXML.documentElement;
-				if (dev.Api.returnRequiresDB(resp))
-				{
+
+				if(dev.Api.returnRequiresDB(resp)){
 					dev.Statics.doAlert("No DB Connection Available.  Log in in the real app, then run this test again.");
 					return;
 				}
-				if (dev.Api.returnHasErrors(resp, true, null, null)) {
+				if(dev.Api.returnHasErrors(resp, true, null, null)){
 					return;
 				}
 			});
-			req.open("POST", requestName, false);         // don't use async
+			req.open("POST", requestName, false); // don't use async
 			req.send(dev.Statics.xmlDocToString(requestDoc));
 			return resp;
 		},
-		SetServerConnection : function(host, port, user, pass)
-		{
+
+		SetServerConnection : function( host, port, user, pass) {
 			var serverMenu = qx.core.Init.getApplication().serverMenu;
 			var menu = serverMenu.getMenu();
 			var children = menu.getChildren();
-
 			// push the "New Connection..." button:
-			for (var i = 0, l = children.length; i < l; i++) {
-				if (children[i].getLabel() === "New Connection...")
-				{
+			for(var i = 0, l = children.length; i < l; i++){
+				if(children[i].getLabel() === "New Connection..."){
 					children[i].execute();
 					break;
 				}
 			}
 
 			// wait for the dialog to show up:
-			dev.test.TestStatics.waitForDialog("Connect to Ivory Hub Server", function(dialog)
-			{
-				dialog.hostField.setValue(host);
-				dialog.portField.setValue(port);
-				dialog.userField.setValue(user);
-				dialog.passField.setValue(pass);
-				dialog.aliasField.setValue("");
+			dev.test.TestStatics.waitForDialog( "Connect to Ivory Hub Server", function(dialog){
+				dialog.hostField.setValue( host );
+				dialog.portField.setValue( port );
+				dialog.userField.setValue( user );
+				dialog.passField.setValue( pass );
+				dialog.aliasField.setValue( "" );
 				dialog.ok_btn.execute();
 			}, null);
 		},
-		SetServerConnectionNoApp : function(host, port, user, pass)
-		{
+
+		SetServerConnectionNoApp : function( host, port, user, pass) {
+
 			var obj = new dev.sqldo.LogOn();
-			obj.setHost(host);
-			obj.setPort(port);
-			obj.setUser(user);
-			obj.setPass(pass);
+			obj.setHost( host );
+			obj.setPort( port );
+			obj.setUser( user );
+			obj.setPass( pass );
+
 			var requestDoc = qx.xml.Document.create(null, "ConnectToServer");
 			var requestRoot = requestDoc.documentElement;
-			obj.createXMLElement(requestRoot);
+			obj.createXMLElement( requestRoot );
 			dev.test.TestStatics.SendRequest(requestDoc, "/logic/utils/ConnectToServer");
 		},
-		SwitchServerConnection : function(connName)
-		{
+
+		SwitchServerConnection : function( connName ){
 			var obj = new dev.sqldo.LogOn;
-			obj.setConnName(connName);
+			obj.setConnName( connName );
+
 			var requestDoc = qx.xml.Document.create(null, "SwitchServerConnection");
 			var requestRoot = requestDoc.documentElement;
-			obj.createXMLElement(requestRoot);
+			obj.createXMLElement( requestRoot );
 			dev.test.TestStatics.SendRequest(requestDoc, "/logic/utils/SwitchServerConnection");
 		},
-		selectBrowserTab : function(tabName) {
-			dev.test.TestStatics.selectTabViewPage(qx.core.Init.getApplication().treeTabs, tabName);
+
+		selectBrowserTab : function( tabName ) {
+			dev.test.TestStatics.selectTabViewPage( qx.core.Init.getApplication().treeTabs, tabName );
 		},
-		selectEditor : function(editorName) {
-			dev.test.TestStatics.selectTabViewPage(qx.core.Init.getApplication().tabView, editorName);
+
+		selectEditor : function( editorName ) {
+			dev.test.TestStatics.selectTabViewPage( qx.core.Init.getApplication().tabView, editorName );
 		},
-		selectEditorTab : function(editor, tabName) {
-			dev.test.TestStatics.selectTabViewPage(editor.tabview, tabName);
+
+		selectEditorTab : function( editor, tabName ) {
+			dev.test.TestStatics.selectTabViewPage( editor.tabview, tabName );
 		},
-		selectTabViewPage : function(tabView, pageName)
-		{
+
+		selectTabViewPage : function( tabView, pageName ){
 			var pages = tabView.getChildren();
-			for (var i = 0, l = pages.length; i < l; i++) {
-				if (pages[i].getLabel().indexOf(pageName) === 0)
-				{                                            // use this to do "startsWith()"
-					tabView.setSelection([pages[i]]);
+			for(var i = 0, l = pages.length; i < l; i++){
+				if(pages[i].getLabel().indexOf( pageName ) === 0 ){ // use this to do "startsWith()"
+					tabView.setSelection( [pages[i]] );
 					return;
 				}
 			}
 			throw String("Tab Page Not Found: " + pageName);
 		},
-		selectToolsMenuItem : function(primary, secondary)
-		{
+
+		selectToolsMenuItem : function( primary, secondary) {
 			var toolsmenu = qx.core.Init.getApplication().menu;
 			var children = toolsmenu.getChildren();
-			for (var i = 0, l = children.length; i < l; i++) {
-				if ((children[i] instanceof qx.ui.menu.Button) && (children[i].getLabel() === primary))
-				{
+			for(var i = 0, l = children.length; i < l; i++){
+				if((children[i] instanceof qx.ui.menu.Button) && (children[i].getLabel() === primary)){
 					children[i].execute();
-					if (secondary !== undefined && secondary !== null)
-					{
+					if(secondary !== undefined && secondary !== null){
 						var grandChildren = children[i].getMenu().getChildren();
-						for (var j = 0, m = grandChildren.length; j < m; j++) {
-							if ((grandChildren[j] instanceof qx.ui.menu.Button) && (grandChildren[j].getLabel() === secondary))
-							{
+						for(var j = 0, m = grandChildren.length; j < m; j++){
+							if((grandChildren[j] instanceof qx.ui.menu.Button) &&
+								(grandChildren[j].getLabel() === secondary)
+							){
 								grandChildren[j].execute();
 								break;
 							}
@@ -137,83 +136,77 @@ qx.Class.define("dev.test.TestStatics",
 				}
 			}
 		},
-		waitForDialog : function(title, callBack, theThis)
-		{
+
+		waitForDialog : function( title, callBack, theThis ){
 			// Check to see if the dialog is present:
-			var dialog = dev.test.TestStatics.findDialog(title);
-			if (dialog !== null)
-			{
+			var dialog = dev.test.TestStatics.findDialog( title );
+			if(dialog !== null ){
 				// found it
-				callBack.call(theThis, dialog);
+				callBack.call( theThis, dialog );
 				return;
 			}
 
 			// If not, then wait for 1/2 second and try again:
-			qx.event.Timer.once(function() {
-				dev.test.TestStatics.waitForDialog(title, callBack, theThis);
-			}, theThis, 100);
+			qx.event.Timer.once( function() {
+				dev.test.TestStatics.waitForDialog( title, callBack, theThis );
+			}, theThis, 100 );
 		},
-		waitForMessageDialog : function(title, callBack, theThis)
-		{
+
+		waitForMessageDialog : function( title, callBack, theThis ){
 			// Check to see if the dialog is present:
-			var dialog = dev.test.TestStatics.findMessageDialog(title);
-			if (dialog !== null)
-			{
+			var dialog = dev.test.TestStatics.findMessageDialog( title );
+			if(dialog !== null ){
 				// found it
-				callBack.call(theThis, dialog);
+				callBack.call( theThis, dialog );
 				return;
 			}
 
 			// If not, then wait for 1/2 second and try again:
-			qx.event.Timer.once(function() {
-				dev.test.TestStatics.waitForMessageDialog(title, callBack, theThis);
-			}, theThis, 100);
+			qx.event.Timer.once( function() {
+				dev.test.TestStatics.waitForMessageDialog( title, callBack, theThis );
+			}, theThis, 100 );
 		},
-		findDialog : function(title)
-		{
+
+		findDialog : function( title ) {
+
 			var rootChildren = qx.core.Init.getApplication().getRoot().getChildren();
-			for (var i = 0, l = rootChildren.length; i < l; i++)
-			{
+			for(var i = 0, l = rootChildren.length; i < l; i++){
 				var child = rootChildren[i];
-				if (child instanceof qx.ui.window.Window) {
-					if (title !== null && title !== undefined)
-					{
+				if(child instanceof qx.ui.window.Window ){
+					if(title !== null && title !== undefined){
 						// Check the title against the window caption.
 						var caption = child.getCaption();
-						if (caption.indexOf(title) !== -1) {
+						if(caption.indexOf( title ) !== -1){
 							return child;
 						}
-					} else
-					{
+					} else {
 						// title not provided, just return the first window we find.
 						return child;
 					}
 				}
 			}
-			return null;                                  // Message Dialog not found.
+			return null; // Message Dialog not found.
 		},
-		findMessageDialog : function(title)
-		{
+
+		findMessageDialog : function( title ) {
+
 			var rootChildren = qx.core.Init.getApplication().getRoot().getChildren();
-			for (var i = 0, l = rootChildren.length; i < l; i++)
-			{
+			for(var i = 0, l = rootChildren.length; i < l; i++){
 				var child = rootChildren[i];
-				if (child instanceof dev.dialog.MessageDialog) {
-					if (title !== null && title !== undefined)
-					{
+				if(child instanceof dev.dialog.MessageDialog ){
+					if(title !== null && title !== undefined){
 						// Check the title against the window caption.
 						var caption = child.getCaption();
-						if (caption.indexOf(title) !== -1) {
+						if(caption.indexOf( title ) !== -1){
 							return child;
 						}
-					} else
-					{
+					} else {
 						// title not provided, just return the first window we find.
 						return child;
 					}
 				}
 			}
-			return null;                                  // Message Dialog not found.
+			return null; // Message Dialog not found.
 		},
 
 		/**
@@ -243,68 +236,73 @@ qx.Class.define("dev.test.TestStatics",
 		  *                  code.
 		  * @return {void}
 		  */
-		doCaptureComponentScreenshot : function(qxObject, filename)
-		{
+		doCaptureComponentScreenshot : function(qxObject, filename) {
+
 			// Get the width and height of the object:
 			var qxMap = qxObject.getBounds();
-			qxObject.debug("qx says left=" + qxMap.left + ", top=" + qxMap.top + ", width=" + qxMap.width + ", height=" + qxMap.height);
+			qxObject.debug("qx says left=" + qxMap.left + ", top=" + qxMap.top
+				+ ", width=" + qxMap.width + ", height=" + qxMap.height );
 
 			// do or do not ... there is no try
-			var grabber =
-			{
-				prepareCanvas : function(width, height)
-				{
+			var grabber = {
+				prepareCanvas: function(width, height) {
 					var styleWidth = width + 'px';
 					var styleHeight = height + 'px';
+
 					var grabCanvas = document.getElementById('screenshot_canvas');
-					if (!grabCanvas)
-					{
+					if (!grabCanvas) {
 						// create the canvas
 						var ns = 'http://www.w3.org/1999/xhtml';
 						grabCanvas = document.createElementNS(ns, 'html:canvas');
 						grabCanvas.id = 'screenshot_canvas';
 						grabCanvas.style.display = 'none';
 						document.documentElement.appendChild(grabCanvas);
-
 						//element.appendChild(grabCanvas);
 					}
+
 					grabCanvas.width = width;
 					grabCanvas.style.width = styleWidth;
 					grabCanvas.style.maxWidth = styleWidth;
 					grabCanvas.height = height;
 					grabCanvas.style.height = styleHeight;
 					grabCanvas.style.maxHeight = styleHeight;
+
 					return grabCanvas;
 				},
-				prepareContext : function(canvas, box)
-				{
+
+				prepareContext: function(canvas, box) {
 					var context = canvas.getContext('2d');
 					context.clearRect(box.x, box.y, box.width, box.height);
 					context.save();
 					return context;
 				}
 			};
-			var SGNsUtils =
-			{
-				dataUrlToBinaryInputStream : function(dataUrl)
-				{
-					var nsIoService = Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
-					var channel = nsIoService.newChannelFromURI(nsIoService.newURI(dataUrl, null, null));
-					var binaryInputStream = Components.classes["@mozilla.org/binaryinputstream;1"].createInstance(Components.interfaces.nsIBinaryInputStream);
+
+			var SGNsUtils = {
+				dataUrlToBinaryInputStream: function(dataUrl) {
+					var nsIoService = Components.classes["@mozilla.org/network/io-service;1"]
+						.getService(Components.interfaces.nsIIOService);
+					var channel = nsIoService
+						.newChannelFromURI(nsIoService.newURI(dataUrl, null, null));
+					var binaryInputStream = Components.classes["@mozilla.org/binaryinputstream;1"]
+						.createInstance(Components.interfaces.nsIBinaryInputStream);
+
 					binaryInputStream.setInputStream(channel.open());
 					return binaryInputStream;
 				},
-				newFileOutputStream : function(nsFile)
-				{
-					var writeFlag = 0x02;                       // write only
-					var createFlag = 0x08;                      // create
-					var truncateFlag = 0x20;                    // truncate
-					var fileOutputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+
+				newFileOutputStream: function(nsFile) {
+					var writeFlag = 0x02; // write only
+					var createFlag = 0x08; // create
+					var truncateFlag = 0x20; // truncate
+					var fileOutputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+						.createInstance(Components.interfaces.nsIFileOutputStream);
+
 					fileOutputStream.init(nsFile, writeFlag | createFlag | truncateFlag, 0664, null);
 					return fileOutputStream;
 				},
-				writeBinaryInputStreamToFileOutputStream : function(binaryInputStream, fileOutputStream)
-				{
+
+				writeBinaryInputStreamToFileOutputStream: function(binaryInputStream, fileOutputStream) {
 					var numBytes = binaryInputStream.available();
 					var bytes = binaryInputStream.readBytes(numBytes);
 					fileOutputStream.write(bytes, numBytes);
@@ -312,16 +310,13 @@ qx.Class.define("dev.test.TestStatics",
 			};
 
 			// compute dimensions
-
 			//var window = this.browserbot.getCurrentWindow();
-
 			//var doc = window.document.documentElement;
-			var box =
-			{
-				x : qxMap.left,
-				y : qxMap.top,
-				width : qxMap.width,
-				height : qxMap.height
+			var box = {
+				x: qxMap.left,
+				y: qxMap.top,
+				width: qxMap.width,
+				height: qxMap.height
 			};
 			qxObject.info('computed dimensions x(' + box.x + ') y(' + box.y + ') width(' + box.width + ') height(' + box.height + ')');
 
@@ -335,12 +330,12 @@ qx.Class.define("dev.test.TestStatics",
 			qxObject.debug('grabbed to canvas');
 
 			// save to file
-			var nsFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+			var nsFile = Components.classes["@mozilla.org/file/local;1"]
+				.createInstance(Components.interfaces.nsILocalFile);
 			try {
 				nsFile.initWithPath(filename);
-			}catch (e) {
-				if (/NS_ERROR_FILE_UNRECOGNIZED_PATH/.test(e.message))
-				{
+			} catch (e) {
+				if (/NS_ERROR_FILE_UNRECOGNIZED_PATH/.test(e.message)) {
 					// try using the opposite file separator
 					if (filename.indexOf('/') != -1) {
 						filename = filename.replace(/\//g, '\\');
@@ -348,16 +343,17 @@ qx.Class.define("dev.test.TestStatics",
 						filename = filename.replace(/\\/g, '/');
 					}
 					nsFile.initWithPath(filename);
-				} else
-				{
+				} else {
 					throw e;
 				}
 			}
 			var binaryInputStream = SGNsUtils.dataUrlToBinaryInputStream(dataUrl);
 			var fileOutputStream = SGNsUtils.newFileOutputStream(nsFile);
-			SGNsUtils.writeBinaryInputStreamToFileOutputStream(binaryInputStream, fileOutputStream);
+			SGNsUtils.writeBinaryInputStreamToFileOutputStream(binaryInputStream,
+			fileOutputStream);
 			fileOutputStream.close();
 			qxObject.debug('saved to file');
+
 		}
 	}
 });

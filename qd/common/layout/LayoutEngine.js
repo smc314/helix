@@ -7,17 +7,17 @@
    Authors: Steven M. Cherry
 
 ************************************************************************ */
-qx.Class.define("dev.LayoutEngine", {
+qx.Class.define("PACKAGE.layout.LayoutEngine", {
 
 	type : "static",
 
 	statics : {
-
+		
 		/** This function makes it easy to create your widget layout by describing
 		 * the contents of your layout using an XML document.  This allows you to
 		 * be more compact in your layout description, while still taking full advantage
 		 * of the qooxdoo widget system.
-		 *
+		 * 
 		 * @param theThis {Object} This is the object that we will attach any variables to.
 		 * @param layoutDoc {Object} This is an XML string that we will parse to read your layout.
 		 * @param parent {Object} This is the widget parent that the new layout will be added to.
@@ -26,7 +26,7 @@ qx.Class.define("dev.LayoutEngine", {
 			var xmlDoc = null;
 			var elem = null;
 			if(typeof(layoutDoc) === "string" || layoutDoc instanceof String){
-				xmlDoc = dev.Statics.xmlStringToDoc( layoutDoc );
+				xmlDoc = PACKAGE.Statics.xmlStringToDoc( layoutDoc );
 			} else {
 				xmlDoc = layoutDoc;
 			}
@@ -35,17 +35,17 @@ qx.Class.define("dev.LayoutEngine", {
 				return null;
 			}
 			elem = xmlDoc.documentElement;
-
+			
 			// Start at the root and work our way down
 			if(elem.nodeName === "parsererror"){
 				theThis.error("Invalid XML Document passed to renderLayout" );
-				theThis.error( dev.Statics.xmlDocToString( xmlDoc ) );
+				theThis.error( PACKAGE.Statics.xmlDocToString( xmlDoc ) );
 				return null;
 			}
-			var obj = dev.LayoutEngine.createElementAndChildren( theThis, elem, parent );
-
+			var obj = PACKAGE.layout.LayoutEngine.createElementAndChildren( theThis, elem, parent );
+			
 			if((parent) && (obj) && (parent !== obj)){
-				var flex = dev.LayoutEngine.getFlexAttr(elem);
+				var flex = PACKAGE.layout.LayoutEngine.getFlexAttr(elem);
 				if(flex){
 					parent.add(obj, {flex: flex});
 				} else {
@@ -54,84 +54,70 @@ qx.Class.define("dev.LayoutEngine", {
 			}
 			return obj;
 		},
-
+		
 		/** This method combines the loadxml call with the call to renderLayout
 		  * as a convienence.
 		  */
 		loadRenderLayout : function ( theThis, docURL, parent, callback ){
-
-			dev.Api.LoadXMLDoc( docURL,
+		
+			PACKAGE.Api.LoadXMLDoc( docURL, 
 			function(response){
-				var obj = dev.LayoutEngine.renderLayout( theThis, response, parent);
-				callback.call(theThis, response.ownerDocument, obj);
+				var obj = PACKAGE.layout.LayoutEngine.renderLayout( theThis, response, parent);
+				callback.call(theThis, response.ownerDocument, obj); 
 			}, theThis );
-
-		},
-
+		
+		},  
+		  
 
 		/** This method will create the object that represents the current node and
 		  * then recursively call ourselves for all child nodes found.
 		  */
 		createElementAndChildren : function (theThis, elem, parent) {
-
+		
 			if(elem.nodeName === "VerticalBoxLayout"){
-				return dev.LayoutEngine.createVBox( theThis, elem, parent );
+				return PACKAGE.layout.LayoutBox.createVerticalBoxLayout( theThis, elem, parent );
 			} else if(elem.nodeName === "HorizontalBoxLayout"){
-				return dev.LayoutEngine.createHBox( theThis, elem, parent );
+				return PACKAGE.layout.LayoutBox.createHorizontalBoxLayout( theThis, elem, parent );
 			} else if(elem.nodeName === "VerticalSplitPane") {
-				return dev.LayoutEngine.createVerticalSplitPane( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createVerticalSplitPane( theThis, elem, parent );
 			} else if(elem.nodeName === "GroupBox") {
-				return dev.LayoutEngine.createGroupBox( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createGroupBox( theThis, elem, parent );
 			} else if(elem.nodeName === "TreeVirtual" ) {
-				return dev.LayoutEngine.createTreeVirtual( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createTreeVirtual( theThis, elem, parent );
 			} else if(elem.nodeName === "RecursiveCheckBoxTree" ) {
-				return dev.LayoutEngine.createRecursiveCheckBoxTree( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createRecursiveCheckBoxTree( theThis, elem, parent );
 			} else if(elem.nodeName === "HorizontalSplitPane") {
-				return dev.LayoutEngine.createHorizontalSplitPane( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createHorizontalSplitPane( theThis, elem, parent );
 			} else if(elem.nodeName === "TextArea") {
-				return dev.LayoutEngine.createTextArea( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createTextArea( theThis, elem, parent );
 			} else if(elem.nodeName === "HtmlEmbed") {
-				return dev.LayoutEngine.createHtmlEmbed( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createHtmlEmbed( theThis, elem, parent );
 			} else if(elem.nodeName === "IFrame") {
-				return dev.LayoutEngine.createIFrame( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createIFrame( theThis, elem, parent );
 			} else if(elem.nodeName === "StandardTable") {
-				return dev.LayoutEngine.createStandardTable( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createStandardTable( theThis, elem, parent );
 			} else if(elem.nodeName === "StandardTreeVirtual") {
-				return dev.LayoutEngine.createStandardTreeVirtual( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createStandardTreeVirtual( theThis, elem, parent );
 			} else if(elem.nodeName === "FieldArea") {
-				return dev.LayoutEngine.createFieldArea( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createFieldArea( theThis, elem, parent );
 			} else if(elem.nodeName === "Label") {
-				return dev.LayoutEngine.createLabel( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createLabel( theThis, elem, parent );
 			} else if(elem.nodeName === "Spacer") {
-				return dev.LayoutEngine.createSpacer( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createSpacer( theThis, elem, parent );
 			} else if(elem.nodeName === "List") {
-				return dev.LayoutEngine.createList( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createList( theThis, elem, parent );
 			} else if(elem.nodeName === "Button") {
-				return dev.LayoutEngine.createButton( theThis, elem, parent );
+				return PACKAGE.layout.LayoutEngine.createButton( theThis, elem, parent );
 			} else if(elem.nodeName === "LayoutEngine") {
-				dev.LayoutEngine.processChildren( theThis, elem, parent);
+				PACKAGE.layout.LayoutEngine.processChildren( theThis, elem, parent);
 				return null;
 			} else {
 				return null;
 			}
 		},
-
-		createVBox : function ( theThis, elem, parent ) {
-			var obj = new qx.ui.container.Composite(new qx.ui.layout.VBox);
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
-			dev.LayoutEngine.processChildren( theThis, elem, obj );
-			return obj;
-		},
-
-		createHBox : function ( theThis, elem, parent ) {
-			var obj = new qx.ui.container.Composite(new qx.ui.layout.HBox);
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
-			dev.LayoutEngine.processChildren( theThis, elem, obj );
-			return obj;
-		},
-
+		
 		createGroupBox : function ( theThis, elem, parent ) {
-
+			
 			if(elem.getAttribute( "isCheck") && elem.getAttribute("isCheck") === "true"){
 				var obj = new qx.ui.groupbox.CheckGroupBox();
 			} else if(elem.getAttribute( "isRadio") && elem.getAttribute("isRadio") === "true"){
@@ -139,42 +125,42 @@ qx.Class.define("dev.LayoutEngine", {
 			} else {
 				var obj = new qx.ui.groupbox.GroupBox();
 			}
-
+			
 			obj.setLayout(new qx.ui.layout.VBox);
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
-			dev.LayoutEngine.processChildren( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processChildren( theThis, elem, obj );
 			return obj;
 		},
 
 		createLabel : function ( theThis, elem, parent ) {
 			var obj = new qx.ui.basic.Label;
-			dev.Statics.trackExtraObj( theThis, obj);
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.Statics.trackExtraObj( theThis, obj);
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
 		createSpacer : function ( theThis, elem, parent ) {
 			var obj = new qx.ui.core.Spacer;
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
 		createList : function ( theThis, elem, parent ) {
 			var obj = new qx.ui.form.List;
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
 		createButton : function ( theThis, elem, parent ) {
 			var obj = new qx.ui.form.Button();
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
 		createSplitPane : function ( theThis, elem, parent, orientation ) {
 			var flex1 = Number( elem.getAttribute( "leftsize") );
 			var flex2 = Number( elem.getAttribute("rightsize") );
-			var obj = new qx.ui.splitpane.Pane(orientation);
+			var obj = new qx.ui.splitpane.Pane(orientation); 
 			// The standard splitpane has a decorator that adds a border around
 			// the whole widget.  We don't want that, so use the Background decorator
 			// instead to get a 0 border.
@@ -183,48 +169,48 @@ qx.Class.define("dev.LayoutEngine", {
 			// remove leftsize and rightsize before processing attrs:
 			elem.removeAttribute("leftsize");
 			elem.removeAttribute("rightsize");
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
-
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
+			
 			// A split-pane has only 2 children.  Process them by hand:
 			if(orientation === "vertical"){
-				var firstHalf = dev.Statics.xmlFindChild(elem, "VerticalSplitPaneTop" );
+				var firstHalf = PACKAGE.Statics.xmlFindChild(elem, "VerticalSplitPaneTop" );
 			} else {
-				var firstHalf = dev.Statics.xmlFindChild(elem, "HorizontalSplitPaneLeft");
+				var firstHalf = PACKAGE.Statics.xmlFindChild(elem, "HorizontalSplitPaneLeft");
 			}
 			// find the first real child of VerticalSplitPaneTop
 			for(var i = 0, l = firstHalf.childNodes.length; i < l; i++){
 				var node = firstHalf.childNodes[i];
-				var child = dev.LayoutEngine.createElementAndChildren( theThis, node, obj );
+				var child = PACKAGE.layout.LayoutEngine.createElementAndChildren( theThis, node, obj );
 				if(child){
 					obj.add(child, flex1);
 					break;
 				}
 			}
-
+			
 			if(orientation === "vertical"){
-				var secondHalf = dev.Statics.xmlFindChild(elem, "VerticalSplitPaneBottom" );
+				var secondHalf = PACKAGE.Statics.xmlFindChild(elem, "VerticalSplitPaneBottom" ); 
 			} else {
-				var secondHalf = dev.Statics.xmlFindChild(elem, "HorizontalSplitPaneRight" );
+				var secondHalf = PACKAGE.Statics.xmlFindChild(elem, "HorizontalSplitPaneRight" ); 
 			}
 			// find the first real child of VerticalSplitPaneBottom
 			for(var i = 0, l = secondHalf.childNodes.length; i < l; i++){
 				var node = secondHalf.childNodes[i];
-				var child = dev.LayoutEngine.createElementAndChildren( theThis, node, obj );
+				var child = PACKAGE.layout.LayoutEngine.createElementAndChildren( theThis, node, obj );
 				if(child){
 					obj.add(child, flex2);
 					break;
 				}
 			}
-
+			
 			return obj;
 		},
 
 		createVerticalSplitPane : function ( theThis, elem, parent ) {
-			return dev.LayoutEngine.createSplitPane( theThis, elem, parent, "vertical" );
+			return PACKAGE.layout.LayoutEngine.createSplitPane( theThis, elem, parent, "vertical" );
 		},
-
+		
 		createHorizontalSplitPane : function ( theThis, elem, parent ) {
-			return dev.LayoutEngine.createSplitPane( theThis, elem, parent, "horizontal" );
+			return PACKAGE.layout.LayoutEngine.createSplitPane( theThis, elem, parent, "horizontal" );
 		},
 
 		createTreeVirtual : function ( theThis, elem, parent ) {
@@ -234,9 +220,9 @@ qx.Class.define("dev.LayoutEngine", {
 			for(var i = 0, l = columns.length; i < l; i++){
 				titles.push( columns[i].getAttribute("title") );
 			}
-
-			var obj = dev.Statics.createStandardTreeVirtual( titles );
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+		
+			var obj = PACKAGE.Statics.createStandardTreeVirtual( titles );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 
 			// Adjust column sizes if given:
 			var sizing = obj.getTableColumnModel().getBehavior();
@@ -253,7 +239,7 @@ qx.Class.define("dev.LayoutEngine", {
 				}
 				sizing.set( i, hash );
 			}
-
+			
 			// A tree has no children.
 			return obj;
 		},
@@ -267,14 +253,14 @@ qx.Class.define("dev.LayoutEngine", {
 		createTextArea : function ( theThis, elem, parent ) {
 			var obj = new qx.ui.form.TextArea;
 			obj.setNativeContextMenu( true );
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			// a text area has no children.
 			return obj;
 		},
-
+		
 		createHtmlEmbed : function ( theThis, elem, parent ){
 			var obj = new qx.ui.embed.Html;
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			obj.setOverflow("auto", "auto");
 			// an html embed has no children.
 			return obj;
@@ -282,7 +268,7 @@ qx.Class.define("dev.LayoutEngine", {
 
 		createIFrame : function ( theThis, elem, parent ){
 			var obj = new qx.ui.embed.Iframe().set({decorator: null});
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 			// an iframe embed has no children.
 			return obj;
 		},
@@ -294,14 +280,14 @@ qx.Class.define("dev.LayoutEngine", {
 			for(var i = 0, l = columns.length; i < l; i++){
 				titles.push( columns[i].getAttribute("title") );
 			}
-
+			
 			var filtered = "false";
 			if(elem.getAttribute( "filtered" )){
 				filtered = elem.getAttribute("filtered");
 			}
-
-			var obj = dev.Statics.createStandardTable( titles, filtered );
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+		
+			var obj = PACKAGE.Statics.createStandardTable( titles, filtered );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 
 			// Adjust column sizes if given:
 			var sizing = obj.getTableColumnModel().getBehavior();
@@ -318,7 +304,7 @@ qx.Class.define("dev.LayoutEngine", {
 				}
 				sizing.set( i, hash );
 			}
-
+			
 			// A table has no children.
 			return obj;
 		},
@@ -330,9 +316,9 @@ qx.Class.define("dev.LayoutEngine", {
 			for(var i = 0, l = columns.length; i < l; i++){
 				titles.push( columns[i].getAttribute("title") );
 			}
-
-			var obj = dev.Statics.createStandardTreeVirtual( titles );
-			dev.LayoutEngine.processAttributes( theThis, elem, obj );
+		
+			var obj = PACKAGE.Statics.createStandardTreeVirtual( titles );
+			PACKAGE.layout.LayoutEngine.processAttributes( theThis, elem, obj );
 
 			// Adjust column sizes if given:
 			var sizing = obj.getTableColumnModel().getBehavior();
@@ -349,7 +335,7 @@ qx.Class.define("dev.LayoutEngine", {
 				}
 				sizing.set( i, hash );
 			}
-
+			
 			// A table has no children.
 			return obj;
 		},
@@ -374,13 +360,13 @@ qx.Class.define("dev.LayoutEngine", {
 
 			}
 		},
-
+        
         setReadOnly : function (theThis, node, roAttr, varAttr) {
             var roText = node.getAttribute(roAttr);
             if(roText){
                 var obj = theThis[ node.getAttribute(varAttr) ];
 				obj.setReadOnly( roText == "true" ? true : false );
-			}
+			}            
         },
 
 		checkFieldVerification : function(theThis, node) {
@@ -417,7 +403,7 @@ qx.Class.define("dev.LayoutEngine", {
 					required: node.getAttribute("required2")
 				} );
 			}
-
+			
 			var verify3 = node.getAttribute("verify3");
 			if(verify3 && verify3 === "true"){
 				if(theThis.fieldVerificationList === undefined){
@@ -434,7 +420,7 @@ qx.Class.define("dev.LayoutEngine", {
 					required: node.getAttribute("required3")
 				} );
 			}
-
+			
 			var verify4 = node.getAttribute("verify4");
 			if(verify4 && verify4 === "true"){
 				if(theThis.fieldVerificationList === undefined){
@@ -459,11 +445,11 @@ qx.Class.define("dev.LayoutEngine", {
 			var first = Number( elem.getAttribute("first") );
 			var second = Number( elem.getAttribute("second") );
 
-			// Get the list of children:
+			// Get the list of children:			
 			for(var i = 0, l = elem.childNodes.length; i < l; i ++){
 				var node = elem.childNodes[i];
 				if (node.nodeName === "QuadField") {
-					dev.Statics.addFieldsToForm(theThis, parent,
+					PACKAGE.Statics.addFieldsToForm(theThis, parent,
 						node.getAttribute("label1"), first,
 						node.getAttribute("varName1"),
 						node.getAttribute("type1"),
@@ -477,19 +463,19 @@ qx.Class.define("dev.LayoutEngine", {
 						node.getAttribute("varName4"),
 						node.getAttribute("type4"));
 					// Check for tooltips:
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip2", "varName2");
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip3", "varName3");
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip4", "varName4");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip2", "varName2");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip3", "varName3");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip4", "varName4");
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
 					// Check for field verification
-					dev.LayoutEngine.checkFieldVerification(theThis, node);
+					PACKAGE.layout.LayoutEngine.checkFieldVerification(theThis, node);
 				} else if (node.nodeName === "TripleField") {
-					dev.Statics.addFieldsToForm(theThis, parent,
+					PACKAGE.Statics.addFieldsToForm(theThis, parent,
 						node.getAttribute("label1"), first,
 						node.getAttribute("varName1"),
 						node.getAttribute("type1"),
@@ -500,40 +486,40 @@ qx.Class.define("dev.LayoutEngine", {
 						node.getAttribute("varName3"),
 						node.getAttribute("type3"));
 					// Check for tooltips:
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip2", "varName2");
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip3", "varName3");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip2", "varName2");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip3", "varName3");
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
 					// Check for field verification
-					dev.LayoutEngine.checkFieldVerification(theThis, node);
+					PACKAGE.layout.LayoutEngine.checkFieldVerification(theThis, node);
 				} else if (node.nodeName === "DoubleField") {
-					dev.Statics.addFieldsToForm(theThis, parent,
+					PACKAGE.Statics.addFieldsToForm(theThis, parent,
 						node.getAttribute("label1"), first,
 						node.getAttribute("varName1"),
-						node.getAttribute("type1"),
+						node.getAttribute("type1"),	
 						node.getAttribute("label2"), second,
 						node.getAttribute("varName2"),
 						node.getAttribute("type2") );
 					// Check for tooltips:
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip2", "varName2");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip2", "varName2");
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
 					// Check for field verification
-					dev.LayoutEngine.checkFieldVerification(theThis, node);
+					PACKAGE.layout.LayoutEngine.checkFieldVerification(theThis, node);
 				} else if(node.nodeName === "SpanField"){
-					dev.Statics.addFieldsToForm(theThis, parent,
+					PACKAGE.Statics.addFieldsToForm(theThis, parent,
 						node.getAttribute("label1"), first,
 						node.getAttribute("varName1"),
-						node.getAttribute("type1") );
+						node.getAttribute("type1") );	
 					// Check for tooltips:
-					dev.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
+					PACKAGE.layout.LayoutEngine.addToolTip(theThis, node, "tooltip1", "varName1");
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
 					if(node.getAttribute("type1") === "TextArea" && node.getAttribute("height1")){
 						theThis[node.getAttribute("varName1")].setMaxHeight(
 							Number( node.getAttribute("height1") )
@@ -543,88 +529,88 @@ qx.Class.define("dev.LayoutEngine", {
 						);
 					}
 					// Check for field verification
-					dev.LayoutEngine.checkFieldVerification(theThis, node);
+					PACKAGE.layout.LayoutEngine.checkFieldVerification(theThis, node);
 				} else if(node.nodeName === "DoubleCheck"){
-					dev.Statics.addCheckboxes(theThis, parent, first,
+					PACKAGE.Statics.addCheckboxes(theThis, parent, first,
 						node.getAttribute("varName1"),
-						node.getAttribute("label1"),
+						node.getAttribute("label1"), 
 						node.getAttribute("varName2"),
 						node.getAttribute("label2") );
-
+                    
                         // Set read only state:
-                    	dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-                		dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+                    	PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+                		PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
 				} else if(node.nodeName === "DoubleCheck2"){
-					dev.Statics.addCheckboxes2(theThis, parent, first,
+					PACKAGE.Statics.addCheckboxes2(theThis, parent, first,
 						Number( node.getAttribute("width1")),
 						Number( node.getAttribute("width2")),
 						0,
 						0,
 						node.getAttribute("varName1"),
-						node.getAttribute("label1"),
+						node.getAttribute("label1"), 
 						node.getAttribute("varName2"),
 						node.getAttribute("label2") );
-
+                    
                         // Set read only state:
-    					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-    					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+    					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+    					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
 				} else if(node.nodeName === "QuadCheck"){
-					dev.Statics.addCheckboxes2(theThis, parent, first,
+					PACKAGE.Statics.addCheckboxes2(theThis, parent, first,
 						Number( node.getAttribute("width1")),
 						Number( node.getAttribute("width2")),
 						Number( node.getAttribute("width3")),
 						Number( node.getAttribute("width4")),
 						node.getAttribute("varName1"),
-						node.getAttribute("label1"),
+						node.getAttribute("label1"), 
 						node.getAttribute("varName2"),
-						node.getAttribute("label2"),
+						node.getAttribute("label2"), 
 						node.getAttribute("varName3"),
-						node.getAttribute("label3"),
+						node.getAttribute("label3"), 
 						node.getAttribute("varName4"),
-						node.getAttribute("label4")
+						node.getAttribute("label4") 
 					);
-
+                    
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
 				} else if(node.nodeName === "SingleCheck"){
-					dev.Statics.addCheckboxes(theThis, parent, first,
+					PACKAGE.Statics.addCheckboxes(theThis, parent, first,
 						node.getAttribute("varName1"),
 						node.getAttribute("label1") );
-
+                    
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
 				} else if(node.nodeName === "RadioGroup2"){
-					var rg = dev.Statics.addRadioGroupVertical(theThis, parent, first,
+					var rg = PACKAGE.Statics.addRadioGroupVertical(theThis, parent, first,
 						node.getAttribute("varName1"),
 						node.getAttribute("label1") ,
 						node.getAttribute("varName2"),
-						node.getAttribute("label2")
-					);
+						node.getAttribute("label2") 
+					); 
 					theThis[ node.getAttribute("groupName") ] = rg;
-
+                    
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
 				} else if(node.nodeName === "RadioGroup3"){
-					var rg = dev.Statics.addRadioGroupVertical(theThis, parent, first,
+					var rg = PACKAGE.Statics.addRadioGroupVertical(theThis, parent, first,
 						node.getAttribute("varName1"),
 						node.getAttribute("label1") ,
 						node.getAttribute("varName2"),
 						node.getAttribute("label2"),
 						node.getAttribute("varName3"),
-						node.getAttribute("label3")
-					);
+						node.getAttribute("label3") 
+					); 
 					theThis[ node.getAttribute("groupName") ] = rg;
-
+                    
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
-                    dev.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+                    PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
 				} else if(node.nodeName === "RadioGroup4"){
-					var rg = dev.Statics.addRadioGroupVertical(theThis, parent, first,
+					var rg = PACKAGE.Statics.addRadioGroupVertical(theThis, parent, first,
 						node.getAttribute("varName1"),
 						node.getAttribute("label1") ,
 						node.getAttribute("varName2"),
@@ -632,44 +618,44 @@ qx.Class.define("dev.LayoutEngine", {
 						node.getAttribute("varName3"),
 						node.getAttribute("label3") ,
 						node.getAttribute("varName4"),
-						node.getAttribute("label4")
-					);
+						node.getAttribute("label4") 
+					); 
 					theThis[ node.getAttribute("groupName") ] = rg;
-
+                    
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
-                    dev.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
-                    dev.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+                    PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
+                    PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
 				} else if(node.nodeName === "RadioGroup5"){
-					var rg = dev.Statics.addRadioGroupHorizontal(theThis, parent, first,
+					var rg = PACKAGE.Statics.addRadioGroupHorizontal(theThis, parent, first,
 						null, // groupName is not used
 						node.getAttribute("labelPrefix"),
 						node.getAttribute("varName1"), node.getAttribute("label1") ,
 						node.getAttribute("varName2"), node.getAttribute("label2"),
 						node.getAttribute("varName3"), node.getAttribute("label3") ,
-						node.getAttribute("varName4"), node.getAttribute("label4")
-					);
+						node.getAttribute("varName4"), node.getAttribute("label4") 
+					); 
 					theThis[ node.getAttribute("groupName") ] = rg;
-
+                    
                     // Set read only state:
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
-					dev.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
-                    dev.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
-                    dev.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly1", "varName1");
+					PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly2", "varName2");
+                    PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly3", "varName3");
+                    PACKAGE.layout.LayoutEngine.setReadOnly(theThis, node, "readOnly4", "varName4");
 				} else if(node.nodeName === "LongLabel"){
-					dev.Statics.addLongLabel(parent,
+					PACKAGE.Statics.addLongLabel(parent,
 						node.getAttribute("label"),
 						node.getAttribute("varName"),
 						theThis);
 				} else if(node.nodeName === "LongLabelRich"){
-					dev.Statics.addLongLabelRich(parent,
+					PACKAGE.Statics.addLongLabelRich(parent,
 						node.getAttribute("label"),
 						node.getAttribute("varName"),
 						theThis);
 				}
 			}
-
+		
 			// A field area creates multiple children.  return null
 			return null;
 		},
@@ -685,7 +671,7 @@ qx.Class.define("dev.LayoutEngine", {
 				var val = node.nodeValue;
 				if(name === "varName"){
 					theThis[ val ] = obj;
-					dev.Statics.trackNamedAttr( theThis, val );
+					PACKAGE.Statics.trackNamedAttr( theThis, val );
 				} else if(name === "label" ){
 					obj.setLabel( val );
 				} else if(name === "legend" ){
@@ -813,7 +799,7 @@ qx.Class.define("dev.LayoutEngine", {
 				}
 			}
 		},
-
+		
 		getFlexAttr : function (elem){
 			var attrMap = elem.attributes;
 			if(attrMap === null){
@@ -834,9 +820,9 @@ qx.Class.define("dev.LayoutEngine", {
 		processChildren : function ( theThis, elem, obj ){
 			for(var i = 0, l = elem.childNodes.length; i < l; i++){
 				var node = elem.childNodes[i];
-				var child = dev.LayoutEngine.createElementAndChildren( theThis, node, obj );
+				var child = PACKAGE.layout.LayoutEngine.createElementAndChildren( theThis, node, obj );
 				if(child){
-					var flex_num = dev.LayoutEngine.getFlexAttr(node);
+					var flex_num = PACKAGE.layout.LayoutEngine.getFlexAttr(node);
 					if(flex_num){
 						obj.add(child, {flex: flex_num});
 					} else {

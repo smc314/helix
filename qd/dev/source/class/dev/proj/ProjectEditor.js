@@ -80,14 +80,14 @@ qx.Class.define("dev.proj.ProjectEditor",
 			var live = this.createOverviewLayout(tab_page, "Helix Project", "dev/icon/64x64/shadow/control_panel2.png", this.m_object_id === 0 ? "NEW1" : this.m_object_id.getProjName());
 			this.addStatusHeading("General");
 			this.overview_label1 = this.addStatusItem("Overview Label1:", "dev/icon/16x16/plain/barcode.png");
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("ProjectEditor.MainPage.xml"), live);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("ProjectEditor.MainPage.xml"), live);
 		},
 
 		/** This creates a standard tab that is controlled by the layout page
 		  * rendered onto it.
 		  */
 		createNextTab : function(tab_page) {
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("ProjectEditor.NextPage.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("ProjectEditor.NextPage.xml"), tab_page);
 		},
 
 		/** This allows our subclasses to do something in the scenario where the

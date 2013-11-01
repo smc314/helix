@@ -15,7 +15,7 @@
   * We also have several methods to help with data binding on tables, and various other
   * standard layouts that we use.
   */
-qx.Class.define("dev.DataBinding", {
+qx.Class.define("welcome.DataBinding", {
 
 	type : "static",
 
@@ -29,7 +29,7 @@ qx.Class.define("dev.DataBinding", {
 			var xmlDoc = null;
 			var elem = null;
 			if(typeof(layoutDoc) === "string" || layoutDoc instanceof String){
-				xmlDoc = dev.Statics.xmlStringToDoc( layoutDoc );
+				xmlDoc = welcome.Statics.xmlStringToDoc( layoutDoc );
 			} else {
 				xmlDoc = layoutDoc;
 			}
@@ -42,12 +42,12 @@ qx.Class.define("dev.DataBinding", {
 			// Start at the root and work our way down
 			if(elem.nodeName === "parsererror"){
 				theThis.error("Invalid XML Document passed to bindLayout" );
-				theThis.error( dev.Statics.xmlDocToString( xmlDoc ) );
+				theThis.error( welcome.Statics.xmlDocToString( xmlDoc ) );
 				return null;
 			}
 
 			// walk all of the elements in the layout and handle the data binding.
-			dev.DataBinding.bindElementAndChildren( theThis, dataObject, elem);
+			welcome.DataBinding.bindElementAndChildren( theThis, dataObject, elem);
 
 		},
 
@@ -57,39 +57,39 @@ qx.Class.define("dev.DataBinding", {
 		bindElementAndChildren : function (theThis, dataObject, elem ) {
 
 			if(elem.nodeName === "VerticalBoxLayout"){
-				dev.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
+				welcome.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
 			} else if(elem.nodeName === "HorizontalBoxLayout"){
-				dev.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
+				welcome.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
 			} else if(elem.nodeName === "VerticalSplitPane") {
-				dev.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
+				welcome.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
 			} else if(elem.nodeName === "GroupBox") {
-				dev.DataBinding.bindGroupBox( theThis, dataObject, elem );
+				welcome.DataBinding.bindGroupBox( theThis, dataObject, elem );
 			} else if(elem.nodeName === "TreeVirtual" ) {
-				dev.DataBinding.bindTreeVirtual( theThis, dataObject, elem);
+				welcome.DataBinding.bindTreeVirtual( theThis, dataObject, elem);
 			} else if(elem.nodeName === "RecursiveCheckBoxTree" ) {
-				dev.DataBinding.bindRecursiveCheckBoxTree( theThis, dataObject, elem );
+				welcome.DataBinding.bindRecursiveCheckBoxTree( theThis, dataObject, elem );
 			} else if(elem.nodeName === "HorizontalSplitPane") {
-				dev.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
+				welcome.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
 			} else if(elem.nodeName === "TextArea") {
-				dev.DataBinding.bindTextArea( theThis, dataObject, elem );
+				welcome.DataBinding.bindTextArea( theThis, dataObject, elem );
 			} else if(elem.nodeName === "HtmlEmbed") {
-				dev.DataBinding.bindHtmlEmbed( theThis, dataObject, elem );
+				welcome.DataBinding.bindHtmlEmbed( theThis, dataObject, elem );
 			} else if(elem.nodeName === "IFrame") {
-				dev.DataBinding.bindIFrame( theThis, dataObject, elem );
+				welcome.DataBinding.bindIFrame( theThis, dataObject, elem );
 			} else if(elem.nodeName === "StandardTable") {
-				dev.DataBinding.bindStandardTable( theThis, dataObject, elem );
+				welcome.DataBinding.bindStandardTable( theThis, dataObject, elem );
 			} else if(elem.nodeName === "StandardTreeVirtual") {
-				dev.DataBinding.bindStandardTreeVirtual( theThis, dataObject, elem );
+				welcome.DataBinding.bindStandardTreeVirtual( theThis, dataObject, elem );
 			} else if(elem.nodeName === "FieldArea") {
-				dev.DataBinding.bindFieldArea( theThis, dataObject, elem );
+				welcome.DataBinding.bindFieldArea( theThis, dataObject, elem );
 			} else if(elem.nodeName === "Label") {
-				dev.DataBinding.bindLabel( theThis, dataObject, elem );
+				welcome.DataBinding.bindLabel( theThis, dataObject, elem );
 			} else if(elem.nodeName === "Spacer") {
-				dev.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
+				welcome.DataBinding.processChildren( theThis, dataObject, elem ); // just recurse to the children
 			} else if(elem.nodeName === "List") {
-				dev.DataBinding.bindList( theThis, dataObject, elem );
+				welcome.DataBinding.bindList( theThis, dataObject, elem );
 			} else if(elem.nodeName === "Button") {
-				dev.DataBinding.bindButton( theThis, dataObject, elem );
+				welcome.DataBinding.bindButton( theThis, dataObject, elem );
 			}
 		},
 
@@ -128,29 +128,29 @@ qx.Class.define("dev.DataBinding", {
 			*/
 
 			// Remember to also process all of the children inside the group-box
-			dev.DataBinding.processChildren( theThis, dataObject, elem );
+			welcome.DataBinding.processChildren( theThis, dataObject, elem );
 		},
 
 		bindLabel : function ( theThis, dataObject, elem) {
 			theThis.warn("bindLabel - not implemented yet.  Step on it!"); return;
 
 			var obj = new qx.ui.basic.Label;
-			dev.Statics.trackExtraObj( theThis, obj);
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			welcome.Statics.trackExtraObj( theThis, obj);
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
 		bindList : function ( theThis, dataObject, elem) {
 			theThis.warn("bindList - not implemented yet.  Step on it!"); return;
 			var obj = new qx.ui.form.List;
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
 		bindButton : function ( theThis, dataObject, elem) {
 			theThis.warn("bindButton - not implemented yet.  Step on it!"); return;
 			var obj = new qx.ui.form.Button();
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 			return obj;
 		},
 
@@ -163,8 +163,8 @@ qx.Class.define("dev.DataBinding", {
 				titles.push( columns[i].getAttribute("title") );
 			}
 
-			var obj = dev.Statics.createStandardTreeVirtual( titles );
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			var obj = welcome.Statics.createStandardTreeVirtual( titles );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 
 			// Adjust column sizes if given:
 			var sizing = obj.getTableColumnModel().getBehavior();
@@ -196,7 +196,7 @@ qx.Class.define("dev.DataBinding", {
 			theThis.warn("bindTextArea - not implemented yet.  Step on it!"); return;
 			var obj = new qx.ui.form.TextArea;
 			obj.setNativeContextMenu( true );
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 			// a text area has no children.
 			return obj;
 		},
@@ -204,7 +204,7 @@ qx.Class.define("dev.DataBinding", {
 		bindHtmlEmbed : function ( theThis, dataObject, elem){
 			theThis.warn("bindHtmlEmbed - not implemented yet.  Step on it!"); return;
 			var obj = new qx.ui.embed.Html;
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 			obj.setOverflow("auto", "auto");
 			// an html embed has no children.
 			return obj;
@@ -213,7 +213,7 @@ qx.Class.define("dev.DataBinding", {
 		bindIFrame : function ( theThis, dataObject, elem){
 			theThis.warn("bindIFrame - not implemented yet.  Step on it!"); return;
 			var obj = new qx.ui.embed.Iframe().set({decorator: null});
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 			// an iframe embed has no children.
 			return obj;
 		},
@@ -250,8 +250,8 @@ qx.Class.define("dev.DataBinding", {
 				filtered = elem.getAttribute("filtered");
 			}
 
-			var obj = dev.Statics.createStandardTable( titles, filtered );
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			var obj = welcome.Statics.createStandardTable( titles, filtered );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 
 			// Adjust column sizes if given:
 			var sizing = obj.getTableColumnModel().getBehavior();
@@ -282,8 +282,8 @@ qx.Class.define("dev.DataBinding", {
 				titles.push( columns[i].getAttribute("title") );
 			}
 
-			var obj = dev.Statics.createStandardTreeVirtual( titles );
-			dev.DataBinding.processAttributes( theThis, elem, obj );
+			var obj = welcome.Statics.createStandardTreeVirtual( titles );
+			welcome.DataBinding.processAttributes( theThis, elem, obj );
 
 			// Adjust column sizes if given:
 			var sizing = obj.getTableColumnModel().getBehavior();
@@ -386,7 +386,7 @@ qx.Class.define("dev.DataBinding", {
 				return; // Not enough information to bind this field
 			}
 
-			var oc = dev.DataBinding.getObjectController( theThis, dataObject );
+			var oc = welcome.DataBinding.getObjectController( theThis, dataObject );
 
 			if(type === "TextField"){
 				oc.addTarget( theThis[ varName ], "value", data );
@@ -436,29 +436,29 @@ qx.Class.define("dev.DataBinding", {
 			for(var i = 0, l = elem.childNodes.length; i < l; i ++){
 				var node = elem.childNodes[i];
 				if (node.nodeName === "QuadField") {
-					dev.DataBinding.bindField( theThis, dataObject, node, 1);
-					dev.DataBinding.bindField( theThis, dataObject, node, 2);
-					dev.DataBinding.bindField( theThis, dataObject, node, 3);
-					dev.DataBinding.bindField( theThis, dataObject, node, 4);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 1);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 2);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 3);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 4);
 				} else if (node.nodeName === "TripleField") {
-					dev.DataBinding.bindField( theThis, dataObject, node, 1);
-					dev.DataBinding.bindField( theThis, dataObject, node, 2);
-					dev.DataBinding.bindField( theThis, dataObject, node, 3);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 1);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 2);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 3);
 				} else if (node.nodeName === "DoubleField") {
-					dev.DataBinding.bindField( theThis, dataObject, node, 1);
-					dev.DataBinding.bindField( theThis, dataObject, node, 2);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 1);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 2);
 				} else if(node.nodeName === "SpanField"){
-					dev.DataBinding.bindField( theThis, dataObject, node, 1);
+					welcome.DataBinding.bindField( theThis, dataObject, node, 1);
 				} else if(node.nodeName === "DoubleCheck"){
-					dev.Statics.addCheckboxes(theThis, parent, first,
+					welcome.Statics.addCheckboxes(theThis, parent, first,
 						node.getAttribute("varName1"),
 						node.getAttribute("label1"),
 						node.getAttribute("varName2"),
 						node.getAttribute("label2") );
 
                         // Set read only state:
-                    	dev.DataBinding.setReadOnly(theThis, node, "readOnly1", "varName1");
-                		dev.DataBinding.setReadOnly(theThis, node, "readOnly2", "varName2");
+                    	welcome.DataBinding.setReadOnly(theThis, node, "readOnly1", "varName1");
+                		welcome.DataBinding.setReadOnly(theThis, node, "readOnly2", "varName2");
 				} else if(node.nodeName === "DoubleCheck2"){
 					theThis.warn("bindFieldArea - DoubleCheck2 - not implemented yet.  Step on it!"); return;
 				} else if(node.nodeName === "QuadCheck"){
@@ -495,7 +495,7 @@ qx.Class.define("dev.DataBinding", {
 				var val = node.nodeValue;
 				if(name === "varName"){
 					theThis[ val ] = obj;
-					dev.Statics.trackNamedAttr( theThis, val );
+					welcome.Statics.trackNamedAttr( theThis, val );
 				} else if(name === "label" ){
 					obj.setLabel( val );
 				} else if(name === "legend" ){
@@ -644,7 +644,7 @@ qx.Class.define("dev.DataBinding", {
 		processChildren : function ( theThis, dataObject, elem ){
 			for(var i = 0, l = elem.childNodes.length; i < l; i++){
 				var node = elem.childNodes[i];
-				dev.DataBinding.bindElementAndChildren( theThis, dataObject, node );
+				welcome.DataBinding.bindElementAndChildren( theThis, dataObject, node );
 			}
 		}
 	}
