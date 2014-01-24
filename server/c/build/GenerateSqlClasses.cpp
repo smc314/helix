@@ -2859,11 +2859,11 @@ twine xmlGetForType(twine name, twine type, twine elemname)
 twine jsPropDefinition( twine name, twine type )
 {
 	if(type == "int" || type == "autogen"){
-		return name + " : {init : 0, check : \"Integer\" }" ;
+		return name + " : {init : 0, event: \"change" + name + "\", check : \"Integer\" }" ;
 	} else if(type == "long"){
-		return name + " : {init : 0, check : \"Number\" }" ;
+		return name + " : {init : 0, event: \"change" + name + "\", check : \"Number\" }" ;
 	} else {
-		return name + " : {init : \"\", check : \"String\" }";
+		return name + " : {init : \"\", event: \"change" + name + "\", check : \"String\" }";
 	}
 }
 

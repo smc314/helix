@@ -36,7 +36,6 @@ int main (void)
 	m_currentPackage = "dev"; findAllJSFiles("../../../qd/common");
 	m_currentPackage = "welcome"; findAllJSFiles("../../../qd/common");
 
-
 	return 0;
 }
 
@@ -74,7 +73,7 @@ void processFile( twine& file_name )
 		targetPath = "../../../qd/" + m_currentPackage + "/source/class/" + m_currentPackage + "/" +
 			pathElements[5] + "/" + pathElements[6];
 	}
-	// printf("Copy (%s) to (%s)\n", file_name(), targetPath() );
+	printf("Copy (%s) to (%s)\n", file_name(), targetPath() );
 
 	vector<twine> lines;
 	try {

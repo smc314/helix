@@ -16,36 +16,36 @@ CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
+	OdbcObj.o \
 	ActionClass.o \
-	ActionHtml.o \
-	ActionLogic.o \
-	ActionMap.o \
-	AdaptiveLogs.o \
-	ConnectionPool.o \
-	DataObjectTestClass.o \
-	DataObjectTestMap.o \
-	HttpConn.o \
-	HttpIOAdapter.o \
 	IOAdapter.o \
-	IOConn.o \
-	Jvm.o \
 	LongRunningTask.o \
+	AdaptiveLogs.o \
+	ThreadList.o \
+	OdbcDrv.o \
+	HttpIOAdapter.o \
+	ActionHtml.o \
+	HttpConn.o \
+	SessionSerializer.o \
+	ConnectionPool.o \
+	Scaler.o \
+	TheMain.o \
+	IOConn.o \
 	mongoose.o \
 	MsgProcessor.o \
-	MsgProcScaler.o \
-	OdbcDrv.o \
-	OdbcObj.o \
-	Scaler.o \
-	SchedConn.o \
-	SchedEntry.o \
-	Schedule.o \
-	SessionInfo.o \
 	SessionList.o \
-	SessionSerializer.o \
+	SchedEntry.o \
+	ActionLogic.o \
+	Schedule.o \
+	DataObjectTestMap.o \
+	Jvm.o \
+	SessionInfo.o \
+	MsgProcScaler.o \
+	DataObjectTestClass.o \
+	SchedConn.o \
 	SqlDB.o \
-	TheMain.o \
-	Threadable.o \
-	ThreadList.o
+	ActionMap.o \
+	Threadable.o
 
 all: $(DOTOH)
 

@@ -41,20 +41,6 @@ xmlDocPtr HelixApi::GetProject( const Project& dataObj )
 	return SendRequest( request, "/logic/dev/GetProject");
 }
 
-xmlDocPtr HelixApi::GetProjectList( )
-{
-	EnEx ee(FL, "HelixApi::GetProjectList( )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetProjectList", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/dev/GetProjectList");
-}
-
 xmlDocPtr HelixApi::SaveProject( const Project& dataObj )
 {
 	EnEx ee(FL, "HelixApi::SaveProject( const Project& dataObj )");
@@ -70,149 +56,18 @@ xmlDocPtr HelixApi::SaveProject( const Project& dataObj )
 	return SendRequest( request, "/logic/dev/SaveProject");
 }
 
-xmlDocPtr HelixApi::CleanoutLRTask( const LRTask& dataObj )
+xmlDocPtr HelixApi::GetProjectList( )
 {
-	EnEx ee(FL, "HelixApi::CleanoutLRTask( const LRTask& dataObj )");
+	EnEx ee(FL, "HelixApi::GetProjectList( )");
 
 	// First build the request XML Document
 	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"CleanoutLRTask", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-	dataObj.createXmlNode( root );
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/CleanoutLRTask");
-}
-
-xmlDocPtr HelixApi::CloseConnection( )
-{
-	EnEx ee(FL, "HelixApi::CloseConnection( )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"CloseConnection", NULL);
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetProjectList", NULL);
 	xmlNodePtr root = xmlDocGetRootElement(request);
 
 
 	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/CloseConnection");
-}
-
-xmlDocPtr HelixApi::ExecuteGenericSQL( const SQLStatement& dataObj )
-{
-	EnEx ee(FL, "HelixApi::ExecuteGenericSQL( const SQLStatement& dataObj )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"ExecuteGenericSQL", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-	dataObj.createXmlNode( root );
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/ExecuteGenericSQL");
-}
-
-xmlDocPtr HelixApi::FindLogMessage( const LogMessageFilter& dataObj )
-{
-	EnEx ee(FL, "HelixApi::FindLogMessage( const LogMessageFilter& dataObj )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"FindLogMessage", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-	dataObj.createXmlNode( root );
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/FindLogMessage");
-}
-
-xmlDocPtr HelixApi::GetAllLayouts( )
-{
-	EnEx ee(FL, "HelixApi::GetAllLayouts( )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetAllLayouts", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetAllLayouts");
-}
-
-xmlDocPtr HelixApi::GetAllLRTasks( )
-{
-	EnEx ee(FL, "HelixApi::GetAllLRTasks( )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetAllLRTasks", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetAllLRTasks");
-}
-
-xmlDocPtr HelixApi::GetHitMap( )
-{
-	EnEx ee(FL, "HelixApi::GetHitMap( )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetHitMap", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetHitMap");
-}
-
-xmlDocPtr HelixApi::GetLogFiles( )
-{
-	EnEx ee(FL, "HelixApi::GetLogFiles( )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetLogFiles", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetLogFiles");
-}
-
-xmlDocPtr HelixApi::GetLogMessages( const LogMessageFilter& dataObj )
-{
-	EnEx ee(FL, "HelixApi::GetLogMessages( const LogMessageFilter& dataObj )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetLogMessages", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-	dataObj.createXmlNode( root );
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetLogMessages");
-}
-
-xmlDocPtr HelixApi::GetLogMessagesByRange( const LogMessageFilter& dataObj )
-{
-	EnEx ee(FL, "HelixApi::GetLogMessagesByRange( const LogMessageFilter& dataObj )");
-
-	// First build the request XML Document
-	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetLogMessagesByRange", NULL);
-	xmlNodePtr root = xmlDocGetRootElement(request);
-
-	dataObj.createXmlNode( root );
-
-	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetLogMessagesByRange");
+	return SendRequest( request, "/logic/dev/GetProjectList");
 }
 
 xmlDocPtr HelixApi::GetLogMsgCount( const LogMessageFilter& dataObj )
@@ -230,6 +85,34 @@ xmlDocPtr HelixApi::GetLogMsgCount( const LogMessageFilter& dataObj )
 	return SendRequest( request, "/logic/util/GetLogMsgCount");
 }
 
+xmlDocPtr HelixApi::CloseConnection( )
+{
+	EnEx ee(FL, "HelixApi::CloseConnection( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"CloseConnection", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/CloseConnection");
+}
+
+xmlDocPtr HelixApi::GetAllLayouts( )
+{
+	EnEx ee(FL, "HelixApi::GetAllLayouts( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetAllLayouts", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/GetAllLayouts");
+}
+
 xmlDocPtr HelixApi::GetLogSettings( )
 {
 	EnEx ee(FL, "HelixApi::GetLogSettings( )");
@@ -244,33 +127,62 @@ xmlDocPtr HelixApi::GetLogSettings( )
 	return SendRequest( request, "/logic/util/GetLogSettings");
 }
 
-xmlDocPtr HelixApi::GetOneLRTask( const LRTask& dataObj )
+xmlDocPtr HelixApi::GetLogMessagesByRange( const LogMessageFilter& dataObj )
 {
-	EnEx ee(FL, "HelixApi::GetOneLRTask( const LRTask& dataObj )");
+	EnEx ee(FL, "HelixApi::GetLogMessagesByRange( const LogMessageFilter& dataObj )");
 
 	// First build the request XML Document
 	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetOneLRTask", NULL);
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetLogMessagesByRange", NULL);
 	xmlNodePtr root = xmlDocGetRootElement(request);
 
 	dataObj.createXmlNode( root );
 
 	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetOneLRTask");
+	return SendRequest( request, "/logic/util/GetLogMessagesByRange");
 }
 
-xmlDocPtr HelixApi::GetProfile( )
+xmlDocPtr HelixApi::GetHitMap( )
 {
-	EnEx ee(FL, "HelixApi::GetProfile( )");
+	EnEx ee(FL, "HelixApi::GetHitMap( )");
 
 	// First build the request XML Document
 	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetProfile", NULL);
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetHitMap", NULL);
 	xmlNodePtr root = xmlDocGetRootElement(request);
 
 
 	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/GetProfile");
+	return SendRequest( request, "/logic/util/GetHitMap");
+}
+
+xmlDocPtr HelixApi::CleanoutLRTask( const LRTask& dataObj )
+{
+	EnEx ee(FL, "HelixApi::CleanoutLRTask( const LRTask& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"CleanoutLRTask", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/CleanoutLRTask");
+}
+
+xmlDocPtr HelixApi::GetAllLRTasks( )
+{
+	EnEx ee(FL, "HelixApi::GetAllLRTasks( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetAllLRTasks", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/GetAllLRTasks");
 }
 
 xmlDocPtr HelixApi::SaveLogMsg( const LogObj& dataObj )
@@ -288,19 +200,19 @@ xmlDocPtr HelixApi::SaveLogMsg( const LogObj& dataObj )
 	return SendRequest( request, "/logic/util/SaveLogMsg");
 }
 
-xmlDocPtr HelixApi::SwitchServerConnection( const LogOn& dataObj )
+xmlDocPtr HelixApi::FindLogMessage( const LogMessageFilter& dataObj )
 {
-	EnEx ee(FL, "HelixApi::SwitchServerConnection( const LogOn& dataObj )");
+	EnEx ee(FL, "HelixApi::FindLogMessage( const LogMessageFilter& dataObj )");
 
 	// First build the request XML Document
 	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
-	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"SwitchServerConnection", NULL);
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"FindLogMessage", NULL);
 	xmlNodePtr root = xmlDocGetRootElement(request);
 
 	dataObj.createXmlNode( root );
 
 	// Now send the request to the server.
-	return SendRequest( request, "/logic/util/SwitchServerConnection");
+	return SendRequest( request, "/logic/util/FindLogMessage");
 }
 
 xmlDocPtr HelixApi::UpdateLogSettings( const LogSettings& dataObj )
@@ -316,5 +228,93 @@ xmlDocPtr HelixApi::UpdateLogSettings( const LogSettings& dataObj )
 
 	// Now send the request to the server.
 	return SendRequest( request, "/logic/util/UpdateLogSettings");
+}
+
+xmlDocPtr HelixApi::GetProfile( )
+{
+	EnEx ee(FL, "HelixApi::GetProfile( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetProfile", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/GetProfile");
+}
+
+xmlDocPtr HelixApi::GetOneLRTask( const LRTask& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetOneLRTask( const LRTask& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetOneLRTask", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/GetOneLRTask");
+}
+
+xmlDocPtr HelixApi::SwitchServerConnection( const LogOn& dataObj )
+{
+	EnEx ee(FL, "HelixApi::SwitchServerConnection( const LogOn& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"SwitchServerConnection", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/SwitchServerConnection");
+}
+
+xmlDocPtr HelixApi::ExecuteGenericSQL( const SQLStatement& dataObj )
+{
+	EnEx ee(FL, "HelixApi::ExecuteGenericSQL( const SQLStatement& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"ExecuteGenericSQL", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/ExecuteGenericSQL");
+}
+
+xmlDocPtr HelixApi::GetLogMessages( const LogMessageFilter& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetLogMessages( const LogMessageFilter& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetLogMessages", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/GetLogMessages");
+}
+
+xmlDocPtr HelixApi::GetLogFiles( )
+{
+	EnEx ee(FL, "HelixApi::GetLogFiles( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetLogFiles", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/util/GetLogFiles");
 }
 

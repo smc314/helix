@@ -15,33 +15,47 @@ CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	Api.o \
-	Api_test.o \
-	Application.o \
-	Application_test.o \
+	BusinessUnit.o \
 	DObject.o \
-	DObject_test.o \
-	DOChild.o \
-	DOChild_test.o \
 	DOStmt.o \
-	DOStmt_test.o \
-	DOStmtInput.o \
-	DOStmtInput_test.o \
-	DOStmtOutput.o \
-	DOStmtOutput_test.o \
-	GetProject.o \
-	GetProjectList.o \
-	Project.o \
-	Project_test.o \
-	ProjectData.o \
-	ProjectData_test.o \
-	ProjectTable.o \
-	ProjectTable_test.o \
-	SaveProject.o \
-	Screen.o \
 	Screen_test.o \
+	FunctionalRole.o \
+	Person_test.o \
+	Project_test.o \
+	ProjectData_test.o \
+	Application_test.o \
+	Api_test.o \
+	Email.o \
+	BusinessUnit_test.o \
+	Screen.o \
+	GetProject.o \
+	DOStmtInput_test.o \
+	Project.o \
+	DOChild_test.o \
+	DOStmtOutput_test.o \
+	Phone.o \
+	TableCol_test.o \
+	DOStmt_test.o \
+	ProjectTable.o \
+	Phone_test.o \
+	Address.o \
+	DOStmtInput.o \
+	ProjectData.o \
+	Api.o \
+	DObject_test.o \
+	Address_test.o \
+	Application.o \
+	SaveProject.o \
+	GetProjectList.o \
+	DOChild.o \
+	ProjectTable_test.o \
+	Person.o \
+	Prospect_test.o \
+	FunctionalRole_test.o \
 	TableCol.o \
-	TableCol_test.o
+	DOStmtOutput.o \
+	Prospect.o \
+	Email_test.o
 
 all: $(DOTOH)
 	cd test && $(GMAKE) -f Makefile all
