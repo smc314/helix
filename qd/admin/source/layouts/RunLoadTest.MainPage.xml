@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/RunLoadTest.MainPage.xml">
+	<GroupBox legend="Load Test Settings" flex="1">
+		<FieldArea columns="2" first="120" second="80">
+			<SpanField varName1="nameField" label1="Name:" type1="TextField"/>
+			<SpanField varName1="descrField" label1="Description:" type1="TextArea"/>
+			<DoubleField varName1="hostField" label1="Host:" type1="TextField" varName2="portField" label2="Port:" type2="TextField"/>
+			<DoubleField varName1="userField" label1="User:" type1="TextField" varName2="passField" label2="Pass:" type2="PasswordField"/>
+			<DoubleField varName1="threadsField" label1="Threads:" type1="TextField" varName2="iterationsField" label2="Iterations:" type2="TextField"/>
+			<DoubleField varName1="reconnectEveryNField" label1="Reconnect Every:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			<SingleCheck varName1="useAutoCommitField" label1="Use AutoCommit"/>
+		</FieldArea>
+
+		<Label text="SQL Statements to Run:" paddingTop="3"/>
+		<TextArea varName="sqlStatementsField" flex="1" wrap="true" allowGrowX="true" allowGrowY="true"/>
+
+
+
+	</GroupBox>
+</VerticalBoxLayout>

@@ -47,7 +47,7 @@ qx.Class.define("admin.Singleton", {
 		refreshServerSettings: function () {
 			// retrieve the settings from the Server:
 			admin.Api.selectAllSettings(function (response) {
-				var ret = admin.admin.sqldo.Setting.readElementChildren(response);
+				var ret = admin.sqldo.Setting.readElementChildren(response);
 				var our = [];
 				for (var i = 0, l = ret.length; i < l; i++) {
 					var obj = ret[i];

@@ -1,0 +1,13 @@
+<SQLXml generateClass="Row" package="logic/admin">
+	<ChildVector name="Cols" type="Col"/>
+
+	<SqlStatement methodName="unused" methodType="INSERT">
+		<Comment>
+			This is here to allow us to define the data object.
+		</Comment>
+		<Sql>
+			-- Empty on purpose
+		</Sql>
+		<Input name="idx" type="int"/>
+	</SqlStatement>
+</SQLXml>

@@ -70,12 +70,8 @@ void GetAllLayouts::ExecuteRequest(IOConn& ioc)
 	// ascfg, dash, drvdep, ia, ldm, xfrmgr
 	
 	vector<twine> layouts;
-	AddLayouts(layouts, "ascfg");
-	AddLayouts(layouts, "dash");
-	AddLayouts(layouts, "drvdep");
-	AddLayouts(layouts, "ia");
-	AddLayouts(layouts, "ldm");
-	AddLayouts(layouts, "xfrmgr");
+	AddLayouts(layouts, "admin");
+	AddLayouts(layouts, "dev");
 
 	// Now take those and return them to the caller:
 	for(int i = 0; i < (int)layouts.size(); i++){
@@ -95,7 +91,7 @@ void GetAllLayouts::AddLayouts(vector<twine>& list, twine dirName)
 {
 	EnEx ee(FL, "GetAllLayouts::AddLayouts(vector<twine>& list, twine dirName)");
 
-	twine realDirName = "../qd/" + dirName + "/source/layouts/";
+	twine realDirName = "../../../qd/" + dirName + "/source/layouts/";
 	vector<twine> tmp = File::listFiles(realDirName);
 	for(int i = 0; i < (int)tmp.size(); i++){
 		list.push_back( dirName + "/" + tmp[i] );

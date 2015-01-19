@@ -6,7 +6,9 @@
 3PL=../../../../../3rdParty
 GMAKE=make -j 8
 
-CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include" -I ../../glob -I ../../client -I ../util -I ../admin -I ../dev -I ../test 
+CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include" -I ../../glob -I ../../client -I ../util -I ../admin -I ../dev -I ../test 
+
+LFLAGS=
 
 %.o: %.cpp
 	g++ $(CFLAGS) -c $< -o $@
@@ -55,10 +57,12 @@ DOTOH=\
 	LogOn_test.o
 
 all: $(DOTOH)
+	g++ -shared -o ../../bin/libhelix.logic.util.so $(DOTOH) $(LFLAGS)
 	cd test && $(GMAKE) -f Makefile all
 
 clean:
 	rm -f $(DOTOH) *.o *.obj core *.so
 	touch -c *.sql.xml
+	rm -f ../../bin/libhelix.logic.util.so
 	cd test && $(GMAKE) -f Makefile clean
 

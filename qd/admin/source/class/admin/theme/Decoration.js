@@ -10,7 +10,7 @@
 
 qx.Theme.define("admin.theme.Decoration",
 {
-  extend : qx.theme.modern.Decoration,
+  extend : qx.theme.simple.Decoration,
 
   decorations :
   {

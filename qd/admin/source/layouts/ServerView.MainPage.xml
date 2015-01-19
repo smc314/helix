@@ -1,0 +1,42 @@
+<VerticalBoxLayout spacing="0">
+	<GroupBox legend="Monitored Server Connection Info">
+		<FieldArea columns="2" first="80" second="80">
+			<SpanField 
+				varName1="MSNameField" label1="Name:" type1="TextField"
+				tooltip1="This is a free-form name given to the monitored server"
+			/>
+			<DoubleField 
+				varName1="HostField" label1="Host:" type1="TextField"
+				tooltip1="This is the hostname of the monitored server."
+				varName2="PortField" label2="Port:" type2="TextField"
+				tooltip2="This is the port number where we contact the monitored server"
+			/>
+			<DoubleField 
+				varName1="UserField" label1="User:" type1="TextField"
+				tooltip1="This is the username that we use when querying the monitored server."
+				varName2="PassField" label2="Password:" type2="PasswordField"
+				tooltip2="This is the password that goes with the username."
+			/>
+		</FieldArea>
+	</GroupBox>
+	<GroupBox legend="Download Logs" isCheck="true" varName="DownloadLogsField">
+		<HorizontalBoxLayout spacing="0">
+			<GroupBox legend="Include Core Logs" isCheck="true" varName="IncludeNormField" flex="1">
+				<FieldArea columns="2" first="80" second="80">
+					<SpanField 
+						varName1="MaxRecordsField" label1="Download:" type1="TextField"
+						tooltip1="This is the max number of log messages we download each time we query the mainframe."
+					/>
+				</FieldArea>
+			</GroupBox>
+			<GroupBox legend="Include ACI Logs" isCheck="true" varName="IncludeLWTField" flex="1">
+				<FieldArea columns="2" first="80" second="80">
+					<SpanField 
+						varName1="LWTMaxRecordsField" label1="Download:" type1="TextField"
+						tooltip1="This is the max number of aci log messages we download each time we query the mainframe."
+					/>
+				</FieldArea>
+			</GroupBox>
+		</HorizontalBoxLayout>
+	</GroupBox>
+</VerticalBoxLayout>

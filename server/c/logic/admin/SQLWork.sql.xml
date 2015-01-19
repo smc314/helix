@@ -1,0 +1,24 @@
+<SQLXml generateClass="SQLWork" package="logic/admin">
+
+	<SqlStatement methodName="unused" methodType="INSERT">
+		<Comment>
+			This is here to allow us to define the SQLTests data object.
+		</Comment>
+		<Sql>
+			-- Empty on purpose
+		</Sql>
+		<Input name="FileName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="HostDB" type="twine"/>
+		<Input name="Sql" type="base64"/>
+		<Input name="Type" type="twine"/>
+		<Input name="AciService" type="twine"/>
+		<Input name="AciInMap" type="twine"/>
+		<Input name="AciOutMap" type="twine"/>
+		<Input name="BuildSql" type="base64"/>
+		<Input name="ConvertSql" type="base64"/>
+		<Input name="Code" type="base64"/>
+		<Input name="Owner" type="twine"/>
+		<Input name="Pfkey" type="twine"/>
+	</SqlStatement>
+</SQLXml>

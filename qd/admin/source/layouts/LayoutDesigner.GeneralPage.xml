@@ -1,0 +1,13 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Layout File General Properties">
+		<FieldArea columns="2" first="80" second="80">
+			
+			
+			
+			
+		<SpanField label1="Group:" type1="ComboBox" verify1type="number" tooltip1="Parent folder/group for this layout file" varName1="ParentFolderField" required1="true"><List1Value label="admin" model="../../../qd/admin/source/layouts/"/><List1Value label="dev" model="../../../qd/dev/source/layouts/"/></SpanField><SpanField label1="File Name:" type1="TextField" verify1type="string" tooltip1="File name for the Layout File on the server" varName1="FileNameField" required1="true" verify1="true" verify1min="1" verify1max="256"/></FieldArea>
+		
+		
+	</GroupBox>
+	
+</VerticalBoxLayout>

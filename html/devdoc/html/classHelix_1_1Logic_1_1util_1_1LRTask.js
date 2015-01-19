@@ -1,0 +1,28 @@
+var classHelix_1_1Logic_1_1util_1_1LRTask =
+[
+    [ "LRTask", "classHelix_1_1Logic_1_1util_1_1LRTask.html#af0a9f16ae381e863037d64fafb43c32a", null ],
+    [ "LRTask", "classHelix_1_1Logic_1_1util_1_1LRTask.html#aefa6467a13eca3588cc3d200a10554e6", null ],
+    [ "~LRTask", "classHelix_1_1Logic_1_1util_1_1LRTask.html#aede6626ab516bb97b63e255dc1523d3a", null ],
+    [ "LRTask", "classHelix_1_1Logic_1_1util_1_1LRTask.html#af5bea84d2601fc82cf7956341898bd61", null ],
+    [ "checkSize", "classHelix_1_1Logic_1_1util_1_1LRTask.html#ab4b592bb89568f587d2b6ed3601d82a6", null ],
+    [ "createXmlChildren", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a54a1f416e6b29636bae600a5d50ef13b", null ],
+    [ "createXmlDoc", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a98aa16126302213dd67a5352473edaaa", null ],
+    [ "createXmlNode", "classHelix_1_1Logic_1_1util_1_1LRTask.html#aacc251847428a616ab2b43e0db005377", null ],
+    [ "deleteVector", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a31272405222640a14e3cfbd29f7ab0ac", null ],
+    [ "init", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a37e38bca66a80680b64d186668590184", null ],
+    [ "Name", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a323a0852dde474db9cc32f679a150f16", null ],
+    [ "operator=", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a159e043597a28a2c524d2762ee222065", null ],
+    [ "readXmlChildren", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a2ce66a8d10624e83b90c926928d80a5d", null ],
+    [ "readXmlNode", "classHelix_1_1Logic_1_1util_1_1LRTask.html#aa86a323e515e9e39309412eec12750fc", null ],
+    [ "unusedSqlStmt", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a08a2ee346d612dcc49fa93ba39ccf64c", null ],
+    [ "unusedSqlStmt", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a980173bafda95313aa5089aaee940042", null ],
+    [ "unusedSqlStmt_getSQL", "classHelix_1_1Logic_1_1util_1_1LRTask.html#aa6edd2df9bce57e2079db2de99bda587", null ],
+    [ "unusedSqlStmt_prepSQL", "classHelix_1_1Logic_1_1util_1_1LRTask.html#af4ff783070adb7a391edf7ca5d33f3a2", null ],
+    [ "TaskCurrent", "classHelix_1_1Logic_1_1util_1_1LRTask.html#aee4fa01402bc8fbcafc82550ae1bb20d", null ],
+    [ "TaskFinish", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a8b6771ffc700b885763e2f2ee3d9fd04", null ],
+    [ "TaskID", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a254d7bfcab48db9ddda4b12c0a6a7b46", null ],
+    [ "TaskMsg", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a7fa360c8b5cc97727a571cd32ab8dfc7", null ],
+    [ "TaskName", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a39fa8f756276341b0f18063bd64c3e71", null ],
+    [ "TaskResponse", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a2387f0e454b7464cce9229423b80c1a6", null ],
+    [ "TaskStart", "classHelix_1_1Logic_1_1util_1_1LRTask.html#a511d14f50ba2eb5be2f1359449a18ccd", null ]
+];

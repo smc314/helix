@@ -73,19 +73,23 @@ qx.Class.define("PACKAGE.dialog.WizardDialog", {
 		this.prev_btn = new qx.ui.form.Button(this.tr("Back"), "PACKAGE/icon/16x16/plain/arrow2_left_blue.png");
 		this.prev_btn.setIconPosition("left");
 		hbl.add(this.prev_btn);
+		PACKAGE.Statics.setHtmlID( this.prev_btn, "Back" );
 		this.next_btn = new qx.ui.form.Button(this.tr("Next"), "PACKAGE/icon/16x16/plain/arrow2_right_blue.png");
 		this.next_btn.setIconPosition("right");
 		hbl.add(this.next_btn);
+		PACKAGE.Statics.setHtmlID( this.next_btn, "Next" );
 		var sp1 = new qx.ui.core.Spacer();
 		sp1.setWidth(10);
 		hbl.add(sp1);
 		this.ok_btn = new qx.ui.form.Button(this.tr("Finish"), "PACKAGE/icon/16x16/plain/ok.png");
 		hbl.add(this.ok_btn);
+		PACKAGE.Statics.setHtmlID( this.ok_btn, "Finish" );
 		var sp2 = new qx.ui.core.Spacer();
 		sp2.setWidth(10);
 		hbl.add(sp2);
 		this.close_btn = new qx.ui.form.Button(this.tr("Cancel"), "PACKAGE/icon/16x16/plain/error.png");
 		hbl.add(this.close_btn);
+		PACKAGE.Statics.setHtmlID( this.close_btn, "Cancel" );
 
 		this.prev_btn.addListener("execute", this.backButtonPressed, this);
 		this.next_btn.addListener("execute", this.nextButtonPressed, this);

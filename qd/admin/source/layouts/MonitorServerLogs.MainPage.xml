@@ -1,0 +1,17 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Ivory Hub Director Log Messages" flex="1">
+		<StandardTable varName="logTable" flex="1">
+			<Column title=" " width="1*" minWidth="30" maxWidth="30"/>
+			<Column title="ID" width="1*" minWidth="50" maxWidth="80"/>
+			<Column title="Date" width="1*" minWidth="130" maxWidth="180"/>
+			<Column title="Machine" width="1*" minWidth="60"/>
+			<Column title="Application" width="1*" minWidth="60"/>
+			<Column title="Thread" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="SUID" width="1*" minWidth="250" maxWidth="250"/>
+			<Column title="File" width="1*" minWidth="60"/>
+			<Column title="Line" width="1*" minWidth="30" maxWidth="50"/>
+			<Column title="Channel" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Message" width="10*" minWidth="60"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -82,6 +82,8 @@ qx.Class.define("dev.LayoutEngine", {
 				return dev.LayoutEngine.createVerticalSplitPane( theThis, elem, parent );
 			} else if(elem.nodeName === "GroupBox") {
 				return dev.LayoutEngine.createGroupBox( theThis, elem, parent );
+			} else if(elem.nodeName === "Tree" ) {
+				return dev.LayoutEngine.createTree( theThis, elem, parent );
 			} else if(elem.nodeName === "TreeVirtual" ) {
 				return dev.LayoutEngine.createTreeVirtual( theThis, elem, parent );
 			} else if(elem.nodeName === "RecursiveCheckBoxTree" ) {
@@ -178,7 +180,7 @@ qx.Class.define("dev.LayoutEngine", {
 			// The standard splitpane has a decorator that adds a border around
 			// the whole widget.  We don't want that, so use the Background decorator
 			// instead to get a 0 border.
-			obj.set({decorator : new qx.ui.decoration.Background});
+			obj.set({decorator : new qx.ui.decoration.Decorator});
 
 			// remove leftsize and rightsize before processing attrs:
 			elem.removeAttribute("leftsize");
@@ -253,6 +255,14 @@ qx.Class.define("dev.LayoutEngine", {
 				}
 				sizing.set( i, hash );
 			}
+
+			// A tree has no children.
+			return obj;
+		},
+
+		createTree : function ( theThis, elem, parent ) {
+			var obj = new qx.ui.tree.Tree();
+			dev.LayoutEngine.processAttributes( theThis, elem, obj );
 
 			// A tree has no children.
 			return obj;

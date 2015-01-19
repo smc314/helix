@@ -34,6 +34,8 @@ qx.Class.define("admin.dialog.OKDialog", {
 	construct : function ( title, addToolbar ) {
 		this.base( arguments, title );
 
+		admin.Statics.setHtmlID( this, title);
+
 		// These are the values we capture and the caller can
 		// interrogate to find out how things went
 		this.okPressed = false;
@@ -71,6 +73,7 @@ qx.Class.define("admin.dialog.OKDialog", {
 		this.button_layout.set({paddingTop:0, paddingBottom:2});
 		hbox.setAlignX("center");
 		this.ok_btn = new qx.ui.form.Button("OK", "admin/icon/16x16/plain/ok.png");
+		admin.Statics.setHtmlID( this.ok_btn, "OK" );
 
 		this.ok_btn.addListener("execute", function() {
 			this.okPressed = true;

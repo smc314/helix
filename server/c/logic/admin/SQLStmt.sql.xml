@@ -1,0 +1,38 @@
+<SQLXml generateClass="SQLStmt" package="logic/admin">
+
+	<!-- When we capture the results of a sql statement, we store those captured results
+		 in our child MetaData and Results vectors
+	-->
+	<ChildVector name="MetaData" type="Col"/>
+	<ChildVector name="Results" type="Row"/>
+
+	<!-- When we check the sql statement against our stored values, we'll capture the 
+		 new metadata and result set values in these check versions.
+	-->
+	<ChildVector name="MetaDataCheck" type="Col"/>
+	<ChildVector name="ResultsCheck" type="Row"/>
+
+	<SqlStatement methodName="unused" methodType="INSERT">
+		<Comment>
+			This is here to allow us to define the SQLTests data object.
+		</Comment>
+		<Sql>
+			-- Empty on purpose
+		</Sql>
+		<Input name="StatementName" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="stmt" type="base64"/>
+		<Input name="newConnection" type="int"/>
+		<Input name="ignoreErrors" type="int"/>
+		<Input name="expectErrors" type="int"/>
+		<Input name="expectedErrorMsg" type="twine"/>
+		<Input name="verifyData" type="int"/>
+		<Input name="expectedRows" type="int"/>
+		<Input name="issueCommit" type="int"/>
+		<Input name="issueRollback" type="int"/>
+		<Input name="isSelected" type="int"/>
+		<Input name="status" type="int"/>
+		<Input name="statusMessage" type="twine"/>
+		<Input name="Duration" type="float"/>
+	</SqlStatement>
+</SQLXml>

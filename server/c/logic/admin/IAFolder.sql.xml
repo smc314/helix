@@ -1,0 +1,21 @@
+<SQLXml generateClass="IAFolder" package="logic/admin">
+	<SqlStatement methodName="unusedSqlStmt" methodType="SELECTTOXML">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to define an installation plan
+		</Comment>
+		<Sql>
+			-- Nothing here on purpose
+			-- Note, the Output/Input designations below don't matter.  Output
+			-- defaults to string as a type.  Inputs require you to specify the 
+			-- data type.  So, for those object members where we care about the
+			-- data type, we use Input.  All the others are strings and so we
+			-- just use Output for less typing.
+		</Sql>
+		<!-- Generic Properties -->
+		<Input  name="ParentFolder" type="twine"/>
+		<Output name="FolderName"/>
+		<Output name="Description"/>
+
+	</SqlStatement>
+</SQLXml>

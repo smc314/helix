@@ -37,7 +37,7 @@
   "let" :
   {
     "APPLICATION"  : "dev",
-    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-3.0-sdk",
+    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-4.0.1-sdk",
     "QXTHEME"      : "dev.theme.Theme",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
     "LOCALES"      : [ "en" ],

@@ -33,10 +33,12 @@ endif
 %.o:	%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-ALLOH=glob/*.o \
-	logic/dev/*.o \
-	logic/util/*.o \
-	client/HelixApi_Part1.o client/HelixApi_Part2.o
+ALLOH=-L./bin \
+	-lhelix.glob \
+	-lhelix.client \
+	-lhelix.logic.admin \
+	-lhelix.logic.dev \
+	-lhelix.logic.util
 
 all: install buildPrep subdirs HelixMain HelixDaemon install
 

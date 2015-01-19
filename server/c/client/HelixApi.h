@@ -13,12 +13,15 @@ using namespace SLib;
 // We need references to every single data object class here:
 #include <Api.h>
 #include <Application.h>
+#include <Col.h>
 #include <DOChild.h>
 #include <DOStmt.h>
 #include <DOStmtInput.h>
 #include <DOStmtOutput.h>
 #include <DObject.h>
 #include <HitMap.h>
+#include <IAFile.h>
+#include <IAFolder.h>
 #include <LRTask.h>
 #include <LogMessageFilter.h>
 #include <LogObj.h>
@@ -27,11 +30,15 @@ using namespace SLib;
 #include <Project.h>
 #include <ProjectData.h>
 #include <ProjectTable.h>
+#include <Row.h>
 #include <SQLStatement.h>
+#include <SQLStmt.h>
+#include <SQLTests.h>
+#include <SQLWork.h>
 #include <SchedItem.h>
 #include <Screen.h>
 #include <TableCol.h>
-//using namespace Helix::Logic::admin;
+using namespace Helix::Logic::admin;
 using namespace Helix::Logic::dev;
 //using namespace Helix::Logic::test;
 using namespace Helix::Logic::util;
@@ -241,6 +248,86 @@ class HelixApi : public HttpClient
 		  * server API.
 		  */
 		xmlDocPtr GetLogFiles( );
+
+		/** This method will call the /logic/admin/InsertScheduleItem
+		  * server API.
+		  */
+		xmlDocPtr InsertScheduleItem( const SchedItem& dataObj );
+
+		/** This method will call the /logic/admin/UpdateScheduleItem
+		  * server API.
+		  */
+		xmlDocPtr UpdateScheduleItem( const SchedItem& dataObj );
+
+		/** This method will call the /logic/admin/SaveSQLWork
+		  * server API.
+		  */
+		xmlDocPtr SaveSQLWork( const SQLWork& dataObj );
+
+		/** This method will call the /logic/admin/DeleteSQLWork
+		  * server API.
+		  */
+		xmlDocPtr DeleteSQLWork( const SQLWork& dataObj );
+
+		/** This method will call the /logic/admin/DeleteScheduleItem
+		  * server API.
+		  */
+		xmlDocPtr DeleteScheduleItem( const SchedItem& dataObj );
+
+		/** This method will call the /logic/admin/DeleteIAFile
+		  * server API.
+		  */
+		xmlDocPtr DeleteIAFile( const IAFile& dataObj );
+
+		/** This method will call the /logic/admin/LoadSQLTestMeta
+		  * server API.
+		  */
+		xmlDocPtr LoadSQLTestMeta( const SQLTests& dataObj );
+
+		/** This method will call the /logic/admin/GetOneScheduleItem
+		  * server API.
+		  */
+		xmlDocPtr GetOneScheduleItem( const SchedItem& dataObj );
+
+		/** This method will call the /logic/admin/GetIAFileList
+		  * server API.
+		  */
+		xmlDocPtr GetIAFileList( const IAFolder& dataObj );
+
+		/** This method will call the /logic/admin/SaveIAFile
+		  * server API.
+		  */
+		xmlDocPtr SaveIAFile( const IAFile& dataObj );
+
+		/** This method will call the /logic/admin/GetSQLTest
+		  * server API.
+		  */
+		xmlDocPtr GetSQLTest( const IAFile& dataObj );
+
+		/** This method will call the /logic/admin/GetIAFileDetails
+		  * server API.
+		  */
+		xmlDocPtr GetIAFileDetails( const IAFile& dataObj );
+
+		/** This method will call the /logic/admin/GetWorkFileList
+		  * server API.
+		  */
+		xmlDocPtr GetWorkFileList( const IAFolder& dataObj );
+
+		/** This method will call the /logic/admin/GetScheduleItems
+		  * server API.
+		  */
+		xmlDocPtr GetScheduleItems( );
+
+		/** This method will call the /logic/admin/SaveSQLTest
+		  * server API.
+		  */
+		xmlDocPtr SaveSQLTest( const SQLTests& dataObj );
+
+		/** This method will call the /logic/admin/GetSQLWork
+		  * server API.
+		  */
+		xmlDocPtr GetSQLWork( const SQLWork& dataObj );
 
 
 }; // End HelixApi class

@@ -10,7 +10,7 @@
 
 qx.Theme.define("admin.theme.Font",
 {
-  extend : qx.theme.modern.Font,
+  extend : qx.theme.simple.Font,
 
   fonts :
   {

@@ -1,0 +1,9 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<StandardTable varName="groupsTable" flex="1">
+		<Column title="Group Name" width="1*" minWidth="60" maxWidth="100"/>
+		<Column title="Description" width="1*" minWidth="80" maxWidth="120"/>
+		<Column title="Type" width="1*" minWidth="40" maxWidth="80"/>
+		<Column title="Max Sockets" width="1*" minWidth="40" maxWidth="80"/>
+		<Column title="Active Sockets" width="1*" minWidth="80" maxWidth="120"/>
+	</StandardTable>
+</VerticalBoxLayout>

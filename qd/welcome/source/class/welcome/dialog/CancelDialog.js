@@ -67,6 +67,7 @@ qx.Class.define("welcome.dialog.CancelDialog", {
 		this.button_layout.set({paddingTop:0, paddingBottom:2});
 		hbox.setAlignX("center");
 		this.cancel_btn = new qx.ui.form.Button("OK", "welcome/icon/16x16/plain/error.png");
+		welcome.Statics.setHtmlID( this.cancel_btn, "OK" );
 
 		this.cancel_btn.addListener("execute", function() {
 			this.close();
@@ -108,6 +109,7 @@ qx.Class.define("welcome.dialog.CancelDialog", {
 		addButton : function (buttonLabel, buttonIcon) {
 			var btn = new qx.ui.form.Button(buttonLabel, buttonIcon);
 			this.button_layout.addAt( btn, 0 ); // Add the button to the leftmost side
+			welcome.Statics.setHtmlID( btn, buttonLabel );
 			return btn; // return it so the caller can add any listeners or further customize it.
 		},
 

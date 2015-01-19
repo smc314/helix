@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.NextPage.xml">
+	<HorizontalSplitPane varName="optionalVariableName" leftsize="1" rightsize="3" flex="1">
+		<HorizontalSplitPaneLeft>
+			<HorizontalBoxLayout flex="4">
+				<VerticalBoxLayout paddingTop="20">
+					<Button varName="stmtAddNew" icon="admin/icon/16x16/plain/scroll2_add.png"/>
+					<Button varName="stmtDelete" icon="admin/icon/16x16/plain/delete2.png"/>
+				</VerticalBoxLayout>
+				<StandardTable varName="stmtTable" flex="1">
+					<Column title="SQL Statement" width="3*" minWidth="50"/>
+					<Column title="Type" width="1*" minWidth="50" maxWidth="120"/>
+					<Column title="Target" width="1*" minWidth="50" maxWidth="120"/>
+				</StandardTable>
+			</HorizontalBoxLayout>
+		</HorizontalSplitPaneLeft>
+		<HorizontalSplitPaneRight>
+			<VerticalBoxLayout spacing="0" flex="1" varName="rightBox">
+
+			</VerticalBoxLayout>
+		</HorizontalSplitPaneRight>
+	</HorizontalSplitPane>
+</VerticalBoxLayout>

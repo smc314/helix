@@ -278,7 +278,7 @@ qx.Mixin.define("welcome.StandardApp", {
 
 			welcomeButton.addListener("execute", this.showWelcome, this);
 			helpButton.addListener("execute", this.showHelp, this);
-			docsButton.addListener("execute", this.showDocs, this);
+			//docsButton.addListener("execute", this.showDocs, this);
 			appGuidesButton.addListener("execute", this.showAppGuides, this);
 
 			supportButton.addListener("execute", this.showQA, this);
@@ -551,7 +551,7 @@ qx.Mixin.define("welcome.StandardApp", {
 			if (tab_page != null) { // brand new
 				tab_page.setIcon("welcome/icon/16x16/plain/help2.png");
 				var iframe = new qx.ui.embed.Iframe().set({
-					source: "/welcome/NetHelp/welcome.htm"
+					source: "/devdoc/html/index.html"
 				});
 				tab_page.add(iframe, { flex: 10 });
 			}
@@ -562,7 +562,7 @@ qx.Mixin.define("welcome.StandardApp", {
 			if (tab_page != null) { // brand new
 				tab_page.setIcon("welcome/icon/16x16/plain/book_blue_open2.png");
 				var iframe = new qx.ui.embed.Iframe().set({
-					source: "/docs/docs.html"
+					source: "/devdoc/html/index.html"
 				});
 				tab_page.add(iframe, { flex: 10 });
 			}
@@ -573,7 +573,7 @@ qx.Mixin.define("welcome.StandardApp", {
 			if (tab_page != null) { // brand new
 				tab_page.setIcon("welcome/icon/16x16/plain/book_blue_open2.png");
 				var iframe = new qx.ui.embed.Iframe().set({
-					source: "/docs/appguides/NetHelp/AppGuides.htm"
+					source: "/devdoc/html/index.html"
 				});
 				tab_page.add(iframe, { flex: 10 });
 			}
@@ -622,7 +622,7 @@ qx.Mixin.define("welcome.StandardApp", {
 				"Copyright &copy; 1997 - " + d.getFullYear() + " Hericus Software, Inc.  All Rights Reserved." +
 				"</p>";
 
-			var decorator = new qx.ui.decoration.Background();
+			var decorator = new qx.ui.decoration.Decorator();
 			decorator.setBackgroundImage( "welcome/helix-about-background.png" );
 			var tmpWindow = new welcome.dialog.MessageDialog(windowTitle, windowIcon, windowText);
 			tmpWindow.child_layout.setDecorator( decorator );
@@ -1003,7 +1003,7 @@ qx.Mixin.define("welcome.StandardApp", {
 			var items = tree.getItems(true, true);
 			for (var i = 0; i < items.length; i++) {
                 var label = items[i].getLabel().replace("(Filtered)", "");
-                label = qx.lang.String.trim(label);
+                label = qx.lang.String.trimRight(label);
                 if (label == key) return items[i];
 			}
 			return null;

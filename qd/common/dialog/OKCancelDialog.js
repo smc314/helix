@@ -31,6 +31,7 @@ qx.Class.define("PACKAGE.dialog.OKCancelDialog", {
 		}, this);
 
 		this.button_layout.add(this.close_btn);
+		PACKAGE.Statics.setHtmlID( this.close_btn, "Cancel" );
 
 	},
 	

@@ -1,0 +1,149 @@
+<SQLXml generateClass="SchedItem" package="logic/admin" >
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add new schedule entries into our database
+		</Comment>
+		<Sql>
+			insert into schedule (TaskName, TaskUrl, InputDocument, isActive, runEvery, 
+				LastRun, useInterval, RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday,
+				dowThursday, dowFriday, dowSaturday)
+			values ( ?, ?, ?, ?, ?, 
+				?, ?, ?, ?, ?, ?, ?,
+				?, ?, ?)
+		</Sql>
+		<Input name="id" type="autogen"/>
+		<Input name="TaskName" type="twine"/>
+		<Input name="TaskUrl" type="twine"/>
+		<Input name="InputDocument" type="twine"/>
+		<Input name="isActive" type="int"/>
+		<Input name="runEvery" type="int"/>
+		<Input name="LastRun" type="twine"/>
+		<Input name="useInterval" type="int"/>
+		<Input name="RunAtTime" type="twine"/>
+		<Input name="dowSunday" type="int"/>
+		<Input name="dowMonday" type="int"/>
+		<Input name="dowTuesday" type="int"/>
+		<Input name="dowWednesday" type="int"/>
+		<Input name="dowThursday" type="int"/>
+		<Input name="dowFriday" type="int"/>
+		<Input name="dowSaturday" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update existing schedule entries in our database
+		</Comment>
+		<Sql>
+			update schedule
+			set TaskName = ?,
+				TaskUrl = ?,
+				InputDocument = ?,
+				isActive = ?,
+				runEvery = ?,
+				LastRun = ?,
+				useInterval = ?,
+				RunAtTime = ?,
+				dowSunday = ?,
+				dowMonday = ?,
+				dowTuesday = ?,
+				dowWednesday = ?,
+				dowThursday = ?,
+				dowFriday = ?,
+				dowSaturday = ?
+			where id = ?
+		</Sql>
+		<Input name="TaskName" type="twine"/>
+		<Input name="TaskUrl" type="twine"/>
+		<Input name="InputDocument" type="twine"/>
+		<Input name="isActive" type="int"/>
+		<Input name="runEvery" type="int"/>
+		<Input name="LastRun" type="twine"/>
+		<Input name="useInterval" type="int"/>
+		<Input name="RunAtTime" type="twine"/>
+		<Input name="dowSunday" type="int"/>
+		<Input name="dowMonday" type="int"/>
+		<Input name="dowTuesday" type="int"/>
+		<Input name="dowWednesday" type="int"/>
+		<Input name="dowThursday" type="int"/>
+		<Input name="dowFriday" type="int"/>
+		<Input name="dowSaturday" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="updateLastRun" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update the LastRun timestamp for a schedule entries in our database
+		</Comment>
+		<Sql>
+			update schedule
+			set LastRun = ?
+			where id = ?
+		</Sql>
+		<Input name="LastRun" type="twine"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing schedule entries in our database
+		</Comment>
+		<Sql>
+			delete from schedule
+			where id = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all schedule entries in our database
+		</Comment>
+		<Sql>
+			select id, TaskName, TaskUrl, InputDocument, isActive, runEvery, LastRun, useInterval,
+				RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday, dowThursday, dowFriday,
+				dowSaturday
+			from schedule
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="TaskName" type="twine"/>
+		<Output name="TaskUrl" type="twine"/>
+		<Output name="InputDocument" type="twine"/>
+		<Output name="isActive" type="int"/>
+		<Output name="runEvery" type="int"/>
+		<Output name="LastRun" type="twine"/>
+		<Output name="useInterval" type="int"/>
+		<Output name="RunAtTime" type="twine"/>
+		<Output name="dowSunday" type="int"/>
+		<Output name="dowMonday" type="int"/>
+		<Output name="dowTuesday" type="int"/>
+		<Output name="dowWednesday" type="int"/>
+		<Output name="dowThursday" type="int"/>
+		<Output name="dowFriday" type="int"/>
+		<Output name="dowSaturday" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single schedule entry in our database.
+		</Comment>
+		<Sql>
+			select id, TaskName, TaskUrl, InputDocument, isActive, runEvery, LastRun, useInterval,
+				RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday, dowThursday, dowFriday,
+				dowSaturday
+			from schedule
+			where id = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="TaskName" type="twine"/>
+		<Output name="TaskUrl" type="twine"/>
+		<Output name="InputDocument" type="twine"/>
+		<Output name="isActive" type="int"/>
+		<Output name="runEvery" type="int"/>
+		<Output name="LastRun" type="twine"/>
+		<Output name="useInterval" type="int"/>
+		<Output name="RunAtTime" type="twine"/>
+		<Output name="dowSunday" type="int"/>
+		<Output name="dowMonday" type="int"/>
+		<Output name="dowTuesday" type="int"/>
+		<Output name="dowWednesday" type="int"/>
+		<Output name="dowThursday" type="int"/>
+		<Output name="dowFriday" type="int"/>
+		<Output name="dowSaturday" type="int"/>
+		<Input name="id" type="int"/>
+	</SqlStatement>
+</SQLXml>

@@ -1,0 +1,14 @@
+<HorizontalBoxLayout spacing="1" flex="1">
+	<VerticalBoxLayout varName="layoutButtons" maxWidth="26" minWidth="26"/>
+	<VerticalBoxLayout spacing="0" flex="1">
+		<GroupBox legend="Layout Contents" flex="1">
+			<Label text="Item Syntax" paddingTop="3"/>
+			<TextArea varName="syntaxField" flex="1" wrap="true" allowGrowX="true" allowGrowY="true"/>
+
+			<HorizontalBoxLayout varName="editButtons" maxHeight="26" minHeight="26"/>
+
+			<Label text="Layout Contents" paddingTop="3"/>
+			<TextArea varName="FileContentsField" flex="10" wrap="true" allowGrowX="true" allowGrowY="true"/>
+		</GroupBox>
+	</VerticalBoxLayout>
+</HorizontalBoxLayout>

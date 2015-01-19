@@ -179,7 +179,7 @@ void ExecuteGenericSQL::LocalExec( SQLStatement& local, xmlNodePtr resp)
 
 	twine target;
 	if(local.HostDB == "Director-Config"){
-		target = "hubconfig";
+		target = "helixconfig";
 //	} else if(local.HostDB == "Director-Logs"){
 //		target = "logs";
 	} else if(local.HostDB == "Director-MFLogs"){

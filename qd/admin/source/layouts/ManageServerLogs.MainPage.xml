@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/ManageServerLogs.MainPage.xml">
+	<GroupBox legend="Logging Settings">
+		<FieldArea first="80" second="80">
+			<DoubleField varName1="LogFileField" label1="Log File:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="MaxSizeField" label1="Max Size:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="BufferSizeField" label1="Buffer Size:" type1="TextField" tooltip1="The maximum number of log messages held in memory." varName2="" label2=" " type2="Spacer"/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -31,6 +31,7 @@ qx.Class.define("admin.dialog.OKCancelDialog", {
 		}, this);
 
 		this.button_layout.add(this.close_btn);
+		admin.Statics.setHtmlID( this.close_btn, "Cancel" );
 
 	},
 

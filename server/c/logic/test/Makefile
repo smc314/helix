@@ -6,7 +6,9 @@
 3PL=../../../../../3rdParty
 GMAKE=make -j 8
 
-CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include" -I ../../glob -I ../../client -I ../util -I ../admin -I ../dev -I ../test 
+CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include" -I ../../glob -I ../../client -I ../util -I ../admin -I ../dev -I ../test 
+
+LFLAGS=
 
 %.o: %.cpp
 	g++ $(CFLAGS) -c $< -o $@

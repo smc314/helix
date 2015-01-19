@@ -259,8 +259,8 @@ void AdaptiveLogs::ReadConfig(void)
 	}
 
 	tmp = xmlGetProp(ad_log, (const xmlChar*)"filename");
-	if(tmp() == NULL){
-		m_file_name = "ihd.log";
+	if(tmp() == NULL || strlen(tmp) == 0){
+		m_file_name = "helix.log";
 	} else {
 		m_file_name = tmp;
 	}

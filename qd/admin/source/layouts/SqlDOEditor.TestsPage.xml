@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.TestsPage.xml">
+	<HorizontalSplitPane leftsize="1" rightsize="3" flex="1">
+		<HorizontalSplitPaneLeft>
+			<HorizontalBoxLayout flex="4">
+				<VerticalBoxLayout paddingTop="20">
+					<Button varName="testAddNew" icon="admin/icon/16x16/plain/scroll2_add.png"/>
+					<Button varName="testDelete" icon="admin/icon/16x16/plain/delete2.png"/>
+					<Button varName="testMoveUp" icon="admin/icon/16x16/plain/navigate_up2.png"/>
+					<Button varName="testMoveDown" icon="admin/icon/16x16/plain/navigate_down2.png"/>
+				</VerticalBoxLayout>
+				<StandardTable varName="testTable" flex="1">
+					<Column title="Name" width="3*" minWidth="50"/>
+					<Column title="SQL Statement" width="3*" minWidth="50"/>
+					<Column title="Group" width="1*" minWidth="50" maxWidth="120"/>
+				</StandardTable>
+			</HorizontalBoxLayout>
+		</HorizontalSplitPaneLeft>
+		<HorizontalSplitPaneRight>
+			<VerticalBoxLayout spacing="0" flex="1">
+				<VerticalSplitPane leftsize="1" rightsize="2" flex="1">
+					<VerticalSplitPaneTop>
+						<VerticalBoxLayout spacing="0" flex="1">
+							<GroupBox legend="Test Details">
+								<FieldArea columns="2" first="120" second="80">
+									<SpanField varName1="TestNameField" label1="Test Name:" type1="TextField"/>
+									<DoubleField varName1="TestMethodField" label1="Target Method:" type1="ComboBox"
+										varName2="TestGroupField" label2="Group:" type2="TextField"/>
+									<SingleCheck varName1="TestEnabledField" label1="Test Enabled?" />
+									<SingleCheck varName1="TestExpectSuccessField" label1="Test Should Succeed?"/>
+								</FieldArea>
+							</GroupBox>
+							<GroupBox legend="Test Input Fields" flex="1">
+								<StandardTable varName="testInputTable" flex="1">
+									<Column title="Name" width="1*" minWidth="50"/>
+									<Column title="Data Type" width="1*" minWidth="50"/>
+									<Column title="Value" width="1*" minWidth="50"/>
+								</StandardTable>
+							</GroupBox>
+						</VerticalBoxLayout>
+					</VerticalSplitPaneTop>
+					<VerticalSplitPaneBottom>
+						<VerticalBoxLayout spacing="0" flex="1" varName="testResultsPanel">
+							<!-- The editor will dynamically add 4 tabs here to display the
+								 live and saved results.  The varName attribute above is how
+								 the editor will find this panel.
+							-->
+						</VerticalBoxLayout>
+					</VerticalSplitPaneBottom>
+				</VerticalSplitPane>
+			</VerticalBoxLayout>
+		</HorizontalSplitPaneRight>
+	</HorizontalSplitPane>
+</VerticalBoxLayout>

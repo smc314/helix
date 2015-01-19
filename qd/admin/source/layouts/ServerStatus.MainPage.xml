@@ -1,0 +1,33 @@
+<VerticalBoxLayout spacing="0">
+	<GroupBox legend="ObjectName Overview">
+		<FieldArea columns="2" first="80" second="80">
+			<DoubleField 
+				varName1="varName1Field" label1="First Label:" type1="TextField"
+				tooltip1="First field tooltip if required"
+				varName2="varName2Field" label2="Second Label:" type2="TextField"
+				tooltip2="Second field tooltip if required"
+			/>
+			<SpanField 
+				varName1="varName3Field" label1="Third Label:" type1="TextField"
+				tooltip1="This field goes all the way across both columns."
+			/>
+			<RadioGroup3 groupName="radioGroupVarName"
+				varName1="firstRadioField" label1="First Radio Choice"
+				varName2="secondRadioField" label2="Second Radio Choice"
+				varName3="thirdRadioField" label3="Third Radio Choice"
+			/>
+			<SingleCheck varName1="singleCheckField" label1="Checkbox Option"
+			/>
+		</FieldArea>
+		<Label text="Standalone Label" paddingTop="3"/>
+		<TextArea varName="textAreaField" flex="3" wrap="true" allowGrowX="true" allowGrowY="true"/>
+	</GroupBox>
+	<GroupBox legend="Table Information Description">
+		<StandardTable varName="tableName" flex="1">
+			<Column title="Column 1 Title" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column 2 Title" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column 3 Title" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column 4 Title" width="1*" minWidth="60" maxWidth="100"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

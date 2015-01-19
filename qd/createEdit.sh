@@ -221,17 +221,12 @@ qx.Class.define("${PACKAGE}.${FOLDER}.${CLASSNAME}", {
 			}
 			this.pullDataFromForm();
 			if(this.isNewObject === true){
-				${PACKAGE}.Api.InsertObjectAPICallFIXME( this.dataObject,
-				function(response){
+				${PACKAGE}.Api.InsertObjectAPICallFIXME( this.dataObject, function(response){
 					// pick up any new information here.
-					this.isNewObject = false;
+					this.getObjectDetails( response );
 
 					// Updates our tab name, and the overview name
 					this.resetTabName( this.dataObject.getTName() ); 
-
-					this.loadDataIntoForm(); // Gets all of our overview labels
-
-					this.resetDirty();
 
 					// Remember to add the new guy to the tree:
 					qx.core.Init.getApplication().addNewTreeItem( "Parent Tree Node",
@@ -240,12 +235,9 @@ qx.Class.define("${PACKAGE}.${FOLDER}.${CLASSNAME}", {
 
 				}, this);
 			} else {
-				${PACKAGE}.Api.UpdateObjectAPICallFIXME( this.dataObject,
-				function(response){
+				${PACKAGE}.Api.UpdateObjectAPICallFIXME( this.dataObject, function(response){
 					// pick up any new information here.
-
-					this.loadDataIntoForm(); // Gets all of our overview labels
-					this.resetDirty();
+					this.getObjectDetails( response );
 				}, this);
 			}
 

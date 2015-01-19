@@ -1,0 +1,27 @@
+var classHelix_1_1Logic_1_1util_1_1HitMap =
+[
+    [ "HitMap", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a1ca64adddded7f750f208a37f2f4d00a", null ],
+    [ "HitMap", "classHelix_1_1Logic_1_1util_1_1HitMap.html#aacf5800a46c89dd08159685b2541adc6", null ],
+    [ "~HitMap", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a76c39d02ec4855d780a044048ab60685", null ],
+    [ "HitMap", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ab566964909d41609e841b1a4bfd4ec3e", null ],
+    [ "checkSize", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ae9a0796cc25610133660df897acb8384", null ],
+    [ "createXmlChildren", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a8cbbbaa6c8ba436d00cf8168ea64c1a9", null ],
+    [ "createXmlDoc", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a34d02ff8d6818412414964e102b85312", null ],
+    [ "createXmlNode", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ae44c3655bc90b12e6e217b8e39df938f", null ],
+    [ "deleteVector", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a21bf872e2a8ffb232d578925e577c8e3", null ],
+    [ "dummy", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a436d3a818c33436d52e1e39d5e95a8a8", null ],
+    [ "dummy", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ab0147cf3075a17ed55688cb8ad97878c", null ],
+    [ "dummy_getSQL", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a79564aaee53a114b4ca1679ac5943dd1", null ],
+    [ "dummy_prepSQL", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ac505aebae44db2990a8b401ae3930b66", null ],
+    [ "init", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a539fff65519623b0b3e7348b27876801", null ],
+    [ "Name", "classHelix_1_1Logic_1_1util_1_1HitMap.html#aa898c5607c8f4f7447701464b3422c75", null ],
+    [ "operator=", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ab5e62a65f9f88ff05b4318d092d6ef6a", null ],
+    [ "readXmlChildren", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a521d375164e50eee6683f8e432fdf20d", null ],
+    [ "readXmlNode", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a16935eadcd682bc19faa4bb64f70e55c", null ],
+    [ "AverageCycles", "classHelix_1_1Logic_1_1util_1_1HitMap.html#ab02ef15b2d57190dd00687adfab224cf", null ],
+    [ "MaxCycles", "classHelix_1_1Logic_1_1util_1_1HitMap.html#aa74a18f3cf1a0a244765fcda365d14b3", null ],
+    [ "MethodName", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a7b671e48a7d5951a5a2fa4ae859e89e2", null ],
+    [ "MinCycles", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a74565e0e361f7420b027f5e25e73b947", null ],
+    [ "TotalCycles", "classHelix_1_1Logic_1_1util_1_1HitMap.html#af840d4d942cdef9e03f9215ef8372695", null ],
+    [ "TotalHits", "classHelix_1_1Logic_1_1util_1_1HitMap.html#a0fb4a95d8785427bd6eba6c4f0c71284", null ]
+];

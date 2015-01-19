@@ -35,6 +35,7 @@ twine m_currentFile;
 map<twine, twine> m_api_outputs;
 twine m_api_cpp_header;
 twine m_api_cpp_body;
+twine m_api_test_cpp_header;
 
 void findAllSqlXmlFiles(twine start, int pass);
 void findAllCPPFiles(twine start);
@@ -391,10 +392,59 @@ void buildJSApi(twine api, twine input)
 
 }
 
+void buildCPPApiTest( twine api, twine input)
+{
+	vector<twine> splits = api.split("/");
+	twine shortApi = splits[ splits.size() - 1 ];
+	twine apiTest = "ApiTest_" + api.substr(1);
+	apiTest.replace('/', '_');
+	
+	twine inputPrep;
+	twine apiInvoke;
+	if(input == "NULL"){
+		// No inputs.
+		inputPrep.append("// Api " + api + " has no input values.");
+		apiInvoke.append("resp = m_api->" + shortApi + "();");
+	} else if(input == "ID"){
+		inputPrep.append(
+			"// Api " + api + " requires a single id value as input.\n"
+			"\tint inputID = 0;\n"
+		);
+		apiInvoke.append("resp = m_api->" + shortApi + "(inputID);");
+	} else {
+		inputPrep.append(
+			"// Api " + api + " requires an object of type " + input + " as input.\n"
+			"\t" + input + " inputObj;\n"
+			"\t// Fill out the details for inputObj here:\n"
+			"\t//inputObj.memberName1 = 1;\n"
+			"\t//inputObj.memberName2 = 2;\n"
+			"\t// etc...\n"
+		);
+		apiInvoke.append("resp = m_api->" + shortApi + "(inputObj);");
+	}
+
+	map<twine, twine> vars;
+	vars[ "ApiName" ] = api;
+	vars[ "TestApi" ] = apiTest;
+	vars[ "TestApiInputPrep" ] = inputPrep;
+	vars[ "TestApiInvoke" ] = apiInvoke;
+
+	twine apiTestBody;
+	apiTestBody.append( loadTmpl( "CppApiTestBody01.tmpl", &vars) );
+
+
+	twine filename = "../client/apitests/" + apiTest + ".cpp";
+	if(!File::Exists(filename)){
+		File::writeToFile( filename, apiTestBody );
+	}
+}
+
 void buildCPPApi(twine api, twine input)
 {
 	vector<twine> splits = api.split("/");
 	twine shortApi = splits[ splits.size() - 1 ];
+	twine apiTest = "ApiTest_" + api.substr(1);
+	apiTest.replace('/', '_');
 	twine package = "PACKAGE"; //splits[2];
 	size_t howMany = input.get_int();
 	if(howMany != 0){
@@ -402,12 +452,15 @@ void buildCPPApi(twine api, twine input)
 		return;
 	}
 
+	buildCPPApiTest( api, input );
+
 	m_api_cpp_header.append(
 		"\t\t/** This method will call the " + api + "\n"
 		"\t\t  * server API.\n"
 		"\t\t  */\n"
 		"\t\txmlDocPtr " + shortApi + "( "
 	);
+	m_api_test_cpp_header.append( "#include \"apitests/" + apiTest + ".cpp\"\n" );
 	m_api_cpp_body.append( "xmlDocPtr HelixApi::" + shortApi + "( ");
 	
 	if(input == "NULL"){
@@ -464,6 +517,7 @@ void buildCPPApi(twine api, twine input)
 void initCPPApis()
 {
 	m_api_cpp_header.append( loadTmpl( "CppApiHeader01.tmpl", NULL ) );
+	m_api_test_cpp_header.append( loadTmpl( "CppApiTestHeader01.tmpl", NULL ) );
 
 	map<twine, map<twine, twine> >::iterator it;
 	for(it = m_data_objects.begin(); it != m_data_objects.end(); it++){
@@ -513,9 +567,11 @@ void createAPIFiles()
 	}
 
 	m_api_cpp_header.append( loadTmpl( "CppApiHeader99.tmpl", NULL ) );
+	m_api_test_cpp_header.append( loadTmpl( "CppApiTestHeader99.tmpl", NULL ) );
 
 	File::writeToFile( "../client/HelixApi.h", m_api_cpp_header );
 	File::writeToFile( "../client/HelixApi_Part2.cpp", m_api_cpp_body );
+	File::writeToFile( "../client/HelixApiTest.h", m_api_test_cpp_header );
 	
 }
 

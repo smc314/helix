@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/RunLoadTest.NextPage.xml">
+	<GroupBox legend="Load Test Results">
+		<FieldArea columns="2" first="80" second="80">
+			<DoubleField varName1="totalTimeField" label1="Total Time:" type1="TextField" tooltip1="Load test total execution time." varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="totalStatementsField" label1="Total Statements:" type1="TextField" tooltip1="Load test total statements executed." varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="totalErrorsField" label1="Errors:" type1="TextField" tooltip1="Number of errors that occurred during execution." varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="totalSuccessField" label1="Successes:" type1="TextField" tooltip1="Number of statements successfully executed." varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="totalThroughputField" label1="Throughput:" type1="TextField" tooltip1="Statement throughput (statements per second)." varName2="" label2=" " type2="Spacer"/>
+		</FieldArea>
+	</GroupBox>
+	<GroupBox legend="Detailed Timings" flex="1">
+		<StandardTable varName="timingsTable" flex="1">
+			<Column title="Description" width="1*" minWidth="60"/>
+			<Column title="Thread" width="1*" minWidth="60" maxWidth="200"/>
+			<Column title="Average" width="1*" minWidth="60" maxWidth="200"/>
+			<Column title="Min" width="1*" minWidth="60" maxWidth="200"/>
+			<Column title="Max" width="1*" minWidth="60" maxWidth="200"/>
+			<Column title="Total" width="1*" minWidth="60" maxWidth="200"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

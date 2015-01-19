@@ -1,0 +1,26 @@
+var classHelix_1_1Logic_1_1admin_1_1Col =
+[
+    [ "Col", "classHelix_1_1Logic_1_1admin_1_1Col.html#a03dd9b7abbb137c159d403be01738a78", null ],
+    [ "Col", "classHelix_1_1Logic_1_1admin_1_1Col.html#a0a85e49326611748c8836fadc7ca5555", null ],
+    [ "~Col", "classHelix_1_1Logic_1_1admin_1_1Col.html#ab28d050f6f50f307803668c27e30ca7a", null ],
+    [ "Col", "classHelix_1_1Logic_1_1admin_1_1Col.html#a55be5a02def707cff4836fdebbc33d45", null ],
+    [ "checkSize", "classHelix_1_1Logic_1_1admin_1_1Col.html#ad12aafd664566a1041a8ff953b2df93b", null ],
+    [ "createXmlChildren", "classHelix_1_1Logic_1_1admin_1_1Col.html#a6db77e2ee6f471c5f2a7f23fd0d7c6fd", null ],
+    [ "createXmlDoc", "classHelix_1_1Logic_1_1admin_1_1Col.html#a4c16efb84187b08c191db928d2995b30", null ],
+    [ "createXmlNode", "classHelix_1_1Logic_1_1admin_1_1Col.html#a250a26191bb9278f16d43169d8ddb8a8", null ],
+    [ "deleteVector", "classHelix_1_1Logic_1_1admin_1_1Col.html#a2a6ff73c753eb41684593654fba80869", null ],
+    [ "init", "classHelix_1_1Logic_1_1admin_1_1Col.html#a0e7a64ed9de6094ccfbc1680bbc3e1f1", null ],
+    [ "Name", "classHelix_1_1Logic_1_1admin_1_1Col.html#af6836216b8322d77994e27893e9465b1", null ],
+    [ "operator=", "classHelix_1_1Logic_1_1admin_1_1Col.html#a9184185fbea8e99dd16a14a5209c08c3", null ],
+    [ "readXmlChildren", "classHelix_1_1Logic_1_1admin_1_1Col.html#adc57aefac3f1a6a3410095e6590cb8e8", null ],
+    [ "readXmlNode", "classHelix_1_1Logic_1_1admin_1_1Col.html#a308294f3f6a8ba474f0895be05570a04", null ],
+    [ "unused", "classHelix_1_1Logic_1_1admin_1_1Col.html#a283f3dc1bde57e35a264f03f91462c16", null ],
+    [ "unused", "classHelix_1_1Logic_1_1admin_1_1Col.html#ad8cc001b4333e4b8fccfb6d2d5df1be2", null ],
+    [ "unused_getSQL", "classHelix_1_1Logic_1_1admin_1_1Col.html#a7a2c55e8fe21306befb3b0c91c9c9110", null ],
+    [ "unused_prepSQL", "classHelix_1_1Logic_1_1admin_1_1Col.html#a10467475a7baf614b31f6905ffa50983", null ],
+    [ "colName", "classHelix_1_1Logic_1_1admin_1_1Col.html#ad9821fccac29dd6db687aa49234e4641", null ],
+    [ "dataValue", "classHelix_1_1Logic_1_1admin_1_1Col.html#a890ba78c48b0feb5add41ac3c531b974", null ],
+    [ "idx", "classHelix_1_1Logic_1_1admin_1_1Col.html#ac3b7e81deb77fda0d38060accba4bb52", null ],
+    [ "typeName", "classHelix_1_1Logic_1_1admin_1_1Col.html#ae5869238e0f9fa6a549e21970c10f935", null ],
+    [ "verifyData", "classHelix_1_1Logic_1_1admin_1_1Col.html#a76de828c7fbede589789c3ec0594b3e8", null ]
+];

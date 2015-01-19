@@ -69,6 +69,17 @@ void UpdateLogSettings::ExecuteRequest(IOConn& ioc)
 	// Pull up our input document and convert it into an object we can use:
 	LogSettings local( XmlHelpers::FindChild(ioc.GetRequestRoot(), LogSettings::Name()()) );
 
+	// Sanity check
+	if(local.LogFile.empty()){
+		throw AnException(0, FL, "Missing log file name.");
+	}
+	if(local.BufferSize == 0){
+		local.BufferSize = 1000;
+	}
+	if(local.MaxSize == 0){
+		local.MaxSize = 52428800;
+	}
+
 	// Update our main config file:
 	xmlDocPtr config = TheMain::getInstance()->GetConfig();
 	xmlNodePtr root = xmlDocGetRootElement(config);

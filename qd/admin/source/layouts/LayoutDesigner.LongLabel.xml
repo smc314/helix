@@ -1,0 +1,20 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="LongLabel Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varNameField" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the Label"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="" label2=" " type2="Spacer"
+			/>
+			<SpanField
+				varName1="labelField" label1="Label Text:" type1="TextField"
+				tooltip1="Text to show on the form for the label"
+				verify1="false" verify1type="string" verify1min="" verify1max=""
+				upper1="false" required1="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

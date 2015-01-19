@@ -1,0 +1,15 @@
+<SQLXml generateClass="Col" package="logic/admin">
+	<SqlStatement methodName="unused" methodType="INSERT">
+		<Comment>
+			This is here to allow us to define the data object.
+		</Comment>
+		<Sql>
+			-- Empty on purpose
+		</Sql>
+		<Input name="idx" type="int"/>
+		<Input name="colName" type="twine"/>
+		<Input name="verifyData" type="int"/>
+		<Input name="typeName" type="twine"/>
+		<Input name="dataValue" type="twine"/>
+	</SqlStatement>
+</SQLXml>

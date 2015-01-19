@@ -48,7 +48,7 @@ twine win32CFlags = "-c -Od -Zi -Zp8 -EHsc -DWIN32 -D_MT -D_DLL -DLINT_ARGS -D_X
 
 twine lin64LFlags = "-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -lodbc -L$(3PL)/slib/lib -lSLib";
 twine mac64LFlags = "-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L$(3PL)/slib/lib -lSLib";
-twine lin64CFlags = "-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I \"$(3PL)/slib/include\" ";
+twine lin64CFlags = "-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I \"$(3PL)/slib/include\" ";
 
 int main (void)
 {
@@ -294,7 +294,7 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 	twine tmpFolder = targetFolder;
 	vector<twine> pathElements = tmpFolder.split("/");
 	twine extraDotDot;
-	for(size_t i = 4; i < pathElements.size(); i++){
+	for(size_t i = 3; i < pathElements.size(); i++){
 		extraDotDot.append( "../" );
 	}
 
@@ -318,6 +318,8 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"-I ../" + extraDotDot + "test "
 		"\n"
 		"\n"
+		"LFLAGS=\n"
+		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
 		"\n"
@@ -336,10 +338,19 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		}
 	}
 
+	twine slibName = "libhelix/" + targetFolder.substr(3);
+	slibName.replace('/', '.');
+	slibName.append( ".so" );
+
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
 	);
+	if(objFiles.size() > 0){
+		output.append(
+			"\tg++ -shared -o ../../" + extraDotDot + "bin/" + slibName + " $(DOTOH) $(LFLAGS)\n"
+		);
+	}
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
@@ -354,6 +365,11 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"\trm -f $(DOTOH) *.o *.obj core *.so\n"
 		"\ttouch -c *.sql.xml\n"
 	);
+	if(objFiles.size() > 0){
+		output.append(
+			"\trm -f ../../" + extraDotDot + "bin/" + slibName + "\n"
+		);
+	}
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
@@ -413,6 +429,7 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\n"
 		"CFLAGS=" + win64CFlags + " -I ../logic/util -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\"\n"
 		"\n"
+		"LFLAGS=\n"
 		"\n"
 		"%.obj: %.cpp\n"
 		"\tcl.exe $(CFLAGS) $<\n"
@@ -554,6 +571,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\n"
 		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
 		"\n"
+		"LFLAGS=\n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -576,6 +594,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
+		"\tg++ -shared -o ../bin/libhelix.glob.so $(DOTOH) $(LFLAGS)\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -589,6 +608,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\n"
 		"clean:\n"
 		"\trm -f $(DOTOH) *.o *.obj core *.so\n"
+		"\trm -f ../bin/libhelix.glob.so\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -857,11 +877,11 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\tLFLAGS=" + mac64LFlags + "\n"
 		"endif\n"
 		"\n"
-		"GLOBOBJS=../glob/*.o\n"
-		"LOGICOBJS=../logic/admin/*.o \\\n"
-		"\t../logic/dev/*.o \\\n"
-		"\t../logic/test/*.o \\\n"
-		"\t../logic/util/*.o \n"
+		"GLOBOBJS=-L../bin -lhelix.glob\n"
+		"LOGICOBJS=-L../bin \\\n"
+		"\t-lhelix.logic.admin \\\n"
+		"\t-lhelix.logic.dev \\\n"
+		"\t-lhelix.logic.util \n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -890,9 +910,10 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 	output.append(
 		"\n"
 		"APIOH=HelixApi_Part1.o HelixApi_Part2.o\n"
-		"LINKOBJ=$(APIOH) $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
+		"LINKOBJ=-L../bin -lhelix.client $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
+		"\tg++ -shared -o ../bin/libhelix.client.so $(APIOH)\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
 		if(objFiles[i].startsWith("HelixApi_")){
@@ -902,14 +923,16 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 			continue; // skip these
 		}
 		vector<twine> splits = objFiles[i].split(".");
-		output.append( "\t$(LINK) -o ../../bin/" + splits[0] + " " + splits[0] + ".o $(LINKOBJ) $(LFLAGS)\n" );
+		output.append( "\t$(LINK) -o ../bin/" + splits[0] + " " + splits[0] + ".o $(LINKOBJ) $(LFLAGS)\n" );
 	}
 
 	output.append(
 		"\n"
 		"clean:\n"
 		"\trm -f $(DOTOH) *.o *.obj core *.so\n"
+		"\trm -f ../bin/libhelix.client.so\n"
 	);
+	/*
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
@@ -917,6 +940,7 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 			);
 		}
 	}
+	*/
 
 	output.append(
 		"\n"

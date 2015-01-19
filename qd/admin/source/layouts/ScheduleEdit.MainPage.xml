@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/ScheduleEdit.MainPage.xml">
+	<GroupBox legend="Scheduled Task Overview">
+		<FieldArea columns="2" first="80" second="80">
+			<DoubleField varName1="TaskNameField" label1="Task Name:" type1="TextField" tooltip1="Name of this task as it will display in the tree" verify1="false" required1="true" varName2="TaskUrlField" label2="Url:" type2="TextField" tooltip2="Url path pointing to the logic object to execute.  Usually begins with /logic/..." verify2="false" required2="true"/>
+			<DoubleField varName1="LastRunField" label1="Last Run:" type1="TextField" tooltip1="Timestamp when this task was last executed." verify1="false" varName2="" label2=" " type2="Spacer"/>
+
+			<SingleCheck varName1="isActiveField" label1="Scheduled Task Active?"/>
+		</FieldArea>
+		<Label text="Input Document" paddingTop="3"/>
+		<TextArea varName="InputDocumentField" flex="3" wrap="true" allowGrowX="true" allowGrowY="true"/>
+	</GroupBox>
+
+	<GroupBox legend="Run At Periodic Intervals" varName="useIntervalField" isRadio="true">
+		<FieldArea columns="2" first="80" second="80">
+			<DoubleField varName1="runEveryField" label1="Run Every:" type1="TextField" tooltip1="Indicates how frequently (in minutes) this task should be started." verify1="true" verify1type="int" verify1min="0" verify1max="1440" upper1="false" required1="false" varName2="" label2="(Minutes)" type2="Spacer"/>
+
+		</FieldArea>
+
+	</GroupBox>
+
+	<GroupBox legend="Run At Specific Time Of Day" varName="useTimeOfDayField" isRadio="true">
+		<FieldArea columns="2" first="80" second="80">
+			<DoubleField varName1="RunAtHourField" label1="Hour:" type1="TextField" tooltip1="Indicates the hour (24-based) when this task should run." verify1="true" verify1type="int" verify1min="0" verify1max="23" upper1="false" required1="false" varName2="RunAtMinuteField" label2="Minute:" type2="TextField" tooltip2="Indicates the minute when this task should run." verify2="true" verify2type="int" verify2min="0" verify2max="59" upper2="false" required2="false"/>
+
+		</FieldArea>
+
+	</GroupBox>
+
+	<GroupBox legend="Only Run on Specific Days of the Week">
+		<FieldArea columns="2" first="80" second="80">
+			<QuadCheck varName1="dowSundayField" label1="Sunday" width1="120" varName2="dowMondayField" label2="Monday" width2="140" varName3="dowTuesdayField" label3="Tuesday" width3="140" varName4="dowWednesdayField" label4="Wednesday" width4="140"/>
+			
+			<QuadCheck varName1="dowThursdayField" label1="Thursday" width1="120" varName2="dowFridayField" label2="Friday" width2="140" varName3="dowSaturdayField" label3="Saturday" width3="140"/>
+
+		</FieldArea>
+
+	</GroupBox>
+
+</VerticalBoxLayout>

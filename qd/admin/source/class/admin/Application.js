@@ -1,76 +1,340 @@
 /* ************************************************************************
 
-   Copyright:
+Copyright:
 
-   License:
+License:
 
-   Authors:
+Authors:
 
 ************************************************************************ */
 
 /* ************************************************************************
 
-#asset(admin/test.png)
-#asset(admin/*)
+#asset(admin/icon/16x16/plain/server_ok.png)
+#asset(admin/icon/16x16/plain/server_edit.png)
+#asset(admin/icon/16x16/plain/clients.png)
+#asset(admin/icon/16x16/plain/security_agent_edit.png)
+#asset(admin/icon/16x16/plain/security_agent.png)
+#asset(admin/icon/16x16/plain/security_agent.png)
+#asset(admin/icon/16x16/plain/text_rich_colored.png)
+#asset(admin/icon/16x16/plain/user_time.png)
+#asset(admin/icon/16x16/plain/window_cd.png)
+#asset(admin/icon/16x16/plain/table2_run.png)
+#asset(admin/icon/16x16/plain/window_cd.png)
+#asset(admin/icon/16x16/plain/text_rich_colored.png)
+#asset(admin/icon/16x16/plain/user_time.png)
+#asset(admin/icon/16x16/plain/user_time.png)
+#asset(admin/icon/16x16/plain/server_ok.png)
+#asset(admin/icon/16x16/plain/server_edit.png)
+#asset(admin/icon/16x16/plain/clients.png)
+#asset(admin/icon/16x16/plain/text_align_justified.png)
+#asset(admin/icon/16x16/plain/scroll.png)
+#asset(admin/icon/16x16/plain/sports_car.png)
+#asset(admin/icon/16x16/plain/scroll.png)
+#asset(admin/icon/16x16/plain/alarmclock.png)
+#asset(admin/icon/16x16/plain/security_agent.png)
+#asset(admin/icon/16x16/plain/security_agent_edit.png)
 
 ************************************************************************ */
 
 /**
- * This is the main application class of your custom application "admin"
- */
+* This is the main application class of your custom application
+*/
 qx.Class.define("admin.Application",
 {
-  extend : qx.application.Standalone,
+	extend: qx.application.Standalone,
+
+	include: [admin.StandardApp],
+
+	/*
+	*****************************************************************************
+	MEMBERS
+	*****************************************************************************
+	*/
+
+	members:
+	{
+		/**
+		* This method contains the initial application code and gets called
+		* during startup of the application
+		*
+		* @lint ignoreDeprecated(alert)
+		*/
+		main: function () {
+			// Call super class
+			this.base(arguments);
+			this.ApplicationName = "Helix Administration";
+			this.setupStandardApp();
+
+		},
+
+		fillTree: function () {
+			this.treeRoot.removeAll();
 
 
+			admin.utils.LoadTestTreeNodes.createRootNode( this.treeRoot );
 
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
+			var sysprops = admin.Singleton.getInstance().getSystemProperties();
+			if(sysprops[admin.Singleton.AreWeHomeBase] === "true"){
+				admin.admin.ReleaseTreeNodes.createRootNode( this.treeRoot );
+				admin.admin.SupportTreeNodes.createRootNode( this.treeRoot );
+			}
+			admin.utils.UnitTestTreeNodes.createRootNode( this.treeRoot );
+			admin.utils.SqlTestTreeNodes.createRootNode( this.treeRoot );
+			admin.admin.SqlWorkTreeNodes.createRootNode( this.treeRoot );
+			admin.admin.ScheduleTreeNodes.createRootNode( this.treeRoot );
 
-  members :
-  {
-    /**
-     * This method contains the initial application code and gets called
-     * during startup of the application
-     *
-     * @lint ignoreDeprecated(alert)
-     */
-    main : function()
-    {
-      // Call super class
-      this.base(arguments);
+			if(qx.core.Environment.get("qx.debug")){
+				admin.dev.DevTreeNodes.createRootNode( this.treeRoot );
+			}
+		},
 
-      // Enable logging in debug variant
-      if (qx.core.Environment.get("qx.debug"))
-      {
-        // support native logging capabilities, e.g. Firebug for Firefox
-        qx.log.appender.Native;
-        // support additional cross-browser console. Press F7 to toggle visibility
-        qx.log.appender.Console;
-      }
+		handleExpand: function (e) {
+			var treeNode = e.getTarget();
+		},
 
-      /*
-      -------------------------------------------------------------------------
-        Below is your actual application code...
-      -------------------------------------------------------------------------
-      */
+		editObject: function (obj) {
+			var treeNode = this.tree.getSelection()[0];
+		},
 
-      // Create a button
-      var button1 = new qx.ui.form.Button("First Button", "admin/test.png");
+		showServerStatus: function () {
+			var tab_page = this.addEditingTab("Helix Server Status");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/server_ok.png");
+				tab_page.add(new admin.admin.ServerStatus(0), { flex: 10 });
+			}
+		},
 
-      // Document is the application root
-      var doc = this.getRoot();
+		showServerSettings: function () {
+			var tab_page = this.addEditingTab("Helix Server Settings");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/server_edit.png");
+				tab_page.add(new admin.admin.ServerSettings(0), { flex: 10 });
+			}
+		},
 
-      // Add button to document at fixed coordinates
-      doc.add(button1, {left: 100, top: 50});
+		showServerSessions: function () {
+			var tab_page = this.addEditingTab("Helix Server Sessions");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/clients.png");
+				tab_page.add(new admin.admin.ServerSessions(0), { flex: 10 });
+			}
+		},
 
-      // Add an event listener
-      button1.addListener("execute", function(e) {
-        alert("Hello World!");
-      });
-    }
-  }
+		showManageServerLogs: function () {
+			var tab_page = this.addEditingTab("Helix Server Log Settings");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/security_agent_edit.png");
+				tab_page.add(new admin.admin.ManageServerLogs(0), { flex: 10 });
+			}
+		},
+
+		showMonitorServerLogs: function () {
+			var tab_page = this.addEditingTab("Helix Server Logs");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/security_agent.png");
+				tab_page.add(new admin.admin.MonitorServerLogs(0), { flex: 10 });
+			}
+		},
+
+		showMonitorLRTasks : function () {
+			var tab_page = this.addEditingTab("Long Running Tasks");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/security_agent.png");
+				tab_page.add(new admin.admin.MonitorLRTask(0), { flex: 10 });
+			}
+		},
+
+		showExecuteSQL: function () {
+			admin.admin.SqlWorkTreeNodes.newObject();
+		},
+
+		showLayoutEditor: function () {
+			var tab_page = this.addEditingTabDup("Layout Editor");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/text_rich_colored.png");
+				tab_page.add(new admin.utils.LayoutEditor(0), { flex: 10 });
+			}
+		},
+
+		showMonitorHitMap : function () {
+			var tab_page = this.addEditingTabDup("Monitor Hit Map");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/user_time.png");
+				tab_page.add(new admin.admin.MonitorHitMap(0), { flex: 10 });
+			}
+		},
+
+		showInstallUtilities: function () {
+			var tab_page = this.addEditingTab("Install Utilities");
+			if (tab_page != null) {
+				tab_page.setIcon("admin/icon/16x16/plain/window_cd.png");
+				var iframe = new qx.ui.embed.Iframe().set({
+					source: "/installs/index.html"
+				});
+				tab_page.add(iframe, { flex: 10 });
+			}
+		},
+
+		customizeToolbar: function (toolbar) {
+			//var part3 = new qx.ui.toolbar.Part();
+			//toolbar.add(part3);
+
+		},
+
+		getToolsMenu: function () {
+			var menu = new qx.ui.menu.Menu;
+
+			var button = new qx.ui.menu.Button("New", null, null, this.getNewMenu());
+			menu.add(button);
+
+			menu.addSeparator();
+
+			var logsButton = new qx.ui.menu.Button("Logs", null, null, this.getLogsMenu());
+			menu.add(logsButton);
+
+			menu.addSeparator();
+
+			this.addMenuButton(menu, "Control+Alt+W", "SQL Workbench",
+				"admin/icon/16x16/plain/table2_run.png", "SQL Workbench", this.showExecuteSQL);
+
+			this.addMenuButton(menu, null, "Download Drivers",
+				"admin/icon/16x16/plain/window_cd.png", null, this.showInstallUtilities);
+
+			menu.addSeparator();
+
+			this.addMenuButton(menu, "Control+Alt+L", "Layout Editor",
+				"admin/icon/16x16/plain/text_rich_colored.png", "Layout Editor", this.showLayoutEditor);
+
+			menu.addSeparator();
+
+			this.addMenuButton(menu, "Control+Alt+H", "Monitor Hit Map",
+				"admin/icon/16x16/plain/user_time.png", "Monitor Hit Map", this.showMonitorHitMap);
+
+			this.addMenuButton(menu, "Control+Alt+R", "Monitor Long Running Tasks",
+				"admin/icon/16x16/plain/user_time.png", "Monitor Long Running Tasks", this.showMonitorLRTasks);
+
+			/* These are not ready yet
+			menu.addSeparator();
+
+			this.addMenuButton(menu, null, "Server Status",
+				"admin/icon/16x16/plain/server_ok.png", null, this.showServerStatus);
+
+			this.addMenuButton(menu, null, "Server Settings",
+				"admin/icon/16x16/plain/server_edit.png", null, this.showServerSettings);
+
+			this.addMenuButton(menu, null, "Server Sessions",
+				"admin/icon/16x16/plain/clients.png", null, this.showServerSessions);
+			*/
+
+			menu.addSeparator();
+
+			this.addMenuButton(menu, "Control+Alt+Z", "Show/Hide Side Bar",
+				"admin/icon/16x16/plain/text_align_justified.png", "Toggle visibility of the tree view.", this.handleTreeViewToggle);
+
+
+			return menu;
+		},
+
+		getNewMenu: function () {
+			var menu = new qx.ui.menu.Menu;
+
+			this.addMenuButton(menu, "Control+Alt+V", "Visual Layout",
+				"admin/icon/16x16/plain/scroll.png", "New Visual Layout",
+				admin.dev.DevTreeNodes.newVisualLayout);
+
+			this.addMenuButton(menu, "Control+Alt+T", "Load Test",
+				"admin/icon/16x16/plain/sports_car.png", "New Load Test",
+				admin.utils.LoadTestTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+Q", "SQL Test",
+				"admin/icon/16x16/plain/scroll.png", "New SQL Test",
+				admin.utils.SqlTestTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+K", "Scheduled Task",
+				"admin/icon/16x16/plain/alarmclock.png", "New Scheduled Task",
+				admin.admin.ScheduleTreeNodes.newObject);
+
+			return menu;
+		},
+
+		getLogsMenu: function() {
+
+			var menu = new qx.ui.menu.Menu;
+
+			this.addMenuButton(menu, null, "View Helix Logs",
+				"admin/icon/16x16/plain/security_agent.png", null, this.showMonitorServerLogs);
+
+			this.addMenuButton(menu, null, "Helix Logging Configuration",
+				"admin/icon/16x16/plain/security_agent_edit.png", null, this.showManageServerLogs);
+
+			return menu;
+		},
+
+		deleteTreeSelection: function () {
+			if(this.tree.getSelection().length === 0){
+				admin.Statics.doAlert("There is nothing selected in the tree to delete.", "Alert");
+				return;
+			}
+
+			var treeNode = this.tree.getSelection()[0];
+			if(!treeNode.helixObj){
+				admin.Statics.doAlert("The current selection cannot be deleted.");
+				return;
+			}
+
+			// Delegate to the other classes to handle the delete. Keeps things cleaner this way.
+			if(treeNode.helixObj instanceof admin.sqldo.SQLWork){
+				admin.admin.SqlWorkTreeNodes.doDelete( treeNode );
+			} else if(treeNode.helixObj instanceof admin.sqldo.LoadTest){
+				admin.utils.LoadTestTreeNodes.doDelete( treeNode );
+			} else if(treeNode.helixObj instanceof admin.sqldo.SchedItem){
+				admin.admin.ScheduleTreeNodes.doDelete( treeNode );
+			} else {
+				admin.Statics.doAlert("The current selection cannot be deleted because it's not a recognized type.");
+				return;
+			}
+
+		},
+
+		setAdminPassword: function () {
+		},
+
+		setAuthKey: function () {
+		},
+
+		doNew : function() {
+		},
+
+		addNewTreeItem: function(parentLabel, childLabel, helixObj, icon, editObject) {
+			var node = this.findNode(this.treeRoot, parentLabel);
+			if(!node){
+				admin.Statics.doAlert("Programming error: unknown tree node parent '" + parentLabel + "'.");
+				return;
+			}
+
+			// return if the tree item is not new
+			var cnode = this.findNode(node, childLabel);
+			if (cnode) {
+				this.tree.resetSelection();
+				this.tree.addToSelection(cnode);
+				return;
+			}
+
+			// add the new node to the tree
+			this.createAnimatedTreeItem(node, helixObj, childLabel, icon, editObject);
+		}
+
+	},
+
+	/*
+	*****************************************************************************
+	DESTRUCT
+	*****************************************************************************
+	*/
+
+	destruct: function () {
+		//this._disposeObjects();
+	}
+
 });

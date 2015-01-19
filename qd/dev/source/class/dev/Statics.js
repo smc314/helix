@@ -515,6 +515,17 @@ qx.Class.define("dev.Statics", {
 			}
 		},
 
+		/** This function can be used by anyone who needs to set the
+		*   html id attribute to a predictable value at runtime.  Very usefule
+		*   for automated UI testing.
+		*/
+		setHtmlID : function (widget, varName) {
+			widget.htmlid = widget.classname + "." + varName;
+			widget.addListenerOnce( "appear", function(e) {
+				this.getContentElement().getDomElement().id = this.htmlid;
+			}, widget );
+		},
+
 		/** This method helps us with form field layouts.  The idea is that
 		* the form is a vertical box layout.  Each row is either one or
 		* two fields (with labels) laid out in a horizontal box layout.
@@ -570,6 +581,7 @@ qx.Class.define("dev.Statics", {
 			hb.add(f1, { flex: 1 });
 			theThis[field1Name] = f1;
 			dev.Statics.trackNamedAttr(theThis, field1Name);
+			dev.Statics.setHtmlID( f1, field1Name );
 
 			if (label2Name) {
 				var l2 = new qx.ui.basic.Label(""); dev.Statics.trackExtraObj(theThis, l2);
@@ -617,6 +629,7 @@ qx.Class.define("dev.Statics", {
 				if (field2Name) {
 					theThis[field2Name] = f2;
 					dev.Statics.trackNamedAttr(theThis, field2Name);
+					dev.Statics.setHtmlID( f2, field2Name );
 				}
 			}
 
@@ -666,6 +679,7 @@ qx.Class.define("dev.Statics", {
 				if (field3Name) {
 					theThis[field3Name] = f3;
 					dev.Statics.trackNamedAttr(theThis, field3Name);
+					dev.Statics.setHtmlID( f3, field3Name );
 				}
 			}
 
@@ -715,6 +729,7 @@ qx.Class.define("dev.Statics", {
 				if (field4Name) {
 					theThis[field4Name] = f4;
 					dev.Statics.trackNamedAttr(theThis, field4Name);
+					dev.Statics.setHtmlID( f4, field4Name );
 				}
 			}
 
@@ -760,6 +775,7 @@ qx.Class.define("dev.Statics", {
 			hb.add(f1, { flex: 1 });
 			theThis[field1Name] = f1;
 			dev.Statics.trackNamedAttr(theThis, field1Name);
+			dev.Statics.setHtmlID( f1, field1Name );
 
 			if (label2Name) {
 				var l2 = new qx.ui.basic.Label(""); dev.Statics.trackExtraObj(theThis, l2);
@@ -790,6 +806,7 @@ qx.Class.define("dev.Statics", {
 				if (field2Name) {
 					theThis[field2Name] = f2;
 					dev.Statics.trackNamedAttr(theThis, field2Name);
+					dev.Statics.setHtmlID( f2, field2Name );
 				}
 			}
 
@@ -822,6 +839,7 @@ qx.Class.define("dev.Statics", {
 				if (field3Name) {
 					theThis[field3Name] = f2;
 					dev.Statics.trackNamedAttr(theThis, field3Name);
+					dev.Statics.setHtmlID( f3, field3Name );
 				}
 			}
 
@@ -854,6 +872,7 @@ qx.Class.define("dev.Statics", {
 				if (field4Name) {
 					theThis[field4Name] = f2;
 					dev.Statics.trackNamedAttr(theThis, field4Name);
+					dev.Statics.setHtmlID( f4, field4Name );
 				}
 			}
 
@@ -881,6 +900,7 @@ qx.Class.define("dev.Statics", {
 			layout.add(ta, { flex: flexHeight });
 			theThis[textName] = ta;
 			dev.Statics.trackNamedAttr(theThis, textName);
+			dev.Statics.setHtmlID( ta, textName );
 		},
 
 		/** Use this method when you want to add a label to a form that will
@@ -892,6 +912,7 @@ qx.Class.define("dev.Statics", {
 			layout.add(l1);
 			if (textName) {
 				theThis[textName] = l1;
+				dev.Statics.setHtmlID( l1, textName );
 			}
 		},
 
@@ -902,6 +923,7 @@ qx.Class.define("dev.Statics", {
 			layout.add(l1);
 			if (textName) {
 				theThis[textName] = l1;
+				dev.Statics.setHtmlID( l1, textName );
 			}
 		},
 
@@ -925,6 +947,7 @@ qx.Class.define("dev.Statics", {
 			//list1.set({ height: "100%", width: "1*", overflow: "scrollY" });
 			theThis[boxName] = list1;
 			dev.Statics.trackNamedAttr(theThis, boxName);
+			dev.Statics.setHtmlID( list1, boxName);
 			hb.add(list1, {flex:1});
 
 			var vb = new qx.ui.container.Composite( new qx.ui.layout.VBox(5) );
@@ -938,6 +961,7 @@ qx.Class.define("dev.Statics", {
 				b.setCenter(false);
 				theThis[button1Name] = b;
 				dev.Statics.trackNamedAttr(theThis, button1Name);
+				dev.Statics.setHtmlID( b, button1Name);
 				vb.add(b);
 			}
 			if (button2Name) {
@@ -945,6 +969,7 @@ qx.Class.define("dev.Statics", {
 				b.setCenter(false);
 				theThis[button2Name] = b;
 				dev.Statics.trackNamedAttr(theThis, button2Name);
+				dev.Statics.setHtmlID( b, button2Name);
 				vb.add(b);
 			}
 			if (button3Name) {
@@ -952,6 +977,7 @@ qx.Class.define("dev.Statics", {
 				b.setCenter(false);
 				theThis[button3Name] = b;
 				dev.Statics.trackNamedAttr(theThis, button3Name);
+				dev.Statics.setHtmlID( b, button3Name);
 				vb.add(b);
 			}
 			if (button4Name) {
@@ -959,6 +985,7 @@ qx.Class.define("dev.Statics", {
 				b.setCenter(false);
 				theThis[button4Name] = b;
 				dev.Statics.trackNamedAttr(theThis, button4Name);
+				dev.Statics.setHtmlID( b, button4Name);
 				vb.add(b);
 			}
 
@@ -1008,6 +1035,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(cb1);
 				theThis[checkbox1Name] = cb1;
 				dev.Statics.trackNamedAttr(theThis, checkbox1Name);
+				dev.Statics.setHtmlID( cb1, checkbox1Name);
 			}
 			if (checkbox2Name) {
 				var cb2 = new qx.ui.form.CheckBox(checkbox2Label);
@@ -1015,6 +1043,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(cb2);
 				theThis[checkbox2Name] = cb2;
 				dev.Statics.trackNamedAttr(theThis, checkbox2Name);
+				dev.Statics.setHtmlID( cb2, checkbox2Name);
 			}
 			if (checkbox3Name) {
 				var cb3 = new qx.ui.form.CheckBox(checkbox3Label);
@@ -1022,6 +1051,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(cb3);
 				theThis[checkbox3Name] = cb3;
 				dev.Statics.trackNamedAttr(theThis, checkbox3Name);
+				dev.Statics.setHtmlID( cb3, checkbox3Name);
 			}
 			if (checkbox4Name) {
 				var cb4 = new qx.ui.form.CheckBox(checkbox4Label);
@@ -1029,6 +1059,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(cb4);
 				theThis[checkbox4Name] = cb4;
 				dev.Statics.trackNamedAttr(theThis, checkbox4Name);
+				dev.Statics.setHtmlID( cb4, checkbox4Name);
 			}
 
 			layout.add(hb);
@@ -1066,24 +1097,28 @@ qx.Class.define("dev.Statics", {
 				cl.add(cb1, { top: 0, left: leftSize });
 				theThis[checkbox1Name] = cb1;
 				dev.Statics.trackNamedAttr(theThis, checkbox1Name);
+				dev.Statics.setHtmlID( cb1, checkbox1Name);
 			}
 			if (checkbox2Name) {
 				var cb2 = new qx.ui.form.CheckBox(checkbox2Label);
 				cl.add(cb2, { top: 0, left: leftSize + width1 });
 				theThis[checkbox2Name] = cb2;
 				dev.Statics.trackNamedAttr(theThis, checkbox2Name);
+				dev.Statics.setHtmlID( cb2, checkbox2Name);
 			}
 			if (checkbox3Name) {
 				var cb3 = new qx.ui.form.CheckBox(checkbox3Label);
 				cl.add(cb3, { top: 0, left: leftSize + width1 + width2 });
 				theThis[checkbox3Name] = cb3;
 				dev.Statics.trackNamedAttr(theThis, checkbox3Name);
+				dev.Statics.setHtmlID( cb3, checkbox3Name);
 			}
 			if (checkbox4Name) {
 				var cb4 = new qx.ui.form.CheckBox(checkbox4Label);
 				cl.add(cb4, { top: 0, left: leftSize + width1 + width2 + width3 });
 				theThis[checkbox4Name] = cb4;
 				dev.Statics.trackNamedAttr(theThis, checkbox4Name);
+				dev.Statics.setHtmlID( cb4, checkbox4Name);
 			}
 
 			layout.add(cl);
@@ -1129,6 +1164,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(rb);
 				theThis[r1Name] = rb;
 				dev.Statics.trackNamedAttr(theThis, r1Name);
+				dev.Statics.setHtmlID( rb, r1Name);
 				layout.add(hb);
 				return rb;
 			} else {
@@ -1167,6 +1203,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(rb);
 				theThis[r1Name] = rb;
 				dev.Statics.trackNamedAttr(theThis, r1Name);
+				dev.Statics.setHtmlID( rb, r1Name);
 				rg.add(rb);
 			}
 			if (r2Name) {
@@ -1174,6 +1211,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(rb);
 				theThis[r2Name] = rb;
 				dev.Statics.trackNamedAttr(theThis, r2Name);
+				dev.Statics.setHtmlID( rb, r2Name);
 				rg.add(rb);
 			}
 			if (r3Name) {
@@ -1181,6 +1219,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(rb);
 				theThis[r3Name] = rb;
 				dev.Statics.trackNamedAttr(theThis, r3Name);
+				dev.Statics.setHtmlID( rb, r3Name);
 				rg.add(rb);
 			}
 			if (r4Name) {
@@ -1188,6 +1227,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(rb);
 				theThis[r4Name] = rb;
 				dev.Statics.trackNamedAttr(theThis, r4Name);
+				dev.Statics.setHtmlID( rb, r4Name);
 				rg.add(rb);
 			}
 			if (r5Name) {
@@ -1195,6 +1235,7 @@ qx.Class.define("dev.Statics", {
 				hb.add(rb);
 				theThis[r5Name] = rb;
 				dev.Statics.trackNamedAttr(theThis, r5Name);
+				dev.Statics.setHtmlID( rb, r5Name);
 				rg.add(rb);
 			}
 			layout.add(hb);
@@ -1232,6 +1273,7 @@ qx.Class.define("dev.Statics", {
 			list1.set({ height: listHeight, selectionMode: "multi" });
 			theThis[leftListName] = list1;
 			dev.Statics.trackNamedAttr(theThis, leftListName);
+			dev.Statics.setHtmlID( list1, leftListName);
 			hb2.add(list1, { flex: 1 });
 
 			var vb1 = new qx.ui.container.Composite(new qx.ui.layout.VBox(10));
@@ -1241,6 +1283,8 @@ qx.Class.define("dev.Statics", {
 			var add_button = new qx.ui.form.Button("<- Add");
 			var remove_button = new qx.ui.form.Button("Remove ->");
 			vb1.add(add_button);
+			dev.Statics.setHtmlID( add_button, "Add");
+			dev.Statics.setHtmlID( remove_button, "Remove");
 			vb1.add(remove_button);
 			hb2.add(vb1);
 
@@ -1248,6 +1292,7 @@ qx.Class.define("dev.Statics", {
 			list2.set({ minHeight: listHeight, selectionMode: "multi" });
 			theThis[rightListName] = list2;
 			dev.Statics.trackNamedAttr(theThis, rightListName);
+			dev.Statics.setHtmlID( list2, rightListName);
 			hb2.add(list2, { flex: 1 });
 
 			form_layout.add(hb2, { flex: 1 });
@@ -1296,7 +1341,7 @@ qx.Class.define("dev.Statics", {
 			the_table.getSelectionModel().setSelectionMode(
 				qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION);
 			the_table.getDataRowRenderer().setHighlightFocusRow(false);
-			the_table.setFocusCellOnMouseMove( false );
+			the_table.setFocusCellOnPointerMove( false );
 			the_table.setShowCellFocusIndicator(false);
 			the_table.setAlwaysUpdateCells( false );
 
@@ -1362,6 +1407,7 @@ qx.Class.define("dev.Statics", {
 		addToToolbar: function (toolbar, icon, tooltip, action, action_this, ownerObj, label) {
 			label = (label == undefined) ? null : label;
 			var btn = new qx.ui.toolbar.Button(label, icon);
+			dev.Statics.setHtmlID( btn, label);
 			//btn.setHeight("auto");
 			if (action && action_this) {
 				btn.addListener("execute", action, action_this);
@@ -1492,6 +1538,7 @@ qx.Class.define("dev.Statics", {
 			cmd.addListener('execute', callback, theThis);
 			var btn = new qx.ui.menu.Button(label, icon, cmd);
 			menu.add(btn);
+			dev.Statics.setHtmlID( btn, label);
 
 			// commands have to be collected and tracked so that they
 			// can be properly disposed.
@@ -1518,7 +1565,9 @@ qx.Class.define("dev.Statics", {
 		*/
 		addSubRMCMenu: function (menu, label, icon) {
 			var sub = new qx.ui.menu.Menu;
-			menu.add(new qx.ui.menu.Button(label, icon, null, sub));
+			var btn = new qx.ui.menu.Button(label, icon, null, sub);
+			menu.add(btn);
+			dev.Statics.setHtmlID( btn, label);
 			return sub;
 		},
 
@@ -1536,6 +1585,7 @@ qx.Class.define("dev.Statics", {
 			tab_page.getButton().setShowCloseButton(showClose);
 			tab_page.getButton().setValue(isChecked);
 			tabview.add(tab_page);
+			dev.Statics.setHtmlID( tab_page.getButton(), name);
 			return tab_page;
 		},
 
@@ -1554,6 +1604,7 @@ qx.Class.define("dev.Statics", {
 			var vbox = new qx.ui.layout.VBox();
 			tab_page.setLayout(vbox);
 			tab_page.getButton().setValue(isChecked);
+			dev.Statics.setHtmlID( tab_page.getButton(), name);
 			tabview.add(tab_page);
 			var scroller = new qx.ui.container.Scroll();
 			tab_page.add(scroller, { flex: 1 });
@@ -1717,7 +1768,7 @@ qx.Class.define("dev.Statics", {
 			}
 
 			// Ensure that the field has a minimum length
-			var val = qx.lang.String.trim(field.getValue());
+			var val = qx.lang.String.trimRight(field.getValue());
 			if (minLen > 0 && val.length < minLen) {
 				dev.Statics.doAlert(verifyObj.label + " field must be at least " + verifyObj.min + " characters.",
 					verifyObj.label + " field is too short!", function () {
@@ -1789,7 +1840,7 @@ qx.Class.define("dev.Statics", {
 		},
 
 		verifyTextField: function (field, name) {
-			if (!field.getValue() || qx.lang.String.trim(field.getValue()).length === 0) {
+			if (!field.getValue() || qx.lang.String.trimRight(field.getValue()).length === 0) {
 				dev.Statics.doAlert(name + " field is empty.  Please enter a value",
 					name + " field is empty!", function () {
 						field.focus();
@@ -1828,7 +1879,7 @@ qx.Class.define("dev.Statics", {
 
 			// Now convert back to a string and ensure that the lengths are the same:
 			var intValueAsString = intValue.toString();
-			if (qx.lang.String.trim(field.getValue()).length !== intValueAsString.length) {
+			if (qx.lang.String.trimRight(field.getValue()).length !== intValueAsString.length) {
 				dev.Statics.doAlert(name + " field has an invalid integer.  Please enter a valid integer.",
 					name + " field is not a valid integer!", function () {
 						field.focus();
@@ -2308,6 +2359,7 @@ qx.Class.define("dev.Statics", {
 			var button = new qx.ui.toolbar.Button();
 			button.setCommand(command);
 			toolbar.add(button);
+			dev.Statics.setHtmlID( button, label);
 
 			return button;
 		},

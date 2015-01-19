@@ -1,0 +1,24 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="ObjectName Overview" flex="1">
+		<FieldArea columns="2" first="120" second="80">
+			<DoubleField 
+				varName1="hubVersionField" label1="Hub Version:" type1="TextField"
+				varName2="hubDateField" label2="Built:" type2="TextField"
+			/>
+			<DoubleField 
+				varName1="mfVersionField" label1="Mainframe Version:" type1="TextField"
+				varName2="mfDateField" label2="Built:" type2="TextField"
+			/>
+			<SingleCheck varName1="FullReleaseField" label1="Full Release"
+			/>
+			<SingleCheck varName1="HotFixField" label1="Hot-Fix"
+			/>
+			<SpanField 
+				varName1="ReleaseSummaryField" label1="Summary:" type1="TextField"
+			/>
+		</FieldArea>
+		<Label text="Release Description:" paddingTop="3"/>
+		<TextArea varName="ReleaseDescriptionField" flex="3" wrap="true" allowGrowX="true" 
+			allowGrowY="true"/>
+	</GroupBox>
+</VerticalBoxLayout>

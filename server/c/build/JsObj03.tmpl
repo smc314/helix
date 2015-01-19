@@ -1,3 +1,10 @@
+		/** Converts our object into a JSON string by using the qx.util.Serializer class.
+		  * 
+		  */
+		convertToJson : function( ){
+			return qx.util.Serializer.toJson( this );
+		},
+		
 		/** Populates our object from the given XML node
 		  * 
 		  * @param elem {Object} The XML node that we will read to populate our object.

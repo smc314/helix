@@ -6,8 +6,9 @@
 3PL=../../../../3rdParty
 GMAKE=make -j 8
 
-CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include"  -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux 
+CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include"  -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux 
 
+LFLAGS=
 
 %.o: %.cpp
 	g++ $(CFLAGS) -c $< -o $@
@@ -48,7 +49,9 @@ DOTOH=\
 	Threadable.o
 
 all: $(DOTOH)
+	g++ -shared -o ../bin/libhelix.glob.so $(DOTOH) $(LFLAGS)
 
 clean:
 	rm -f $(DOTOH) *.o *.obj core *.so
+	rm -f ../bin/libhelix.glob.so
 

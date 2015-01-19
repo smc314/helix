@@ -31,6 +31,7 @@ qx.Class.define("dev.dialog.OKCancelDialog", {
 		}, this);
 
 		this.button_layout.add(this.close_btn);
+		dev.Statics.setHtmlID( this.close_btn, "Cancel" );
 
 	},
 

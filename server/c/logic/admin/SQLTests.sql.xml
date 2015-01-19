@@ -1,0 +1,17 @@
+<SQLXml generateClass="SQLTests" package="logic/admin">
+	<ChildVector name="SQLStatements" type="SQLStmt"/>
+
+	<SqlStatement methodName="unused" methodType="INSERT">
+		<Comment>
+			This is here to allow us to define the SQLTests data object.
+		</Comment>
+		<Sql>
+			-- Empty on purpose
+		</Sql>
+		<Input name="TestGroupName" type="twine"/>
+		<Input name="user" type="twine"/>
+		<Input name="pass" type="twine"/>
+		<Input name="host" type="twine"/>
+		<Input name="port" type="twine"/>
+	</SqlStatement>
+</SQLXml>

@@ -1,0 +1,28 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="SQL Data Object Overview">
+		<FieldArea columns="2" first="80" second="80">
+			<SpanField 
+				varName1="GenerateClassField" label1="Class Name:" type1="TextField"
+				verify1="true" verify1type="string" verify1min="1" verify1max="400"
+				upper1="false" required1="true"
+			/>
+			<SpanField 
+				varName1="PackageField" label1="Package:" type1="TextField"
+				verify1="true" verify1type="string" verify1min="1" verify1max="400"
+				upper1="false" required1="true"
+			/>
+		</FieldArea>
+	</GroupBox>
+	<GroupBox legend="Child Vectors" flex="1">
+		<HorizontalBoxLayout flex="1">
+			<VerticalBoxLayout paddingTop="20">
+				<Button varName="childVectAddNew" icon="admin/icon/16x16/plain/scroll2_add.png"/>
+				<Button varName="childVectDelete" icon="admin/icon/16x16/plain/delete2.png"/>
+			</VerticalBoxLayout>
+			<StandardTable varName="childTable" flex="1">
+				<Column title="Child Vector Name" width="1*"/>
+				<Column title="Child Data Object Type" width="1*"/>
+			</StandardTable>
+		</HorizontalBoxLayout>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -35,7 +35,7 @@ qx.Class.define("welcome.LogAppender",
 		  */
 		process : function(entry){
 			var logObj = new welcome.sqldo.LogObj;
-			logObj.setAppName( "Ivory Director" ); // hard code this
+			logObj.setAppName( "Helix User Interface" ); // hard code this
 			if( entry.level === "debug" ){
 				logObj.setChannel( 4 );
 			} else if(entry.level === "info" ){
@@ -50,7 +50,7 @@ qx.Class.define("welcome.LogAppender",
 
 			logObj.setMsg( qx.log.appender.Util.toText( entry ) );
 			logObj.setFile( "welcome" );
-			logObj.setMachineName( "HubGui" );
+			logObj.setMachineName( "HelixGui" );
 			logObj.setTid( 1234567 );
 			var d = new Date();
 			logObj.setTimestamp_a( Math.floor( d.getTime() / 1000) );

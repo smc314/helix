@@ -272,7 +272,7 @@ qx.Class.define("PACKAGE.ObjectEdit", {
 		},
 		
 		getHelpUrl: function () {
-			return "/PACKAGE/NetHelp/PACKAGE.htm";
+			return "/devdoc/html/index.html";
 		},
 
 		doRevert: function (e) {
@@ -379,8 +379,8 @@ qx.Class.define("PACKAGE.ObjectEdit", {
 			layoutParent.add(root, { flex: 10 });
 
 			var live = new qx.ui.container.Composite(new qx.ui.layout.VBox).set({
-				decorator: "pane",
-				backgroundColor: "red",
+				decorator: "main",
+				//backgroundColor: "red",
 				padding: 5,
 				minWidth: 200
 			});
@@ -393,8 +393,8 @@ qx.Class.define("PACKAGE.ObjectEdit", {
 
 		initGeneralStatus: function (type, icon, name) {
 			this.status = new qx.ui.container.Composite(new qx.ui.layout.VBox(5)).set({
-				decorator: "pane",
-				backgroundColor: "blue",
+				decorator: "main",
+				//backgroundColor: "blue",
 				padding: 5,
 				minWidth: 250,
 				maxWidth: 250

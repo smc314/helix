@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.TestSavedMetadata.xml">
+	<GroupBox flex="1">
+		<HorizontalBoxLayout flex="1">
+			<VerticalBoxLayout paddingTop="20">
+				<Button varName="savedMetaCompare" icon="admin/icon/16x16/plain/scales.png"/>
+				<Button varName="savedMetaSave" icon="admin/icon/16x16/plain/floppy_disk_yellow.png"/>
+			</VerticalBoxLayout>
+			<StandardTable varName="liveMetaTable" flex="1">
+				<Column title="Column Position" width="1*" minWidth="50" maxWidth="120"/>
+				<Column title="Column Name" width="1*" minWidth="50"/>
+				<Column title="Data Type" width="1*" minWidth="50"/>
+			</StandardTable>
+		</HorizontalBoxLayout>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -1,0 +1,27 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="SQL Test Overview">
+		<FieldArea columns="2" first="80" second="80">
+			<SpanField 
+				varName1="TestGroupNameField" label1="Name:" type1="TextField"
+				verify1="true" verify1type="string" verify1min="1" verify1max="400"
+				upper1="false" required1="true"
+			/>
+			<DoubleField 
+				varName1="hostField" label1="Host:" type1="TextField"
+				verify1="true" verify1type="string" verify1min="1" verify1max="20"
+				upper1="false" required1="true"
+				varName2="portField" label2="Port:" type2="TextField"
+				verify2="true" verify2type="int" verify2min="1" verify2max="65536"
+				upper2="false" required2="true"
+			/>
+			<DoubleField 
+				varName1="userField" label1="User:" type1="TextField"
+				verify1="true" verify1type="string" verify1min="1" verify1max="20"
+				upper1="false" required1="true"
+				varName2="passField" label2="Pass:" type2="TextField"
+				verify2="true" verify2type="string" verify2min="1" verify2max="20"
+				upper2="false" required2="true"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

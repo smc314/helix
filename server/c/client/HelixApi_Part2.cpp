@@ -318,3 +318,242 @@ xmlDocPtr HelixApi::GetLogFiles( )
 	return SendRequest( request, "/logic/util/GetLogFiles");
 }
 
+xmlDocPtr HelixApi::InsertScheduleItem( const SchedItem& dataObj )
+{
+	EnEx ee(FL, "HelixApi::InsertScheduleItem( const SchedItem& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"InsertScheduleItem", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/InsertScheduleItem");
+}
+
+xmlDocPtr HelixApi::UpdateScheduleItem( const SchedItem& dataObj )
+{
+	EnEx ee(FL, "HelixApi::UpdateScheduleItem( const SchedItem& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"UpdateScheduleItem", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/UpdateScheduleItem");
+}
+
+xmlDocPtr HelixApi::SaveSQLWork( const SQLWork& dataObj )
+{
+	EnEx ee(FL, "HelixApi::SaveSQLWork( const SQLWork& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"SaveSQLWork", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/SaveSQLWork");
+}
+
+xmlDocPtr HelixApi::DeleteSQLWork( const SQLWork& dataObj )
+{
+	EnEx ee(FL, "HelixApi::DeleteSQLWork( const SQLWork& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"DeleteSQLWork", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/DeleteSQLWork");
+}
+
+xmlDocPtr HelixApi::DeleteScheduleItem( const SchedItem& dataObj )
+{
+	EnEx ee(FL, "HelixApi::DeleteScheduleItem( const SchedItem& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"DeleteScheduleItem", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/DeleteScheduleItem");
+}
+
+xmlDocPtr HelixApi::DeleteIAFile( const IAFile& dataObj )
+{
+	EnEx ee(FL, "HelixApi::DeleteIAFile( const IAFile& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"DeleteIAFile", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/DeleteIAFile");
+}
+
+xmlDocPtr HelixApi::LoadSQLTestMeta( const SQLTests& dataObj )
+{
+	EnEx ee(FL, "HelixApi::LoadSQLTestMeta( const SQLTests& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"LoadSQLTestMeta", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/LoadSQLTestMeta");
+}
+
+xmlDocPtr HelixApi::GetOneScheduleItem( const SchedItem& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetOneScheduleItem( const SchedItem& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetOneScheduleItem", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetOneScheduleItem");
+}
+
+xmlDocPtr HelixApi::GetIAFileList( const IAFolder& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetIAFileList( const IAFolder& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetIAFileList", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetIAFileList");
+}
+
+xmlDocPtr HelixApi::SaveIAFile( const IAFile& dataObj )
+{
+	EnEx ee(FL, "HelixApi::SaveIAFile( const IAFile& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"SaveIAFile", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/SaveIAFile");
+}
+
+xmlDocPtr HelixApi::GetSQLTest( const IAFile& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetSQLTest( const IAFile& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetSQLTest", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetSQLTest");
+}
+
+xmlDocPtr HelixApi::GetIAFileDetails( const IAFile& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetIAFileDetails( const IAFile& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetIAFileDetails", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetIAFileDetails");
+}
+
+xmlDocPtr HelixApi::GetWorkFileList( const IAFolder& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetWorkFileList( const IAFolder& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetWorkFileList", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetWorkFileList");
+}
+
+xmlDocPtr HelixApi::GetScheduleItems( )
+{
+	EnEx ee(FL, "HelixApi::GetScheduleItems( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetScheduleItems", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetScheduleItems");
+}
+
+xmlDocPtr HelixApi::SaveSQLTest( const SQLTests& dataObj )
+{
+	EnEx ee(FL, "HelixApi::SaveSQLTest( const SQLTests& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"SaveSQLTest", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/SaveSQLTest");
+}
+
+xmlDocPtr HelixApi::GetSQLWork( const SQLWork& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetSQLWork( const SQLWork& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetSQLWork", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetSQLWork");
+}
+

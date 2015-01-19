@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" filename="dash/MonitorServerLogs.NextPage.xml">
+	<GroupBox legend="Filter Settings for Log Viewer">
+		<FieldArea columns="2" first="120" second="120">
+			<DoubleField varName1="LogFileField" label1="Log File:" type1="ComboBoxEdit" tooltip1="Leave this empty to get the current log file." varName2="" label2=" " type2="Spacer"/>
+			<DoubleField varName1="MachineNameField" label1="Machine Name:" type1="TextField" tooltip1="Use this to filter on logs from a given machine." varName2="AppNameField" label2="Application Name:" type2="TextField" tooltip2="Use this to filter on logs from a given application."/>
+			<DoubleField varName1="ThreadIDField" label1="Thread Id:" type1="TextField" tooltip1="Use this to filter on logs from a given thread id." varName2="SUIDField" label2="SUID:" type2="TextField" tooltip2="Use this to filter on logs that have a given SUID."/>
+			<SpanField varName1="MessageField" label1="Message:" type1="TextField" tooltip1="Use this to filter on messages that have certain text in them."/>
+			<QuadCheck width1="200" width2="200" width3="200" width4="200" varName1="PanicField" label1="Include Panic Messages" varName2="ErrorField" label2="Include Error Messages" varName3="WarnField" label3="Include Warning Messages" varName4="InfoField" label4="Include Info Messages"/>
+			<QuadCheck width1="200" width2="200" width3="200" width4="200" varName1="DebugField" label1="Include Debug Messages" varName2="TraceField" label2="Include Trace Messages" varName3="SqlTraceField" label3="Include SQL Trace Messages" varName4="" label4=""/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

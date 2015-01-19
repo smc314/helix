@@ -219,10 +219,10 @@ qx.Class.define("admin.DataBinding", {
 		},
 
 		bindStandardTable : function ( theThis, dataObject, elem) {
-			if(!elem.getAttribute( "varName" )); return;            // needs a varName attribute
+			if(!elem.getAttribute( "varName" )) return;            // needs a varName attribute
 			if(elem.getAttribute("varName").length === 0) return;   // varName attr needs to have a value
-			if(!elem.getAttribute( "data" )); return;               // needs a data attribute
-			if(elem.getAttribute( "data" ).length === 0); return;   // data attribute needs to have a value
+			if(!elem.getAttribute( "data" )) return;               // needs a data attribute
+			if(elem.getAttribute( "data" ).length === 0) return;   // data attribute needs to have a value
 
 			var varName = elem.getAttribute("varName");
 			var data = elem.getAttribute("data");

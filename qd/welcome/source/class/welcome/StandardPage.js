@@ -473,7 +473,7 @@ qx.Class.define("welcome.StandardPage", {
 			// The standard splitpane has a decorator that adds a border around
 			// the whole widget.  We don't want that, so use the Background decorator
 			// instead to get a 0 border.
-			splitpane.set({decorator : new qx.ui.decoration.Background});
+			splitpane.set({decorator : new qx.ui.decoration.Decorator});
 			splitpane.setLayoutProperties({left: 0, right: 0, bottom: 0, width: "100%", height: "100%"});
 
 			// left Widget

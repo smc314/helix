@@ -1,0 +1,17 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Button Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varNameField" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the Button"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="labelField" label2="Label:" type2="TextField"
+				tooltip2="Text to show on the button"
+				verify2="true" verify2type="string" verify2min="0" verify2max="400"
+				upper2="false" required2="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

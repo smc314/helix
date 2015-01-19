@@ -1,0 +1,22 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Releases Available for Download" flex="1">
+		<StandardTable varName="releaseTable" flex="1">
+			<Column title="Hub Version" width="1*" minWidth="60"/>
+			<Column title="Built On" width="1*" minWidth="60"/>
+			<Column title="Mainframe Version" width="1*" minWidth="60"/>
+			<Column title="Built On" width="1*" minWidth="60"/>
+			<Column title="Full Release" minWidth="60" maxWidth="80"/>
+			<Column title="Hot Fix" minWidth="60" maxWidth="80"/>
+		</StandardTable>
+	</GroupBox>
+	<GroupBox legend="Release Description" flex="4">
+		<FieldArea columns="2" first="120" second="80">
+			<SpanField varName1="relSummaryField" label1="Summary:" type1="TextField" />
+		</FieldArea>
+		<Label text="Description:" paddingTop="3"/>
+		<HtmlEmbed varName="relDescField" flex="3" allowStretchX="true" allowStretchY="true"/>
+		<!--
+		<TextArea varName="relDescField" flex="3" wrap="true" allowGrowX="true" allowGrowY="true"/>
+		-->
+	</GroupBox>
+</VerticalBoxLayout>

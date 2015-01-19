@@ -1,32 +1,10 @@
 <VerticalBoxLayout spacing="0" flex="1">
-	<GroupBox legend="ObjectName Overview">
-		<FieldArea columns="2" first="80" second="80">
-			<DoubleField 
-				varName1="ProjNameField" label1="Project Name:" type1="TextField" data1="ProjName"
-				tooltip1="Human readable name for this project"
-				verify1="true" verify1type="string" verify1min="1" verify1max="64"
-				upper1="false" required1="true"
-
-				varName2="ShortNameField" label2="Short Name:" type2="TextField" data2="ShortName"
-				tooltip2="Project name used in namespaces and file paths"
-				verify2="true" verify2type="string" verify2min="1" verify2max="64"
-				upper2="false" required2="true"
-			/>
-			<SpanField 
-				varName1="LocationField" label1="Location:" type1="TextField" data1="Location"
-				tooltip1="Location of this project on disk."
-			/>
-			<SpanField 
-				varName1="DescriptionField" label1="Description:" type1="TextField" data1="Description"
-				tooltip1="Description of this project."
-			/>
-			<DoubleField 
-				varName1="DeploymentField" label1="Deployment:" type1="ComboBox" 
-				data1="Deployment" data1Source="Static"
-				tooltip1="Type of runtime environment and code used by this project."
-
-				varName2="" label2=" " type2="Spacer"
-			>
+	<GroupBox legend="Project Information Summary" isCheck="false" isRadio="false" flex="">
+		<FieldArea columns="2" first="100" second="90">
+			<DoubleField varName1="ProjNameField" label1="Project Name:" type1="TextField" data1="ProjName" tooltip1="Human readable name for this project" verify1="true" verify1type="string" verify1min="1" verify1max="64" upper1="false" required1="true" varName2="ShortNameField" label2="Short Name:" type2="TextField" data2="ShortName" tooltip2="Project name used in namespaces and file paths" verify2="true" verify2type="string" verify2min="1" verify2max="64" upper2="false" required2="true"/>
+			<SpanField varName1="LocationField" label1="Location:" type1="TextField" data1="Location" tooltip1="Location of this project on disk."/>
+			<SpanField varName1="DescriptionField" label1="Description:" type1="TextArea" data1="Description" tooltip1="Description of this project."/>
+			<DoubleField varName1="DeploymentField" label1="Deployment:" type1="ComboBox" data1="Deployment" data1Source="Static" tooltip1="Type of runtime environment and code used by this project." varName2="" label2=" " type2="Spacer">
 				<List1Value label="C++ Standalone" model="C++ Standalone"/>
 				<List1Value label="C++ Apache" model="C++ Apache"/>
 				<List1Value label="Java Standalone" model="Java Standalone"/>
@@ -37,7 +15,7 @@
 
 		</FieldArea>
 	</GroupBox>
-	<GroupBox legend="Applications" flex="1">
+	<GroupBox legend="Application List" flex="1">
 		<StandardTable varName="appTable" flex="1" data="Apps" add="true" remove="true" moveup="false" movedown="false" buttons="left">
 			<Column title="Application Name" data="AppName" width="1*" minWidth="60" maxWidth="200"/>
 			<Column title="Package Name" data="PackageName" width="1*" minWidth="60" maxWidth="100"/>

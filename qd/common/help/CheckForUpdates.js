@@ -87,7 +87,7 @@ qx.Class.define("PACKAGE.help.CheckForUpdates", {
 				"PACKAGE/icon/16x16/plain/barcode.png");
 
 
-			PACKAGE.LayoutEngine.renderLayout( this,
+			PACKAGE.layout.LayoutEngine.renderLayout( this,
 				this.getDynamicLayout("CheckForUpdates.MainPage.xml"),
 				live );
 
@@ -137,7 +137,7 @@ qx.Class.define("PACKAGE.help.CheckForUpdates", {
 		  */
 		createNextTab: function(tab_page)
 		{
-			PACKAGE.LayoutEngine.renderLayout( this,
+			PACKAGE.layout.LayoutEngine.renderLayout( this,
 				this.getDynamicLayout("CheckForUpdates.NextPage.xml"),
 				tab_page );
 

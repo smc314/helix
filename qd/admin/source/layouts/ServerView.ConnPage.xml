@@ -1,0 +1,11 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<StandardTable varName="connTable" flex="1">
+		<Column title="Terminal ID" width="1*" minWidth="60" maxWidth="100"/>
+		<Column title="Status" width="1*" minWidth="60" maxWidth="100"/>
+		<Column title="CICS Task" width="1*" minWidth="40" maxWidth="80"/>
+		<Column title="Service Transaction" width="1*" minWidth="120" maxWidth="160"/>
+		<Column title="Remote IP" width="1*" minWidth="80" maxWidth="120"/>
+		<Column title="Remote Port" width="1*" minWidth="80" maxWidth="120"/>
+		<Column title="Local Port" width="1*" minWidth="80" maxWidth="120"/>
+	</StandardTable>
+</VerticalBoxLayout>

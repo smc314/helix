@@ -1,0 +1,37 @@
+<SQLXml generateClass="IAFile" package="logic/admin">
+	<SqlStatement methodName="unusedSqlStmt" methodType="SELECTTOXML">
+		<Comment>
+			This statement is merely here to define the data structure that is
+			passed back and forth to define an installation plan
+		</Comment>
+		<Sql>
+			-- Nothing here on purpose
+			-- Note, the Output/Input designations below don't matter.  Output
+			-- defaults to string as a type.  Inputs require you to specify the 
+			-- data type.  So, for those object members where we care about the
+			-- data type, we use Input.  All the others are strings and so we
+			-- just use Output for less typing.
+		</Sql>
+		<!-- Generic Properties -->
+		<Output name="ParentFolder"/>
+		<Output name="FileName"/>
+		<Output name="Description"/>
+		<Input  name="isZOS" type="int"/>
+		<Input  name="isVSE" type="int"/>
+		<Output name="Step"/>
+		<Output name="Type"/>
+		<Output name="Title"/>
+		<Output name="Status"/>
+		<Output name="ReturnCode" type="int"/>
+        <Output name="MoveSource"/>
+        <Output name="MoveDest"/>
+        <Input  name="FileSize" type="int"/>
+
+		<!-- Common Properties for both z/OS and VSE -->
+		<Output  name="FileContents" type="base64"/>
+
+		<!-- Used by Dashboard when re-locating files -->
+		<Output name="TargetFolder"/>
+
+	</SqlStatement>
+</SQLXml>

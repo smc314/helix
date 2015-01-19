@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="5" filename="dash/ManageServerLogs.NextPage.xml">
+	<GroupBox legend="Channel Settings" flex="1">
+		<GroupBox legend="Panic" icon="admin/icon/16x16/plain/fire.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="panicField" label1="Enabled" width1="120" varName2="panicCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="panicDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+	
+		<GroupBox legend="Error" icon="admin/icon/16x16/plain/error.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="errorField" label1="Enabled" width1="120" varName2="errorCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="errorDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+
+		<GroupBox legend="Warning" icon="admin/icon/16x16/plain/sign_warning.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="warnField" label1="Enabled" width1="120" varName2="warnCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="warnDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+
+		<GroupBox legend="Info" icon="admin/icon/16x16/plain/information2.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="infoField" label1="Enabled" width1="120" varName2="infoCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="infoDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+
+		<GroupBox legend="Debug" icon="admin/icon/16x16/plain/bug_green.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="debugField" label1="Enabled" width1="120" varName2="debugCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="debugDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+
+		<GroupBox legend="Trace" icon="admin/icon/16x16/plain/step.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="traceField" label1="Enabled" width1="120" varName2="traceCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="traceDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+
+		<GroupBox legend="SQL Trace" icon="admin/icon/16x16/plain/table2_view.png">
+			<FieldArea first="210" second="200">
+				<DoubleCheck2 varName1="sqlField" label1="Enabled" width1="120" varName2="sqlCaptureField" label2="Capture to Buffer when Disabled" width2="140"/>
+				<DoubleField varName1="sqlDumpField" label1="Log Messages from Buffer when hit:" type1="TextField" varName2="" label2=" " type2="Spacer"/>
+			</FieldArea>
+		</GroupBox>
+
+	</GroupBox>
+</VerticalBoxLayout>
