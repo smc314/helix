@@ -13,6 +13,9 @@
 #include "SessionSerializer.h"
 using namespace Helix::Glob;
 
+#include "Session.h"
+using namespace Helix::Logic::admin;
+
 #include <EnEx.h>
 #include <Log.h>
 #include <AnException.h>
@@ -116,9 +119,13 @@ SessionInfo& SessionList::addSession(int user, twine username, twine fullname, t
 			}
 		}
 		if(oldest != NULL){
+			/*
 			SessionSerializer::EnsureSessionDir();
 			twine fileName = "./sessions/" + oldest->sessionGUID;
 			File::Delete( fileName );
+			*/
+			SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
+			Session::deleteByID(sqldb, oldest->sessionGUID);
 
 			m_sessions.erase(oldest->sessionGUID);
 			delete oldest;
@@ -157,8 +164,21 @@ void SessionList::initFromDB( )
 	WARN(FL, "Initializing SessionList from our stored sessions.");
 
 	// Ensure that our directory exists
-	SessionSerializer::EnsureSessionDir();
+	//SessionSerializer::EnsureSessionDir();
+	
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
+	Session_svect sessions = Session::selectAll(sqldb);
+	for(size_t i = 0; i < sessions->size(); i++){
+		SessionInfo* si = new SessionInfo( ) ;
+		si->userid = (*sessions)[i]->Userid;
+		si->created = (*sessions)[i]->Created;
+		si->lastaccess = (*sessions)[i]->LastAccess;
+		si->sessionGUID= (*sessions)[i]->guid;
 
+		m_sessions[ si->sessionGUID ] = si;
+	}
+
+	/*
 	vector<twine> files = File::listFiles("./sessions");	
 	for(int i = 0; i < (int)files.size(); i++){
 		twine fileName = "./sessions/" + files[i];
@@ -189,6 +209,7 @@ void SessionList::initFromDB( )
 		m_sessions[si->sessionGUID] = si;
 
 	}
+	*/
 
 }
 
@@ -201,10 +222,15 @@ void SessionList::removeSession(IOConn& ioc, twine& sessionGUID)
 	
 	if(m_sessions.count(sessionGUID) > 0){
 		try {
+			SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
+			Session::deleteByID(sqldb, sessionGUID);
+
+			/*
 			SessionSerializer::EnsureSessionDir();
 			twine fileName = "./sessions/" + sessionGUID;
 			DEBUG(FL, "Removing session file (%s)", fileName() );
 			File::Delete( fileName );
+			*/
 
 			delete m_sessions[sessionGUID];
 			DEBUG(FL, "Removing session (%s) from session list", sessionGUID() );

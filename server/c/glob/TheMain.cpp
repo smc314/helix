@@ -38,6 +38,7 @@ extern "C"
 #include "MsgProcScaler.h"
 #include "IOAdapter.h"
 #include "SessionSerializer.h"
+#include "MySqlDbInit.h"
 using namespace Helix::Glob;
 
 #include <twine.h>
@@ -63,7 +64,6 @@ TheMain::TheMain(char *p_config_file_name)
 		throw AnException(0, FL, "TheMain has already been created.  Use getInstance() instead.");
 	}
 
-	m_odbc_conn = NULL;
 	m_keypair = NULL;
 
 	// Turn all logs on for the moment.  Our AdaptiveLogs will adjust
@@ -232,6 +232,8 @@ void TheMain::InternalExecute(void)
 		DumpStateToLogs();
 
 		ShutdownThreads();
+
+		ShutdownDatabase();
 
 		ShutdownLogger();
 		// logging goes to stdout at this point.
@@ -477,8 +479,25 @@ void TheMain::GenConfig(void)
 	// Storage node
 	xmlNodePtr storage = xmlNewChild(root, NULL, (const xmlChar*)"Storage", NULL);
 	xmlNodePtr db = xmlNewChild(storage, NULL, (const xmlChar*)"DB", NULL);
+	xmlSetProp(storage, (const xmlChar*)"config", (const xmlChar*)"helixconfig");
 	xmlSetProp(db, (const xmlChar*)"name", (const xmlChar*)"helixconfig");
 	xmlSetProp(db, (const xmlChar*)"layout", (const xmlChar*)"helix.db.xml");
+	xmlSetProp(db, (const xmlChar*)"type", (const xmlChar*)"SqlDB");
+
+	// Security node
+	xmlNodePtr security = xmlNewChild(root, NULL, (const xmlChar*)"Security", NULL);
+	xmlNodePtr authentication = xmlNewChild(security, NULL, (const xmlChar*)"Authentication", NULL);
+	xmlNodePtr authorization = xmlNewChild(security, NULL, (const xmlChar*)"Authorization", NULL);
+	xmlNodePtr allowed = xmlNewChild(security, NULL, (const xmlChar*)"AllowedWOLogin", NULL);
+	xmlNodePtr allow1 = xmlNewChild(allowed, NULL, (const xmlChar*)"Path", NULL);
+	xmlNodePtr allow2 = xmlNewChild(allowed, NULL, (const xmlChar*)"Path", NULL);
+	xmlSetProp(security, (const xmlChar*)"storedin", (const xmlChar*)"helixconfig");
+	xmlSetProp(security, (const xmlChar*)"enabled", (const xmlChar*)"true");
+	xmlSetProp(authentication, (const xmlChar*)"enabled", (const xmlChar*)"true");
+	xmlSetProp(authentication, (const xmlChar*)"loginapp", (const xmlChar*)"/HelixLogin/index.html");
+	xmlSetProp(authorization, (const xmlChar*)"enabled", (const xmlChar*)"true");
+	xmlSetProp(allow1, (const xmlChar*)"startswith", (const xmlChar*)"/HelixLogin/");
+	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/favicon.ico");
 
 	// Now save the file
 	m_config_file_name = "./helix.xml";
@@ -528,6 +547,7 @@ void TheMain::InitStorageDB(void)
 		// Add in the default storage structure:
 		storage = xmlNewChild(root, NULL, (const xmlChar*)"Storage", NULL);
 		xmlNodePtr db = xmlNewChild(storage, NULL, (const xmlChar*)"DB", NULL);
+		xmlSetProp(storage, (const xmlChar*)"config", (const xmlChar*)"helixconfig");
 		xmlSetProp(db, (const xmlChar*)"name", (const xmlChar*)"helixconfig");
 		xmlSetProp(db, (const xmlChar*)"layout", (const xmlChar*)"helix.db.xml");
 		SaveConfig(); // write the update back out to disk
@@ -536,27 +556,16 @@ void TheMain::InitStorageDB(void)
 	vector<xmlNodePtr> dbs = XmlHelpers::FindChildren( storage, "DB" );
 	for(size_t i = 0; i < dbs.size(); i++){
 		twine dbName( dbs[i], "name" );	
-		try {
+		twine dbType( dbs[i], "type" );	
+		// Any type of exception initializing a database will (and should) cause us to
+		// fail to start.  Don't try/catch here.
+		if( dbType == "SqlDB" ){
 			SqlDB* sqldb = new SqlDB( dbs[i] );
 			m_databases[ dbName ] = sqldb;
-		} catch (AnException& e){
-			ERRORL(FL, "Exception opening one of our databases (%s):\n%s",
-				dbName(), e.Msg() );
-			ERRORL(FL, "This is most likely because the database is corrupt.  Moving to backup and starting over.");
-			// Move the corrupt database out of the way
-			twine corruptName = dbName + ".corrupt";
-			if(File::Exists( corruptName )){
-				File::Delete( corruptName );
-			}
-			rename( dbName(), corruptName() );
-
-			// Then re-open it:
-			SqlDB* sqldb = new SqlDB( dbs[i] );
-			m_databases[ dbName ] = sqldb;
-
-			// Exceptions from this are allowed to bubble up and kill TheMain startup.  Exceptions at this
-			// point indicate that we have a bad database setup file, and this should be addressed by
-			// development.
+		} else if ( dbType == "MySQL" ){
+			m_connection_pools[ dbName ] = new ConnectionPool( dbName );
+			MySqlDbInit dbinit( dbName );
+			dbinit.VerifyInstallSchema();
 		}
 	}
 
@@ -578,6 +587,18 @@ SqlDB& TheMain::GetSqlDB( const twine& whichOne )
 	}
 
 	throw AnException(0, FL, "Unknown local database requested: (%s)", whichOne() );
+}
+
+SqlDB& TheMain::GetConfigDB( void )
+{
+	EnEx ee(FL, "TheMain::GetConfigDB()");
+
+	xmlNodePtr root = xmlDocGetRootElement(m_config);
+	xmlNodePtr storage = XmlHelpers::FindChild( root, "Storage" );
+	twine config;
+	config.getAttribute(storage, "config");
+
+	return GetSqlDB( config );
 }
 
 BlockingQueue<IOConn*>& TheMain::getIOQueue(void)
@@ -669,6 +690,23 @@ void TheMain::LaunchMsgProcScaler(void)
 	m_our_threads.push_back(p2);
 
 
+}
+
+void TheMain::ShutdownDatabase(void)
+{
+	EnEx ee(FL, "TheMain::ShutdownDatabase()");
+
+	INFO(FL, "Shutting down odbc database connection pools");
+	map<twine, ConnectionPool*>::iterator it;
+	for(it = m_connection_pools.begin(); it != m_connection_pools.end(); it++){
+		delete it->second;
+	}
+
+	INFO(FL, "Shutting down local SqlDB databases");
+	map<twine, SqlDB*>::iterator it2;
+	for(it2 = m_databases.begin(); it2 != m_databases.end(); it2++){
+		delete it2->second;
+	}
 }
 
 void TheMain::ShutdownThreads(void)
@@ -771,17 +809,15 @@ twine& TheMain::GetConfigFileName(void)
 	return m_config_file_name;
 }
 
-OdbcObj& TheMain::GetOdbcConnection(twine& whichOne)
+Connection& TheMain::GetOdbcConnection(const twine& whichOne)
 {
 	EnEx ee(FL, "TheMain::GetOdbcConnection()");
 
-	if( m_odbc_conn == NULL){
-		m_odbc_conn = new OdbcObj();
-		m_odbc_conn->Connect("smc", "smc", "DSN=viazos19;");
+	if(m_connection_pools.count( whichOne ) == 0){
+		throw AnException(0, FL, "Unknown Database: %s", whichOne() );
 	}
-
-	return *m_odbc_conn;
-
+	ConnectionPool* cp = m_connection_pools[ whichOne ];
+	return cp->getConnection();
 }
 
 void TheMain::RefreshAdaptiveLogs(void)

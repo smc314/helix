@@ -11,6 +11,7 @@
 using namespace SLib;
 
 // We need references to every single data object class here:
+#include <Action.h>
 #include <Api.h>
 #include <Application.h>
 #include <Col.h>
@@ -19,6 +20,7 @@ using namespace SLib;
 #include <DOStmtInput.h>
 #include <DOStmtOutput.h>
 #include <DObject.h>
+#include <Group.h>
 #include <HitMap.h>
 #include <IAFile.h>
 #include <IAFolder.h>
@@ -37,7 +39,9 @@ using namespace SLib;
 #include <SQLWork.h>
 #include <SchedItem.h>
 #include <Screen.h>
+#include <Session.h>
 #include <TableCol.h>
+#include <User.h>
 using namespace Helix::Logic::admin;
 using namespace Helix::Logic::dev;
 //using namespace Helix::Logic::test;
@@ -148,6 +152,11 @@ class HelixApi : public HttpClient
 	/* with the Hub.                                                                   */
 	/* ******************************************************************************* */
 	public:
+
+		/** This method will call the /Authenticate
+		  * server API.
+		  */
+		xmlDocPtr Authenticate( );
 
 		/** This method will call the /logic/dev/GetProject
 		  * server API.

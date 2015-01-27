@@ -33,6 +33,11 @@
 qx.Class.define("admin.dev.SqlDOEditor", {
 	extend: admin.ObjectEdit,
 
+	/* ********************************************************************* */
+	/* Note: Look at http://demo.easyquerybuilder.com/asp-net-mvc/ for an    */
+	/*       idea for a different approach to this.                          */
+	/* ********************************************************************* */
+
 	construct : function ( object_id ) {
 		this.dynamicLayouts = [];
 		this.dynamicLayouts.push({name: "SqlDOEditor.MainPage.xml", doc:null});

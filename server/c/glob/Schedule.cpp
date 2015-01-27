@@ -93,7 +93,7 @@ void Schedule::LoadSchedule(void)
 {
 	EnEx ee(FL, "Schedule::LoadSchedule()");
 
-	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixconfig" );
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 	Lock the_lock(m_mutex);
 	m_scheds = SchedItem::selectAll( sqldb );
 
@@ -168,7 +168,7 @@ void Schedule::LaunchProcess( SchedItem& si )
 	Date now;
 
 	// Update the database to record the last-run time for this task.
-	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixconfig" );
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 	si.LastRun.set( now.GetValue() );
 	SchedItem::updateLastRun( sqldb, si.LastRun, si.id );
 	

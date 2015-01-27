@@ -26,6 +26,20 @@ using namespace Helix::Client;
 /* Edits to this file will be overwritten during the next compile.               */
 /* ***************************************************************************** */
 
+xmlDocPtr HelixApi::Authenticate( )
+{
+	EnEx ee(FL, "HelixApi::Authenticate( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"Authenticate", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/Authenticate");
+}
+
 xmlDocPtr HelixApi::GetProject( const Project& dataObj )
 {
 	EnEx ee(FL, "HelixApi::GetProject( const Project& dataObj )");

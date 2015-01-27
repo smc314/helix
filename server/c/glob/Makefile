@@ -6,7 +6,7 @@
 3PL=../../../../3rdParty
 GMAKE=make -j 8
 
-CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include"  -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux 
+CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include"  -I ../logic/util -I ../logic/admin -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux 
 
 LFLAGS=
 
@@ -26,6 +26,8 @@ DOTOH=\
 	OdbcDrv.o \
 	HttpIOAdapter.o \
 	ActionHtml.o \
+	TableActions.o \
+	Authenticate.o \
 	HttpConn.o \
 	SessionSerializer.o \
 	ConnectionPool.o \
@@ -43,6 +45,7 @@ DOTOH=\
 	SessionInfo.o \
 	MsgProcScaler.o \
 	DataObjectTestClass.o \
+	MySqlDbInit.o \
 	SchedConn.o \
 	SqlDB.o \
 	ActionMap.o \

@@ -13,7 +13,12 @@
 #include "SessionList.h"
 #include "SessionInfo.h"
 #include "LongRunningTask.h"
+#include "Authenticate.h"
+#include "SqlDB.h"
 using namespace Helix::Glob;
+
+#include "Action.h"
+using namespace Helix::Logic::admin;
 
 #include <EnEx.h>
 #include <xmlinc.h>
@@ -33,7 +38,6 @@ IOConn::IOConn()
 
 	m_resp_doc = NULL;
 	m_db = NULL;
-	m_db_mutex = NULL;
 	m_override_target = "";
 	m_has_responded = false;
 	m_lr_taskid = "";
@@ -126,15 +130,41 @@ bool IOConn::allowedWOSession(void)
 	EnEx ee(FL, "IOConn::allowedWOSession()");
 
 	twine msgTarget = MsgTarget();
-	if(msgTarget.startsWith("/helixLogin/") ||
-		msgTarget == "/js/helix.js" ||
-		msgTarget == "helix.png" ||
-		msgTarget == "/favicon.ico"
-	){
-		return true;
-	} else {
-		return false;
+	xmlNodePtr root = xmlDocGetRootElement( TheMain::getInstance()->GetConfig() );
+	xmlNodePtr security = XmlHelpers::FindChild( root, "Security");
+	if(security == NULL){
+		WARN(FL, "Missing Security node in config file.");
+		return false; // nothing allowed when empty.
 	}
+
+	xmlNodePtr awol = XmlHelpers::FindChild( security, "AllowedWOLogin");
+	if(awol == NULL){
+		WARN(FL, "Missing AllowedWOLogin node uder Security node in config file.");
+		return false; // nothing allowed when empty
+	}
+
+	vector<xmlNodePtr> paths = XmlHelpers::FindChildren( awol, "Path" );
+	for(size_t i = 0; i < paths.size(); i++){
+		twine startswith;
+		startswith.getAttribute( paths[i], "startswith" );
+		if(msgTarget.startsWith( startswith )){
+			return true; // explictly allowed.
+		}
+	}
+
+	// Also check the database setup for the given target
+	twine storedin;
+	storedin.getAttribute( security, "storedin" );
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( storedin );
+	Action_svect actions = Action::selectByPath(sqldb, msgTarget );
+	if(actions->size() != 0){
+		if((*actions)[0]->OKWOSession == 1){
+			return true; // allowed without a session by the database configuration
+		}
+	}
+
+	// If we get to here - it didn't match anything that is allowed
+	return false;
 }
 
 xmlDocPtr IOConn::initializeResponseDocument(const char* rootName)
@@ -265,64 +295,113 @@ void IOConn::parseConnName(twine& connName, twine& Host, twine& Port, twine& Use
 	}
 }
 
+bool IOConn::verifyUserAction()
+{
+	EnEx ee(FL, "IOConn::verifyUserAction()");
+
+	xmlNodePtr root = xmlDocGetRootElement( TheMain::getInstance()->GetConfig() );
+	xmlNodePtr security = XmlHelpers::FindChild( root, "Security");
+	if(security == NULL){
+		WARN(FL, "Missing Security node in config file.");
+		return false; // nothing allowed when empty.
+	}
+
+	if(XmlHelpers::getBoolAttr(security, "enabled") == false){
+		DEBUG(FL, "Security has been disabled.  Everything allowed.");
+		return true;
+	}
+
+	// First check if this can be used directly without verification
+	if(allowedWOSession()){
+		// It's a start-session Authenticate request.  We don't need to check anything for this.
+		return true;
+	}
+
+	xmlNodePtr authentication = XmlHelpers::FindChild( security, "Authentication");
+	if(authentication== NULL){
+		WARN(FL, "Missing Authentication node uder Security node in config file.");
+		return false; // nothing allowed when empty
+	}
+
+	if(XmlHelpers::getBoolAttr(authentication, "enabled")) {
+
+		// Now ensure that the user has been authenticated and has a valid session
+		if(!checkSessionID()){
+			// Session is bad
+			INFO(FL, "IOConn session is not valid or does not exist.");
+
+			// Check to see if there is authentication information in the document
+			try {
+				SessionInfo& si = Authenticate::authenticateUser( this );
+				setSessionID( si.sessionGUID );
+			} catch (AnException& e){
+				INFO(FL, "Missing or invalid authentication information.");
+				twine redirectLocation;
+				redirectLocation.getAttribute( authentication, "loginapp" );
+				SendRedirect( redirectLocation );
+				Close();
+				return false;
+			}
+		}
+	}
+
+	xmlNodePtr authorization = XmlHelpers::FindChild( security, "Authorization");
+	if(authorization== NULL){
+		WARN(FL, "Missing Authorization node uder Security node in config file.");
+		return false; // nothing allowed when empty
+	}
+
+	// Finally check to see if the user is authorized to perform this function
+	if(XmlHelpers::getBoolAttr(authorization, "enabled")){
+		if(!verifyUser()){
+			// User is not allowed to perform this action
+			SessionInfo& si = getSessionInfo();
+			WARN(FL, "User (%s) (%s) is not allowed to invoke (%s)", si.username(), si.fullname(),
+				MsgTarget()() );
+			SendForbidden();
+			Close();
+			return false;
+		}
+	}
+
+	// If everything goes well - signal the a-ok.
+	return true;
+}
+
 OdbcObj* IOConn::getDBConnection()
 {
 	EnEx ee(FL, "IOConn::getDBConnection()");
 
-	// Do we already have it?
-	if(m_db != NULL){
-		return m_db;
+	// If we don't already have one - get a connection from our pool
+	if(m_db == NULL){
+		m_db = &TheMain::getInstance()->GetOdbcConnection( "writing" ); // FIXME: shouldn't be hard-coded
 	}
 
-	// Otherwise, get it from the session.
-	SessionInfo& si = getSessionInfo();
-
-	if(si.userProperties.count("CurrentConnection") == 0){
-		throw AnException(0, FL, "Current session has not chosen a DB Connection yet.");
-	}
-
-	// Lock the dbConn mutex before doing anything with the dbConn:
-	m_db_mutex = si.dbConn_mutex;
-	m_db_mutex->lock();
-
-	if(si.dbConn == NULL){
-		// They've set the details, but we haven't connected successfully yet.
-		twine connName = si.userProperties[ "CurrentConnection" ];
-		twine Pass = si.userProperties[ connName ];
-
-		// the connection name can have the format of either:
-		// user@host:port
-		//  - or -
-		// alias (user@host:port)
-		
-		twine Host;
-		twine Port;
-		twine User;
-		IOConn::parseConnName(connName, Host, Port, User);
-
-		twine connStr = "DRIVER={Odbc Driver Name};"
-			"SRV=" + Host + "/" + Port + "/lds;"
-			"UID=" + User + ";PWD=" + Pass + ";";
-		try {
-			si.setDBConn( new OdbcObj( User, Pass, connStr ) );
-		} catch (AnException& e){
-			// Unlock the mutex because we were not successful in connecting
-			// to the requested server.
-			m_db_mutex->unlock();
-			m_db_mutex = NULL;
-			throw; // re-throw the exception to allow it to bubble up.
-		}
-	}
-
-	// We now have the database connection, and the mutex to lock
-	// it for only our use.
-	m_db = si.dbConn;
-	
 	//Make sure that auto commit is set to true
-	si.dbConn->SetAutoCommit(true);
+	m_db->odbc->SetAutoCommit(true);
 
-	return m_db;
+	// Return the odbc connection:
+	return m_db->odbc;
+}
 
+bool IOConn::checkSessionID()
+{
+	EnEx ee(FL, "IOConn::checkSessionID()");
+
+	SessionList& sl = SessionList::getInstance();
+	twine sID = getSessionID();
+	if(sID.length() == 0 || sl.hasSession(sID) == false ){
+		return false; // not a good session
+	} else {
+		return true; // Session is fine.
+	}
+}
+
+bool IOConn::verifyUser()
+{
+	EnEx ee(FL, "IOConn::verifyUser()");
+
+	return Authenticate::authorizeUserAction( this );
 }
 
 SessionInfo& IOConn::getSessionInfo()
@@ -349,11 +428,10 @@ void IOConn::ReleaseDB(void)
 	if(m_db != NULL){
 		// Ensure that every time we release a DB, we do a rollback to tell the
 		// server we're not doing anything else with it.
-		m_db->Rollback();
+		m_db->odbc->Rollback();
 
-		// UnLock the db mutex so that others can use it.
-		m_db_mutex->unlock();
-		m_db_mutex = NULL;
+		// Release it back to the pool
+		m_db->release();
 		m_db = NULL;
 	}
 }

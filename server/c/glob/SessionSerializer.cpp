@@ -13,6 +13,9 @@
 #include "TheMain.h"
 using namespace Helix::Glob;
 
+#include "Session.h"
+using namespace Helix::Logic::admin;
+
 #ifdef _WIN32
 #include <direct.h>
 #endif
@@ -96,6 +99,24 @@ void SessionSerializer::ProcessSessionInfo(SessionInfo* si)
 	EnEx ee(FL, "SessionSerializer::ProcessSessionInfo(SessionInfo* si)", true);
 
 	try {
+		SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
+
+		Session_svect sessions = Session::selectByID( sqldb, si->sessionGUID);
+		if(sessions->size() == 0){
+			// Brand new session - do an insert:
+			Session s;
+			s.guid = si->sessionGUID;
+			s.Userid = si->userid;
+			s.Created = si->created;
+			s.LastAccess = si->lastaccess;
+			s.Active = 1;
+			Session::insert( sqldb, s );
+		} else {
+			// Existing session - do an update:
+			Session::update( sqldb, si->userid, si->created, si->lastaccess, 1, si->sessionGUID );
+		}
+
+		/*
 		// Make sure our sessions directory exists:
 		EnsureSessionDir();
 
@@ -111,6 +132,7 @@ void SessionSerializer::ProcessSessionInfo(SessionInfo* si)
 		// Save the encrypted file:
 		twine fileName = "./sessions/" + si->sessionGUID;
 		xmlSaveFile( fileName(), edoc );
+		*/
 
 	} catch (AnException& e){
 		ERRORL(FL, "Caught exception during ProcessSessionInfo()\n%s", e.Msg());

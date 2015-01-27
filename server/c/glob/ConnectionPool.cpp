@@ -1,6 +1,6 @@
 /* ***************************************************************************
 
-   Copyright (c): 2013 Hericus Software, Inc.
+   Copyright (c): 2008 - 2014 Hericus Software, Inc.
 
    License: The MIT License (MIT)
 
@@ -9,36 +9,78 @@
 *************************************************************************** */
 
 #include "ConnectionPool.h"
+#include "TheMain.h"
 using namespace Helix::Glob;
 
 #include <EnEx.h>
 #include <Lock.h>
 #include <AnException.h>
+#include <XmlHelpers.h>
 #include <Log.h>
 using namespace SLib;
 
-ConnectionPool::ConnectionPool(twine dbname, twine dblocation, int max, int grow) :
-	m_dbname(dbname), m_dblocation(dblocation)
+Connection::Connection()
+{
+	EnEx ee("Connection::Connection()");
+	odbc = NULL;
+	pool = NULL;
+}
+
+Connection::Connection(OdbcObj* o, ConnectionPool* p)
+{
+	EnEx ee("Connection::Connection(OdbcObj* o, ConnectionPool* p)");
+	odbc = o;
+	pool = p;
+}
+
+void Connection::release()
+{
+	EnEx ee("Connection::release()");
+
+	if(pool != NULL){
+		pool->releaseConnection( *this );
+	}
+}
+
+ConnectionPool::ConnectionPool(const twine& poolName)
 {
 	EnEx ee("ConnectionPool::ConnectionPool()");
 	m_mutex = new Mutex();
 
-	initDB();
+	xmlDocPtr mainConfig = TheMain::getInstance()->GetConfig();
+	xmlNodePtr root = xmlDocGetRootElement( mainConfig );
+	xmlNodePtr storage = XmlHelpers::FindChild( root, "Storage" );
+	if(storage == NULL){
+		throw AnException(0, FL, "Storage node missing in config file.");
+	}
+	xmlNodePtr db = XmlHelpers::FindChildWithAttribute(storage, "DB", "name", poolName() );
+	if(db == NULL){
+		throw AnException(0, FL, "DB configuration for %s not found.", poolName() );
+	}
+
+	m_name = poolName;
+	m_dbname.getAttribute( db, "dbname" );
+	m_user.getAttribute(db, "user" );
+	m_pass.getAttribute(db, "pass" );
+	m_connstr.getAttribute(db, "connstr" );
 	
-	if(max <= 0){
+	// Update the connection string with the database name if it is not empty:
+	if(m_dbname.length() != 0){
+		m_connstr.append("database=" + m_dbname + ";");
+	}
+
+	m_max_connections = XmlHelpers::getIntAttr(db, "maxconnections");
+	if(m_max_connections == 0){
 		m_max_connections = 10; // reasonable default
-	} else {
-		m_max_connections = max; // let the user control this.
 	}
-	
-	if(grow <= 0){
+
+	m_grow_by = XmlHelpers::getIntAttr(db, "growby" );
+	if(m_grow_by == 0){
 		m_grow_by = 2; // reasonable default
-	} else {
-		m_grow_by = grow; // let the user control this.
 	}
-	
+
+	initDB();
 	addConnections();
-	
 }
 
 ConnectionPool::~ConnectionPool()
@@ -60,7 +102,7 @@ ConnectionPool::~ConnectionPool()
 const twine& ConnectionPool::getDBName(void)
 {
 	EnEx ee("ConnectionPool::getDBName()");
-	return m_dbname;
+	return m_name;
 }
 
 void ConnectionPool::initDB(void)
@@ -68,8 +110,8 @@ void ConnectionPool::initDB(void)
 	EnEx ee("ConnectionPool::initDB()");
 
 	try {
-		//FIXME: Load the ODBC Driver here.
-	} catch (AnException e) {
+		//Do any type of global odbc initialization here that is necessary.
+	} catch (AnException& e) {
 		ERRORL(FL, "Failed to load ODBC driver.");
 		throw;
 	}
@@ -112,8 +154,7 @@ void ConnectionPool::releaseConnection(Connection& con)
 		CPEntry* cpe = m_pool[i];
 		if(cpe->con == &con){
 			cpe->in_use = false;
-			//FIXME: Implement this:
-			//cpe->con.rollback(); // undo anything that is left hanging on this connection
+			cpe->con->odbc->Rollback(); // undo anything that is left hanging on this connection
 			return;
 		}
 	}
@@ -127,12 +168,12 @@ void ConnectionPool::closePool(void)
 	EnEx ee("Enter");
 	try {
 		for(int i = 0; i < (int)m_pool.size(); i++){
-			//CPEntry* cpe = m_pool[i];
-			//FIXME: Implement these
-			//cpe->con.rollback();
-			//cpe->con.close();
+			CPEntry* cpe = m_pool[i];
+			cpe->con->odbc->Rollback();
+			delete cpe->con->odbc;
+			delete cpe->con;
 		}
-	} catch (AnException sqle){
+	} catch (AnException& sqle){
 		ERRORL(FL, "Error shutting down connections in pool: %s", sqle.Msg());
 	}
 }
@@ -164,11 +205,11 @@ CPEntry* ConnectionPool::createConnection(void)
 {
 	EnEx ee("ConnectionPool::createConnection()");
 	CPEntry* cpe = new CPEntry();
-	//FIXME: Implement these
-	//cpe->con = DriverManager.getConnection("jdbc:hsqldb:file:" + m_dblocation, "sa", "");
-	//cpe->con.setAutoCommit(false);
 	cpe->usage_count = 0;
 	cpe->in_use = false;
+	cpe->con = new Connection();
+	cpe->con->pool = this; // pointer back to us
+	cpe->con->odbc = new OdbcObj( m_user, m_pass, m_connstr );
 	return cpe;
 }
 

@@ -90,6 +90,15 @@ class IOConn
 		 */
 		virtual xmlNodePtr GetRequestRoot(void) = 0;
 
+		/** This method will handle verifying that the user is allowed to do what they
+		  * are requesting to do.  This will return true if the user is verified to
+		  * perform the current action, and false if they do not have permission to
+		  * execute the current request.  If the user does not have permission, or is
+		  * not yet logged in, this method will handle sending back the correct response
+		  * prior to returning.
+		  */
+		virtual bool verifyUserAction();
+
 		/** This will parse our connection names in a standard way to pick out the Host, Port,
 		  * and User information.
 		  */
@@ -169,6 +178,16 @@ class IOConn
 		 */
 		virtual void SendNotFound(void) = 0;
 
+		/** If the requested msg target is not allowed for the current user, use this
+		 * to send back an appropriate "403 Forbidden" message.
+		 */
+		virtual void SendForbidden(void) = 0;
+
+		/** If the requested msg target is not allowed or has moved, use this to indicate
+		 *  where the client should go next
+		 */
+		virtual void SendRedirect(const twine& redirectTarget) = 0;
+
 		/** Releases the DB Connection back to the pool.
 		 */
 		void ReleaseDB(void);
@@ -202,26 +221,29 @@ class IOConn
 		  */
 		void updateLRTask(intptr_t start, intptr_t current, intptr_t finish, const twine& msg);
 
-	protected:
-
-		/** Checks the session id to see if it is valid.  Throws a RedirectRequired,
-		 * or simple Exception if something went wrong.
-		 */
-		void checkSessionID(void);
-
 		/** There's a certain hard-coded list of message targets that are allowed
 		 * without a session.
 		 */
 		bool allowedWOSession(void);
 
+	protected:
+
+		/** Checks the session id to see if it is valid.  Returns true if the current session
+		 *  is valid, or false if the current request has not yet logged in an created a session.
+		 */
+		virtual bool checkSessionID(void);
+
+		/** Checks the user<->action permission to see if this user is allowed to perform
+		 * this action. Returns true if the user is allowed to perform this action, and false
+		 * if they are not.
+		 */
+		virtual bool verifyUser(void);
+
 		/// Our response document
 		xmlDocPtr m_resp_doc;
 
 		/// Our Database Connection, if any
-		OdbcObj* m_db;
-
-		/// Our DB Connection mutex, if any
-		Mutex* m_db_mutex;
+		Connection* m_db;
 
 		/// If we need to overrid the user's selected URL, this is where the overrid is stored
 		twine m_override_target;

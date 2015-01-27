@@ -525,6 +525,20 @@ qx.Class.define("admin.Api", {
 
 
 
+		/** This function will call the /Authenticate
+		  * server API.
+		  */
+		Authenticate : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "Authenticate");
+
+			// Now send the request to the server.
+			admin.Api.SendRequest(requestDoc, "/Authenticate",
+				completionFunction, theThis);
+		},
+
 		/** This function will call the /logic/dev/GetProject
 		  * server API.
 		  */

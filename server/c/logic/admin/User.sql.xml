@@ -1,0 +1,132 @@
+<SQLXml generateClass="User" package="logic/admin" >
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add new user entries into our database
+		</Comment>
+		<Sql>
+			insert into user (user, fullname, email, active)
+			values ( ?, ?, ?, ? )
+		</Sql>
+		<Input name="id" type="autogen"/>
+		<Input name="Username" type="twine"/>
+		<Input name="FullName" type="twine"/>
+		<Input name="EMail" type="twine"/>
+		<Input name="Active" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="insertAuth" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add new userauth entries into our database
+		</Comment>
+		<Sql>
+			insert into userauth (userid, authmechanism, password)
+			values ( ?, ?, ? )
+		</Sql>
+		<Input name="id" type="int"/>
+		<Input name="AuthMechanism" type="int"/>
+		<Input name="Password" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update existing user entries in our database
+		</Comment>
+		<Sql>
+			update user
+			set Username = ?,
+				FullName = ?,
+				EMail = ?,
+				Active = ?
+			where id = ?
+		</Sql>
+		<Input name="Username" type="twine"/>
+		<Input name="FullName" type="twine"/>
+		<Input name="EMail" type="twine"/>
+		<Input name="Active" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="updateAuth" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update existing userauth entries in our database
+		</Comment>
+		<Sql>
+			update userauth
+			set authmechanism = ?,
+				password = ?
+			where userid = ?
+		</Sql>
+		<Input name="AuthMechanism" type="int"/>
+		<Input name="Password" type="twine"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing user entries in our database
+		</Comment>
+		<Sql>
+			delete from user
+			where id = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteAuthByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing userauth entries in our database
+		</Comment>
+		<Sql>
+			delete from userauth
+			where userid = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all user entries in our database
+		</Comment>
+		<Sql>
+			select id, user, fullname, email, active
+			from user
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Username" type="twine"/>
+		<Output name="FullName" type="twine"/>
+		<Output name="EMail" type="twine"/>
+		<Output name="Active" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single user entry in our database.
+		</Comment>
+		<Sql>
+			select id, user, fullname, email, active, authmechanism, password
+			from user, userauth
+			where user.id = ?
+			and   user.id = userauth.userid
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Username" type="twine"/>
+		<Output name="FullName" type="twine"/>
+		<Output name="EMail" type="twine"/>
+		<Output name="Active" type="int"/>
+		<Output name="AuthMechanism" type="int"/>
+		<Output name="Password" type="twine"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByUsername" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single user entry in our database.
+		</Comment>
+		<Sql>
+			select id, user, fullname, email, active, authmechanism, password
+			from user, userauth
+			where user.user = ?
+			and   user.id = userauth.userid
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Username" type="twine"/>
+		<Output name="FullName" type="twine"/>
+		<Output name="EMail" type="twine"/>
+		<Output name="Active" type="int"/>
+		<Output name="AuthMechanism" type="int"/>
+		<Output name="Password" type="twine"/>
+		<Input name="Username" type="twine"/>
+	</SqlStatement>
+</SQLXml>

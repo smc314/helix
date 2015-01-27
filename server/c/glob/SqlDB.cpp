@@ -22,39 +22,11 @@ using namespace Helix::Glob;
 #include <XmlHelpers.h>
 using namespace SLib;
 
-TableActions::TableActions(const twine& Name)
-{
-	TableName = Name;
-}
-
-TableActions::TableActions(const TableActions& c)
-{
-	TableName = c.TableName;
-	Created = c.Created;
-	Updated = c.Updated;
-}
-
-TableActions& TableActions::operator=(const TableActions& c)
-{
-	TableName = c.TableName;
-	Created = c.Created;
-	Updated = c.Updated;
-
-	return *this;
-}
-
-TableActions::~TableActions()
-{
-
-}
-
 SqlDB::SqlDB(const twine& layoutFile, const twine& dbFile, size_t maxSize )
 {
 	EnEx ee(FL, "SqlDB::SqlDB()");
 	m_mutex = new Mutex();
 	
-	sqlite3_initialize();
-
 	if(layoutFile.length() == 0){
 		throw AnException(0, FL, "Invalid layoutFile passed to SqlDB");
 	}
@@ -65,8 +37,25 @@ SqlDB::SqlDB(const twine& layoutFile, const twine& dbFile, size_t maxSize )
 	m_dbName = dbFile;;
 	m_db_max_size = maxSize;
 
-	sqlite3_open( m_dbName(), &m_db );
-	ProcessFile( m_dbLayout );
+	try {
+		sqlite3_initialize();
+		sqlite3_open( m_dbName(), &m_db );
+		ProcessFile( m_dbLayout );
+	} catch (AnException& e){
+		ERRORL(FL, "Exception opening our Sqlite3 db (%s):\n%s", m_dbName(), e.Msg() );
+		ERRORL(FL, "This is most likely because the database is corrupt.  Moving to backup and trying again.");
+
+		twine corruptName = m_dbName + ".corrupt";
+		if(File::Exists( corruptName )){
+			File::Delete( corruptName );
+		}
+		rename( m_dbName(), corruptName() );
+
+		// Any exceptions from here will bubble up to the caller
+		sqlite3_initialize();
+		sqlite3_open( m_dbName(), &m_db );
+		ProcessFile( m_dbLayout );
+	}
 
 }
 
@@ -74,8 +63,6 @@ SqlDB::SqlDB(xmlNodePtr db)
 {
 	EnEx ee(FL, "SqlDB::SqlDB()");
 	m_mutex = new Mutex();
-	
-	sqlite3_initialize();
 
 	if(db == NULL){
 		throw AnException(0, FL, "Invalid (NULL) db node passed to SqlDB");
@@ -84,9 +71,25 @@ SqlDB::SqlDB(xmlNodePtr db)
 	m_dbName.getAttribute(db, "name");
 	m_db_max_size = XmlHelpers::getIntAttr( db, "maxsize" );
 
-	sqlite3_open( m_dbName(), &m_db );
-	ProcessFile( m_dbLayout );
+	try {
+		sqlite3_initialize();
+		sqlite3_open( m_dbName(), &m_db );
+		ProcessFile( m_dbLayout );
+	} catch (AnException& e){
+		ERRORL(FL, "Exception opening our Sqlite3 db (%s):\n%s", m_dbName(), e.Msg() );
+		ERRORL(FL, "This is most likely because the database is corrupt.  Moving to backup and trying again.");
 
+		twine corruptName = m_dbName + ".corrupt";
+		if(File::Exists( corruptName )){
+			File::Delete( corruptName );
+		}
+		rename( m_dbName(), corruptName() );
+
+		// Any exceptions from here will bubble up to the caller
+		sqlite3_initialize();
+		sqlite3_open( m_dbName(), &m_db );
+		ProcessFile( m_dbLayout );
+	}
 }
 
 SqlDB::~SqlDB()

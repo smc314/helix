@@ -9,6 +9,7 @@
 /* All of our API test files are included here.                               */
 /* ************************************************************************** */
 
+#include "apitests/ApiTest_Authenticate.cpp"
 #include "apitests/ApiTest_logic_dev_GetProject.cpp"
 #include "apitests/ApiTest_logic_dev_SaveProject.cpp"
 #include "apitests/ApiTest_logic_dev_GetProjectList.cpp"

@@ -1,0 +1,74 @@
+<SQLXml generateClass="Session" package="logic/admin" >
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add new sesion entries into our database
+		</Comment>
+		<Sql>
+			insert into session (guid, userid, created, lastaccess, active)
+			values ( ?, ?, ?, ?, ? )
+		</Sql>
+		<Input name="guid" type="twine"/>
+		<Input name="Userid" type="int"/>
+		<Input name="Created" type="Date"/>
+		<Input name="LastAccess" type="Date"/>
+		<Input name="Active" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update existing session entries in our database
+		</Comment>
+		<Sql>
+			update session
+			set userid = ?,
+				created = ?,
+				lastaccess = ?,
+				active = ?
+			where guid = ?
+		</Sql>
+		<Input name="Userid" type="int"/>
+		<Input name="Created" type="Date"/>
+		<Input name="LastAccess" type="Date"/>
+		<Input name="Active" type="int"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing user session in our database
+		</Comment>
+		<Sql>
+			delete from session
+			where guid = ?
+		</Sql>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all session entries in our database
+		</Comment>
+		<Sql>
+			select guid, userid, created, lastaccess, active
+			from session
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="Userid" type="int"/>
+		<Output name="Created" type="Date"/>
+		<Output name="LastAccess" type="Date"/>
+		<Output name="Active" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single session entry in our database.
+		</Comment>
+		<Sql>
+			select guid, userid, created, lastaccess, active
+			from session
+			where guid = ?
+		</Sql>
+		<Output name="guid" type="twine"/>
+		<Output name="Userid" type="int"/>
+		<Output name="Created" type="Date"/>
+		<Output name="LastAccess" type="Date"/>
+		<Output name="Active" type="int"/>
+		<Input name="guid" type="twine"/>
+	</SqlStatement>
+</SQLXml>

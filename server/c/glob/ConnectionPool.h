@@ -1,6 +1,6 @@
 /* ***************************************************************************
 
-   Copyright (c): 2013 Hericus Software, Inc.
+   Copyright (c): 2008 - 2014 Hericus Software, Inc.
 
    License: The MIT License (MIT)
 
@@ -19,12 +19,32 @@ using namespace std;
 #include <Mutex.h>
 using namespace SLib;
 
+#include "OdbcObj.h"
+using namespace Helix::Glob;
+
 namespace Helix {
 namespace Glob {
 
 
-class Connection {
+class ConnectionPool;
 
+/** This is the class handed back to the caller when they request an entry from the
+  * connection pool.  We keep track of the Odbc connection that they have, and which
+  * connection pool it came from, so that they can easily release it back to the pool.
+  */
+class Connection {
+	public:
+		OdbcObj* odbc;
+		ConnectionPool* pool;
+
+		/// Standard Constructor
+		Connection();
+
+		/// Constructor to create a fully connected object
+		Connection(OdbcObj* o, ConnectionPool* p);
+
+		/// Use this to release this connection back to the originating connection pool.
+		void release();
 };
 
 class CPEntry {
@@ -54,7 +74,7 @@ class ConnectionPool {
 	public:
 	
 		/// Standard constructor.
-		ConnectionPool(twine dbname, twine dblocation, int max, int grow);
+		ConnectionPool(const twine& poolName);
 	
 		/// Standard destructor.
 		virtual ~ConnectionPool();
@@ -87,8 +107,11 @@ class ConnectionPool {
 
 	private:
 
+		twine m_name;
 		twine m_dbname;
-		twine m_dblocation;
+		twine m_user;
+		twine m_pass;
+		twine m_connstr;
 		vector<CPEntry* > m_pool;
 		map<twine, int> m_table_id;
 		int m_max_connections;

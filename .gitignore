@@ -25,6 +25,7 @@ qd/*/source/class/*/sqldo
 qd/*/api
 qd/*/build
 qd/*/test
+qd/*/node_modules
 !qd/common/test
 qd/qooxdoo-3.0.1-sdk
 
@@ -42,3 +43,6 @@ server/net/bin
 server/net/obj
 
 # Generated makefiles
+
+# Generated html packages
+html/HelixLogin

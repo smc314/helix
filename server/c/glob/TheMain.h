@@ -17,6 +17,7 @@
 #include "OdbcObj.h"
 #include "AdaptiveLogs.h"
 #include "SqlDB.h"
+#include "ConnectionPool.h"
 
 #include <vector>
 #include <utility>
@@ -128,11 +129,14 @@ class TheMain
 		/// Dumps interesting things to the logs.
 		void DumpStateToLogs(void);
 
-		/// Replace this with a proper pool implementation
-		OdbcObj& GetOdbcConnection(twine& whichOne);
+		/// Returns an entry from our ODBC Connection pool with the given name
+		Connection& GetOdbcConnection(const twine& whichOne);
 
 		/// Returns a SQL DB object that represnets an interface to one of our local databses.
 		SqlDB& GetSqlDB( const twine& whichOne );
+
+		/// Returns a SQL DB object that represnets an interface to our local configuration database.
+		SqlDB& GetConfigDB( void );
 
 		/// Tell TheMain that something has changed in the config and AdaptiveLogs needs to be refreshed.
 		void RefreshAdaptiveLogs(void);
@@ -199,6 +203,9 @@ class TheMain
 		/// Launches our message processor
 		void LaunchMsgProcScaler(void);
 	
+		/// Shuts down database connections we have allocated
+		void ShutdownDatabase(void);
+
 		/// Shuts down threads we've launched
 		void ShutdownThreads(void);
 
@@ -262,8 +269,8 @@ class TheMain
 		/// Is the current shutdown only for a re-config cycle
 		bool m_is_shutdown_reconfig;
 
-		/// FIXME: use a real pool.
-		OdbcObj* m_odbc_conn;
+		/// Our list of connection pools
+		map< twine, ConnectionPool* > m_connection_pools;
 
 		/// Our list of local databases:
 		map< twine, SqlDB* > m_databases;

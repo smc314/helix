@@ -569,7 +569,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"3PL=../../../../3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"\n"
-		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
+		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I ../logic/admin -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
 		"\n"
 		"LFLAGS=\n"
 		"\n"
