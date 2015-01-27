@@ -96,7 +96,7 @@ void GetScheduleItems::ExecuteRequest(IOConn& ioc)
 	// Set up the response document name
 	ioc.initializeResponseDocument("GetScheduleItems");
 
-	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixconfig" );
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 	
 	SchedItem_svect vect = SchedItem::selectAll( sqldb );
 

@@ -97,7 +97,7 @@ void GetOneScheduleItem::ExecuteRequest(IOConn& ioc)
 	ioc.initializeResponseDocument("GetOneScheduleItem");
 
 	SchedItem local( XmlHelpers::FindChild( ioc.GetRequestRoot(), SchedItem::Name()() ) );
-	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixconfig" );
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 	
 	SchedItem_svect vect = SchedItem::selectByID( sqldb, local.id );
 

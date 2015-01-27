@@ -119,7 +119,7 @@ void UpdateScheduleItem::ExecuteRequest(IOConn& ioc)
 		throw AnException(0, FL, "ScheduleItem must have a valid Task URL.");
 	}
 
-	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixconfig" );
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 
 	if(doingInsert){
 		SchedItem::insert(sqldb, local);

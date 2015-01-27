@@ -20,7 +20,7 @@
 			values ( ?, ?, ? )
 		</Sql>
 		<Input name="userid" type="int"/>
-		<Input name="id" type="autogen"/>
+		<Input name="id" type="int"/>
 		<Input name="Allow" type="int"/>
 	</SqlStatement>
 	<SqlStatement methodName="addGroupToAction" methodType="INSERT" target="sqldb">
@@ -32,7 +32,7 @@
 			values ( ?, ?, ? )
 		</Sql>
 		<Input name="groupid" type="int"/>
-		<Input name="id" type="autogen"/>
+		<Input name="id" type="int"/>
 		<Input name="Allow" type="int"/>
 	</SqlStatement>
 	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">

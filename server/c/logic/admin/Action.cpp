@@ -510,17 +510,16 @@ void Action::addUserToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action& 
 			if(useInputs){
 				DEBUG(FL, "Setting input (%d) to value: %d", 1, obj.userid );
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)obj.userid) );
-				DEBUG(FL, "Setting input (%d) to value: %d", 2, obj.Allow );
-				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)obj.Allow) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 2, obj.id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)obj.id) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 3, obj.Allow );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 3, (int)obj.Allow) );
 
 			} // if(useInputs)
 
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Action::addUserToAction");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
-
-			// Update the insert object to pick up the new autogen value:
-			obj.id = sqlite3_last_insert_rowid( db );
 
 
 		} // End the Timing scope
@@ -576,16 +575,15 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v)
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
 				DEBUG(FL, "Setting input (%d) to value: %d", 1, v->at( v_i )->userid );
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)v->at( v_i )->userid) );
-				DEBUG(FL, "Setting input (%d) to value: %d", 2, v->at( v_i )->Allow );
-				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)v->at( v_i )->Allow) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 2, v->at( v_i )->id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)v->at( v_i )->id) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 3, v->at( v_i )->Allow );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 3, (int)v->at( v_i )->Allow) );
 
 
 				// Execute the statement
 				DEBUG(FL, "Executing the statement for Action::addUserToAction");
 				sqldb.check_err( sqlite3_step( db_stmt ) );
-
-				// Update the insert object to pick up the new autogen value:
-				v->at( v_i )->id = sqlite3_last_insert_rowid( db );
 
 
 				// Reset the statement so that we can bind/execute again:
@@ -723,17 +721,16 @@ void Action::addGroupToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action&
 			if(useInputs){
 				DEBUG(FL, "Setting input (%d) to value: %d", 1, obj.groupid );
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)obj.groupid) );
-				DEBUG(FL, "Setting input (%d) to value: %d", 2, obj.Allow );
-				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)obj.Allow) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 2, obj.id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)obj.id) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 3, obj.Allow );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 3, (int)obj.Allow) );
 
 			} // if(useInputs)
 
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Action::addGroupToAction");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
-
-			// Update the insert object to pick up the new autogen value:
-			obj.id = sqlite3_last_insert_rowid( db );
 
 
 		} // End the Timing scope
@@ -789,16 +786,15 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v)
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
 				DEBUG(FL, "Setting input (%d) to value: %d", 1, v->at( v_i )->groupid );
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)v->at( v_i )->groupid) );
-				DEBUG(FL, "Setting input (%d) to value: %d", 2, v->at( v_i )->Allow );
-				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)v->at( v_i )->Allow) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 2, v->at( v_i )->id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)v->at( v_i )->id) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 3, v->at( v_i )->Allow );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 3, (int)v->at( v_i )->Allow) );
 
 
 				// Execute the statement
 				DEBUG(FL, "Executing the statement for Action::addGroupToAction");
 				sqldb.check_err( sqlite3_step( db_stmt ) );
-
-				// Update the insert object to pick up the new autogen value:
-				v->at( v_i )->id = sqlite3_last_insert_rowid( db );
 
 
 				// Reset the statement so that we can bind/execute again:

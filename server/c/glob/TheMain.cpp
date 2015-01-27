@@ -39,6 +39,7 @@ extern "C"
 #include "IOAdapter.h"
 #include "SessionSerializer.h"
 #include "MySqlDbInit.h"
+#include "ActionMap.h"
 using namespace Helix::Glob;
 
 #include <twine.h>
@@ -568,6 +569,10 @@ void TheMain::InitStorageDB(void)
 			dbinit.VerifyInstallSchema();
 		}
 	}
+
+	// After we've initialized our storage, ensure that our actions have been
+	// inserted into the database.
+	ActionMap::getInstance().SaveToConfigDB();
 
 }
 

@@ -98,7 +98,7 @@ void DeleteScheduleItem::ExecuteRequest(IOConn& ioc)
 
 	SchedItem local( XmlHelpers::FindChild( ioc.GetRequestRoot(), SchedItem::Name()() ) );
 
-	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixconfig" );
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 	
 	SchedItem::deleteByID( sqldb, local.id );
 
