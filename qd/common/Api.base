@@ -166,7 +166,11 @@ qx.Class.define("PACKAGE.Api", {
 				}
 				PACKAGE.Api.deactivateNetworkIcon( theThis );
 				if(!req.responseXML){
-					PACKAGE.Statics.doAlert("Server is not responding, please try again.");
+					if(req.status == 403){
+						PACKAGE.Statics.doAlert("You are not authorized to perform this action.");
+					} else {
+						PACKAGE.Statics.doAlert("Server is not responding, please try again.");
+					}
 					if(errorCallback){
 						errorCallback.call(theThis, req);
 					}

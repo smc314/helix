@@ -453,6 +453,23 @@ void LogMessageFilter::createXmlChildren(xmlNodePtr parent, vector<LogMessageFil
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr LogMessageFilter::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LogMessageFilter* >* vect)
+{
+	EnEx ee(FL, "LogMessageFilter::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LogMessageFilter* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to LogMessageFilter::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	LogMessageFilter::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void LogMessageFilter::deleteVector(vector<LogMessageFilter* >* vect)

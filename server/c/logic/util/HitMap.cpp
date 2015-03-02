@@ -219,6 +219,23 @@ void HitMap::createXmlChildren(xmlNodePtr parent, vector<HitMap* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr HitMap::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<HitMap* >* vect)
+{
+	EnEx ee(FL, "HitMap::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<HitMap* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to HitMap::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	HitMap::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void HitMap::deleteVector(vector<HitMap* >* vect)

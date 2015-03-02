@@ -25,6 +25,8 @@ using namespace SLib;
 #include "SqlDB.h"
 using namespace Helix::Glob;
 
+#include "Action.h"
+#include "UserGroup.h"
 
 
 namespace Helix {
@@ -46,10 +48,13 @@ class User
 		twine FullName;
 		twine Password;
 		twine Username;
+		intptr_t groupid;
 		intptr_t id;
 
 
 		/// Any Child Vectors will be defined here
+		Action_svect AllowedActions;
+		UserGroup_svect GroupMembership;
 
 
 		/// Standard Constructor
@@ -87,6 +92,9 @@ class User
 
 		/// Create a series of xml child nodes based on the input vector
 		static void createXmlChildren(xmlNodePtr parent, vector<User* >* vect);
+
+		/// Create a child and series of grandchild nodes based on the input vector.
+		static xmlNodePtr createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<User* >* vect);
 
 		/// Handle deleting a vector and its contents.
 		static void deleteVector( vector<User* >* vect);
@@ -126,7 +134,7 @@ class User
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void insert(SqlDB& sqldb, vector< User* >* v);
+		static void insert(SqlDB& sqldb, vector< User* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.
@@ -139,6 +147,47 @@ class User
 		  */
 		static twine insert_getSQL() {
 			return "insert into user (user, fullname, email, active) 			values ( ?, ?, ?, ? )";
+		}
+
+		/** This is an INSERT method.  It is designed to run a single insert
+		  * statement and return. If something goes wrong, we will throw AnException.
+		  * <P>
+		  * Developer Comments:
+		  * <P>
+			This is the statement that we use to add user's to a group.
+		
+		  * <P>
+		  * Sql Statement:
+		  * <pre>
+			insert into usergroup (userid, groupid)
+			values ( ?, ?)
+		
+		  * </pre>
+		  */
+		static void addUserToGroup(SqlDB& sqldb, User& obj );
+
+		/** This one matches the above in functionality, but allows you to pass in the sql
+		  * statement and a flag to indicate whether the input parameters will be used.
+		  */
+		static void addUserToGroup(SqlDB& sqldb, twine& stmt, bool useInputs, User& obj );
+
+		/** This version of the method allows you to pass in a vector of objects to be
+		  * inserted, and we will ensure that all of them are inserted within a single commit
+		  * block within Sqlite.
+		  */
+		static void addUserToGroup(SqlDB& sqldb, vector< User* >* v, bool useTransaction = true);
+
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine addUserToGroup_prepSQL(IOConn& ioc, User& obj );
+
+		/** This method returns the sql statement that is used by the above functions.
+		  */
+		static twine addUserToGroup_getSQL() {
+			return "insert into usergroup (userid, groupid) 			values ( ?, ?)";
 		}
 
 		/** This is an INSERT method.  It is designed to run a single insert
@@ -167,7 +216,7 @@ class User
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void insertAuth(SqlDB& sqldb, vector< User* >* v);
+		static void insertAuth(SqlDB& sqldb, vector< User* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.
@@ -193,10 +242,10 @@ class User
 		  * Sql Statement:
 		  * <pre>
 			update user
-			set Username = ?,
-				FullName = ?,
-				EMail = ?,
-				Active = ?
+			set user = ?,
+				fullname = ?,
+				email = ?,
+				active = ?
 			where id = ?
 		
 		  * </pre>
@@ -218,7 +267,7 @@ class User
 		/** This method returns the sql statement that is used by the above functions.
 		  */
 		static twine update_getSQL() {
-			return "update user 			set Username = ?, 				FullName = ?, 				EMail = ?, 				Active = ? 			where id = ?";
+			return "update user 			set user = ?, 				fullname = ?, 				email = ?, 				active = ? 			where id = ?";
 		}
 
 		/** This is an UPDATE method.  It is designed to run a single update
@@ -326,6 +375,76 @@ class User
 		  */
 		static twine deleteAuthByID_getSQL() {
 			return "delete from userauth 			where userid = ?";
+		}
+
+		/** This is an DELETE method.  It is designed to run a single delete
+		  * statement and return. If something goes wrong, we will throw AnException.
+		  * <P>
+		  * Developer Comments:
+		  * <P>
+			This is the statement that we use to delete existing usergroup entries in our database
+		
+		  * <P>
+		  * Sql Statement:
+		  * <pre>
+			delete from usergroup
+			where userid = ?
+		
+		  * </pre>
+		  */
+		static void deleteGroupsForUser(SqlDB& sqldb, intptr_t id );
+
+		/** This one matches the above in functionality, but allows you to pass in the sql
+		  * statement and a flag to indicate whether the input parameters will be used.
+		  */
+		static void deleteGroupsForUser(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id );
+
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine deleteGroupsForUser_prepSQL(IOConn& ioc, intptr_t id );
+
+		/** This method returns the sql statement that is used by the above functions.
+		  */
+		static twine deleteGroupsForUser_getSQL() {
+			return "delete from usergroup 			where userid = ?";
+		}
+
+		/** This is an DELETE method.  It is designed to run a single delete
+		  * statement and return. If something goes wrong, we will throw AnException.
+		  * <P>
+		  * Developer Comments:
+		  * <P>
+			This is the statement that we use to delete existing useraction entries in our database
+		
+		  * <P>
+		  * Sql Statement:
+		  * <pre>
+			delete from useraction
+			where userid = ?
+		
+		  * </pre>
+		  */
+		static void deleteActionsForUser(SqlDB& sqldb, intptr_t id );
+
+		/** This one matches the above in functionality, but allows you to pass in the sql
+		  * statement and a flag to indicate whether the input parameters will be used.
+		  */
+		static void deleteActionsForUser(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id );
+
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine deleteActionsForUser_prepSQL(IOConn& ioc, intptr_t id );
+
+		/** This method returns the sql statement that is used by the above functions.
+		  */
+		static twine deleteActionsForUser_getSQL() {
+			return "delete from useraction 			where userid = ?";
 		}
 
 		/** This is a SELECTTODO method.  It is designed to run a single select
@@ -478,6 +597,56 @@ class User
 		  */
 		static twine selectByUsername_getSQL() {
 			return "select id, user, fullname, email, active, authmechanism, password 			from user, userauth 			where user.user = ? 			and   user.id = userauth.userid";
+		}
+
+		/** This is a SELECTTODO method.  It is designed to run a single select
+		  * statement and create a vector of data objects that represent the result set.
+		  * This method returns the resulting vector of data objects.  If something
+		  * goes wrong, we will throw a SQLException.
+		  * <P>
+		  * Developer Comments:
+		  * <P>
+			This is the statement that we use to pull up all of the users that are in a given group.
+		
+		  * <P>
+		  * Sql Statement:
+		  * <pre>
+			select id, user, fullname, email, active
+			from user, usergroup
+			where usergroup.groupid = ?
+			and   user.id = usergroup.userid
+		
+		  * </pre>
+		  * <P>
+		  * DataObject Attributes Used: <br/>
+		  * <ul>
+		  *   <li>id</li>
+		  *   <li>Username</li>
+		  *   <li>FullName</li>
+		  *   <li>EMail</li>
+		  *   <li>Active</li>
+		  * </ul>
+		  */
+		static vector<User* >* selectUsersForGroup(SqlDB& sqldb, intptr_t groupid);
+
+		/** This one matches the above in functionality, but allows you to pass in
+		  * the sql statement and a flag to indicate whether the input parameters
+		  * will be used.
+		  */
+		static vector<User* >* selectUsersForGroup(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t groupid);
+
+
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine selectUsersForGroup_prepSQL(IOConn& ioc, intptr_t groupid);
+
+		/** This method returns the sql statement that is used by the above functions.
+		  */
+		static twine selectUsersForGroup_getSQL() {
+			return "select id, user, fullname, email, active 			from user, usergroup 			where usergroup.groupid = ? 			and   user.id = usergroup.userid";
 		}
 
 

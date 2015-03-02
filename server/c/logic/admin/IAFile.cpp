@@ -293,6 +293,23 @@ void IAFile::createXmlChildren(xmlNodePtr parent, vector<IAFile* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr IAFile::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<IAFile* >* vect)
+{
+	EnEx ee(FL, "IAFile::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<IAFile* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to IAFile::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	IAFile::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void IAFile::deleteVector(vector<IAFile* >* vect)

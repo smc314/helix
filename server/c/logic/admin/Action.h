@@ -87,6 +87,9 @@ class Action
 		/// Create a series of xml child nodes based on the input vector
 		static void createXmlChildren(xmlNodePtr parent, vector<Action* >* vect);
 
+		/// Create a child and series of grandchild nodes based on the input vector.
+		static xmlNodePtr createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Action* >* vect);
+
 		/// Handle deleting a vector and its contents.
 		static void deleteVector( vector<Action* >* vect);
 
@@ -125,7 +128,7 @@ class Action
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void insert(SqlDB& sqldb, vector< Action* >* v);
+		static void insert(SqlDB& sqldb, vector< Action* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.
@@ -166,7 +169,7 @@ class Action
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void addUserToAction(SqlDB& sqldb, vector< Action* >* v);
+		static void addUserToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.
@@ -207,7 +210,7 @@ class Action
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void addGroupToAction(SqlDB& sqldb, vector< Action* >* v);
+		static void addGroupToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.
@@ -554,6 +557,55 @@ class Action
 		  */
 		static twine selectActionsForUser_getSQL() {
 			return "select id, path, okwosession 			from action, useraction 			where useraction.userid = ? 			and   useraction.actionid = action.id 			and   useraction.allow = 1";
+		}
+
+		/** This is a SELECTTODO method.  It is designed to run a single select
+		  * statement and create a vector of data objects that represent the result set.
+		  * This method returns the resulting vector of data objects.  If something
+		  * goes wrong, we will throw a SQLException.
+		  * <P>
+		  * Developer Comments:
+		  * <P>
+			This is the statement that we use to pull up all action entries for a given group in our database
+			based on direct permissions.
+		
+		  * <P>
+		  * Sql Statement:
+		  * <pre>
+			select id, path, okwosession
+			from action, groupaction
+			where groupaction.groupid = ?
+			and   groupaction.actionid = action.id
+		
+		  * </pre>
+		  * <P>
+		  * DataObject Attributes Used: <br/>
+		  * <ul>
+		  *   <li>id</li>
+		  *   <li>Path</li>
+		  *   <li>OKWOSession</li>
+		  * </ul>
+		  */
+		static vector<Action* >* selectActionsForGroup(SqlDB& sqldb, intptr_t groupid);
+
+		/** This one matches the above in functionality, but allows you to pass in
+		  * the sql statement and a flag to indicate whether the input parameters
+		  * will be used.
+		  */
+		static vector<Action* >* selectActionsForGroup(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t groupid);
+
+
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine selectActionsForGroup_prepSQL(IOConn& ioc, intptr_t groupid);
+
+		/** This method returns the sql statement that is used by the above functions.
+		  */
+		static twine selectActionsForGroup_getSQL() {
+			return "select id, path, okwosession 			from action, groupaction 			where groupaction.groupid = ? 			and   groupaction.actionid = action.id";
 		}
 
 		/** This is a SELECTTODO method.  It is designed to run a single select

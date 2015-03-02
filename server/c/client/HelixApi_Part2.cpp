@@ -332,6 +332,36 @@ xmlDocPtr HelixApi::GetLogFiles( )
 	return SendRequest( request, "/logic/util/GetLogFiles");
 }
 
+xmlDocPtr HelixApi::InsertGroup( const Group& dataObj )
+{
+	EnEx ee(FL, "HelixApi::InsertGroup( const Group& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"InsertGroup", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/InsertGroup");
+}
+
+xmlDocPtr HelixApi::UpdateGroup( const Group& dataObj )
+{
+	EnEx ee(FL, "HelixApi::UpdateGroup( const Group& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"UpdateGroup", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/UpdateGroup");
+}
+
 xmlDocPtr HelixApi::InsertScheduleItem( const SchedItem& dataObj )
 {
 	EnEx ee(FL, "HelixApi::InsertScheduleItem( const SchedItem& dataObj )");
@@ -392,6 +422,36 @@ xmlDocPtr HelixApi::DeleteSQLWork( const SQLWork& dataObj )
 	return SendRequest( request, "/logic/admin/DeleteSQLWork");
 }
 
+xmlDocPtr HelixApi::InsertUser( const User& dataObj )
+{
+	EnEx ee(FL, "HelixApi::InsertUser( const User& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"InsertUser", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/InsertUser");
+}
+
+xmlDocPtr HelixApi::UpdateUser( const User& dataObj )
+{
+	EnEx ee(FL, "HelixApi::UpdateUser( const User& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"UpdateUser", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/UpdateUser");
+}
+
 xmlDocPtr HelixApi::DeleteScheduleItem( const SchedItem& dataObj )
 {
 	EnEx ee(FL, "HelixApi::DeleteScheduleItem( const SchedItem& dataObj )");
@@ -405,6 +465,21 @@ xmlDocPtr HelixApi::DeleteScheduleItem( const SchedItem& dataObj )
 
 	// Now send the request to the server.
 	return SendRequest( request, "/logic/admin/DeleteScheduleItem");
+}
+
+xmlDocPtr HelixApi::DeleteUser( const User& dataObj )
+{
+	EnEx ee(FL, "HelixApi::DeleteUser( const User& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"DeleteUser", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/DeleteUser");
 }
 
 xmlDocPtr HelixApi::DeleteIAFile( const IAFile& dataObj )
@@ -422,6 +497,50 @@ xmlDocPtr HelixApi::DeleteIAFile( const IAFile& dataObj )
 	return SendRequest( request, "/logic/admin/DeleteIAFile");
 }
 
+xmlDocPtr HelixApi::GetActions( )
+{
+	EnEx ee(FL, "HelixApi::GetActions( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetActions", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetActions");
+}
+
+xmlDocPtr HelixApi::GetOneGroup( const Group& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetOneGroup( const Group& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetOneGroup", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetOneGroup");
+}
+
+xmlDocPtr HelixApi::GetOneUser( const User& dataObj )
+{
+	EnEx ee(FL, "HelixApi::GetOneUser( const User& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetOneUser", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetOneUser");
+}
+
 xmlDocPtr HelixApi::LoadSQLTestMeta( const SQLTests& dataObj )
 {
 	EnEx ee(FL, "HelixApi::LoadSQLTestMeta( const SQLTests& dataObj )");
@@ -437,6 +556,20 @@ xmlDocPtr HelixApi::LoadSQLTestMeta( const SQLTests& dataObj )
 	return SendRequest( request, "/logic/admin/LoadSQLTestMeta");
 }
 
+xmlDocPtr HelixApi::GetGroups( )
+{
+	EnEx ee(FL, "HelixApi::GetGroups( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetGroups", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetGroups");
+}
+
 xmlDocPtr HelixApi::GetOneScheduleItem( const SchedItem& dataObj )
 {
 	EnEx ee(FL, "HelixApi::GetOneScheduleItem( const SchedItem& dataObj )");
@@ -450,6 +583,20 @@ xmlDocPtr HelixApi::GetOneScheduleItem( const SchedItem& dataObj )
 
 	// Now send the request to the server.
 	return SendRequest( request, "/logic/admin/GetOneScheduleItem");
+}
+
+xmlDocPtr HelixApi::GetUsers( )
+{
+	EnEx ee(FL, "HelixApi::GetUsers( )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"GetUsers", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/GetUsers");
 }
 
 xmlDocPtr HelixApi::GetIAFileList( const IAFolder& dataObj )
@@ -480,6 +627,21 @@ xmlDocPtr HelixApi::SaveIAFile( const IAFile& dataObj )
 
 	// Now send the request to the server.
 	return SendRequest( request, "/logic/admin/SaveIAFile");
+}
+
+xmlDocPtr HelixApi::DeleteGroup( const Group& dataObj )
+{
+	EnEx ee(FL, "HelixApi::DeleteGroup( const Group& dataObj )");
+
+	// First build the request XML Document
+	sptr<xmlDoc, xmlFreeDoc> request = xmlNewDoc((const xmlChar*)"1.0");
+	request->children = xmlNewDocNode(request, NULL, (const xmlChar*)"DeleteGroup", NULL);
+	xmlNodePtr root = xmlDocGetRootElement(request);
+
+	dataObj.createXmlNode( root );
+
+	// Now send the request to the server.
+	return SendRequest( request, "/logic/admin/DeleteGroup");
 }
 
 xmlDocPtr HelixApi::GetSQLTest( const IAFile& dataObj )

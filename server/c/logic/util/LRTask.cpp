@@ -231,6 +231,23 @@ void LRTask::createXmlChildren(xmlNodePtr parent, vector<LRTask* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr LRTask::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LRTask* >* vect)
+{
+	EnEx ee(FL, "LRTask::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LRTask* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to LRTask::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	LRTask::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void LRTask::deleteVector(vector<LRTask* >* vect)

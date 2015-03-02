@@ -1,0 +1,13 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Group Overview">
+		<FieldArea columns="2" first="80" second="80">
+			<DoubleField varName1="GroupnameField" label1="Group Name:" type1="TextField" tooltip1="Name of this group." verify1="true" verify1type="string" verify1min="1" verify1max="255" upper1="false" required1="true" varName2="" label2=" " type2="Spacer" tooltip2="" verify2="false" verify2type="string" verify2min="1" verify2max="4" upper2="false" required2="false"/>
+			<SpanField varName1="DescriptionField" label1="Description:" type1="TextField" tooltip1="A short description of this group" verify1type="string" verify1="true" verify1min="0" verify1max="1024"/>
+			
+			
+		</FieldArea>
+		
+		
+	</GroupBox>
+	
+</VerticalBoxLayout>

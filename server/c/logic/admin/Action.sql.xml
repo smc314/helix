@@ -140,6 +140,22 @@
 		<Output name="OKWOSession" type="int"/>
 		<Input name="userid" type="int"/>
 	</SqlStatement>
+	<SqlStatement methodName="selectActionsForGroup" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all action entries for a given group in our database
+			based on direct permissions.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action, groupaction
+			where groupaction.groupid = ?
+			and   groupaction.actionid = action.id
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="groupid" type="int"/>
+	</SqlStatement>
 	<SqlStatement methodName="selectActionsForUserByGroup" methodType="SELECTTOXML" target="sqldb">
 		<Comment>
 			This is the statement that we use to pull up all action entries for a given user in our database

@@ -78,6 +78,8 @@ void ActionTest::runTests(IOConn& ioc, xmlNodePtr node)
 			selectByPath( ioc, tests[i] );
 		} else if( testMethod == "selectActionsForUser" ){
 			selectActionsForUser( ioc, tests[i] );
+		} else if( testMethod == "selectActionsForGroup" ){
+			selectActionsForGroup( ioc, tests[i] );
 		} else if( testMethod == "selectActionsForUserByGroup" ){
 			selectActionsForUserByGroup( ioc, tests[i] );
 		} else if( testMethod == "checkActionForUser" ){
@@ -530,6 +532,49 @@ void ActionTest::selectActionsForUser(IOConn& ioc, xmlNodePtr node)
 
 	// Execute the statement:
 	Action_svect vect = Action::selectActionsForUser(sqldb, inputDO.userid );
+
+	if(m_recordMode){
+		// If we are recording, then save our results to the output node.
+		Action::createXmlChildren( outputNode, vect );
+	} else {
+		// If we are not recording, then compare the live results to any saved results
+		bool matches = ActionTest::compareLists( outputs, vect );
+		XmlHelpers::setBoolAttr( resultsNode, "success", matches );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", outputs->size() );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", vect->size() );
+	}
+
+}
+
+void ActionTest::selectActionsForGroup(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "ActionTest::selectActionsForGroup(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	xmlNodePtr outputNode = XmlHelpers::FindChild( node, "Output" );
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in selectActionsForGroup test.");
+	}
+	if(outputNode == NULL){
+		throw AnException(0, FL, "No output node found in selectActionsForGroup test.");
+	}
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object
+	Action inputDO( XmlHelpers::FindChild( inputNode, Action::Name()() ) );
+
+	// Pick up our list of output objects to be used for verification
+	Action_svect outputs = Action::readXmlChildren( outputNode );
+
+	// Get a connection to our database:
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+	// Execute the statement:
+	Action_svect vect = Action::selectActionsForGroup(sqldb, inputDO.groupid );
 
 	if(m_recordMode){
 		// If we are recording, then save our results to the output node.

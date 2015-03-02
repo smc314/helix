@@ -1,0 +1,4 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	
+	
+<HorizontalBoxLayout varName="" spacing="5" flex="1"><VerticalBoxLayout spacing="0" flex="2"><Label varName="" text="Group Membership" paddingTop="3"/><List varName="" flex="1"/></VerticalBoxLayout><VerticalBoxLayout spacing="0" flex="1"><Button label="Add All Groups" varName="AddAllBtn"/><Button label="Add Selected Groups" varName="AddGroupBtn"/><Button label="Remove Selected Groups" varName="RemoveGroupBtn"/><Button label="Remove All Groups" varName="RemoveAllBtn"/></VerticalBoxLayout><VerticalBoxLayout spacing="0" flex="2"><Label varName="" text="Available Groups" paddingTop="3"/><List varName="" flex="1"/></VerticalBoxLayout></HorizontalBoxLayout></VerticalBoxLayout>

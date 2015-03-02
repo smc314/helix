@@ -69,6 +69,14 @@ class UserTest : public DataObjectTestClass
 		void insert(IOConn& ioc, xmlNodePtr node);
 
 		/** This method will use our input XML document to prepare for and test
+		  * the User.addUserToGroup method.  We will use our list of output
+		  * xml documents to verify the output of this method.  If the list of ourput
+		  * documents is empty, we will simply ensure that no exceptions are thrown using
+		  * the given XML input document.
+		  */
+		void addUserToGroup(IOConn& ioc, xmlNodePtr node);
+
+		/** This method will use our input XML document to prepare for and test
 		  * the User.insertAuth method.  We will use our list of output
 		  * xml documents to verify the output of this method.  If the list of ourput
 		  * documents is empty, we will simply ensure that no exceptions are thrown using
@@ -109,6 +117,22 @@ class UserTest : public DataObjectTestClass
 		void deleteAuthByID(IOConn& ioc, xmlNodePtr node);
 
 		/** This method will use our input XML document to prepare for and test
+		  * the " + doName + "." + methodName + " method.  We will use our list of output
+		  * xml documents to verify the output of this method.  If the list of ourput
+		  * documents is empty, we will simply ensure that no exceptions are thrown using
+		  * the given XML input document.
+		  */
+		void deleteGroupsForUser(IOConn& ioc, xmlNodePtr node);
+
+		/** This method will use our input XML document to prepare for and test
+		  * the " + doName + "." + methodName + " method.  We will use our list of output
+		  * xml documents to verify the output of this method.  If the list of ourput
+		  * documents is empty, we will simply ensure that no exceptions are thrown using
+		  * the given XML input document.
+		  */
+		void deleteActionsForUser(IOConn& ioc, xmlNodePtr node);
+
+		/** This method will use our input XML document to prepare for and test
 		  * the User.selectAll method.  We will use our list of output
 		  * xml documents to verify the output of this method.  If the list of ourput
 		  * documents is empty, we will simply ensure that no exceptions are thrown using
@@ -131,6 +155,14 @@ class UserTest : public DataObjectTestClass
 		  * the given XML input document.
 		  */
 		void selectByUsername(IOConn& ioc, xmlNodePtr node);
+
+		/** This method will use our input XML document to prepare for and test
+		  * the User.selectUsersForGroup method.  We will use our list of output
+		  * xml documents to verify the output of this method.  If the list of ourput
+		  * documents is empty, we will simply ensure that no exceptions are thrown using
+		  * the given XML input document.
+		  */
+		void selectUsersForGroup(IOConn& ioc, xmlNodePtr node);
 
 
 };

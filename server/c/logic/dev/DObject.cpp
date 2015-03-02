@@ -237,6 +237,23 @@ void DObject::createXmlChildren(xmlNodePtr parent, vector<DObject* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr DObject::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<DObject* >* vect)
+{
+	EnEx ee(FL, "DObject::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<DObject* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to DObject::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	DObject::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void DObject::deleteVector(vector<DObject* >* vect)
@@ -351,7 +368,7 @@ void DObject::insert(SqlDB& sqldb, twine& stmt, bool useInputs, DObject& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void DObject::insert(SqlDB& sqldb, vector< DObject* >* v)
+void DObject::insert(SqlDB& sqldb, vector< DObject* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "DObject::insert(SqlDB& sqldb, vector<*>* v)");
 
@@ -372,10 +389,12 @@ void DObject::insert(SqlDB& sqldb, vector< DObject* >* v)
 			EnEx eeExe("DObject::insert()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -397,10 +416,12 @@ void DObject::insert(SqlDB& sqldb, vector< DObject* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 

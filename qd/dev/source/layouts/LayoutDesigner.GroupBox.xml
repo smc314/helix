@@ -1,0 +1,27 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="GroupBox Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varNameField" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the VerticalBox"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="legendField" label2="Legend:" type2="TextField"
+				tooltip2="Title text of the GroupBox"
+				verify2="false" verify2type="string" verify2min="" verify2max=""
+				upper2="false" required2="false"
+			/>
+			<DoubleField 
+				varName1="flexField" label1="Flex:" type1="TextField"
+				tooltip1="Flex value to use in layout of this element"
+				verify1="true" verify1type="number" verify1min="0" verify1max="400"
+				upper1="false" required1="false"
+
+				varName2="" label2=" " type2="Spacer"
+			/>
+			<SingleCheck varName1="isCheckField" label1="Checkbox GroupBox?"/>
+			<SingleCheck varName1="isRadioField" label1="Radio GroupBox?"/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

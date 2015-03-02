@@ -59,6 +59,60 @@ qx.Mixin.define("admin.utils.layout.DoubleField", {
 		rmcMenuForDoubleField: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForDoubleField: function(xmlNode, testSettingsArray)
+		{
+			var varName1 = xmlNode.getAttribute("varName1");
+			if(varName1){
+				var setting1 = {
+					varName : varName1,
+					verify : xmlNode.getAttribute("verify1"),
+					verifyType : xmlNode.getAttribute("verify1type"),
+					verifyMin : xmlNode.getAttribute("verify1min"),
+					verifyMax : xmlNode.getAttribute("verify1max"),
+					upper : xmlNode.getAttribute("upper1"),
+					required : xmlNode.getAttribute("required1")
+				};
+				var type1 = xmlNode.getAttribute("type1");
+				switch( type1 ){
+					case "TextField" : setting1.htmlid = "qx.ui.form.TextField." + varName1; break;
+					case "PasswordField" : setting1.htmlid = "qx.ui.form.PasswordField." + varName1; break;
+					case "ComboBox" : setting1.htmlid = "qx.ui.form.SelectBox." + varName1; break;
+					case "ComboBoxEdit" : setting1.htmlid = "qx.ui.form.ComboBox." + varName1; break;
+					case "DateField" : setting1.htmlid = "qx.ui.form.DateField." + varName1; break;
+					case "TextArea" : setting1.htmlid = "qx.ui.form.TextArea." + varName1; break;
+					case "TextField" : setting1.htmlid = "qx.ui.form.TextField." + varName1; break;
+				}
+				testSettingsArray.push( setting1 );
+			}
+			var varName2 = xmlNode.getAttribute("varName2");
+			if(varName2){
+				var setting2 = {
+					varName : varName2,
+					verify : xmlNode.getAttribute("verify2"),
+					verifyType : xmlNode.getAttribute("verify2type"),
+					verifyMin : xmlNode.getAttribute("verify2min"),
+					verifyMax : xmlNode.getAttribute("verify2max"),
+					upper : xmlNode.getAttribute("upper2"),
+					required : xmlNode.getAttribute("required2")
+				};
+				var type2 = xmlNode.getAttribute("type2");
+				switch( type2 ){
+					case "TextField" : setting2.htmlid = "qx.ui.form.TextField." + varName2; break;
+					case "PasswordField" : setting2.htmlid = "qx.ui.form.PasswordField." + varName2; break;
+					case "ComboBox" : setting2.htmlid = "qx.ui.form.SelectBox." + varName2; break;
+					case "ComboBoxEdit" : setting2.htmlid = "qx.ui.form.ComboBox." + varName2; break;
+					case "DateField" : setting2.htmlid = "qx.ui.form.DateField." + varName2; break;
+					case "TextArea" : setting2.htmlid = "qx.ui.form.TextArea." + varName2; break;
+					case "TextField" : setting2.htmlid = "qx.ui.form.TextField." + varName2; break;
+				}
+				testSettingsArray.push( setting2 );
+			}
+
 		}
 
 

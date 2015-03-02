@@ -211,6 +211,23 @@ void Session::createXmlChildren(xmlNodePtr parent, vector<Session* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr Session::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Session* >* vect)
+{
+	EnEx ee(FL, "Session::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Session* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to Session::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	Session::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void Session::deleteVector(vector<Session* >* vect)
@@ -329,7 +346,7 @@ void Session::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Session& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void Session::insert(SqlDB& sqldb, vector< Session* >* v)
+void Session::insert(SqlDB& sqldb, vector< Session* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Session::insert(SqlDB& sqldb, vector<*>* v)");
 
@@ -350,10 +367,12 @@ void Session::insert(SqlDB& sqldb, vector< Session* >* v)
 			EnEx eeExe("Session::insert()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -379,10 +398,12 @@ void Session::insert(SqlDB& sqldb, vector< Session* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 

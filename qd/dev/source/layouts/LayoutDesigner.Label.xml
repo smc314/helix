@@ -1,0 +1,23 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Label Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varNameField" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the Label"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="paddingTopField" label2="Padding Top:" type2="TextField"
+				tooltip2="Top padding value for the Label"
+				verify2="true" verify2type="number" verify2min="0" verify2max="400"
+				upper2="false" required2="false"
+			/>
+			<SpanField
+				varName1="textField" label1="Label Text:" type1="TextField"
+				tooltip1="Text to show on the form for the label"
+				verify1="false" verify1type="string" verify1min="" verify1max=""
+				upper1="false" required1="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -122,6 +122,32 @@ class SqlDB {
 	
 };
 
+/** Helper class that makes creating, committing and rolling back a sqllite transaction easier
+  * to manage by using the scope handling characteristics of the compiler.
+  */
+class SqlDBTransaction {
+	public:
+		SqlDBTransaction ( SqlDB& db ) : m_db(db)
+		{
+			m_db.BeginTransaction();
+		}
+
+		virtual ~SqlDBTransaction() {
+			m_db.RollbackTransaction();
+		}
+
+		void Rollback() {
+			m_db.RollbackTransaction();
+		}
+
+		void Commit() {
+			m_db.CommitTransaction();
+		}
+
+	protected:
+		SqlDB& m_db;
+};
+
 }} // End Namespace Helix::Glob
 
 #endif // SQLDB_H Defined

@@ -1,0 +1,25 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="HorizontalSplitPane Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varNameField" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the HorizontalSplitPane"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="leftsizeField" label2="Left Size:" type2="TextField"
+				tooltip2="Relative sizing value for the left area of the split pane"
+				verify2="true" verify2type="number" verify2min="0" verify2max="400"
+				upper2="false" required2="false"
+			/>
+			<DoubleField 
+				varName1="rightsizeField" label1="Right Size:" type1="TextField"
+				tooltip1="Relative sizing value for the right area of the split pane"
+				verify1="true" verify1type="number" verify1min="0" verify1max="400"
+				upper1="false" required1="false"
+
+				varName2="" label2=" " type2="Spacer"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

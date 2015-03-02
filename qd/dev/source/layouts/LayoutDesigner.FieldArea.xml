@@ -1,0 +1,17 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="FieldArea Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="firstField" label1="Left Label Width:" type1="TextField"
+				tooltip1="Width of the label spacing on the left of the form"
+				verify1="false" verify1type="number" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="secondField" label2="Right Label Width:" type2="TextField"
+				tooltip2="Width of the label spacing on the right of the form"
+				verify2="false" verify2type="number" verify2min="" verify2max=""
+				upper2="false" required2="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -327,6 +327,23 @@ void LogSettings::createXmlChildren(xmlNodePtr parent, vector<LogSettings* >* ve
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr LogSettings::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LogSettings* >* vect)
+{
+	EnEx ee(FL, "LogSettings::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LogSettings* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to LogSettings::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	LogSettings::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void LogSettings::deleteVector(vector<LogSettings* >* vect)

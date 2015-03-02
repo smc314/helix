@@ -285,6 +285,23 @@ void SQLWork::createXmlChildren(xmlNodePtr parent, vector<SQLWork* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr SQLWork::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLWork* >* vect)
+{
+	EnEx ee(FL, "SQLWork::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLWork* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to SQLWork::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	SQLWork::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void SQLWork::deleteVector(vector<SQLWork* >* vect)

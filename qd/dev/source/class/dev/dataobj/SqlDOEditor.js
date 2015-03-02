@@ -130,7 +130,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			var live = this.createOverviewLayout(tab_page, "Data Object Editor", "dev/icon/64x64/shadow/data_scroll.png", this.m_object_id === 0 ? "NEW1" : this.m_object_id.getFileName());
 			this.addStatusHeading("General");
 			this.addStatusHint("Use this editor to define the Data Object that you would like to use " + "in your code." + "<p>" + "Group related SQL statements together into a single Data Object so that you can share " + "fields between the statements.  Try to keep unrelated statements in different Data Objects " + "so that the Object class layout is reasonable.");
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.MainPage.xml"), live);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.MainPage.xml"), live);
 			this.childStandardTable = new dev.StandardTable(this.childTable, this.childVectAddNew, this.childVectDelete);
 			this.childStandardTable.setDefaultRowData(["NewChildVector", "ChildVectorDataType"]);
 			this.childVectAddNew.setToolTipText("Add New Child Vector");
@@ -165,7 +165,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			// "dev/icon/16x16/plain/check.png"
 
 			// "dev/icon/16x16/plain/checks.png"
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.NextPage.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.NextPage.xml"), tab_page);
 			this.sqlTabView = new qx.ui.tabview.TabView;
 			this.rightBox.add(this.sqlTabView, {
 				flex : 10
@@ -181,7 +181,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 		createTestsTab : function(tab_page)
 		{
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestsPage.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestsPage.xml"), tab_page);
 			this.testStandardTable = new dev.StandardTable(this.testTable);
 			this.testTable.getSelectionModel().addListener("changeSelection", this.testChange, this);
 			this.testAddNew.addListener("execute", this.addTest, this);
@@ -205,7 +205,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			// "dev/icon/16x16/plain/scales.png"
 
 			// "dev/icon/16x16/plain/floppy_disk_yellow.png"
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestLiveResults.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestLiveResults.xml"), tab_page);
 			this.liveResultsCompare.setToolTipText("Compare Live and Saved Results in a new Window");
 			this.liveResultsSave.setToolTipText("Save the Live Results and Metadata.");
 		},
@@ -216,7 +216,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			// "dev/icon/16x16/plain/scales.png"
 
 			// "dev/icon/16x16/plain/floppy_disk_yellow.png"
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestLiveMetadata.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestLiveMetadata.xml"), tab_page);
 			this.liveMetaCompare.setToolTipText("Compare Live and Saved Metadata in a new Window");
 			this.liveMetaSave.setToolTipText("Save the Live Results and Metadata.");
 		},
@@ -227,7 +227,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			// "dev/icon/16x16/plain/scales.png"
 
 			// "dev/icon/16x16/plain/floppy_disk_yellow.png"
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestSavedResults.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestSavedResults.xml"), tab_page);
 			this.savedResultsCompare.setToolTipText("Compare Live and Saved Results in a new Window");
 			this.savedResultsSave.setToolTipText("Save the Live Results and Metadata.");
 		},
@@ -238,7 +238,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			// "dev/icon/16x16/plain/scales.png"
 
 			// "dev/icon/16x16/plain/floppy_disk_yellow.png"
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestSavedMetadata.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestSavedMetadata.xml"), tab_page);
 			this.savedMetaCompare.setToolTipText("Compare Live and Saved Metadata in a new Window");
 			this.savedMetaSave.setToolTipText("Save the Live Results and Metadata.");
 		},
@@ -249,7 +249,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			// "dev/icon/16x16/plain/cubes_blue_add.png"
 
 			// "dev/icon/16x16/plain/objects_transform.png"
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.SqlStmtPage.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.SqlStmtPage.xml"), tab_page);
 			this.StatementNameField.addListener("input", this.stmtNameChange, this);
 			this.methodTypeField.addListener("changeValue", this.methodTypeChange, this);
 			this.methodTargetField.addListener("changeValue", this.methodTargetChange, this);
@@ -282,7 +282,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 		createSqlSampleTab : function(tab_page)
 		{
-			dev.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.SqlMetaPage.xml"), tab_page);
+			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.SqlMetaPage.xml"), tab_page);
 			this.ioFieldsCopyFromMeta2.addListener("execute", this.doIOFieldCopyFromMeta, this);
 			this.ioFieldsCopyFromMeta2.setToolTipText("Create Output Fields based on Sample Results Metadata");
 		},
@@ -1007,7 +1007,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 		loadSqlStatement : function()
 		{
-			var sql = qx.lang.String.trim(this.stmtField.getValue());
+			var sql = qx.lang.String.trimRight(this.stmtField.getValue());
 			if (sql === null || sql.length === 0)
 			{
 				// Nothing to do.

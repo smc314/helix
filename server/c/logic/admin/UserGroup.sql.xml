@@ -1,0 +1,83 @@
+<SQLXml generateClass="UserGroup" package="logic/admin" >
+
+	<SqlStatement methodName="addUserGroup" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add user's to a group.
+		</Comment>
+		<Sql>
+			insert into usergroup (userid, groupid)
+			values ( ?, ?)
+		</Sql>
+		<Input name="userid" type="int"/>
+		<Input name="groupid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteGroupsForUser" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing usergroup entries in our database
+		</Comment>
+		<Sql>
+			delete from usergroup
+			where userid = ?
+		</Sql>
+		<Input name="userid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteUsersForGroup" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing usergroup entries in our database
+		</Comment>
+		<Sql>
+			delete from usergroup
+			where groupid = ?
+		</Sql>
+		<Input name="groupid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all user entries in our database
+		</Comment>
+		<Sql>
+			select user.id, user.user, groups.id, groups.name
+			from user, usergroup, groups
+			where user.id = usergroup.userid
+			and   usergroup.groupid = groups.id
+		</Sql>
+		<Output name="userid" type="int"/>
+		<Output name="Username" type="twine"/>
+		<Output name="groupid" type="int"/>
+		<Output name="Groupname" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectUsersForGroup" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all of the users that are in a given group.
+		</Comment>
+		<Sql>
+			select user.id, user.user, groups.id, groups.name
+			from user, usergroup, groups
+			where user.id = usergroup.userid
+			and   usergroup.groupid = groups.id
+			and   groups.id = ?
+		</Sql>
+		<Output name="userid" type="int"/>
+		<Output name="Username" type="twine"/>
+		<Output name="groupid" type="int"/>
+		<Output name="Groupname" type="twine"/>
+		<Input name="groupid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectGroupsForUser" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all of the groups for a given user.
+		</Comment>
+		<Sql>
+			select user.id, user.user, groups.id, groups.name
+			from user, usergroup, groups
+			where user.id = usergroup.userid
+			and   usergroup.groupid = groups.id
+			and   user.id = ?
+		</Sql>
+		<Output name="userid" type="int"/>
+		<Output name="Username" type="twine"/>
+		<Output name="groupid" type="int"/>
+		<Output name="Groupname" type="twine"/>
+		<Input name="userid" type="int"/>
+	</SqlStatement>
+</SQLXml>

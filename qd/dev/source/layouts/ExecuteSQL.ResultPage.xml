@@ -1,0 +1,10 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="SQL Results" flex="9" varName="resultsGB">
+		<StandardTable varName="resultsTable" flex="1">
+			<Column title="Column 1" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column 2" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column 3" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column 4" width="1*" minWidth="60" maxWidth="100"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

@@ -219,6 +219,23 @@ void Action::createXmlChildren(xmlNodePtr parent, vector<Action* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr Action::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Action* >* vect)
+{
+	EnEx ee(FL, "Action::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Action* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to Action::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	Action::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void Action::deleteVector(vector<Action* >* vect)
@@ -334,7 +351,7 @@ void Action::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Action& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void Action::insert(SqlDB& sqldb, vector< Action* >* v)
+void Action::insert(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Action::insert(SqlDB& sqldb, vector<*>* v)");
 
@@ -355,10 +372,12 @@ void Action::insert(SqlDB& sqldb, vector< Action* >* v)
 			EnEx eeExe("Action::insert()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -381,10 +400,12 @@ void Action::insert(SqlDB& sqldb, vector< Action* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 
@@ -545,7 +566,7 @@ void Action::addUserToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action& 
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v)
+void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Action::addUserToAction(SqlDB& sqldb, vector<*>* v)");
 
@@ -566,10 +587,12 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v)
 			EnEx eeExe("Action::addUserToAction()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -591,10 +614,12 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 
@@ -756,7 +781,7 @@ void Action::addGroupToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action&
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v)
+void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Action::addGroupToAction(SqlDB& sqldb, vector<*>* v)");
 
@@ -777,10 +802,12 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v)
 			EnEx eeExe("Action::addGroupToAction()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -802,10 +829,12 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 
@@ -1886,6 +1915,149 @@ twine Action::selectActionsForUser_prepSQL(IOConn& ioc, intptr_t userid)
 	idx = stmt.find('?', idx);
 	if(idx != TWINE_NOT_FOUND){
 		twine tmp; tmp = userid;
+		stmt.replace(idx, 1, tmp);
+	}
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+
+/* ************************************************************************************** */
+/* This is a SELECTTODO method.  It is designed to run a single select                    */
+/* statement and create a vector of data objects that represent the result set.           */
+/* This method returns the resulting vector of data objects.  If something                */
+/* goes wrong, we will throw a SQLException.                                              */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* 
+			This is the statement that we use to pull up all action entries for a given group in our database
+			based on direct permissions.
+		
+ */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* 
+			select id, path, okwosession
+			from action, groupaction
+			where groupaction.groupid = ?
+			and   groupaction.actionid = action.id
+		
+ */
+/*                                                                                        */
+/* DataObject Attributes Used:
+   * id
+   * Path
+   * OKWOSession
+ */
+/* ************************************************************************************** */
+vector<Action* >* Action::selectActionsForGroup(SqlDB& sqldb, intptr_t groupid)
+{
+	EnEx ee(FL, "Action::selectActionsForGroup()");
+
+	twine stmt = "select id, path, okwosession 			from action, groupaction 			where groupaction.groupid = ? 			and   groupaction.actionid = action.id";
+
+	return Action::selectActionsForGroup(sqldb, stmt, true, groupid);
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+vector<Action* >* Action::selectActionsForGroup(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t groupid)
+{
+	EnEx ee(FL, "Action::selectActionsForGroup(twine& stmt, bool useInputs)");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	// Use an sptr to ensure that if this method throws or causes an exception to be
+	// thrown the vector wil be cleaned up before leaving this method.
+	sptr< vector<Action* >, Action::deleteVector> ret = new vector<Action* >();
+
+	try {
+		int count;
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		if(useInputs){
+				DEBUG(FL, "Setting input (%d) to value: %d", 1, groupid );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)groupid) );
+		}
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("Action::selectActionsForGroup()-ExecStmt");
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for Action::selectActionsForGroup");
+			count = sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+		// Now that we've executed the statement, we'll know how many output columns we have.
+		// Grab the column count so that we don't bind invalid output positions.
+		int colCount = sqlite3_column_count( db_stmt );
+
+		while( count != 0 ){
+			// Create the new object for this row
+			Action* obj = new Action( );
+
+			// Pick up all of the output columns
+			if( 0 < colCount ){
+				obj->id = sqlite3_column_int( db_stmt, 0);
+			}
+			if( 1 < colCount ){
+				obj->Path.set( (const char*)sqlite3_column_text( db_stmt, 1), (size_t)sqlite3_column_bytes(db_stmt, 1) );
+			}
+			if( 2 < colCount ){
+				obj->OKWOSession = sqlite3_column_int( db_stmt, 2);
+			}
+
+			// Add the object to our return vector
+			ret->push_back( obj );
+
+			// Advance to the next row of data
+			count = sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+	} catch (AnException& e) {
+		// Ensure that no matter the exception we release the database back to the object.
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+
+	// When we return, ensure that we release the sptr, so that we don't accidentally
+	// delete the vector and its contents when leaving this method.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return ret.release();
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine Action::selectActionsForGroup_prepSQL(IOConn& ioc, intptr_t groupid)
+{
+	EnEx ee(FL, "Action::selectActionsForGroup_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "select id, path, okwosession 			from action, groupaction 			where groupaction.groupid = ? 			and   groupaction.actionid = action.id";
+
+	// Replace the groupid parameter marker.
+	idx = stmt.find('?', idx);
+	if(idx != TWINE_NOT_FOUND){
+		twine tmp; tmp = groupid;
 		stmt.replace(idx, 1, tmp);
 	}
 

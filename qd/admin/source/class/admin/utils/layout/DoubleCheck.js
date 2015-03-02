@@ -57,6 +57,30 @@ qx.Mixin.define("admin.utils.layout.DoubleCheck", {
 		rmcMenuForDoubleCheck: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForDoubleCheck: function(xmlNode, testSettingsArray)
+		{
+			var varName1 = xmlNode.getAttribute("varName1");
+			if(varName1){
+				var setting1 = {
+					varName : varName1,
+					htmlid : "qx.ui.form.CheckBox." + varName1
+				};
+				testSettingsArray.push( setting1 );
+			}
+			var varName2 = xmlNode.getAttribute("varName2");
+			if(varName2){
+				var setting2 = {
+					varName : varName2,
+					htmlid : "qx.ui.form.CheckBox." + varName2
+				};
+				testSettingsArray.push( setting2 );
+			}
+
 		}
 
 

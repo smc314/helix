@@ -58,6 +58,8 @@ void UserTest::runTests(IOConn& ioc, xmlNodePtr node)
 		twine testMethod( tests[i], "method" );
 		if( testMethod == "insert" ){
 			insert( ioc, tests[i] );
+		} else if( testMethod == "addUserToGroup" ){
+			addUserToGroup( ioc, tests[i] );
 		} else if( testMethod == "insertAuth" ){
 			insertAuth( ioc, tests[i] );
 		} else if( testMethod == "update" ){
@@ -68,12 +70,18 @@ void UserTest::runTests(IOConn& ioc, xmlNodePtr node)
 			deleteByID( ioc, tests[i] );
 		} else if( testMethod == "deleteAuthByID" ){
 			deleteAuthByID( ioc, tests[i] );
+		} else if( testMethod == "deleteGroupsForUser" ){
+			deleteGroupsForUser( ioc, tests[i] );
+		} else if( testMethod == "deleteActionsForUser" ){
+			deleteActionsForUser( ioc, tests[i] );
 		} else if( testMethod == "selectAll" ){
 			selectAll( ioc, tests[i] );
 		} else if( testMethod == "selectByID" ){
 			selectByID( ioc, tests[i] );
 		} else if( testMethod == "selectByUsername" ){
 			selectByUsername( ioc, tests[i] );
+		} else if( testMethod == "selectUsersForGroup" ){
+			selectUsersForGroup( ioc, tests[i] );
 
 		} else {
 			WARN(FL, "Unknown test method (%s) given to UserTest", testMethod() );
@@ -91,6 +99,7 @@ bool UserTest::compareObjects( User* first, User* second)
 	if(first->FullName != second->FullName) return false;
 	if(first->Password != second->Password) return false;
 	if(first->Username != second->Username) return false;
+	if(first->groupid != second->groupid) return false;
 	if(first->id != second->id) return false;
 
 
@@ -143,6 +152,41 @@ void UserTest::insert(IOConn& ioc, xmlNodePtr node)
 
 	// Execute the statement
 	User::insert(sqldb, inputDO );
+
+	if(m_recordMode){
+		// If we are recording, then there is nothing to save in our output node.
+	} else {
+		XmlHelpers::setBoolAttr( resultsNode, "success", true );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", 0 );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", 0 );
+	}
+}
+
+void UserTest::addUserToGroup(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "UserTest::addUserToGroup(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in UserTest::addUserToGroup test.");
+	}
+
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object:
+	User inputDO( XmlHelpers::FindChild( inputNode, User::Name()() ) );
+
+	// Get a connection to our database
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+
+
+	// Execute the statement
+	User::addUserToGroup(sqldb, inputDO );
 
 	if(m_recordMode){
 		// If we are recording, then there is nothing to save in our output node.
@@ -328,6 +372,76 @@ void UserTest::deleteAuthByID(IOConn& ioc, xmlNodePtr node)
 	}
 }
 
+void UserTest::deleteGroupsForUser(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "UserTest::deleteGroupsForUser(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in UserTest::deleteGroupsForUser test.");
+	}
+
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object:
+	User inputDO( XmlHelpers::FindChild( inputNode, User::Name()() ) );
+
+	// Get a connection to our database
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+
+
+	// Execute the statement
+	User::deleteGroupsForUser(sqldb, inputDO.id );
+
+	if(m_recordMode){
+		// If we are recording, then there is nothing to save in our output node.
+	} else {
+		XmlHelpers::setBoolAttr( resultsNode, "success", true );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", 0 );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", 0 );
+	}
+}
+
+void UserTest::deleteActionsForUser(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "UserTest::deleteActionsForUser(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in UserTest::deleteActionsForUser test.");
+	}
+
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object:
+	User inputDO( XmlHelpers::FindChild( inputNode, User::Name()() ) );
+
+	// Get a connection to our database
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+
+
+	// Execute the statement
+	User::deleteActionsForUser(sqldb, inputDO.id );
+
+	if(m_recordMode){
+		// If we are recording, then there is nothing to save in our output node.
+	} else {
+		XmlHelpers::setBoolAttr( resultsNode, "success", true );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", 0 );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", 0 );
+	}
+}
+
 void UserTest::selectAll(IOConn& ioc, xmlNodePtr node)
 {
 	EnEx ee(FL, "UserTest::selectAll(IOConn& ioc, xmlNodePtr node)");
@@ -443,6 +557,49 @@ void UserTest::selectByUsername(IOConn& ioc, xmlNodePtr node)
 
 	// Execute the statement:
 	User_svect vect = User::selectByUsername(sqldb, inputDO.Username );
+
+	if(m_recordMode){
+		// If we are recording, then save our results to the output node.
+		User::createXmlChildren( outputNode, vect );
+	} else {
+		// If we are not recording, then compare the live results to any saved results
+		bool matches = UserTest::compareLists( outputs, vect );
+		XmlHelpers::setBoolAttr( resultsNode, "success", matches );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", outputs->size() );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", vect->size() );
+	}
+
+}
+
+void UserTest::selectUsersForGroup(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "UserTest::selectUsersForGroup(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	xmlNodePtr outputNode = XmlHelpers::FindChild( node, "Output" );
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in selectUsersForGroup test.");
+	}
+	if(outputNode == NULL){
+		throw AnException(0, FL, "No output node found in selectUsersForGroup test.");
+	}
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object
+	User inputDO( XmlHelpers::FindChild( inputNode, User::Name()() ) );
+
+	// Pick up our list of output objects to be used for verification
+	User_svect outputs = User::readXmlChildren( outputNode );
+
+	// Get a connection to our database:
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+	// Execute the statement:
+	User_svect vect = User::selectUsersForGroup(sqldb, inputDO.groupid );
 
 	if(m_recordMode){
 		// If we are recording, then save our results to the output node.

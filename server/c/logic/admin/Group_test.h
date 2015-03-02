@@ -98,6 +98,22 @@ class GroupTest : public DataObjectTestClass
 		  * documents is empty, we will simply ensure that no exceptions are thrown using
 		  * the given XML input document.
 		  */
+		void deleteUsersForGroup(IOConn& ioc, xmlNodePtr node);
+
+		/** This method will use our input XML document to prepare for and test
+		  * the " + doName + "." + methodName + " method.  We will use our list of output
+		  * xml documents to verify the output of this method.  If the list of ourput
+		  * documents is empty, we will simply ensure that no exceptions are thrown using
+		  * the given XML input document.
+		  */
+		void deleteActionsForGroup(IOConn& ioc, xmlNodePtr node);
+
+		/** This method will use our input XML document to prepare for and test
+		  * the " + doName + "." + methodName + " method.  We will use our list of output
+		  * xml documents to verify the output of this method.  If the list of ourput
+		  * documents is empty, we will simply ensure that no exceptions are thrown using
+		  * the given XML input document.
+		  */
 		void removeUserFromGroup(IOConn& ioc, xmlNodePtr node);
 
 		/** This method will use our input XML document to prepare for and test

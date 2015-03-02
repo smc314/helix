@@ -47,7 +47,16 @@ User::User(const User& c)
 	FullName = c.FullName;
 	Password = c.Password;
 	Username = c.Username;
+	groupid = c.groupid;
 	id = c.id;
+	AllowedActions = new vector<Action*>();
+	for(size_t i = 0; i < c.AllowedActions->size(); i++){
+		AllowedActions->push_back( new Action( *(c.AllowedActions->at( i )) ) );
+	}
+	GroupMembership = new vector<UserGroup*>();
+	for(size_t i = 0; i < c.GroupMembership->size(); i++){
+		GroupMembership->push_back( new UserGroup( *(c.GroupMembership->at( i )) ) );
+	}
 
 
 }
@@ -62,7 +71,16 @@ User& User::operator=(const User& c)
 	FullName = c.FullName;
 	Password = c.Password;
 	Username = c.Username;
+	groupid = c.groupid;
 	id = c.id;
+	AllowedActions = new vector<Action*>();
+	for(size_t i = 0; i < c.AllowedActions->size(); i++){
+		AllowedActions->push_back( new Action( *(c.AllowedActions->at( i )) ) );
+	}
+	GroupMembership = new vector<UserGroup*>();
+	for(size_t i = 0; i < c.GroupMembership->size(); i++){
+		GroupMembership->push_back( new UserGroup( *(c.GroupMembership->at( i )) ) );
+	}
 
 
 	return *this;
@@ -84,7 +102,10 @@ User& User::init()
 	FullName.erase();
 	Password.erase();
 	Username.erase();
+	groupid = 0;
 	id = 0;
+	AllowedActions = new vector<Action*>();
+	GroupMembership = new vector<UserGroup*>();
 
 
 	return *this;
@@ -135,7 +156,10 @@ User& User::readXmlNode(xmlNodePtr node)
 	FullName.getAttribute(node, "FullName");
 	Password.getAttribute(node, "Password");
 	Username.getAttribute(node, "Username");
+	groupid = XmlHelpers::getIntAttr(node, "groupid");
 	id = XmlHelpers::getIntAttr(node, "id");
+	AllowedActions = Action::readXmlChildren( XmlHelpers::FindChild( node, "AllowedActions") );
+	GroupMembership = UserGroup::readXmlChildren( XmlHelpers::FindChild( node, "GroupMembership") );
 
 
 	return *this;
@@ -159,7 +183,14 @@ xmlNodePtr User::createXmlNode(xmlNodePtr parent) const
 	xmlSetProp(child, (const xmlChar*)"FullName", FullName);
 	xmlSetProp(child, (const xmlChar*)"Password", Password);
 	xmlSetProp(child, (const xmlChar*)"Username", Username);
+	XmlHelpers::setIntAttr(child, "groupid", groupid);
 	XmlHelpers::setIntAttr(child, "id", id);
+	xmlNodePtr AllowedActions_node = xmlNewChild(child, NULL, (const xmlChar*)"AllowedActions", NULL);
+	Action::createXmlChildren( AllowedActions_node, AllowedActions );
+
+	xmlNodePtr GroupMembership_node = xmlNewChild(child, NULL, (const xmlChar*)"GroupMembership", NULL);
+	UserGroup::createXmlChildren( GroupMembership_node, GroupMembership );
+
 
 
 	return child;
@@ -181,7 +212,14 @@ xmlDocPtr User::createXmlDoc() const
 	xmlSetProp(child, (const xmlChar*)"FullName", FullName);
 	xmlSetProp(child, (const xmlChar*)"Password", Password);
 	xmlSetProp(child, (const xmlChar*)"Username", Username);
+	XmlHelpers::setIntAttr(child, "groupid", groupid);
 	XmlHelpers::setIntAttr(child, "id", id);
+	xmlNodePtr AllowedActions_node = xmlNewChild(child, NULL, (const xmlChar*)"AllowedActions", NULL);
+	Action::createXmlChildren( AllowedActions_node, AllowedActions );
+
+	xmlNodePtr GroupMembership_node = xmlNewChild(child, NULL, (const xmlChar*)"GroupMembership", NULL);
+	UserGroup::createXmlChildren( GroupMembership_node, GroupMembership );
+
 
 
 	return doc;
@@ -228,6 +266,23 @@ void User::createXmlChildren(xmlNodePtr parent, vector<User* >* vect)
 		(*vect)[i]->createXmlNode(parent);
 	}
 
+}
+
+/* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr User::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<User* >* vect)
+{
+	EnEx ee(FL, "User::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<User* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to User::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	User::createXmlChildren( child, vect );
+
+	return child;
 }
 
 /* ********************************************************************** */
@@ -350,7 +405,7 @@ void User::insert(SqlDB& sqldb, twine& stmt, bool useInputs, User& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void User::insert(SqlDB& sqldb, vector< User* >* v)
+void User::insert(SqlDB& sqldb, vector< User* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "User::insert(SqlDB& sqldb, vector<*>* v)");
 
@@ -371,10 +426,12 @@ void User::insert(SqlDB& sqldb, vector< User* >* v)
 			EnEx eeExe("User::insert()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -401,10 +458,12 @@ void User::insert(SqlDB& sqldb, vector< User* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 
@@ -479,6 +538,210 @@ twine User::insert_prepSQL(IOConn& ioc, User& obj )
 	idx = stmt.find('?', idx);
 	if(idx != TWINE_NOT_FOUND){
 		twine tmp; tmp = obj.Active;
+		stmt.replace(idx, 1, tmp);
+	}
+
+
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+
+/* ************************************************************************************** */
+/* This is an INSERT method.  It is designed to run a single insert                       */
+/* statement and return.  If something  goes wrong, we will throw AnException.            */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* 
+			This is the statement that we use to add user's to a group.
+		 */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* 
+			insert into usergroup (userid, groupid)
+			values ( ?, ?)
+		 */
+/*                                                                                        */
+/* ************************************************************************************** */
+void User::addUserToGroup(SqlDB& sqldb, User& obj )
+{
+	EnEx ee(FL, "User::addUserToGroup()");
+
+	twine stmt = "insert into usergroup (userid, groupid) 			values ( ?, ?)";
+
+	User::addUserToGroup(sqldb, stmt, true, obj );
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+void User::addUserToGroup(SqlDB& sqldb, twine& stmt, bool useInputs, User& obj )
+{
+	EnEx ee(FL, "User::addUserToGroup()");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("User::addUserToGroup()-BindExecStmt");
+
+			// Bind the inputs
+			if(useInputs){
+				DEBUG(FL, "Setting input (%d) to value: %d", 1, obj.id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)obj.id) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 2, obj.groupid );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)obj.groupid) );
+
+			} // if(useInputs)
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for User::addUserToGroup");
+			sqldb.check_err( sqlite3_step( db_stmt ) );
+
+
+		} // End the Timing scope
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This is the version that accepts an array of inputs and ensures that they are all      */
+/* written to the database with a single transaction                                      */
+/* ************************************************************************************** */
+void User::addUserToGroup(SqlDB& sqldb, vector< User* >* v, bool useTransaction)
+{
+	EnEx ee(FL, "User::addUserToGroup(SqlDB& sqldb, vector<*>* v)");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+	sqlite3_stmt* db_begin = NULL;
+	sqlite3_stmt* db_commit = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		twine stmt = "insert into usergroup (userid, groupid) 			values ( ?, ?)";
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("User::addUserToGroup()-BindExecStmt");
+
+			// Begin our transaction here:
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
+
+			// Loop through the vector of inputs
+			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
+				DEBUG(FL, "Setting input (%d) to value: %d", 1, v->at( v_i )->id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)v->at( v_i )->id) );
+				DEBUG(FL, "Setting input (%d) to value: %d", 2, v->at( v_i )->groupid );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 2, (int)v->at( v_i )->groupid) );
+
+
+				// Execute the statement
+				DEBUG(FL, "Executing the statement for User::addUserToGroup");
+				sqldb.check_err( sqlite3_step( db_stmt ) );
+
+
+				// Reset the statement so that we can bind/execute again:
+				sqlite3_reset( db_stmt );
+			} // loop through all of the inputs
+
+			// Commit our transaction here:
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
+
+		} // End the Timing scope
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		if(db_begin != NULL){
+			sqlite3_finalize( db_begin );
+		}
+		if(db_commit != NULL){
+			sqlite3_finalize( db_commit );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	if(db_begin != NULL){
+		sqlite3_finalize( db_begin );
+	}
+	if(db_commit != NULL){
+		sqlite3_finalize( db_commit );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine User::addUserToGroup_prepSQL(IOConn& ioc, User& obj )
+{
+	EnEx ee(FL, "User::addUserToGroup_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "insert into usergroup (userid, groupid) 			values ( ?, ?)";
+
+	// Replace the id parameter marker.
+	idx = stmt.find('?', idx);
+	if(idx != TWINE_NOT_FOUND){
+		twine tmp; tmp = obj.id;
+		stmt.replace(idx, 1, tmp);
+	}
+
+	// Replace the groupid parameter marker.
+	idx = stmt.find('?', idx);
+	if(idx != TWINE_NOT_FOUND){
+		twine tmp; tmp = obj.groupid;
 		stmt.replace(idx, 1, tmp);
 	}
 
@@ -577,7 +840,7 @@ void User::insertAuth(SqlDB& sqldb, twine& stmt, bool useInputs, User& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void User::insertAuth(SqlDB& sqldb, vector< User* >* v)
+void User::insertAuth(SqlDB& sqldb, vector< User* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "User::insertAuth(SqlDB& sqldb, vector<*>* v)");
 
@@ -598,10 +861,12 @@ void User::insertAuth(SqlDB& sqldb, vector< User* >* v)
 			EnEx eeExe("User::insertAuth()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -623,10 +888,12 @@ void User::insertAuth(SqlDB& sqldb, vector< User* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 
@@ -713,10 +980,10 @@ twine User::insertAuth_prepSQL(IOConn& ioc, User& obj )
 /* Sql Statement:                                                                         */
 /* 
 			update user
-			set Username = ?,
-				FullName = ?,
-				EMail = ?,
-				Active = ?
+			set user = ?,
+				fullname = ?,
+				email = ?,
+				active = ?
 			where id = ?
 		 */
 /*                                                                                        */
@@ -725,7 +992,7 @@ void User::update(SqlDB& sqldb, twine& Username, twine& FullName, twine& EMail, 
 {
 	EnEx ee(FL, "User::update()");
 
-	twine stmt = "update user 			set Username = ?, 				FullName = ?, 				EMail = ?, 				Active = ? 			where id = ?";
+	twine stmt = "update user 			set user = ?, 				fullname = ?, 				email = ?, 				active = ? 			where id = ?";
 
 	User::update(sqldb, stmt, true, Username, FullName, EMail, Active, id );
 
@@ -800,7 +1067,7 @@ twine User::update_prepSQL(IOConn& ioc, twine& Username, twine& FullName, twine&
 	EnEx ee(FL, "User::update_prepSQL()");
 
 	size_t idx = 0;
-	twine stmt = "update user 			set Username = ?, 				FullName = ?, 				EMail = ?, 				Active = ? 			where id = ?";
+	twine stmt = "update user 			set user = ?, 				fullname = ?, 				email = ?, 				active = ? 			where id = ?";
 
 	// Replace the Username parameter marker.
 	idx = stmt.find('?', idx);
@@ -1160,6 +1427,216 @@ twine User::deleteAuthByID_prepSQL(IOConn& ioc, intptr_t id )
 
 	size_t idx = 0;
 	twine stmt = "delete from userauth 			where userid = ?";
+
+	// Replace the id parameter marker.
+	idx = stmt.find('?', idx);
+	if(idx != TWINE_NOT_FOUND){
+		twine tmp; tmp = id;
+		stmt.replace(idx, 1, tmp);
+	}
+
+
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+
+/* ************************************************************************************** */
+/* This is an DELETE method.  It is designed to run a single delete                       */
+/* statement and return.  If something  goes wrong, we will throw AnException.            */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* 
+			This is the statement that we use to delete existing usergroup entries in our database
+		 */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* 
+			delete from usergroup
+			where userid = ?
+		 */
+/*                                                                                        */
+/* ************************************************************************************** */
+void User::deleteGroupsForUser(SqlDB& sqldb, intptr_t id )
+{
+	EnEx ee(FL, "User::deleteGroupsForUser()");
+
+	twine stmt = "delete from usergroup 			where userid = ?";
+
+	User::deleteGroupsForUser(sqldb, stmt, true, id );
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+void User::deleteGroupsForUser(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id )
+{
+	EnEx ee(FL, "User::deleteGroupsForUser()");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("User::deleteGroupsForUser()-BindExecStmt");
+
+			// Bind the inputs
+			if(useInputs){
+				DEBUG(FL, "Setting input (%d) to value: %d", 1, id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)id) );
+
+			} // if(useInputs)
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for User::deleteGroupsForUser");
+			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine User::deleteGroupsForUser_prepSQL(IOConn& ioc, intptr_t id )
+{
+	EnEx ee(FL, "User::deleteGroupsForUser_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "delete from usergroup 			where userid = ?";
+
+	// Replace the id parameter marker.
+	idx = stmt.find('?', idx);
+	if(idx != TWINE_NOT_FOUND){
+		twine tmp; tmp = id;
+		stmt.replace(idx, 1, tmp);
+	}
+
+
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+
+/* ************************************************************************************** */
+/* This is an DELETE method.  It is designed to run a single delete                       */
+/* statement and return.  If something  goes wrong, we will throw AnException.            */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* 
+			This is the statement that we use to delete existing useraction entries in our database
+		 */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* 
+			delete from useraction
+			where userid = ?
+		 */
+/*                                                                                        */
+/* ************************************************************************************** */
+void User::deleteActionsForUser(SqlDB& sqldb, intptr_t id )
+{
+	EnEx ee(FL, "User::deleteActionsForUser()");
+
+	twine stmt = "delete from useraction 			where userid = ?";
+
+	User::deleteActionsForUser(sqldb, stmt, true, id );
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+void User::deleteActionsForUser(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id )
+{
+	EnEx ee(FL, "User::deleteActionsForUser()");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	try {
+		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
+		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("User::deleteActionsForUser()-BindExecStmt");
+
+			// Bind the inputs
+			if(useInputs){
+				DEBUG(FL, "Setting input (%d) to value: %d", 1, id );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)id) );
+
+			} // if(useInputs)
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for User::deleteActionsForUser");
+			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+	} catch (AnException& e){
+		// Ensure that no matter the exception we release the database back to the object
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+
+	// That's it.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return;
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine User::deleteActionsForUser_prepSQL(IOConn& ioc, intptr_t id )
+{
+	EnEx ee(FL, "User::deleteActionsForUser_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "delete from useraction 			where userid = ?";
 
 	// Replace the id parameter marker.
 	idx = stmt.find('?', idx);
@@ -1622,6 +2099,156 @@ twine User::selectByUsername_prepSQL(IOConn& ioc, twine& Username)
 	idx = stmt.find('?', idx);
 	if(idx != TWINE_NOT_FOUND){
 		stmt.replace(idx, 1, Username );
+	}
+
+	// Also take a look at the statement and replace any session variables
+	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+
+/* ************************************************************************************** */
+/* This is a SELECTTODO method.  It is designed to run a single select                    */
+/* statement and create a vector of data objects that represent the result set.           */
+/* This method returns the resulting vector of data objects.  If something                */
+/* goes wrong, we will throw a SQLException.                                              */
+/*                                                                                        */
+/* Developer Comments:                                                                    */
+/* 
+			This is the statement that we use to pull up all of the users that are in a given group.
+		
+ */
+/*                                                                                        */
+/* Sql Statement:                                                                         */
+/* 
+			select id, user, fullname, email, active
+			from user, usergroup
+			where usergroup.groupid = ?
+			and   user.id = usergroup.userid
+		
+ */
+/*                                                                                        */
+/* DataObject Attributes Used:
+   * id
+   * Username
+   * FullName
+   * EMail
+   * Active
+ */
+/* ************************************************************************************** */
+vector<User* >* User::selectUsersForGroup(SqlDB& sqldb, intptr_t groupid)
+{
+	EnEx ee(FL, "User::selectUsersForGroup()");
+
+	twine stmt = "select id, user, fullname, email, active 			from user, usergroup 			where usergroup.groupid = ? 			and   user.id = usergroup.userid";
+
+	return User::selectUsersForGroup(sqldb, stmt, true, groupid);
+
+}
+
+/* ************************************************************************************** */
+/* This one matches the above in functionality, but allows you to pass in the sql         */
+/* statement and a flag to indicate whether the input parameters will be used.            */
+/* ************************************************************************************** */
+vector<User* >* User::selectUsersForGroup(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t groupid)
+{
+	EnEx ee(FL, "User::selectUsersForGroup(twine& stmt, bool useInputs)");
+
+	sqlite3* db = sqldb.GetDatabase();
+	sqlite3_stmt* db_stmt = NULL;
+
+	// Use an sptr to ensure that if this method throws or causes an exception to be
+	// thrown the vector wil be cleaned up before leaving this method.
+	sptr< vector<User* >, User::deleteVector> ret = new vector<User* >();
+
+	try {
+		int count;
+
+		SQLTRACE(FL, "Using SQL: %s", stmt() );
+		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
+
+		if(useInputs){
+				DEBUG(FL, "Setting input (%d) to value: %d", 1, groupid );
+				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)groupid) );
+		}
+
+		{ // Used for scope for the timing object.
+			EnEx eeExe("User::selectUsersForGroup()-ExecStmt");
+
+			// Execute the statement
+			DEBUG(FL, "Executing the statement for User::selectUsersForGroup");
+			count = sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+		// Now that we've executed the statement, we'll know how many output columns we have.
+		// Grab the column count so that we don't bind invalid output positions.
+		int colCount = sqlite3_column_count( db_stmt );
+
+		while( count != 0 ){
+			// Create the new object for this row
+			User* obj = new User( );
+
+			// Pick up all of the output columns
+			if( 0 < colCount ){
+				obj->id = sqlite3_column_int( db_stmt, 0);
+			}
+			if( 1 < colCount ){
+				obj->Username.set( (const char*)sqlite3_column_text( db_stmt, 1), (size_t)sqlite3_column_bytes(db_stmt, 1) );
+			}
+			if( 2 < colCount ){
+				obj->FullName.set( (const char*)sqlite3_column_text( db_stmt, 2), (size_t)sqlite3_column_bytes(db_stmt, 2) );
+			}
+			if( 3 < colCount ){
+				obj->EMail.set( (const char*)sqlite3_column_text( db_stmt, 3), (size_t)sqlite3_column_bytes(db_stmt, 3) );
+			}
+			if( 4 < colCount ){
+				obj->Active = sqlite3_column_int( db_stmt, 4);
+			}
+
+			// Add the object to our return vector
+			ret->push_back( obj );
+
+			// Advance to the next row of data
+			count = sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+
+	} catch (AnException& e) {
+		// Ensure that no matter the exception we release the database back to the object.
+		if(db_stmt != NULL){
+			sqlite3_finalize( db_stmt );
+		}
+		sqldb.ReleaseDatabase();
+		throw e; // re-throw the exception
+	}
+
+	// When we return, ensure that we release the sptr, so that we don't accidentally
+	// delete the vector and its contents when leaving this method.
+	if(db_stmt != NULL){
+		sqlite3_finalize( db_stmt );
+	}
+	sqldb.ReleaseDatabase();
+	return ret.release();
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine User::selectUsersForGroup_prepSQL(IOConn& ioc, intptr_t groupid)
+{
+	EnEx ee(FL, "User::selectUsersForGroup_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = "select id, user, fullname, email, active 			from user, usergroup 			where usergroup.groupid = ? 			and   user.id = usergroup.userid";
+
+	// Replace the groupid parameter marker.
+	idx = stmt.find('?', idx);
+	if(idx != TWINE_NOT_FOUND){
+		twine tmp; tmp = groupid;
+		stmt.replace(idx, 1, tmp);
 	}
 
 	// Also take a look at the statement and replace any session variables

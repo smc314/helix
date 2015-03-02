@@ -35,6 +35,9 @@
 		/// Create a series of xml child nodes based on the input vector
 		static void createXmlChildren(xmlNodePtr parent, vector<${shortName}* >* vect);
 
+		/// Create a child and series of grandchild nodes based on the input vector.
+		static void createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<${shortName}* >* vect);
+
 		/// Handle deleting a vector and its contents.
 		static void deleteVector( vector<${shortName}* >* vect);
 

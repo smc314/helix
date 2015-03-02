@@ -839,7 +839,7 @@ qx.Class.define("dev.Statics", {
 				if (field3Name) {
 					theThis[field3Name] = f2;
 					dev.Statics.trackNamedAttr(theThis, field3Name);
-					dev.Statics.setHtmlID( f3, field3Name );
+					dev.Statics.setHtmlID( f2, field3Name );
 				}
 			}
 
@@ -872,7 +872,7 @@ qx.Class.define("dev.Statics", {
 				if (field4Name) {
 					theThis[field4Name] = f2;
 					dev.Statics.trackNamedAttr(theThis, field4Name);
-					dev.Statics.setHtmlID( f4, field4Name );
+					dev.Statics.setHtmlID( f2, field4Name );
 				}
 			}
 
@@ -1462,7 +1462,7 @@ qx.Class.define("dev.Statics", {
 		/** Use this in your destruct function, we will check for the
 		*  following items to be destroyed:
 		*  	qx.ui.popu.ToolTip
-		*  	qx.ui.core.Command
+		*  	qx.ui.command.Command
 		*/
 		destroyExtraObjects: function (ownerObj) {
 
@@ -1534,7 +1534,7 @@ qx.Class.define("dev.Statics", {
 		* @return {Object} returns the button created for the menu item.
 		*/
 		addToRMCMenu: function (menu, label, icon, callback, theThis) {
-			var cmd = new qx.ui.core.Command();
+			var cmd = new qx.ui.command.Command();
 			cmd.addListener('execute', callback, theThis);
 			var btn = new qx.ui.menu.Button(label, icon, cmd);
 			menu.add(btn);
@@ -2351,7 +2351,7 @@ qx.Class.define("dev.Statics", {
 		addToToolbarWithShortcut: function (toolbar, icon, tooltip, action, action_this, ownerObj, shortcut, label) {
 			// create and configure the command
 			label = (label == undefined) ? null : label;
-			var command = new qx.ui.core.Command(shortcut);
+			var command = new qx.ui.command.Command(shortcut);
 			command.setLabel(label);
 			command.setIcon(icon);
 			command.setToolTipText(tooltip);

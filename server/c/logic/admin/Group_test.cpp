@@ -64,6 +64,10 @@ void GroupTest::runTests(IOConn& ioc, xmlNodePtr node)
 			update( ioc, tests[i] );
 		} else if( testMethod == "deleteByID" ){
 			deleteByID( ioc, tests[i] );
+		} else if( testMethod == "deleteUsersForGroup" ){
+			deleteUsersForGroup( ioc, tests[i] );
+		} else if( testMethod == "deleteActionsForGroup" ){
+			deleteActionsForGroup( ioc, tests[i] );
 		} else if( testMethod == "removeUserFromGroup" ){
 			removeUserFromGroup( ioc, tests[i] );
 		} else if( testMethod == "selectAll" ){
@@ -245,6 +249,76 @@ void GroupTest::deleteByID(IOConn& ioc, xmlNodePtr node)
 
 	// Execute the statement
 	Group::deleteByID(sqldb, inputDO.id );
+
+	if(m_recordMode){
+		// If we are recording, then there is nothing to save in our output node.
+	} else {
+		XmlHelpers::setBoolAttr( resultsNode, "success", true );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", 0 );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", 0 );
+	}
+}
+
+void GroupTest::deleteUsersForGroup(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "GroupTest::deleteUsersForGroup(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in GroupTest::deleteUsersForGroup test.");
+	}
+
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object:
+	Group inputDO( XmlHelpers::FindChild( inputNode, Group::Name()() ) );
+
+	// Get a connection to our database
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+
+
+	// Execute the statement
+	Group::deleteUsersForGroup(sqldb, inputDO.id );
+
+	if(m_recordMode){
+		// If we are recording, then there is nothing to save in our output node.
+	} else {
+		XmlHelpers::setBoolAttr( resultsNode, "success", true );
+		XmlHelpers::setIntAttr( resultsNode, "savedResults", 0 );
+		XmlHelpers::setIntAttr( resultsNode, "liveResults", 0 );
+	}
+}
+
+void GroupTest::deleteActionsForGroup(IOConn& ioc, xmlNodePtr node)
+{
+	EnEx ee(FL, "GroupTest::deleteActionsForGroup(IOConn& ioc, xmlNodePtr node)");
+
+	xmlNodePtr inputNode = XmlHelpers::FindChild( node, "Input" );
+	if(inputNode == NULL){
+		throw AnException(0, FL, "No input node found in GroupTest::deleteActionsForGroup test.");
+	}
+
+	xmlNodePtr resultsNode = XmlHelpers::FindChild( node, "Results" );
+	if(resultsNode == NULL){
+		// Add it in:
+		resultsNode = xmlNewChild( node, NULL, (const xmlChar*)"Results", NULL);
+	}
+
+	// Pick up our input data object:
+	Group inputDO( XmlHelpers::FindChild( inputNode, Group::Name()() ) );
+
+	// Get a connection to our database
+	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB("hubconfig");
+
+
+
+	// Execute the statement
+	Group::deleteActionsForGroup(sqldb, inputDO.id );
 
 	if(m_recordMode){
 		// If we are recording, then there is nothing to save in our output node.

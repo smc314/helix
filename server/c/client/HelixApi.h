@@ -42,6 +42,7 @@ using namespace SLib;
 #include <Session.h>
 #include <TableCol.h>
 #include <User.h>
+#include <UserGroup.h>
 using namespace Helix::Logic::admin;
 using namespace Helix::Logic::dev;
 //using namespace Helix::Logic::test;
@@ -258,6 +259,16 @@ class HelixApi : public HttpClient
 		  */
 		xmlDocPtr GetLogFiles( );
 
+		/** This method will call the /logic/admin/InsertGroup
+		  * server API.
+		  */
+		xmlDocPtr InsertGroup( const Group& dataObj );
+
+		/** This method will call the /logic/admin/UpdateGroup
+		  * server API.
+		  */
+		xmlDocPtr UpdateGroup( const Group& dataObj );
+
 		/** This method will call the /logic/admin/InsertScheduleItem
 		  * server API.
 		  */
@@ -278,25 +289,65 @@ class HelixApi : public HttpClient
 		  */
 		xmlDocPtr DeleteSQLWork( const SQLWork& dataObj );
 
+		/** This method will call the /logic/admin/InsertUser
+		  * server API.
+		  */
+		xmlDocPtr InsertUser( const User& dataObj );
+
+		/** This method will call the /logic/admin/UpdateUser
+		  * server API.
+		  */
+		xmlDocPtr UpdateUser( const User& dataObj );
+
 		/** This method will call the /logic/admin/DeleteScheduleItem
 		  * server API.
 		  */
 		xmlDocPtr DeleteScheduleItem( const SchedItem& dataObj );
+
+		/** This method will call the /logic/admin/DeleteUser
+		  * server API.
+		  */
+		xmlDocPtr DeleteUser( const User& dataObj );
 
 		/** This method will call the /logic/admin/DeleteIAFile
 		  * server API.
 		  */
 		xmlDocPtr DeleteIAFile( const IAFile& dataObj );
 
+		/** This method will call the /logic/admin/GetActions
+		  * server API.
+		  */
+		xmlDocPtr GetActions( );
+
+		/** This method will call the /logic/admin/GetOneGroup
+		  * server API.
+		  */
+		xmlDocPtr GetOneGroup( const Group& dataObj );
+
+		/** This method will call the /logic/admin/GetOneUser
+		  * server API.
+		  */
+		xmlDocPtr GetOneUser( const User& dataObj );
+
 		/** This method will call the /logic/admin/LoadSQLTestMeta
 		  * server API.
 		  */
 		xmlDocPtr LoadSQLTestMeta( const SQLTests& dataObj );
 
+		/** This method will call the /logic/admin/GetGroups
+		  * server API.
+		  */
+		xmlDocPtr GetGroups( );
+
 		/** This method will call the /logic/admin/GetOneScheduleItem
 		  * server API.
 		  */
 		xmlDocPtr GetOneScheduleItem( const SchedItem& dataObj );
+
+		/** This method will call the /logic/admin/GetUsers
+		  * server API.
+		  */
+		xmlDocPtr GetUsers( );
 
 		/** This method will call the /logic/admin/GetIAFileList
 		  * server API.
@@ -307,6 +358,11 @@ class HelixApi : public HttpClient
 		  * server API.
 		  */
 		xmlDocPtr SaveIAFile( const IAFile& dataObj );
+
+		/** This method will call the /logic/admin/DeleteGroup
+		  * server API.
+		  */
+		xmlDocPtr DeleteGroup( const Group& dataObj );
 
 		/** This method will call the /logic/admin/GetSQLTest
 		  * server API.

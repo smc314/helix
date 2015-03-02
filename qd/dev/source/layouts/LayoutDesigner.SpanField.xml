@@ -1,0 +1,29 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="SpanField Options">
+		<FieldArea columns="2" first="100" second="100">
+			<SpanField label1="Field Type:" type1="ComboBox" tooltip1="Field Type to display for the field." varName1="type1Field">
+				<List1Value label="TextField" model="TextField"/>
+				<List1Value label="PasswordField" model="PasswordField"/>
+				<List1Value label="ComboBox" model="ComboBox"/>
+				<List1Value label="ComboBoxEdit" model="ComboBoxEdit"/>
+				<List1Value label="DateField" model="DateField"/>
+				<List1Value label="TextArea" model="TextArea"/>
+			</SpanField>
+			<SpanField type1="TextField" label1="Field Label:" tooltip1="Label displayed for the field." varName1="label1Field"/>
+			<SpanField type1="TextField" label1="Tooltip:" tooltip1="Tooltip displayed for the field." varName1="tooltip1Field"/>
+			<SpanField type1="TextField" label1="Variable Name:" tooltip1="Variable Name to create for the field." varName1="varName1Field"/>
+			<SingleCheck label1="Field Value Required?" varName1="required1Field"/>
+			<SingleCheck label1="Force Text to Uppercase?" varName1="upper1Field"/>
+		</FieldArea>
+		<GroupBox legend="Enable Field Verification?" flex="" isCheck="true" varName="verify1Field">
+			<FieldArea first="100" second="100">
+				<SpanField type1="ComboBox" varName1="verify1typeField" label1="Verification Type:" tooltip1="What type of field verification to perfom on this field?">
+					<List1Value label="number" model="number"/>
+					<List1Value label="string" model="string"/>
+				</SpanField>
+				<SpanField type1="TextField" label1="Min:" tooltip1="For numbers - min value, for strings - min size." varName1="verify1minField"/>
+				<SpanField type1="TextField" varName1="verify1maxField" label1="Max:" tooltip1="For numbers - max value, for strings - max length."/>
+			</FieldArea>
+		</GroupBox>
+	</GroupBox>
+</VerticalBoxLayout>

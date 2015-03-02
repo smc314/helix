@@ -1,0 +1,17 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="List1Value Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="labelField" label1="Label:" type1="TextField"
+				tooltip1="Text shown for the list item"
+				verify1="false" verify1type="string" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="modelField" label2="Model:" type2="TextField"
+				tooltip2="Internal value represented by the Text displayed."
+				verify2="false" verify2type="string" verify2min="" verify2max=""
+				upper2="false" required2="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

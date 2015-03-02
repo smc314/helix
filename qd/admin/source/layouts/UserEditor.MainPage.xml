@@ -1,0 +1,13 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="ObjectName Overview">
+		<FieldArea columns="2" first="80" second="100">
+			<DoubleField varName1="UsernameField" label1="User Name:" type1="TextField" tooltip1="User name for this user" verify1="true" verify1type="string" verify1min="1" verify1max="32" upper1="false" required1="true" varName2="FullNameField" label2="Full Name:" type2="TextField" tooltip2="Full Name for this user" verify2="true" verify2type="string" verify2min="1" verify2max="255" upper2="false" required2="false"/>
+			
+			
+			
+		<DoubleField label1="Email:" type1="TextField" label2=" Authentication:" type2="ComboBox" verify1type="string" verify2type="number" tooltip1="Email Address for the user" varName1="EMailField" verify1="true" verify1min="1" verify1max="255" tooltip2="What type of authentication is used to confirm the user's password?" varName2="AuthMechanismField"><List2Value label="Plaintext Password" model="0"/><List2Value label="Encrypted Password" model="1"/></DoubleField><SingleCheck label1="Active?" varName1="ActiveField"/></FieldArea>
+		
+		
+	</GroupBox>
+	
+</VerticalBoxLayout>

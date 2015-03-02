@@ -229,6 +229,23 @@ void LogOn::createXmlChildren(xmlNodePtr parent, vector<LogOn* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr LogOn::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LogOn* >* vect)
+{
+	EnEx ee(FL, "LogOn::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<LogOn* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to LogOn::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	LogOn::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void LogOn::deleteVector(vector<LogOn* >* vect)

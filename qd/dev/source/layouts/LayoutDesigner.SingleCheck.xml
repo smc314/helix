@@ -1,0 +1,17 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="SingleCheck Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varName1Field" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the checkbox"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="label1Field" label2="Label:" type2="TextField"
+				tooltip2="Label to display for the checkbox"
+				verify2="false" verify2type="string" verify2min="" verify2max=""
+				upper2="false" required2="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

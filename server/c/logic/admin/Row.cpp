@@ -203,6 +203,23 @@ void Row::createXmlChildren(xmlNodePtr parent, vector<Row* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr Row::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Row* >* vect)
+{
+	EnEx ee(FL, "Row::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Row* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to Row::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	Row::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void Row::deleteVector(vector<Row* >* vect)

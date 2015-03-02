@@ -1,36 +1,42 @@
 /* ************************************************************************
 
-   Copyright:
+Copyright:
 
-   License:
+License:
 
-   Authors:
+Authors:
 
 ************************************************************************ */
 
 /* ************************************************************************
 
-#asset(dev/icon/128x128/shadow/components.png)
-#asset(dev/icon/128x128/shadow/data_gear.png)
-#asset(dev/icon/128x128/shadow/window_sidebar.png)
-#asset(dev/icon/128x128/shadow/server_client_exchange.png)
-#asset(dev/*)
+#asset(dev/icon/16x16/plain/text_align_justified.png)
+#asset(dev/icon/16x16/plain/scroll.png)
+#asset(dev/icon/16x16/plain/scroll.png)
+#asset(dev/icon/16x16/plain/scroll.png)
+#asset(dev/icon/16x16/plain/sports_car.png)
+#asset(dev/icon/16x16/plain/scroll.png)
+#asset(dev/icon/16x16/plain/security_agent.png)
+#asset(dev/icon/16x16/plain/security_agent_edit.png)
 
 ************************************************************************ */
 
 /**
- * This is the main application class of your custom application "dev"
- */
+* This is the main application class of your custom application
+*/
 qx.Class.define("dev.Application",
 {
-	extend : qx.application.Standalone,
+	extend: qx.application.Standalone,
+
+	include: [dev.StandardApp],
 
 	/*
 	*****************************************************************************
 	MEMBERS
 	*****************************************************************************
 	*/
-	members :
+
+	members:
 	{
 		/**
 		* This method contains the initial application code and gets called
@@ -38,73 +44,191 @@ qx.Class.define("dev.Application",
 		*
 		* @lint ignoreDeprecated(alert)
 		*/
-		main : function()
-		{
+		main: function () {
 			// Call super class
 			this.base(arguments);
+			this.ApplicationName = "Helix Development";
+			this.setupStandardApp();
 
-			// Enable logging in debug variant
-			if (qx.core.Environment.get("qx.debug"))
-			{
-				// support native logging capabilities, e.g. Firebug for Firefox
-				qx.log.appender.Native;
+		},
 
-				// support additional cross-browser console. Press F7 to toggle visibility
-				qx.log.appender.Console;
+		fillTree: function () {
+			this.treeRoot.removeAll();
 
-				// support logging back to the helix server
+			// Main Tree Items:
+			// Data Objects
+			// Virtual Layouts
+			// SQL Workbench
+			// Load Tests
+			// Unit Tests
+			// Sql Tests
 
-				//dev.LogAppender;
+			// Main Tools Items:
+			// New -> Data Object
+			// New -> Virtual Layout
+			// New -> SQL Workfile
+			// New -> Load Test
+			// New -> Unit Test
+			// New -> SQL Test
+			// Show/Hide Sidebar
+			// Help ->
+
+			dev.dataobj.DataObjectTreeNodes.createRootNode( this.treeRoot );
+			dev.screens.LayoutTreeNodes.createRootNode( this.treeRoot );
+
+			dev.utils.SqlWorkTreeNodes.createRootNode( this.treeRoot );
+
+			dev.utils.LoadTestTreeNodes.createRootNode( this.treeRoot );
+
+			dev.utils.UnitTestTreeNodes.createRootNode( this.treeRoot );
+			dev.utils.SqlTestTreeNodes.createRootNode( this.treeRoot );
+		},
+
+		handleExpand: function (e) {
+			var treeNode = e.getTarget();
+		},
+
+		editObject: function (obj) {
+			var treeNode = this.tree.getSelection()[0];
+		},
+
+		showExecuteSQL: function () {
+			dev.utils.SqlWorkTreeNodes.newObject();
+		},
+
+		customizeToolbar: function (toolbar) {
+			//var part3 = new qx.ui.toolbar.Part();
+			//toolbar.add(part3);
+
+		},
+
+		getToolsMenu: function () {
+			var menu = new qx.ui.menu.Menu;
+
+			var button = new qx.ui.menu.Button("New", null, null, this.getNewMenu());
+			dev.Statics.setHtmlID(button, "New");
+			menu.add(button);
+
+			this.addMenuButton(menu, "Control+Alt+Z", "Show/Hide Side Bar",
+				"dev/icon/16x16/plain/text_align_justified.png", "Toggle visibility of the tree view.", this.handleTreeViewToggle);
+
+
+			return menu;
+		},
+
+		getNewMenu: function () {
+			var menu = new qx.ui.menu.Menu;
+
+			// Main Tools Items:
+			// New -> Data Object
+			// New -> Virtual Layout
+			// New -> SQL Workfile
+			// New -> Load Test
+			// New -> Unit Test
+			// New -> SQL Test
+			// Show/Hide Sidebar
+			// Help ->
+
+			this.addMenuButton(menu, "Control+Alt+O", "Data Object",
+				"dev/icon/16x16/plain/scroll.png", "New Data Object",
+				dev.dataobj.DataObjectTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+V", "Visual Layout",
+				"dev/icon/16x16/plain/scroll.png", "New Visual Layout",
+				dev.screens.LayoutTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+Q", "SQL Workfile",
+				"dev/icon/16x16/plain/scroll.png", "New SQL Workfile",
+				dev.utils.SqlWorkTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+T", "Load Test",
+				"dev/icon/16x16/plain/sports_car.png", "New Load Test",
+				dev.utils.LoadTestTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+Q", "SQL Test",
+				"dev/icon/16x16/plain/scroll.png", "New SQL Test",
+				dev.utils.SqlTestTreeNodes.newObject);
+
+			return menu;
+		},
+
+		getLogsMenu: function() {
+
+			var menu = new qx.ui.menu.Menu;
+
+			this.addMenuButton(menu, null, "View Helix Logs",
+				"dev/icon/16x16/plain/security_agent.png", null, this.showMonitorServerLogs);
+
+			this.addMenuButton(menu, null, "Helix Logging Configuration",
+				"dev/icon/16x16/plain/security_agent_edit.png", null, this.showManageServerLogs);
+
+			return menu;
+		},
+
+		deleteTreeSelection: function () {
+			if(this.tree.getSelection().length === 0){
+				dev.Statics.doAlert("There is nothing selected in the tree to delete.", "Alert");
+				return;
 			}
 
-			// Setup the application skeleton
-			this.setupInitialLayout();
+			var treeNode = this.tree.getSelection()[0];
+			if(!treeNode.helixObj){
+				dev.Statics.doAlert("The current selection cannot be deleted.");
+				return;
+			}
+
+			// Delegate to the other classes to handle the delete. Keeps things cleaner this way.
+			if(treeNode.helixObj instanceof dev.sqldo.User){
+				dev.user.UserTreeNodes.doDelete( treeNode );
+			} else if(treeNode.helixObj instanceof dev.sqldo.Group){
+				dev.user.GroupTreeNodes.doDelete( treeNode );
+			} else if(treeNode.helixObj instanceof dev.sqldo.SchedItem){
+				dev.dev.ScheduleTreeNodes.doDelete( treeNode );
+			} else {
+				dev.Statics.doAlert("The current selection cannot be deleted because it's not a recognized type.");
+				return;
+			}
+
 		},
-		setupInitialLayout : function()
-		{
-			var doc = this.getRoot();
-			this.rootTabView = new qx.ui.tabview.TabView;
-			this.rootTabView.setBarPosition("right");
-			doc.add(this.rootTabView,
-			{
-				left : 0,
-				top : 0,
-				right : 0,
-				bottom : 0
-			});
-			var largeFont = new qx.bom.Font(30);
-			var tabPage = dev.Statics.addTabPage(this.rootTabView, "My Projects", false, true);
-			var tabButton = tabPage.getChildControl("button");
-			tabPage.setIcon("dev/icon/128x128/shadow/components.png");
-			tabButton.setFont(largeFont);
-			tabButton.setIconPosition("top");
-			tabPage.add(new dev.proj.ProjectPage(0), {
-				flex : 10
-			});
-			tabPage = dev.Statics.addTabPage(this.rootTabView, "My Data", false, false);
-			tabButton = tabPage.getChildControl("button");
-			tabPage.setIcon("dev/icon/128x128/shadow/data_gear.png");
-			tabButton.setFont(largeFont);
-			tabButton.setIconPosition("top");
-			tabPage.add(new dev.data.DataPage(0), {
-				flex : 10
-			});
-			tabPage = dev.Statics.addTabPage(this.rootTabView, "My Screens", false, false);
-			tabButton = tabPage.getChildControl("button");
-			tabPage.setIcon("dev/icon/128x128/shadow/window_sidebar.png");
-			tabButton.setFont(largeFont);
-			tabButton.setIconPosition("top");
-			tabPage.add(new dev.screens.ScreensPage(0), {
-				flex : 10
-			});
-			tabPage = dev.Statics.addTabPage(this.rootTabView, "My API's", false, false);
-			tabButton = tabPage.getChildControl("button");
-			tabPage.setIcon("dev/icon/128x128/shadow/server_client_exchange.png");
-			tabButton.setFont(largeFont);
-			tabButton.setIconPosition("top");
-			tabPage.add(new dev.apis.ApiPage(0), {
-				flex : 10
-			});
+
+		setdevPassword: function () {
+		},
+
+		setAuthKey: function () {
+		},
+
+		doNew : function() {
+		},
+
+		addNewTreeItem: function(parentLabel, childLabel, helixObj, icon, editObject) {
+			var node = this.findNode(this.treeRoot, parentLabel);
+			if(!node){
+				dev.Statics.doAlert("Programming error: unknown tree node parent '" + parentLabel + "'.");
+				return;
+			}
+
+			// return if the tree item is not new
+			var cnode = this.findNode(node, childLabel);
+			if (cnode) {
+				this.tree.resetSelection();
+				this.tree.addToSelection(cnode);
+				return;
+			}
+
+			// add the new node to the tree
+			this.createAnimatedTreeItem(node, helixObj, childLabel, icon, editObject);
 		}
+
+	},
+
+	/*
+	*****************************************************************************
+	DESTRUCT
+	*****************************************************************************
+	*/
+
+	destruct: function () {
+		//this._disposeObjects();
 	}
+
 });

@@ -83,6 +83,9 @@ class SQLStatement
 		/// Create a series of xml child nodes based on the input vector
 		static void createXmlChildren(xmlNodePtr parent, vector<SQLStatement* >* vect);
 
+		/// Create a child and series of grandchild nodes based on the input vector.
+		static xmlNodePtr createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLStatement* >* vect);
+
 		/// Handle deleting a vector and its contents.
 		static void deleteVector( vector<SQLStatement* >* vect);
 

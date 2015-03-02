@@ -9,7 +9,7 @@
 ************************************************************************ */
 qx.Theme.define("dev.theme.Decoration",
 {
-	extend : qx.theme.modern.Decoration,
+	extend : qx.theme.simple.Decoration,
 	decorations : {
 
 	}

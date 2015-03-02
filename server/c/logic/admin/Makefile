@@ -18,6 +18,7 @@ LFLAGS=
 
 DOTOH=\
 	SQLWork.o \
+	UpdateGroup.o \
 	Session.o \
 	Col_test.o \
 	UpdateScheduleItem.o \
@@ -31,23 +32,33 @@ DOTOH=\
 	Group.o \
 	Row_test.o \
 	SQLWork_test.o \
+	UpdateUser.o \
 	SQLStmt.o \
 	DeleteScheduleItem.o \
+	DeleteUser.o \
 	DeleteIAFile.o \
 	Group_test.o \
+	GetActions.o \
 	IAFolder.o \
 	Col.o \
+	GetOneGroup.o \
+	UserGroup_test.o \
 	SQLTests_test.o \
+	GetOneUser.o \
 	Session_test.o \
 	IAFile.o \
 	IAFolder_test.o \
 	LoadSQLTestMeta.o \
+	GetGroups.o \
 	GetOneScheduleItem.o \
+	UserGroup.o \
 	User_test.o \
 	Row.o \
+	GetUsers.o \
 	GetIAFileList.o \
 	SQLStmt_test.o \
 	SaveIAFile.o \
+	DeleteGroup.o \
 	GetSQLTest.o \
 	GetIAFileDetails.o \
 	GetWorkFileList.o \

@@ -1,4 +1,7 @@
 <SQLXml generateClass="User" package="logic/admin" >
+	<ChildVector name="GroupMembership" type="UserGroup"/>
+	<ChildVector name="AllowedActions" type="Action"/>
+
 	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
 		<Comment>
 			This is the statement that we use to add new user entries into our database
@@ -12,6 +15,17 @@
 		<Input name="FullName" type="twine"/>
 		<Input name="EMail" type="twine"/>
 		<Input name="Active" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="addUserToGroup" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add user's to a group.
+		</Comment>
+		<Sql>
+			insert into usergroup (userid, groupid)
+			values ( ?, ?)
+		</Sql>
+		<Input name="id" type="int"/>
+		<Input name="groupid" type="int"/>
 	</SqlStatement>
 	<SqlStatement methodName="insertAuth" methodType="INSERT" target="sqldb">
 		<Comment>
@@ -31,10 +45,10 @@
 		</Comment>
 		<Sql>
 			update user
-			set Username = ?,
-				FullName = ?,
-				EMail = ?,
-				Active = ?
+			set user = ?,
+				fullname = ?,
+				email = ?,
+				active = ?
 			where id = ?
 		</Sql>
 		<Input name="Username" type="twine"/>
@@ -73,6 +87,26 @@
 		</Comment>
 		<Sql>
 			delete from userauth
+			where userid = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteGroupsForUser" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing usergroup entries in our database
+		</Comment>
+		<Sql>
+			delete from usergroup
+			where userid = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteActionsForUser" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing useraction entries in our database
+		</Comment>
+		<Sql>
+			delete from useraction
 			where userid = ?
 		</Sql>
 		<Input name="id" type="autogen"/>
@@ -128,5 +162,22 @@
 		<Output name="AuthMechanism" type="int"/>
 		<Output name="Password" type="twine"/>
 		<Input name="Username" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectUsersForGroup" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all of the users that are in a given group.
+		</Comment>
+		<Sql>
+			select id, user, fullname, email, active
+			from user, usergroup
+			where usergroup.groupid = ?
+			and   user.id = usergroup.userid
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Username" type="twine"/>
+		<Output name="FullName" type="twine"/>
+		<Output name="EMail" type="twine"/>
+		<Output name="Active" type="int"/>
+		<Input name="groupid" type="int"/>
 	</SqlStatement>
 </SQLXml>

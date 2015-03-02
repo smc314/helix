@@ -7,6 +7,7 @@
 ************************************************************************ */
 /* ************************************************************************
 #asset(admin/icon/16x16/plain/carabiner.png)
+#asset(admin/icon/16x16/plain/carabiner.png)
 #asset(admin/icon/16x16/plain/about.png)
 #asset(admin/icon/64x64/shadow/data_scroll.png)
 #asset(admin/icon/16x16/plain/delete2.png)
@@ -52,6 +53,7 @@ qx.Class.define("admin.utils.LayoutDesigner", {
 		this.dynamicLayouts = [];
 		this.dynamicLayouts.push({name: "LayoutDesigner.GeneralPage.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.DesignPage.xml", doc:null});
+		this.dynamicLayouts.push({name: "LayoutDesigner.TestSettingsPage.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.Button.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.Column.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.DoubleCheck2.xml", doc:null});
@@ -149,6 +151,10 @@ qx.Class.define("admin.utils.LayoutDesigner", {
 			part.add( this.addMenuButton );
 			this.addMenuButton.setEnabled(false); // create it disabled.
 
+			admin.Statics.addToToolbarWithShortcut( part, "admin/icon/16x16/plain/carabiner.png",
+				this.tr("Generate Test Settings"), this.genTestSettings, this, this, "Control-G",
+				this.tr("Generate Test Settings") );
+
 			tb.add(part);
 
 			// remember to return the toolbar we've enhanced:
@@ -220,6 +226,7 @@ qx.Class.define("admin.utils.LayoutDesigner", {
 
 			this.createMainTab(admin.Statics.addEditorSubTab(this.tabview, "General", true));
 			this.createDesignTab(admin.Statics.addEditorSubTab(this.tabview, "Design", false));
+			this.createTestSettingsTab(admin.Statics.addEditorSubTab(this.tabview, "Sample Test Settings", false));
 
 		},
 
@@ -258,6 +265,19 @@ qx.Class.define("admin.utils.LayoutDesigner", {
 			this.layoutTree.setRootOpenClose(true);
 			this.layoutTree.addListener("changeSelection", this.handleTreeSelection, this);
 			this.layoutTree.setContextMenu( this.createTreeRMC() );
+
+		},
+
+		/** This is the test settings page.
+		  */
+		createTestSettingsTab: function(tab_page)
+		{
+			admin.layout.LayoutEngine.renderLayout( this,
+				this.getDynamicLayout("LayoutDesigner.TestSettingsPage.xml"),
+				tab_page );
+
+			this.TestSettingsField.setCursor("text");
+			this.TestSettingsField.setFont( new qx.bom.Font(14, ["monospace"]) );
 
 		},
 
@@ -549,6 +569,99 @@ qx.Class.define("admin.utils.LayoutDesigner", {
 				// Handle all children of this node as well:
 				this.createTreeChildren( xmlNode, treeNode );
 			}
+		},
+
+		/** This will walk our tree and create a series of test settings that can be used
+		 *  in an automated test of this form.
+		 */
+		genTestSettings : function() {
+			var testSettings =
+				"<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
+				"<HelixUITest>\n" +
+				"\n"
+			;
+			var settingsPrefix = this.dataObject.getFileName().split('.')[0];
+
+			// Walk our xml tree to pick up all of the settings we can find.
+			var settingsArray = [];
+			this.loadSettingsArray( this.xmlRoot, settingsArray );
+
+			// Now take all of those settings and represent them in a way that makes it easy
+			// for the developer to pick them up and copy them into their automated tests.
+
+			// Give them the list of page objects first:
+			testSettings +=
+				"\t<!-- Settings Values for the Editor elements the user can manipulate on this form -->\n"
+			;
+			for(var i = 0, l = settingsArray.length; i < l; i++){
+				var setting = settingsArray[ i ];
+				testSettings +=
+					"\t<Setting name=\"" + settingsPrefix + "." + setting.varName + ".EditFieldID\" " +
+					"value=\"" + setting.htmlid + "\"/>\n" +
+					"\t<Setting name=\"" + settingsPrefix + "." + setting.varName + ".DisplayFieldID\" " +
+					"value=\"" + setting.htmlid + "\"/>\n" +
+					"\n"
+				;
+			}
+
+			// Now give them a list of placeholders for the data values
+			testSettings +=
+				"\t<!-- Input Data Values for the Editor elements the user can manipulate on this form -->\n"
+			;
+			for(var i = 0, l = settingsArray.length; i < l; i++){
+				var setting = settingsArray[ i ];
+				testSettings +=
+					"\t<Setting name=\"" + settingsPrefix + "." + setting.varName + ".DataValue\" " +
+					"value=\"Input Data Value Goes Here\"/>\n"
+				;
+			}
+
+			// Now give them a list of fields as they would be laid out in a test:
+			testSettings +=
+				"\n" +
+				"\t<!-- Sample set of fields as represented by this layout design -->\n" +
+				"\t<Tab name=\"Tab Name Goes Here\">\n"
+			;
+			for(var i = 0, l = settingsArray.length; i < l; i++){
+				var setting = settingsArray[ i ];
+				testSettings +=
+					"\t\t<Field name=\"" + setting.varName + "\" \n" +
+					"\t\t\tvalue=\"${" + settingsPrefix + "." + setting.varName + ".DataValue}\" \n" +
+					"\t\t\teditId=\"${" + settingsPrefix + "." + setting.varName + ".EditFieldID}\" \n" +
+					"\t\t\tdisplayId=\"${" + settingsPrefix + "." + setting.varName + ".DisplayFieldID}\" \n" +
+					"\t\t\ttype=\"" + setting.htmlid.split('.')[3] + "\" " +
+					"/>\n"
+				;
+			}
+			testSettings +=
+				"\t</Tab>\n" +
+				"\n"
+			;
+
+			testSettings +=
+				"</HelixUITest>\n"
+
+			this.TestSettingsField.setValue( testSettings );
+
+		},
+
+		loadSettingsArray : function( xmlNode, settingsArray) {
+			// First load all of our own settings:
+			var testSettingsFunction = "testSettingsFor" + xmlNode.nodeName;
+			if( this[testSettingsFunction] ){
+				this[testSettingsFunction]( xmlNode, settingsArray);
+			} else {
+				this.warn("Missing test settings function: " + testSettingsFunction);
+			}
+
+			// Now loop through our children
+			for(var i = 0, l = xmlNode.childNodes.length; i < l; i++){
+				if(xmlNode.childNodes[i].nodeType !== 1){
+					continue; // only process Element nodes
+				}
+				this.loadSettingsArray( xmlNode.childNodes[i], settingsArray );
+			}
+
 		},
 
 		/** This handles pulling data from GUI form fields and loading their values

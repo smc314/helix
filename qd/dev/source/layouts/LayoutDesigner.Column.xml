@@ -1,0 +1,28 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Column Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="titleField" label1="Title:" type1="TextField"
+				tooltip1="Title for the Column"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="widthField" label2="Width:" type2="TextField"
+				tooltip2="Flex value that establishes default relative column size."
+				verify2="false" verify2type="string" verify2min="0" verify2max="400"
+				upper2="false" required2="false"
+			/>
+			<DoubleField 
+				varName1="minWidthField" label1="Min Width:" type1="TextField"
+				tooltip1="Numeric value to use as the minimum size of this column."
+				verify1="true" verify1type="number" verify1min="0" verify1max="400"
+				upper1="false" required1="false"
+
+				varName2="maxWidthField" label2="Max Width:" type2="TextField"
+				tooltip2="Numeric value to use as the maximum size of this column."
+				verify2="false" verify2type="number" verify2min="0" verify2max="1000"
+				upper2="false" required2="false"
+			/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

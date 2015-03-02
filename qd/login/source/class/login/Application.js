@@ -147,7 +147,15 @@ qx.Class.define("login.Application",
 
 		/* Text fields */
 		this.userField = new qx.ui.form.TextField();
+		this.userField.htmlid = this.userField.classname + "." + "userField";
+		this.userField.addListenerOnce( "appear", function(e) {
+			this.getContentElement().getDomElement().id = this.htmlid;
+		}, this.userField );
 		this.passField = new qx.ui.form.PasswordField();
+		this.passField.htmlid = this.passField.classname + "." + "passField";
+		this.passField.addListenerOnce( "appear", function(e) {
+			this.getContentElement().getDomElement().id = this.htmlid;
+		}, this.passField );
 
 		this.__container.add(this.userField.set( {allowShrinkX :false,paddingTop :3
 			}), {row :0, column :1 });
@@ -158,6 +166,10 @@ qx.Class.define("login.Application",
 		/* Button */
 		var button1 = this.__okButton = new qx.ui.form.Button( "Login");
 		button1.setAllowStretchX(false);
+		button1.htmlid = button1.classname + "." + "login";
+		button1.addListenerOnce( "appear", function(e) {
+			this.getContentElement().getDomElement().id = this.htmlid;
+		}, button1 );
 
 		this.__container.add(button1, {row :4,column :1});
 

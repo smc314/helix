@@ -1,4 +1,7 @@
 <SQLXml generateClass="Group" package="logic/admin" >
+	<ChildVector name="UsersForGroup" type="UserGroup"/>
+	<ChildVector name="ActionsForGroup" type="Action"/>
+
 	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
 		<Comment>
 			This is the statement that we use to add new group entries into our database
@@ -20,7 +23,7 @@
 			values ( ?, ? )
 		</Sql>
 		<Input name="userid" type="int"/>
-		<Input name="id" type="autogen"/>
+		<Input name="id" type="int"/>
 	</SqlStatement>
 	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
 		<Comment>
@@ -43,6 +46,26 @@
 		<Sql>
 			delete from groups
 			where id = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteUsersForGroup" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete all users who were a member of this group.
+		</Comment>
+		<Sql>
+			delete from usergroup
+			where groupid = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteActionsForGroup" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete all actions associated to this group.
+		</Comment>
+		<Sql>
+			delete from groupaction
+			where groupid = ?
 		</Sql>
 		<Input name="id" type="autogen"/>
 	</SqlStatement>
