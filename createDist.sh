@@ -51,7 +51,9 @@ cp server/c/logic/*.sh ${PROJECT_FOLDER}/server/c/logic/
 cp -a qd/login ${PROJECT_FOLDER}/qd/
 cp -a qd/common ${PROJECT_FOLDER}/qd/
 cp -a qd/admin/build/* ${PROJECT_FOLDER}/html/admin/
+cp -a qd/admin/source/layouts ${PROJECT_FOLDER}/html/admin/
 cp -a qd/dev/build/* ${PROJECT_FOLDER}/html/dev/
+cp -a qd/dev/source/layouts ${PROJECT_FOLDER}/html/dev/
 cp -a qd/login/build/* ${PROJECT_FOLDER}/html/HelixLogin/
 cp qd/*.sh ${PROJECT_FOLDER}/qd/
 
