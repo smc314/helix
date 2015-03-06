@@ -81,8 +81,12 @@ int main (int argc, char** argv)
 
 	findAllSLFolders("../logic");
 
-	createGlobMakefile("../glob");
-	createClientMakefile("../client");
+	try {
+		createGlobMakefile("../glob");
+		createClientMakefile("../client");
+	} catch(AnException& e){
+		printf("%s\n", e.Msg());
+	}
 
 	return 0;
 }

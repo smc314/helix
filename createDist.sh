@@ -18,8 +18,14 @@ mkdir -p ${PROJECT_FOLDER}/html/HelixLogin
 mkdir -p ${PROJECT_FOLDER}/qd
 mkdir -p ${PROJECT_FOLDER}/server
 mkdir -p ${PROJECT_FOLDER}/server/c/bin
+mkdir -p ${PROJECT_FOLDER}/server/c/build
 mkdir -p ${PROJECT_FOLDER}/server/c/client
+mkdir -p ${PROJECT_FOLDER}/server/c/client/apitests
+mkdir -p ${PROJECT_FOLDER}/server/c/glob
 mkdir -p ${PROJECT_FOLDER}/server/c/logic
+mkdir -p ${PROJECT_FOLDER}/server/c/logic/admin
+mkdir -p ${PROJECT_FOLDER}/server/c/logic/dev
+mkdir -p ${PROJECT_FOLDER}/server/c/logic/util
 
 
 #
@@ -42,6 +48,11 @@ cp server/c/bin/libhelix.glob.so ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/bin/libhelix.logic.admin.so ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/bin/libhelix.logic.dev.so ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/bin/libhelix.logic.util.so ${PROJECT_FOLDER}/server/c/bin/
+cp server/c/build/*.tmpl ${PROJECT_FOLDER}/server/c/build/
+cp server/c/glob/*.h ${PROJECT_FOLDER}/server/c/glob/
+cp server/c/logic/admin/*.h ${PROJECT_FOLDER}/server/c/logic/admin/
+cp server/c/logic/dev/*.h ${PROJECT_FOLDER}/server/c/logic/dev/
+cp server/c/logic/util/*.h ${PROJECT_FOLDER}/server/c/logic/util/
 cp server/c/gmake.unix ${PROJECT_FOLDER}/server/c/
 cp server/c/gmake.win ${PROJECT_FOLDER}/server/c/
 cp server/c/logic/*.sh ${PROJECT_FOLDER}/server/c/logic/

@@ -2666,7 +2666,7 @@ twine paramForType(twine name, twine type)
 		return ", Date& " + name;
 	} else {
 		// default to twine
-		return ", " + type + "& " + name;
+		return ", " + convertType(type) + "& " + name;
 	}
 }
 	
