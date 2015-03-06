@@ -17,56 +17,56 @@ LFLAGS=
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	SQLWork_test.o \
-	SQLTests.o \
-	UserGroup.o \
-	UserGroup_test.o \
-	IAFile.o \
-	GetIAFileDetails.o \
-	GetOneUser.o \
-	Session.o \
-	SaveIAFile.o \
-	Col_test.o \
-	User.o \
-	SQLTests_test.o \
-	GetIAFileList.o \
-	UpdateUser.o \
-	Group.o \
-	DeleteSQLWork.o \
-	Col.o \
-	SQLStmt_test.o \
-	User_test.o \
-	GetScheduleItems.o \
-	SaveSQLWork.o \
-	GetOneGroup.o \
-	IAFolder.o \
-	IAFolder_test.o \
-	IAFile_test.o \
-	SaveSQLTest.o \
-	GetOneScheduleItem.o \
-	LoadSQLTestMeta.o \
-	UpdateScheduleItem.o \
-	Group_test.o \
-	SchedItem.o \
-	GetWorkFileList.o \
-	DeleteUser.o \
-	Session_test.o \
-	GetSQLWork.o \
-	GetGroups.o \
-	DeleteScheduleItem.o \
-	DeleteIAFile.o \
-	Action_test.o \
-	GetUsers.o \
-	SchedItem_test.o \
 	SQLWork.o \
-	Row_test.o \
 	UpdateGroup.o \
+	Session.o \
+	Col_test.o \
+	UpdateScheduleItem.o \
+	SaveSQLWork.o \
+	SQLTests.o \
+	SchedItem.o \
+	IAFile_test.o \
+	Action_test.o \
+	DeleteSQLWork.o \
+	User.o \
+	Group.o \
+	Row_test.o \
+	SQLWork_test.o \
+	UpdateUser.o \
+	SQLStmt.o \
+	DeleteScheduleItem.o \
+	DeleteUser.o \
+	DeleteIAFile.o \
+	Group_test.o \
+	GetActions.o \
+	IAFolder.o \
+	Col.o \
+	GetOneGroup.o \
+	UserGroup_test.o \
+	SQLTests_test.o \
+	GetOneUser.o \
+	Session_test.o \
+	IAFile.o \
+	IAFolder_test.o \
+	LoadSQLTestMeta.o \
+	GetGroups.o \
+	GetOneScheduleItem.o \
+	UserGroup.o \
+	User_test.o \
+	Row.o \
+	GetUsers.o \
+	GetIAFileList.o \
+	SQLStmt_test.o \
+	SaveIAFile.o \
 	DeleteGroup.o \
 	GetSQLTest.o \
-	GetActions.o \
-	Row.o \
-	Action.o \
-	SQLStmt.o
+	GetIAFileDetails.o \
+	GetWorkFileList.o \
+	GetScheduleItems.o \
+	SaveSQLTest.o \
+	GetSQLWork.o \
+	SchedItem_test.o \
+	Action.o
 
 all: $(DOTOH)
 	g++ -shared -o ../../bin/libhelix.logic.admin.so $(DOTOH) $(LFLAGS)

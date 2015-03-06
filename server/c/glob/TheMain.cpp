@@ -499,6 +499,8 @@ void TheMain::GenConfig(void)
 	xmlSetProp(authorization, (const xmlChar*)"enabled", (const xmlChar*)"true");
 	xmlSetProp(allow1, (const xmlChar*)"startswith", (const xmlChar*)"/HelixLogin/");
 	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/favicon.ico");
+	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/admin");
+	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/dev");
 
 	// Now save the file
 	m_config_file_name = "./helix.xml";

@@ -18,32 +18,32 @@ LFLAGS=
 
 DOTOH=\
 	DObject.o \
-	Application_test.o \
-	DOStmtOutput.o \
-	GetProjectList.o \
-	ProjectData_test.o \
-	SaveProject.o \
-	DOChild.o \
-	DOStmt_test.o \
-	DOStmtInput.o \
-	Project.o \
-	DOStmtInput_test.o \
-	TableCol.o \
-	ProjectData.o \
 	DOStmt.o \
-	Screen.o \
-	Api.o \
-	DOChild_test.o \
-	Application.o \
-	DObject_test.o \
+	Screen_test.o \
 	Project_test.o \
-	TableCol_test.o \
-	ProjectTable.o \
-	ProjectTable_test.o \
+	ProjectData_test.o \
+	Application_test.o \
 	Api_test.o \
+	Screen.o \
 	GetProject.o \
+	DOStmtInput_test.o \
+	Project.o \
+	DOChild_test.o \
 	DOStmtOutput_test.o \
-	Screen_test.o
+	TableCol_test.o \
+	DOStmt_test.o \
+	ProjectTable.o \
+	DOStmtInput.o \
+	ProjectData.o \
+	Api.o \
+	DObject_test.o \
+	Application.o \
+	SaveProject.o \
+	GetProjectList.o \
+	DOChild.o \
+	ProjectTable_test.o \
+	TableCol.o \
+	DOStmtOutput.o
 
 all: $(DOTOH)
 	g++ -shared -o ../../bin/libhelix.logic.dev.so $(DOTOH) $(LFLAGS)

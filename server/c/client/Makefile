@@ -29,7 +29,7 @@ LOGICOBJS=-L../bin \
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	HelixApiTest.o
+	HelixApiTest.o \
 
 APIOH=HelixApi_Part1.o HelixApi_Part2.o
 LINKOBJ=-L../bin -lhelix.client $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)

@@ -204,7 +204,7 @@ qx.Class.define("login.Application",
 		this.SendRequest( requestDoc, "/Authenticate",
 		function(response){
 			this.debug("Got a good response - replacing to admin.");
-			window.location.replace("/qd/admin/source/index.html");
+			window.location.replace("/admin/index.html");
 		},
 		function(req){
 	    	// if log-in fails, then animate the container:

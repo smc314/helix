@@ -17,44 +17,44 @@ LFLAGS=
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	ExecuteGenericSQL.o \
-	GetProfile.o \
-	LogSettings.o \
+	SystemProperties.o \
+	GetLogMsgCount.o \
+	HitMap.o \
+	SchedItem.o \
+	LogOn.o \
+	CloseConnection.o \
+	LRTask.o \
 	LogMessageFilter.o \
+	GetAllLayouts.o \
+	GetLogSettings.o \
+	GetLogMessagesByRange.o \
+	SQLStatement.o \
+	GetHitMap.o \
+	CleanoutLRTask.o \
+	ConnectToServer.o \
+	GetAllLRTasks.o \
+	SaveLogMsg.o \
+	LogObj.o \
+	LogObj_test.o \
+	SQLStatement_test.o \
+	Statics.o \
 	FindLogMessage.o \
 	LogSettings_test.o \
-	CloseConnection.o \
-	LogMessageFilter_test.o \
-	SaveLogMsg.o \
-	GetHitMap.o \
-	SystemProperties.o \
-	GetAllLRTasks.o \
-	ConnectToServer.o \
-	GetLogFiles.o \
-	GetAllLayouts.o \
-	SaveLayout.o \
-	UserProperties.o \
-	HitMap_test.o \
-	LogOn.o \
-	GetLogMessagesByRange.o \
-	GetLogSettings.o \
-	LRTask_test.o \
-	GetLogMsgCount.o \
-	LogObj.o \
-	SchedItem.o \
-	LogOn_test.o \
-	GetLogMessages.o \
-	Statics.o \
 	UpdateLogSettings.o \
-	SwitchServerConnection.o \
-	LRTask.o \
-	CleanoutLRTask.o \
-	LogObj_test.o \
+	GetProfile.o \
 	GetOneLRTask.o \
-	SQLStatement.o \
-	HitMap.o \
+	LRTask_test.o \
+	UserProperties.o \
+	SwitchServerConnection.o \
+	LogMessageFilter_test.o \
+	ExecuteGenericSQL.o \
+	LogSettings.o \
+	HitMap_test.o \
+	GetLogMessages.o \
 	SchedItem_test.o \
-	SQLStatement_test.o
+	SaveLayout.o \
+	GetLogFiles.o \
+	LogOn_test.o
 
 all: $(DOTOH)
 	g++ -shared -o ../../bin/libhelix.logic.util.so $(DOTOH) $(LFLAGS)
