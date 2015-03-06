@@ -17,39 +17,38 @@ LFLAGS=
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	OdbcObj.o \
-	ActionClass.o \
-	IOAdapter.o \
-	LongRunningTask.o \
-	AdaptiveLogs.o \
-	ThreadList.o \
-	OdbcDrv.o \
-	HttpIOAdapter.o \
-	ActionHtml.o \
-	TableActions.o \
-	Authenticate.o \
-	HttpConn.o \
-	SessionSerializer.o \
-	ConnectionPool.o \
-	Scaler.o \
-	TheMain.o \
 	IOConn.o \
-	mongoose.o \
-	MsgProcessor.o \
-	SessionList.o \
-	SchedEntry.o \
-	ActionLogic.o \
-	Schedule.o \
+	TheMain.o \
+	Scaler.o \
+	IOAdapter.o \
 	DataObjectTestMap.o \
-	Jvm.o \
-	SessionInfo.o \
 	MsgProcScaler.o \
+	Authenticate.o \
+	AdaptiveLogs.o \
+	HttpIOAdapter.o \
 	DataObjectTestClass.o \
-	MySqlDbInit.o \
-	SchedConn.o \
+	SessionSerializer.o \
+	ActionClass.o \
+	LongRunningTask.o \
+	mongoose.o \
+	OdbcDrv.o \
+	SessionInfo.o \
 	SqlDB.o \
+	ConnectionPool.o \
+	SchedConn.o \
+	MsgProcessor.o \
+	Schedule.o \
+	OdbcObj.o \
 	ActionMap.o \
-	Threadable.o
+	ThreadList.o \
+	ActionLogic.o \
+	HttpConn.o \
+	SchedEntry.o \
+	TableActions.o \
+	SessionList.o \
+	Threadable.o \
+	MySqlDbInit.o \
+	ActionHtml.o
 
 all: $(DOTOH)
 	g++ -shared -o ../bin/libhelix.glob.so $(DOTOH) $(LFLAGS)

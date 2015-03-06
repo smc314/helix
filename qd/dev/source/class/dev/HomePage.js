@@ -8,7 +8,6 @@ Authors:
 
 ************************************************************************ */
 /* ************************************************************************
-#asset(dev/background-plain.png)
 #asset(dev/Helix_Cropped_1024_844.jpg)
 #asset(dev/icon/48x48/shadow/arrow2_up_left_blue.png)
 #asset(dev/icon/48x48/shadow/arrow2_up_blue.png)
