@@ -182,8 +182,8 @@ class TheMain
 		/// Test method to research RSA encryption/decryption
 		void TestEncrypt(RSA* keypair);
 
-		/// Loads and starts our protocol masters
-		//void LaunchProtocols();
+		/// Loads our logic libraries
+		void LoadLogics();
 
 		/// Loads and creates any databases that we have defined
 		void InitStorageDB(void);
@@ -199,6 +199,13 @@ class TheMain
 
 		/// Launches all Processor processes
 		//void LaunchAllProcessors(void);
+
+		/// Loads a dll that we need to keep track of for unloading
+#ifdef _WIN32
+		HINSTANCE LoadDLL(const twine& dll_name);
+#else
+		void* LoadDLL(const twine& dll_name);
+#endif
 
 		/// Launches our message processor
 		void LaunchMsgProcScaler(void);

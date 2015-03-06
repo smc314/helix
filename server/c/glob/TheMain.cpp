@@ -193,6 +193,8 @@ void TheMain::InternalExecute(void)
 
 		InitStorageDB();
 
+		LoadLogics();
+
 		// Create and launch any IOAdapters that we have defined
 		// so that we can listen for incomming messages.  The scheduler
 		// is started here as well.
@@ -472,10 +474,9 @@ void TheMain::GenConfig(void)
 	// Logics node
 	xmlNodePtr logics = xmlNewChild(root, NULL, (const xmlChar*)"Logics", NULL);
 	xmlNodePtr logic = xmlNewChild(logics, NULL, (const xmlChar*)"Logic", NULL);
-	xmlSetProp(logic, (const xmlChar*)"actionmap", (const xmlChar*)"utils.actions.xml");
-	xmlSetProp(logic, (const xmlChar*)"class", (const xmlChar*)"Utils");
-	xmlSetProp(logic, (const xmlChar*)"setup", (const xmlChar*)"Utils");
-	xmlSetProp(logic, (const xmlChar*)"name", (const xmlChar*)"Utils");
+	xmlSetProp(logic, (const xmlChar*)"name", (const xmlChar*)"ExtraLogic");
+	xmlSetProp(logic, (const xmlChar*)"library", (const xmlChar*)"sharedLibraryName.so");
+	xmlSetProp(logic, (const xmlChar*)"active", (const xmlChar*)"false");
 	
 	// Storage node
 	xmlNodePtr storage = xmlNewChild(root, NULL, (const xmlChar*)"Storage", NULL);
@@ -611,6 +612,76 @@ SqlDB& TheMain::GetConfigDB( void )
 BlockingQueue<IOConn*>& TheMain::getIOQueue(void)
 {
 	return m_io_queue;
+}
+
+void TheMain::LoadLogics(void)
+{
+	EnEx ee(FL, "TheMain::LoadLogics()");
+
+	xmlNodePtr logics;
+
+	// Walk our Logics children in the config file
+	logics = XmlHelpers::FindChild(xmlDocGetRootElement(m_config), "Logics");
+	if(logics == NULL){
+		INFO(FL, "Logics Node not listed in config file.");
+		return;
+	}
+
+	vector<xmlNodePtr> nodes = XmlHelpers::FindChildren( logics, "Logic" );
+	for(size_t i = 0; i < nodes.size(); i++){
+		xmlNodePtr node = nodes[i];
+		twine logicName;
+		twine logicLibrary;
+		if(XmlHelpers::getBoolAttr(node, "active")){
+			logicName.getAttribute(node, "name");
+			if(logicName.empty()){
+				ERRORL(FL, "Logic node has missing or empty name attribute.");
+				continue;
+			}
+			logicLibrary.getAttribute(node, "library");
+			if(logicLibrary.empty()){
+				ERRORL(FL, "Logic[%s] library attribute is missing or empty.", logicName() );
+				continue;
+			}
+			try {
+				LoadDLL( logicLibrary );
+			} catch(AnException& e){
+				ERRORL(FL, "Error loading Logic[%s] library[%s]: %s", logicName(), logicLibrary(), e.Msg() );
+				continue;
+			}
+		}
+	}	
+}
+
+#ifdef _WIN32
+HINSTANCE TheMain::LoadDLL(const twine& dll_name)
+#else
+void* TheMain::LoadDLL(const twine& dll_name)
+#endif
+{
+	EnEx ee(FL, "TheMain::LoadDLL(const twine& dll_name)");
+
+	// First look the name up to see if we've already loaded it
+	if(m_loaded_dlls.count(dll_name) > 0){
+		return m_loaded_dlls[ dll_name ]; // found it
+	}
+
+	// Didn't find it - go ahead and load it.
+	DEBUG(FL, "Trying to load library (%s)", dll_name() );
+#ifdef _WIN32
+	HINSTANCE dllHandle = LoadLibrary(dll_name());
+#else
+	void* dllHandle = dlopen(dll_name(), RTLD_LAZY | RTLD_GLOBAL);
+#endif
+
+	if(dllHandle == NULL){
+		throw AnException(0, FL, "Error loading library(%s)", dll_name() );
+	}
+
+	// Record it before returning
+	m_loaded_dlls[ dll_name ] = dllHandle;
+
+	return dllHandle;
 }
 
 void TheMain::LaunchIOAdapters(void)
