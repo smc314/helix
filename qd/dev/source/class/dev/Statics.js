@@ -1946,8 +1946,7 @@ qx.Class.define("dev.Statics", {
 			}
 
 			if (formField instanceof qx.ui.form.TextField ||
-				formField instanceof qx.ui.form.PasswordField ||
-				formField instanceof qx.ui.form.TextArea
+				formField instanceof qx.ui.form.PasswordField
 			) {
 				if (initValue === 0) {
 					// The data object is an integer type.  Coerce to a string in order
@@ -1956,6 +1955,29 @@ qx.Class.define("dev.Statics", {
 				} else {
 					// Load it as a string.
 					formField.setValue(dataObject[getName]());
+				}
+
+			} else if (formField instanceof qx.ui.form.TextArea) {
+				// Check to see if we also have a CK version of this textArea - if so, that one
+				// takes precedence.
+				var ckField = theThis[ fieldName + "CK" ];
+				if(ckField !== undefined && ckField !== null){
+					// We have a CKEditor on top of the text area
+					if(ckField.status === 'ready'){
+						ckField.setData( dataObject[getName]() );
+					} else {
+						var content = dataObject[getName]();
+						ckField.on('instanceReady', function(evt){
+							ckField.setData( content );
+						});
+					}
+				} else {
+					// Standard textArea
+					if(initValue === 0){
+						formField.setValue( String(dataObject[getName]() ) );
+					} else {
+						formField.setValue( dataObject[getName]() );
+					}
 				}
 
 			} else if (formField instanceof qx.ui.form.DateField) {
@@ -2053,8 +2075,7 @@ qx.Class.define("dev.Statics", {
 			}
 
 			if (formField instanceof qx.ui.form.TextField ||
-				formField instanceof qx.ui.form.PasswordField ||
-				formField instanceof qx.ui.form.TextArea
+				formField instanceof qx.ui.form.PasswordField
 			) {
 				if (initValue === 0) {
 					// The data object is an integer type.  Coerce to a number in order
@@ -2063,6 +2084,21 @@ qx.Class.define("dev.Statics", {
 				} else {
 					// Load it as a string.
 					dataObject[setName](formField.getValue());
+				}
+			} else if (formField instanceof qx.ui.form.TextArea) {
+				// Check to see if we also have a CK version of this textArea - if so, that one
+				// takes precedence.
+				var ckField = theThis[ fieldName + "CK" ];
+				if(ckField !== undefined && ckField !== null){
+					// We have a CKEditor on top of the text area
+					dataObject[ setName ]( ckField.getData() );
+				} else {
+					// Standard textArea
+					if(initValue === 0){
+						dataObject[ setName ](Number(formField.getValue()) );
+					} else {
+						dataObject[ setName ](formField.getValue() );
+					}
 				}
 
 			} else if (formField instanceof qx.ui.form.DateField) {
