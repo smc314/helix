@@ -43,6 +43,7 @@ qx.Class.define("dev.screens.LayoutDesigner", {
 		dev.screens.layout.SpanField,
 		dev.screens.layout.StandardTable,
 		dev.screens.layout.TextArea,
+		dev.screens.layout.CKTextArea,
 		dev.screens.layout.Tree,
 		dev.screens.layout.TreeVirtual,
 		dev.screens.layout.VerticalBoxLayout,
@@ -80,6 +81,7 @@ qx.Class.define("dev.screens.LayoutDesigner", {
 		this.dynamicLayouts.push({name: "LayoutDesigner.SpanField.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.StandardTable.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.TextArea.xml", doc:null});
+		this.dynamicLayouts.push({name: "LayoutDesigner.CKTextArea.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.TreeVirtual.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.Tree.xml", doc:null});
 		this.dynamicLayouts.push({name: "LayoutDesigner.VerticalBoxLayout.xml", doc:null});
@@ -116,6 +118,7 @@ qx.Class.define("dev.screens.LayoutDesigner", {
 			"SpanField",
 			"StandardTable",
 			"TextArea",
+			"CKTextArea",
 			"TreeVirtual",
 			"Tree",
 			"VerticalBoxLayout",

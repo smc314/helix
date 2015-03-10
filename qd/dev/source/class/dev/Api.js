@@ -543,403 +543,67 @@ qx.Class.define("dev.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/dev/GetProject
+		/** This function will call the /logic/admin/GetIAFileDetails
 		  * server API.
 		  */
-		GetProject : function ( inputObj,
+		GetIAFileDetails : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetProject");
+			var requestDoc = qx.xml.Document.create(null, "GetIAFileDetails");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/dev/GetProject",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetIAFileDetails",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/dev/SaveProject
+		/** This function will call the /logic/admin/GetOneUser
 		  * server API.
 		  */
-		SaveProject : function ( inputObj,
+		GetOneUser : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SaveProject");
+			var requestDoc = qx.xml.Document.create(null, "GetOneUser");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/dev/SaveProject",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetOneUser",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/dev/GetProjectList
+		/** This function will call the /logic/admin/SaveIAFile
 		  * server API.
 		  */
-		GetProjectList : function (
+		SaveIAFile : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetProjectList");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/dev/GetProjectList",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetLogMsgCount
-		  * server API.
-		  */
-		GetLogMsgCount : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetLogMsgCount");
+			var requestDoc = qx.xml.Document.create(null, "SaveIAFile");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogMsgCount",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/SaveIAFile",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/util/CloseConnection
+		/** This function will call the /logic/admin/GetIAFileList
 		  * server API.
 		  */
-		CloseConnection : function (
+		GetIAFileList : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "CloseConnection");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/CloseConnection",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetAllLayouts
-		  * server API.
-		  */
-		GetAllLayouts : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetAllLayouts");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetAllLayouts",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetLogSettings
-		  * server API.
-		  */
-		GetLogSettings : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetLogSettings");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogSettings",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetLogMessagesByRange
-		  * server API.
-		  */
-		GetLogMessagesByRange : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetLogMessagesByRange");
+			var requestDoc = qx.xml.Document.create(null, "GetIAFileList");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogMessagesByRange",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetHitMap
-		  * server API.
-		  */
-		GetHitMap : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetHitMap");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetHitMap",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/CleanoutLRTask
-		  * server API.
-		  */
-		CleanoutLRTask : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "CleanoutLRTask");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/CleanoutLRTask",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetAllLRTasks
-		  * server API.
-		  */
-		GetAllLRTasks : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetAllLRTasks");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetAllLRTasks",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/SaveLogMsg
-		  * server API.
-		  */
-		SaveLogMsg : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SaveLogMsg");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/SaveLogMsg",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/FindLogMessage
-		  * server API.
-		  */
-		FindLogMessage : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "FindLogMessage");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/FindLogMessage",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/UpdateLogSettings
-		  * server API.
-		  */
-		UpdateLogSettings : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "UpdateLogSettings");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/UpdateLogSettings",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetProfile
-		  * server API.
-		  */
-		GetProfile : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetProfile");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetProfile",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetOneLRTask
-		  * server API.
-		  */
-		GetOneLRTask : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetOneLRTask");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetOneLRTask",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/SwitchServerConnection
-		  * server API.
-		  */
-		SwitchServerConnection : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SwitchServerConnection");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/SwitchServerConnection",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/ExecuteGenericSQL
-		  * server API.
-		  */
-		ExecuteGenericSQL : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "ExecuteGenericSQL");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/ExecuteGenericSQL",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetLogMessages
-		  * server API.
-		  */
-		GetLogMessages : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetLogMessages");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogMessages",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/util/GetLogFiles
-		  * server API.
-		  */
-		GetLogFiles : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetLogFiles");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogFiles",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/InsertGroup
-		  * server API.
-		  */
-		InsertGroup : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "InsertGroup");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/InsertGroup",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/UpdateGroup
-		  * server API.
-		  */
-		UpdateGroup : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "UpdateGroup");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/UpdateGroup",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/InsertScheduleItem
-		  * server API.
-		  */
-		InsertScheduleItem : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "InsertScheduleItem");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/InsertScheduleItem",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/UpdateScheduleItem
-		  * server API.
-		  */
-		UpdateScheduleItem : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "UpdateScheduleItem");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/UpdateScheduleItem",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/SaveSQLWork
-		  * server API.
-		  */
-		SaveSQLWork : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SaveSQLWork");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/SaveSQLWork",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/DeleteSQLWork
-		  * server API.
-		  */
-		DeleteSQLWork : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "DeleteSQLWork");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteSQLWork",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetIAFileList",
 				completionFunction, theThis);
 		},
 
@@ -975,65 +639,49 @@ qx.Class.define("dev.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/DeleteScheduleItem
+		/** This function will call the /logic/admin/DeleteSQLWork
 		  * server API.
 		  */
-		DeleteScheduleItem : function ( inputObj,
+		DeleteSQLWork : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "DeleteScheduleItem");
+			var requestDoc = qx.xml.Document.create(null, "DeleteSQLWork");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteScheduleItem",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteSQLWork",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/DeleteUser
+		/** This function will call the /logic/admin/GetScheduleItems
 		  * server API.
 		  */
-		DeleteUser : function ( inputObj,
+		GetScheduleItems : function (
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "DeleteUser");
+			var requestDoc = qx.xml.Document.create(null, "GetScheduleItems");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetScheduleItems",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/SaveSQLWork
+		  * server API.
+		  */
+		SaveSQLWork : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "SaveSQLWork");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteUser",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/DeleteIAFile
-		  * server API.
-		  */
-		DeleteIAFile : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "DeleteIAFile");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteIAFile",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/GetActions
-		  * server API.
-		  */
-		GetActions : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetActions");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetActions",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/SaveSQLWork",
 				completionFunction, theThis);
 		},
 
@@ -1053,49 +701,19 @@ qx.Class.define("dev.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/GetOneUser
+		/** This function will call the /logic/admin/SaveSQLTest
 		  * server API.
 		  */
-		GetOneUser : function ( inputObj,
+		SaveSQLTest : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetOneUser");
+			var requestDoc = qx.xml.Document.create(null, "SaveSQLTest");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetOneUser",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/LoadSQLTestMeta
-		  * server API.
-		  */
-		LoadSQLTestMeta : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "LoadSQLTestMeta");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/LoadSQLTestMeta",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/GetGroups
-		  * server API.
-		  */
-		GetGroups : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetGroups");
-
-			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetGroups",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/SaveSQLTest",
 				completionFunction, theThis);
 		},
 
@@ -1115,6 +733,148 @@ qx.Class.define("dev.Api", {
 				completionFunction, theThis);
 		},
 
+		/** This function will call the /logic/admin/LoadSQLTestMeta
+		  * server API.
+		  */
+		LoadSQLTestMeta : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "LoadSQLTestMeta");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/LoadSQLTestMeta",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/InsertScheduleItem
+		  * server API.
+		  */
+		InsertScheduleItem : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "InsertScheduleItem");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/InsertScheduleItem",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/UpdateScheduleItem
+		  * server API.
+		  */
+		UpdateScheduleItem : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "UpdateScheduleItem");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/UpdateScheduleItem",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/GetWorkFileList
+		  * server API.
+		  */
+		GetWorkFileList : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetWorkFileList");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetWorkFileList",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/DeleteUser
+		  * server API.
+		  */
+		DeleteUser : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "DeleteUser");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteUser",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/GetSQLWork
+		  * server API.
+		  */
+		GetSQLWork : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetSQLWork");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetSQLWork",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/GetGroups
+		  * server API.
+		  */
+		GetGroups : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetGroups");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetGroups",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/DeleteScheduleItem
+		  * server API.
+		  */
+		DeleteScheduleItem : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "DeleteScheduleItem");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteScheduleItem",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/DeleteIAFile
+		  * server API.
+		  */
+		DeleteIAFile : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "DeleteIAFile");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/DeleteIAFile",
+				completionFunction, theThis);
+		},
+
 		/** This function will call the /logic/admin/GetUsers
 		  * server API.
 		  */
@@ -1129,35 +889,35 @@ qx.Class.define("dev.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/GetIAFileList
+		/** This function will call the /logic/admin/InsertGroup
 		  * server API.
 		  */
-		GetIAFileList : function ( inputObj,
+		InsertGroup : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetIAFileList");
+			var requestDoc = qx.xml.Document.create(null, "InsertGroup");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetIAFileList",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/InsertGroup",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/SaveIAFile
+		/** This function will call the /logic/admin/UpdateGroup
 		  * server API.
 		  */
-		SaveIAFile : function ( inputObj,
+		UpdateGroup : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SaveIAFile");
+			var requestDoc = qx.xml.Document.create(null, "UpdateGroup");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/SaveIAFile",
+			dev.Api.SendRequest(requestDoc, "/logic/admin/UpdateGroup",
 				completionFunction, theThis);
 		},
 
@@ -1193,81 +953,321 @@ qx.Class.define("dev.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/GetIAFileDetails
+		/** This function will call the /logic/admin/GetActions
 		  * server API.
 		  */
-		GetIAFileDetails : function ( inputObj,
+		GetActions : function (
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetIAFileDetails");
+			var requestDoc = qx.xml.Document.create(null, "GetActions");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/admin/GetActions",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/ExecuteGenericSQL
+		  * server API.
+		  */
+		ExecuteGenericSQL : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "ExecuteGenericSQL");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetIAFileDetails",
+			dev.Api.SendRequest(requestDoc, "/logic/util/ExecuteGenericSQL",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/GetWorkFileList
+		/** This function will call the /logic/util/GetProfile
 		  * server API.
 		  */
-		GetWorkFileList : function ( inputObj,
+		GetProfile : function (
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetWorkFileList");
+			var requestDoc = qx.xml.Document.create(null, "GetProfile");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetProfile",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/FindLogMessage
+		  * server API.
+		  */
+		FindLogMessage : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "FindLogMessage");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetWorkFileList",
+			dev.Api.SendRequest(requestDoc, "/logic/util/FindLogMessage",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/GetScheduleItems
+		/** This function will call the /logic/util/CloseConnection
 		  * server API.
 		  */
-		GetScheduleItems : function (
+		CloseConnection : function (
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetScheduleItems");
+			var requestDoc = qx.xml.Document.create(null, "CloseConnection");
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetScheduleItems",
+			dev.Api.SendRequest(requestDoc, "/logic/util/CloseConnection",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/SaveSQLTest
+		/** This function will call the /logic/util/SaveLogMsg
 		  * server API.
 		  */
-		SaveSQLTest : function ( inputObj,
+		SaveLogMsg : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SaveSQLTest");
+			var requestDoc = qx.xml.Document.create(null, "SaveLogMsg");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/SaveSQLTest",
+			dev.Api.SendRequest(requestDoc, "/logic/util/SaveLogMsg",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/GetSQLWork
+		/** This function will call the /logic/util/GetHitMap
 		  * server API.
 		  */
-		GetSQLWork : function ( inputObj,
+		GetHitMap : function (
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetSQLWork");
+			var requestDoc = qx.xml.Document.create(null, "GetHitMap");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetHitMap",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetAllLRTasks
+		  * server API.
+		  */
+		GetAllLRTasks : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetAllLRTasks");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetAllLRTasks",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetLogFiles
+		  * server API.
+		  */
+		GetLogFiles : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetLogFiles");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogFiles",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetAllLayouts
+		  * server API.
+		  */
+		GetAllLayouts : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetAllLayouts");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetAllLayouts",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetLogMessagesByRange
+		  * server API.
+		  */
+		GetLogMessagesByRange : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetLogMessagesByRange");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			dev.Api.SendRequest(requestDoc, "/logic/admin/GetSQLWork",
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogMessagesByRange",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetLogSettings
+		  * server API.
+		  */
+		GetLogSettings : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetLogSettings");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogSettings",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetLogMsgCount
+		  * server API.
+		  */
+		GetLogMsgCount : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetLogMsgCount");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogMsgCount",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetLogMessages
+		  * server API.
+		  */
+		GetLogMessages : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetLogMessages");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetLogMessages",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/UpdateLogSettings
+		  * server API.
+		  */
+		UpdateLogSettings : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "UpdateLogSettings");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/UpdateLogSettings",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/SwitchServerConnection
+		  * server API.
+		  */
+		SwitchServerConnection : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "SwitchServerConnection");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/SwitchServerConnection",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/CleanoutLRTask
+		  * server API.
+		  */
+		CleanoutLRTask : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "CleanoutLRTask");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/CleanoutLRTask",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/util/GetOneLRTask
+		  * server API.
+		  */
+		GetOneLRTask : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetOneLRTask");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/util/GetOneLRTask",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/dev/GetProjectList
+		  * server API.
+		  */
+		GetProjectList : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetProjectList");
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/dev/GetProjectList",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/dev/SaveProject
+		  * server API.
+		  */
+		SaveProject : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "SaveProject");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/dev/SaveProject",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/dev/GetProject
+		  * server API.
+		  */
+		GetProject : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetProject");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			dev.Api.SendRequest(requestDoc, "/logic/dev/GetProject",
 				completionFunction, theThis);
 		},
 

@@ -7,63 +7,63 @@
    Authors: Steven M. Cherry
 
 ************************************************************************ */
-qx.Class.define("PACKAGE.layout.LayoutEngine", {
+qx.Class.define("welcome.layout.LayoutEngine", {
 	extend: qx.core.Object,
 
 	include : [
-		PACKAGE.layout.LayoutButton,
-		PACKAGE.layout.LayoutDoubleCheck2,
-		PACKAGE.layout.LayoutDoubleCheck,
-		PACKAGE.layout.LayoutDoubleField,
-		PACKAGE.layout.LayoutFieldArea,
-		PACKAGE.layout.LayoutGroupBox,
-		PACKAGE.layout.LayoutHorizontalBoxLayout,
-		PACKAGE.layout.LayoutHtmlEmbed,
-		PACKAGE.layout.LayoutIFrame,
-		PACKAGE.layout.LayoutLabel,
-		PACKAGE.layout.LayoutList,
-		PACKAGE.layout.LayoutLongLabel,
-		PACKAGE.layout.LayoutLongLabelRich,
-		PACKAGE.layout.LayoutQuadCheck,
-		PACKAGE.layout.LayoutQuadField,
-		PACKAGE.layout.LayoutRadioGroup2,
-		PACKAGE.layout.LayoutRadioGroup3,
-		PACKAGE.layout.LayoutRadioGroup4,
-		PACKAGE.layout.LayoutRadioGroup5,
-		PACKAGE.layout.LayoutSingleCheck,
-		PACKAGE.layout.LayoutSpacer,
-		PACKAGE.layout.LayoutSpanField,
-		PACKAGE.layout.LayoutSplitPane,
-		PACKAGE.layout.LayoutStandardTable,
-		PACKAGE.layout.LayoutStandardTreeVirtual,
-		PACKAGE.layout.LayoutTextArea,
-		PACKAGE.layout.LayoutCKTextArea,
-		PACKAGE.layout.LayoutTree,
-		PACKAGE.layout.LayoutTreeVirtual,
-		PACKAGE.layout.LayoutTripleField,
-		PACKAGE.layout.LayoutVerticalBoxLayout
+		welcome.layout.LayoutButton,
+		welcome.layout.LayoutDoubleCheck2,
+		welcome.layout.LayoutDoubleCheck,
+		welcome.layout.LayoutDoubleField,
+		welcome.layout.LayoutFieldArea,
+		welcome.layout.LayoutGroupBox,
+		welcome.layout.LayoutHorizontalBoxLayout,
+		welcome.layout.LayoutHtmlEmbed,
+		welcome.layout.LayoutIFrame,
+		welcome.layout.LayoutLabel,
+		welcome.layout.LayoutList,
+		welcome.layout.LayoutLongLabel,
+		welcome.layout.LayoutLongLabelRich,
+		welcome.layout.LayoutQuadCheck,
+		welcome.layout.LayoutQuadField,
+		welcome.layout.LayoutRadioGroup2,
+		welcome.layout.LayoutRadioGroup3,
+		welcome.layout.LayoutRadioGroup4,
+		welcome.layout.LayoutRadioGroup5,
+		welcome.layout.LayoutSingleCheck,
+		welcome.layout.LayoutSpacer,
+		welcome.layout.LayoutSpanField,
+		welcome.layout.LayoutSplitPane,
+		welcome.layout.LayoutStandardTable,
+		welcome.layout.LayoutStandardTreeVirtual,
+		welcome.layout.LayoutTextArea,
+		welcome.layout.LayoutCKTextArea,
+		welcome.layout.LayoutTree,
+		welcome.layout.LayoutTreeVirtual,
+		welcome.layout.LayoutTripleField,
+		welcome.layout.LayoutVerticalBoxLayout
 	],
 
 	statics : {
-		
+
 		/** This method combines the loadxml call with the call to renderLayout
 		  * as a convienence.
 		  */
 		loadRenderLayout : function ( theThis, docURL, parent, callback ){
-		
-			PACKAGE.Api.LoadXMLDoc( docURL, 
+
+			welcome.Api.LoadXMLDoc( docURL,
 			function(response){
-				var obj = PACKAGE.layout.LayoutEngine.renderLayout( theThis, response, parent);
-				callback.call(theThis, response.ownerDocument, obj); 
+				var obj = welcome.layout.LayoutEngine.renderLayout( theThis, response, parent);
+				callback.call(theThis, response.ownerDocument, obj);
 			}, theThis );
-		
-		},  
-		  
+
+		},
+
 		/** This function makes it easy to create your widget layout by describing
 		 * the contents of your layout using an XML document.  This allows you to
 		 * be more compact in your layout description, while still taking full advantage
 		 * of the qooxdoo widget system.
-		 * 
+		 *
 		 * @param theThis {Object} This is the object that we will attach any variables to.
 		 * @param layoutDoc {Object} This is an XML string that we will parse to read your layout.
 		 * @param parent {Object} This is the widget parent that the new layout will be added to.
@@ -72,7 +72,7 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 			var xmlDoc = null;
 			var elem = null;
 			if(typeof(layoutDoc) === "string" || layoutDoc instanceof String){
-				xmlDoc = PACKAGE.Statics.xmlStringToDoc( layoutDoc );
+				xmlDoc = welcome.Statics.xmlStringToDoc( layoutDoc );
 			} else {
 				xmlDoc = layoutDoc;
 			}
@@ -81,16 +81,16 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 				return null;
 			}
 			elem = xmlDoc.documentElement;
-			
+
 			// Start at the root and work our way down
 			if(elem.nodeName === "parsererror"){
 				theThis.error("Invalid XML Document passed to renderLayout" );
-				theThis.error( PACKAGE.Statics.xmlDocToString( xmlDoc ) );
+				theThis.error( welcome.Statics.xmlDocToString( xmlDoc ) );
 				return null;
 			}
-			var layoutEngine = new PACKAGE.layout.LayoutEngine;
+			var layoutEngine = new welcome.layout.LayoutEngine;
 			var obj = layoutEngine.createElementAndChildren( theThis, elem, parent );
-			
+
 			if((parent) && (obj) && (parent !== obj)){
 				var flex = layoutEngine.getFlexAttr(elem);
 				if(flex){
@@ -104,7 +104,7 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 	},
 
 	members : {
-		
+
 
 		/** This method will create the object that represents the current node and
 		  * then recursively call ourselves for all child nodes found.
@@ -123,7 +123,7 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 			}
 
 		},
-		
+
 		createRecursiveCheckBoxTree : function ( theThis, elem, parent ) {
 			// first pull out the column list:
 			// A tree has no children.
@@ -141,8 +141,8 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 				var val = node.nodeValue;
 				if(name === "varName"){
 					theThis[ val ] = obj;
-					PACKAGE.Statics.trackNamedAttr( theThis, val );
-					PACKAGE.Statics.setHtmlID( obj, val );
+					welcome.Statics.trackNamedAttr( theThis, val );
+					welcome.Statics.setHtmlID( obj, val );
 				} else if(name === "label" ){
 					obj.setLabel( val );
 				} else if(name === "legend" ){
@@ -270,7 +270,7 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 				}
 			}
 		},
-		
+
 		getFlexAttr : function (elem){
 			var attrMap = elem.attributes;
 			if(attrMap === null){
