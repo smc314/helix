@@ -154,7 +154,11 @@ void ConnectionPool::releaseConnection(Connection& con)
 		CPEntry* cpe = m_pool[i];
 		if(cpe->con == &con){
 			cpe->in_use = false;
-			cpe->con->odbc->Rollback(); // undo anything that is left hanging on this connection
+			try {
+				cpe->con->odbc->Rollback(); // undo anything that is left hanging on this connection
+			} catch (AnException& e){
+				// We don't care about exceptions here.
+			}
 			return;
 		}
 	}

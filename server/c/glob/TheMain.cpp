@@ -191,9 +191,9 @@ void TheMain::InternalExecute(void)
 		// Start draining and writing logs
 		InitLogs();
 
-		InitStorageDB();
+		LoadLogics(); // Do this before InitStorageDB
 
-		LoadLogics();
+		InitStorageDB();
 
 		// Create and launch any IOAdapters that we have defined
 		// so that we can listen for incomming messages.  The scheduler

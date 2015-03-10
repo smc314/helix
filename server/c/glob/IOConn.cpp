@@ -428,7 +428,11 @@ void IOConn::ReleaseDB(void)
 	if(m_db != NULL){
 		// Ensure that every time we release a DB, we do a rollback to tell the
 		// server we're not doing anything else with it.
-		m_db->odbc->Rollback();
+		try {
+			m_db->odbc->Rollback();
+		} catch(AnException& e){
+			// We don't care about exceptions here
+		}
 
 		// Release it back to the pool
 		m_db->release();
