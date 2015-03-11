@@ -128,6 +128,7 @@ Connection& ConnectionPool::getConnection(void)
 	if(cpe != NULL){
 		cpe->usage_count ++;
 		cpe->in_use = true;
+		checkConnection( cpe->con );
 		return *(cpe->con);
 	}
 
@@ -217,3 +218,29 @@ CPEntry* ConnectionPool::createConnection(void)
 	return cpe;
 }
 
+void ConnectionPool::checkConnection(Connection* con)
+{
+	EnEx ee("ConnectionPool::checkConnection(Connection* con)");
+
+	// If the connections in our pool hang around for too long, they can sometimes go
+	// stale.  We need to check for this, and if the connection is bad, replace it with
+	// a new connection.
+	
+	// Use a rollback to test whether the connection is still working or not.
+	try {
+		con->odbc->Rollback();
+		// If all is well - then just return.
+		return;
+	} catch(...){
+		// If we catch any type of exception or anything is thrown, then the connection is
+		// stale and needs to be replaced.
+		try {
+			delete con->odbc;
+		} catch(...){
+			// We don't care about exceptions here.
+		}
+		// Hook up a new odbc connection to this
+		con->odbc = new OdbcObj(m_user, m_pass, m_connstr );
+	}
+
+}

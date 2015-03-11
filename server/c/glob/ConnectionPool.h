@@ -105,6 +105,11 @@ class ConnectionPool {
 		 */
 		CPEntry* createConnection(void);
 
+		/** This method will check the odbc connection, and if it has gone stale
+		  * it will replace it with a new connection to the database.
+		  */
+		void checkConnection(Connection* con);
+
 	private:
 
 		twine m_name;
