@@ -236,6 +236,13 @@ void* HttpIOAdapter::HandleInbound(
 	
 	dptr<HttpConn> ioc; ioc = new HttpConn(event, conn, request_info, 
 		HttpIOAdapter_compressionThreshold, HttpIOAdapter_keepalive);
+
+	if(ioc->verifyUserAction() == false){
+		// User not authenticated or authorized.  ioc will have already sent the correct
+		// response back to the caller.
+		return (void*)"processed"; 
+	}
+
 	try {
 		ActionMap& am = ActionMap::getInstance();
 		ActionClass* handler = am.findAction(ioc->MsgTarget());

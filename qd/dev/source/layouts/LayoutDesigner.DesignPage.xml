@@ -1,0 +1,34 @@
+<HorizontalSplitPane varName="horizontalSplitter" leftsize="1" rightsize="9" >
+	<!-- leftsize and rightsize are flex settings for the first and second halves. -->
+	<HorizontalSplitPaneLeft>
+		<!-- Left pane layout items go here.  Usually start with a Vertical or Horizontal Box Layout -->
+		<VerticalBoxLayout varName="treePane" spacing="0" flex="1" >
+			<Tree varName="layoutTree" flex="1" />
+		</VerticalBoxLayout>
+
+	</HorizontalSplitPaneLeft>
+	<HorizontalSplitPaneRight>
+		<!-- Right pane layout items go here. Usually start with a Vertical or Horizontal Box Layout -->
+
+		<VerticalSplitPane varName="verticalSplitter" leftsize="7" rightsize="3" >
+			<!-- leftsize and rightsize are flex settings for the first and second halves. -->
+			<VerticalSplitPaneTop>
+				<!-- Top pane layout items go here.  Usually start with a Vertical or Horizontal Box Layout -->
+
+				<VerticalBoxLayout varName="renderingPane" spacing="0" flex="1" >
+					<!-- Layout Contents go here. -->
+				</VerticalBoxLayout>
+				
+			</VerticalSplitPaneTop>
+			<VerticalSplitPaneBottom>
+				<!-- Bottom pane layout items go here. Usually start with a Vertical or Horizontal Box Layout -->
+
+				<VerticalBoxLayout varName="settingsPane" spacing="0" flex="1" >
+					<!-- Layout Contents go here. -->
+				</VerticalBoxLayout>
+
+			</VerticalSplitPaneBottom>
+		</VerticalSplitPane>
+
+	</HorizontalSplitPaneRight>
+</HorizontalSplitPane>

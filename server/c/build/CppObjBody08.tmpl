@@ -46,6 +46,22 @@ void ${shortName}::createXmlChildren(xmlNodePtr parent, vector<${shortName}* >* 
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+void ${shortName}::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<${shortName}* >* vect)
+{
+	EnEx ee(FL, "${shortName}::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<${shortName}* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to ${shortName}::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	${shortName}::createXmlChildren( child, vect );
+
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void ${shortName}::deleteVector(vector<${shortName}* >* vect)

@@ -1,0 +1,139 @@
+<SQLXml generateClass="Group" package="logic/admin" >
+	<ChildVector name="UsersForGroup" type="UserGroup"/>
+	<ChildVector name="ActionsForGroup" type="Action"/>
+
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add new group entries into our database
+		</Comment>
+		<Sql>
+			insert into groups (name, description)
+			values ( ?, ? )
+		</Sql>
+		<Input name="id" type="autogen"/>
+		<Input name="Groupname" type="twine"/>
+		<Input name="Description" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="addUserToGroup" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add user's to a group.
+		</Comment>
+		<Sql>
+			insert into usergroup (userid, groupid)
+			values ( ?, ? )
+		</Sql>
+		<Input name="userid" type="int"/>
+		<Input name="id" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update existing group entries in our database
+		</Comment>
+		<Sql>
+			update groups
+			set name = ?,
+				description = ?
+			where id = ?
+		</Sql>
+		<Input name="Groupname" type="twine"/>
+		<Input name="Description" type="twine"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing group entries in our database
+		</Comment>
+		<Sql>
+			delete from groups
+			where id = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteUsersForGroup" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete all users who were a member of this group.
+		</Comment>
+		<Sql>
+			delete from usergroup
+			where groupid = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteActionsForGroup" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete all actions associated to this group.
+		</Comment>
+		<Sql>
+			delete from groupaction
+			where groupid = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="removeUserFromGroup" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to remove user's to a group
+		</Comment>
+		<Sql>
+			delete from usergroup
+			where userid = ?
+			and   groupid = ?
+		</Sql>
+		<Input name="userid" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all group entries in our database
+		</Comment>
+		<Sql>
+			select id, name, description
+			from groups
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Groupname" type="twine"/>
+		<Output name="Description" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single group entry in our database.
+		</Comment>
+		<Sql>
+			select id, name, description
+			from groups
+			where id = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Groupname" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByGroupname" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single group entry in our database.
+		</Comment>
+		<Sql>
+			select id, name, description
+			from groups
+			where name = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Groupname" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Input name="Groupname" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectGroupsForUser" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all group entries for a given user in our database.
+		</Comment>
+		<Sql>
+			select id, name, description
+			from groups, usergroup
+			where usergroup.userid = ?
+			and   usergroup.groupid = groups.id
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Groupname" type="twine"/>
+		<Output name="Description" type="twine"/>
+		<Input name="userid" type="int"/>
+	</SqlStatement>
+</SQLXml>

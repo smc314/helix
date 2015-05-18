@@ -11,6 +11,7 @@
 using namespace SLib;
 
 // We need references to every single data object class here:
+#include <Action.h>
 #include <Api.h>
 #include <Application.h>
 #include <Col.h>
@@ -19,6 +20,7 @@ using namespace SLib;
 #include <DOStmtInput.h>
 #include <DOStmtOutput.h>
 #include <DObject.h>
+#include <Group.h>
 #include <HitMap.h>
 #include <IAFile.h>
 #include <IAFolder.h>
@@ -37,7 +39,10 @@ using namespace SLib;
 #include <SQLWork.h>
 #include <SchedItem.h>
 #include <Screen.h>
+#include <Session.h>
 #include <TableCol.h>
+#include <User.h>
+#include <UserGroup.h>
 using namespace Helix::Logic::admin;
 using namespace Helix::Logic::dev;
 //using namespace Helix::Logic::test;
@@ -149,105 +154,75 @@ class HelixApi : public HttpClient
 	/* ******************************************************************************* */
 	public:
 
-		/** This method will call the /logic/dev/GetProject
+		/** This method will call the /Authenticate
 		  * server API.
 		  */
-		xmlDocPtr GetProject( const Project& dataObj );
+		xmlDocPtr Authenticate( );
 
-		/** This method will call the /logic/dev/SaveProject
+		/** This method will call the /logic/admin/GetIAFileDetails
 		  * server API.
 		  */
-		xmlDocPtr SaveProject( const Project& dataObj );
+		xmlDocPtr GetIAFileDetails( const IAFile& dataObj );
 
-		/** This method will call the /logic/dev/GetProjectList
+		/** This method will call the /logic/admin/GetOneUser
 		  * server API.
 		  */
-		xmlDocPtr GetProjectList( );
+		xmlDocPtr GetOneUser( const User& dataObj );
 
-		/** This method will call the /logic/util/GetLogMsgCount
+		/** This method will call the /logic/admin/SaveIAFile
 		  * server API.
 		  */
-		xmlDocPtr GetLogMsgCount( const LogMessageFilter& dataObj );
+		xmlDocPtr SaveIAFile( const IAFile& dataObj );
 
-		/** This method will call the /logic/util/CloseConnection
+		/** This method will call the /logic/admin/GetIAFileList
 		  * server API.
 		  */
-		xmlDocPtr CloseConnection( );
+		xmlDocPtr GetIAFileList( const IAFolder& dataObj );
 
-		/** This method will call the /logic/util/GetAllLayouts
+		/** This method will call the /logic/admin/InsertUser
 		  * server API.
 		  */
-		xmlDocPtr GetAllLayouts( );
+		xmlDocPtr InsertUser( const User& dataObj );
 
-		/** This method will call the /logic/util/GetLogSettings
+		/** This method will call the /logic/admin/UpdateUser
 		  * server API.
 		  */
-		xmlDocPtr GetLogSettings( );
+		xmlDocPtr UpdateUser( const User& dataObj );
 
-		/** This method will call the /logic/util/GetLogMessagesByRange
+		/** This method will call the /logic/admin/DeleteSQLWork
 		  * server API.
 		  */
-		xmlDocPtr GetLogMessagesByRange( const LogMessageFilter& dataObj );
+		xmlDocPtr DeleteSQLWork( const SQLWork& dataObj );
 
-		/** This method will call the /logic/util/GetHitMap
+		/** This method will call the /logic/admin/GetScheduleItems
 		  * server API.
 		  */
-		xmlDocPtr GetHitMap( );
+		xmlDocPtr GetScheduleItems( );
 
-		/** This method will call the /logic/util/CleanoutLRTask
+		/** This method will call the /logic/admin/SaveSQLWork
 		  * server API.
 		  */
-		xmlDocPtr CleanoutLRTask( const LRTask& dataObj );
+		xmlDocPtr SaveSQLWork( const SQLWork& dataObj );
 
-		/** This method will call the /logic/util/GetAllLRTasks
+		/** This method will call the /logic/admin/GetOneGroup
 		  * server API.
 		  */
-		xmlDocPtr GetAllLRTasks( );
+		xmlDocPtr GetOneGroup( const Group& dataObj );
 
-		/** This method will call the /logic/util/SaveLogMsg
+		/** This method will call the /logic/admin/SaveSQLTest
 		  * server API.
 		  */
-		xmlDocPtr SaveLogMsg( const LogObj& dataObj );
+		xmlDocPtr SaveSQLTest( const SQLTests& dataObj );
 
-		/** This method will call the /logic/util/FindLogMessage
+		/** This method will call the /logic/admin/GetOneScheduleItem
 		  * server API.
 		  */
-		xmlDocPtr FindLogMessage( const LogMessageFilter& dataObj );
+		xmlDocPtr GetOneScheduleItem( const SchedItem& dataObj );
 
-		/** This method will call the /logic/util/UpdateLogSettings
+		/** This method will call the /logic/admin/LoadSQLTestMeta
 		  * server API.
 		  */
-		xmlDocPtr UpdateLogSettings( const LogSettings& dataObj );
-
-		/** This method will call the /logic/util/GetProfile
-		  * server API.
-		  */
-		xmlDocPtr GetProfile( );
-
-		/** This method will call the /logic/util/GetOneLRTask
-		  * server API.
-		  */
-		xmlDocPtr GetOneLRTask( const LRTask& dataObj );
-
-		/** This method will call the /logic/util/SwitchServerConnection
-		  * server API.
-		  */
-		xmlDocPtr SwitchServerConnection( const LogOn& dataObj );
-
-		/** This method will call the /logic/util/ExecuteGenericSQL
-		  * server API.
-		  */
-		xmlDocPtr ExecuteGenericSQL( const SQLStatement& dataObj );
-
-		/** This method will call the /logic/util/GetLogMessages
-		  * server API.
-		  */
-		xmlDocPtr GetLogMessages( const LogMessageFilter& dataObj );
-
-		/** This method will call the /logic/util/GetLogFiles
-		  * server API.
-		  */
-		xmlDocPtr GetLogFiles( );
+		xmlDocPtr LoadSQLTestMeta( const SQLTests& dataObj );
 
 		/** This method will call the /logic/admin/InsertScheduleItem
 		  * server API.
@@ -259,15 +234,25 @@ class HelixApi : public HttpClient
 		  */
 		xmlDocPtr UpdateScheduleItem( const SchedItem& dataObj );
 
-		/** This method will call the /logic/admin/SaveSQLWork
+		/** This method will call the /logic/admin/GetWorkFileList
 		  * server API.
 		  */
-		xmlDocPtr SaveSQLWork( const SQLWork& dataObj );
+		xmlDocPtr GetWorkFileList( const IAFolder& dataObj );
 
-		/** This method will call the /logic/admin/DeleteSQLWork
+		/** This method will call the /logic/admin/DeleteUser
 		  * server API.
 		  */
-		xmlDocPtr DeleteSQLWork( const SQLWork& dataObj );
+		xmlDocPtr DeleteUser( const User& dataObj );
+
+		/** This method will call the /logic/admin/GetSQLWork
+		  * server API.
+		  */
+		xmlDocPtr GetSQLWork( const SQLWork& dataObj );
+
+		/** This method will call the /logic/admin/GetGroups
+		  * server API.
+		  */
+		xmlDocPtr GetGroups( );
 
 		/** This method will call the /logic/admin/DeleteScheduleItem
 		  * server API.
@@ -279,55 +264,135 @@ class HelixApi : public HttpClient
 		  */
 		xmlDocPtr DeleteIAFile( const IAFile& dataObj );
 
-		/** This method will call the /logic/admin/LoadSQLTestMeta
+		/** This method will call the /logic/admin/GetUsers
 		  * server API.
 		  */
-		xmlDocPtr LoadSQLTestMeta( const SQLTests& dataObj );
+		xmlDocPtr GetUsers( );
 
-		/** This method will call the /logic/admin/GetOneScheduleItem
+		/** This method will call the /logic/admin/InsertGroup
 		  * server API.
 		  */
-		xmlDocPtr GetOneScheduleItem( const SchedItem& dataObj );
+		xmlDocPtr InsertGroup( const Group& dataObj );
 
-		/** This method will call the /logic/admin/GetIAFileList
+		/** This method will call the /logic/admin/UpdateGroup
 		  * server API.
 		  */
-		xmlDocPtr GetIAFileList( const IAFolder& dataObj );
+		xmlDocPtr UpdateGroup( const Group& dataObj );
 
-		/** This method will call the /logic/admin/SaveIAFile
+		/** This method will call the /logic/admin/DeleteGroup
 		  * server API.
 		  */
-		xmlDocPtr SaveIAFile( const IAFile& dataObj );
+		xmlDocPtr DeleteGroup( const Group& dataObj );
 
 		/** This method will call the /logic/admin/GetSQLTest
 		  * server API.
 		  */
 		xmlDocPtr GetSQLTest( const IAFile& dataObj );
 
-		/** This method will call the /logic/admin/GetIAFileDetails
+		/** This method will call the /logic/admin/GetActions
 		  * server API.
 		  */
-		xmlDocPtr GetIAFileDetails( const IAFile& dataObj );
+		xmlDocPtr GetActions( );
 
-		/** This method will call the /logic/admin/GetWorkFileList
+		/** This method will call the /logic/util/ExecuteGenericSQL
 		  * server API.
 		  */
-		xmlDocPtr GetWorkFileList( const IAFolder& dataObj );
+		xmlDocPtr ExecuteGenericSQL( const SQLStatement& dataObj );
 
-		/** This method will call the /logic/admin/GetScheduleItems
+		/** This method will call the /logic/util/GetProfile
 		  * server API.
 		  */
-		xmlDocPtr GetScheduleItems( );
+		xmlDocPtr GetProfile( );
 
-		/** This method will call the /logic/admin/SaveSQLTest
+		/** This method will call the /logic/util/FindLogMessage
 		  * server API.
 		  */
-		xmlDocPtr SaveSQLTest( const SQLTests& dataObj );
+		xmlDocPtr FindLogMessage( const LogMessageFilter& dataObj );
 
-		/** This method will call the /logic/admin/GetSQLWork
+		/** This method will call the /logic/util/CloseConnection
 		  * server API.
 		  */
-		xmlDocPtr GetSQLWork( const SQLWork& dataObj );
+		xmlDocPtr CloseConnection( );
+
+		/** This method will call the /logic/util/SaveLogMsg
+		  * server API.
+		  */
+		xmlDocPtr SaveLogMsg( const LogObj& dataObj );
+
+		/** This method will call the /logic/util/GetHitMap
+		  * server API.
+		  */
+		xmlDocPtr GetHitMap( );
+
+		/** This method will call the /logic/util/GetAllLRTasks
+		  * server API.
+		  */
+		xmlDocPtr GetAllLRTasks( );
+
+		/** This method will call the /logic/util/GetLogFiles
+		  * server API.
+		  */
+		xmlDocPtr GetLogFiles( );
+
+		/** This method will call the /logic/util/GetAllLayouts
+		  * server API.
+		  */
+		xmlDocPtr GetAllLayouts( );
+
+		/** This method will call the /logic/util/GetLogMessagesByRange
+		  * server API.
+		  */
+		xmlDocPtr GetLogMessagesByRange( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/GetLogSettings
+		  * server API.
+		  */
+		xmlDocPtr GetLogSettings( );
+
+		/** This method will call the /logic/util/GetLogMsgCount
+		  * server API.
+		  */
+		xmlDocPtr GetLogMsgCount( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/GetLogMessages
+		  * server API.
+		  */
+		xmlDocPtr GetLogMessages( const LogMessageFilter& dataObj );
+
+		/** This method will call the /logic/util/UpdateLogSettings
+		  * server API.
+		  */
+		xmlDocPtr UpdateLogSettings( const LogSettings& dataObj );
+
+		/** This method will call the /logic/util/SwitchServerConnection
+		  * server API.
+		  */
+		xmlDocPtr SwitchServerConnection( const LogOn& dataObj );
+
+		/** This method will call the /logic/util/CleanoutLRTask
+		  * server API.
+		  */
+		xmlDocPtr CleanoutLRTask( const LRTask& dataObj );
+
+		/** This method will call the /logic/util/GetOneLRTask
+		  * server API.
+		  */
+		xmlDocPtr GetOneLRTask( const LRTask& dataObj );
+
+		/** This method will call the /logic/dev/GetProjectList
+		  * server API.
+		  */
+		xmlDocPtr GetProjectList( );
+
+		/** This method will call the /logic/dev/SaveProject
+		  * server API.
+		  */
+		xmlDocPtr SaveProject( const Project& dataObj );
+
+		/** This method will call the /logic/dev/GetProject
+		  * server API.
+		  */
+		xmlDocPtr GetProject( const Project& dataObj );
 
 
 }; // End HelixApi class

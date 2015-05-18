@@ -11,6 +11,7 @@
     <RootNamespace>Helix</RootNamespace>
     <AssemblyName>Helix</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -51,6 +52,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Helix.Glob.TheMain</StartupObject>
+    <StartupObject>Helix.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -129,6 +131,8 @@
     <Compile Include="glob\LogMsg.cs" />
     <Compile Include="glob\LogFile2.cs" />
     <Compile Include="glob\MimeTypeMap.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

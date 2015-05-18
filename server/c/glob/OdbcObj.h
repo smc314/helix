@@ -17,10 +17,10 @@
 using namespace std;
 
 #include "DBDataTypes.h"
-#include "OdbcDrv.h"
 
 #include <twine.h>
 #include <MemBuf.h>
+#include <Date.h>
 using namespace SLib;
 
 #ifdef _WIN32
@@ -160,6 +160,8 @@ class OdbcObj
 
 		virtual void BindInput(int pos, MemBuf& data);
 
+		virtual void BindInput(int pos, Date& data);
+
 		/**
 		  * The BindOutput method allows the user to bind the
 		  * address of a variable to be used for data output from 
@@ -175,6 +177,8 @@ class OdbcObj
 		virtual void BindOutput(int pos, void *mem, int *size, int type);
 
 		virtual void BindOutput(int pos, twine& data);
+
+		virtual void BindOutput(int pos, Date& data);
 
 		/**
 		  * The ExecStmt method does the actual execution 
@@ -316,7 +320,34 @@ class OdbcObj
 		/// Number of fetches we have performed:
 		int m_fetch_count;
 
-		OdbcDrv odbc;
+};
+
+/** Helper class that makes creating, committing and rolling back a transaction easier
+  * to manage by using the scope handling characteristics of the compiler.
+  */
+class Transaction {
+	public:
+		Transaction( OdbcObj& odbc ) : m_odbc(odbc)
+		{
+			m_odbc.SetAutoCommit( false ); // Turn off autocommit while our transaction is active
+		}
+
+		virtual ~Transaction() {
+			m_odbc.Rollback();
+			m_odbc.SetAutoCommit( true ); // Turn on autocomit when we go out of scope
+		}
+
+		void Rollback() {
+			m_odbc.Rollback();
+		}
+
+		void Commit() {
+			m_odbc.Commit();
+		}
+
+	protected:
+		OdbcObj& m_odbc;
+
 };
 
 }} // End Namespace Helix::Glob

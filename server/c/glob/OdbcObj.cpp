@@ -22,16 +22,7 @@ using namespace Helix::Glob;
 
 static size_t throwAwaySize;
 
-OdbcObj::OdbcObj() : 
-#ifdef _WIN32
-#	ifdef _X86_
-	odbc( "vialite32.dll" )
-#	else
-	odbc( "vialite64.dll" )
-#	endif
-#else
-	odbc( "libVialite64.so" )
-#endif
+OdbcObj::OdbcObj()
 {
 	/* ************************************************************** */
 	/* This version of the constructor does nothing but initialize an */
@@ -51,16 +42,7 @@ OdbcObj::OdbcObj() :
 
 }
 
-OdbcObj::OdbcObj(const twine& user, const twine& pass, const twine& inst) : 
-#ifdef _WIN32
-#	ifdef _X86_
-	odbc( "vialite32.dll" )
-#	else
-	odbc( "vialite64.dll" )
-#	endif
-#else
-	odbc( "libVialite64.so" )
-#endif
+OdbcObj::OdbcObj(const twine& user, const twine& pass, const twine& inst)
 {
 	/* ************************************************************** */
 	/* This version of the constructor will call the connect method   */
@@ -136,7 +118,7 @@ int OdbcObj::check_err(SQLRETURN status, SQLSMALLINT htype, SQLHANDLE hndl)
 			complete_message.erase();
 			complete_message = "\n";
 			i = 1;
-			while (odbc.SQLGetDiagRec(htype, hndl, i, sqlstate,
+			while (SQLGetDiagRec(htype, hndl, i, sqlstate,
 				&errcode, message, SQL_MAX_MESSAGE_LENGTH+1,
 				&length) == SQL_SUCCESS)
 			{
@@ -187,7 +169,7 @@ void OdbcObj::Connect(const twine& user, const twine& pass, const twine& inst)
 	/* ******************************************************* */
 	INFO(FL, "Initializing the environment handle.");
 	check_err(
-		odbc.SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &m_env_handle),
+		SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &m_env_handle),
 		SQL_HANDLE_ENV, SQL_NULL_HANDLE
 	);
 
@@ -196,7 +178,7 @@ void OdbcObj::Connect(const twine& user, const twine& pass, const twine& inst)
 	/* ******************************************************* */
 	INFO(FL, "Setting SQL_ODBC_VERSION attribute");
 	check_err(
-		odbc.SQLSetEnvAttr(m_env_handle, SQL_ATTR_ODBC_VERSION,
+		SQLSetEnvAttr(m_env_handle, SQL_ATTR_ODBC_VERSION,
 			(SQLPOINTER)SQL_OV_ODBC3, 0),
 		SQL_HANDLE_ENV, m_env_handle
 	);
@@ -206,7 +188,7 @@ void OdbcObj::Connect(const twine& user, const twine& pass, const twine& inst)
 	/* ******************************************************* */
 	INFO(FL, "Allocating a database connection handle.");
 	check_err(
-		odbc.SQLAllocHandle(SQL_HANDLE_DBC, m_env_handle, &m_conn_handle),
+		SQLAllocHandle(SQL_HANDLE_DBC, m_env_handle, &m_conn_handle),
 		SQL_HANDLE_ENV, m_env_handle
 	);
 
@@ -227,7 +209,7 @@ void OdbcObj::Connect(const twine& user, const twine& pass, const twine& inst)
 	tmpConnStr.format( "%s;UID=%s;PWD=%s;", inst(), user(), pass() );
 	INFO(FL, "Connecting to the database.");
 	check_err(
-		odbc.SQLDriverConnect(
+		SQLDriverConnect(
 			m_conn_handle,                       // Connection Handle
 			NULL,                                // Window handle
 			(SQLCHAR *)tmpConnStr(),             // InConnection String 
@@ -253,13 +235,13 @@ void OdbcObj::SetAutoCommit(bool onOff)
 	/* ******************************************************* */
 	if(onOff){
 		check_err(
-			odbc.SQLSetConnectAttr(m_conn_handle, SQL_ATTR_AUTOCOMMIT,
+			SQLSetConnectAttr(m_conn_handle, SQL_ATTR_AUTOCOMMIT,
 				(SQLPOINTER)SQL_AUTOCOMMIT_ON, SQL_NTS),
 			SQL_HANDLE_DBC, m_conn_handle
 		);
 	} else {
 		check_err(
-			odbc.SQLSetConnectAttr(m_conn_handle, SQL_ATTR_AUTOCOMMIT,
+			SQLSetConnectAttr(m_conn_handle, SQL_ATTR_AUTOCOMMIT,
 				(SQLPOINTER)SQL_AUTOCOMMIT_OFF, SQL_NTS),
 			SQL_HANDLE_DBC, m_conn_handle
 		);
@@ -276,23 +258,23 @@ void OdbcObj::Disconnect(void)
 
 	if (m_stmt_defined) {
 		DEBUG(FL, "\tremoving statement handle...\n");
-		check_err(odbc.SQLFreeHandle(SQL_HANDLE_STMT, m_statement_handle),
+		check_err(SQLFreeHandle(SQL_HANDLE_STMT, m_statement_handle),
 			SQL_HANDLE_STMT, m_statement_handle);
 		delete m_sql_text;
 	}
 
 	DEBUG(FL, "\tDetatching from MSSQL server...\n");
-	check_err(odbc.SQLDisconnect(m_conn_handle),
+	check_err(SQLDisconnect(m_conn_handle),
 		SQL_HANDLE_DBC, m_conn_handle
 	);
 
 	DEBUG(FL, "\tFreeing MSSQL connection handle...\n");
-	check_err(odbc.SQLFreeHandle(SQL_HANDLE_DBC, m_conn_handle),
+	check_err(SQLFreeHandle(SQL_HANDLE_DBC, m_conn_handle),
 		SQL_HANDLE_DBC, m_conn_handle
 	);
 
 	DEBUG(FL, "\tFreeing MSSQL Environment handle...\n");
-	check_err(odbc.SQLFreeHandle(SQL_HANDLE_ENV, m_env_handle),
+	check_err(SQLFreeHandle(SQL_HANDLE_ENV, m_env_handle),
 		SQL_HANDLE_ENV, m_env_handle
 	);
 
@@ -312,7 +294,7 @@ void OdbcObj::SetStmt(twine *stmt, int type)
 	SanityCheck();
 
 	if (m_stmt_defined) {
-		check_err(odbc.SQLFreeHandle( SQL_HANDLE_STMT, m_statement_handle),
+		check_err(SQLFreeHandle( SQL_HANDLE_STMT, m_statement_handle),
 			SQL_HANDLE_STMT, m_statement_handle );
 		delete m_sql_text;
 		m_stmt_defined = 0;
@@ -321,13 +303,13 @@ void OdbcObj::SetStmt(twine *stmt, int type)
 	m_sql_text = new twine(*stmt);  // make a copy
 
 	check_err(
-		odbc.SQLAllocHandle(SQL_HANDLE_STMT, m_conn_handle, 
+		SQLAllocHandle(SQL_HANDLE_STMT, m_conn_handle, 
 		&m_statement_handle),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
 	check_err(
-		odbc.SQLPrepare(m_statement_handle, 
+		SQLPrepare(m_statement_handle, 
 			(SQLCHAR *)m_sql_text->c_str(), (SQLINTEGER)m_sql_text->size()),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
@@ -372,7 +354,7 @@ void OdbcObj::ValidateStmt(char* stmt, int type)
 	short col_count;
 
 	check_err(
-		odbc.SQLNumResultCols(m_statement_handle, &col_count),
+		SQLNumResultCols(m_statement_handle, &col_count),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 	
@@ -390,7 +372,7 @@ void OdbcObj::BindInput(int pos, void *mem, int *size, int type)
 
 	/* bind the input variable */
 	check_err(
-		odbc.SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
+		SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
 			dbtype2(type), dbtype(type), tmp_colsize, 0, mem, 
 			*size, (SQLLEN*)size),
 		SQL_HANDLE_STMT, m_statement_handle
@@ -409,7 +391,7 @@ void OdbcObj::BindInput(int pos, twine& data)
 
 	/* bind the input variable */
 	check_err(
-		odbc.SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
+		SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
 			dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.data(), 
 			data.size(), NULL),
 		SQL_HANDLE_STMT, m_statement_handle
@@ -428,9 +410,28 @@ void OdbcObj::BindInput(int pos, MemBuf& data)
 
 	/* bind the input variable */
 	check_err(
-		odbc.SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
+		SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
 			dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.data(), 
 			data.size(), NULL),
+		SQL_HANDLE_STMT, m_statement_handle
+	);
+
+}
+
+void OdbcObj::BindInput(int pos, Date& data)
+{
+	EnEx ee(FL, "OdbcObj::BindInput(int, Date&)");
+
+	SanityCheck();
+	size_t tmp_colsize = 20;
+	if(tmp_colsize == 0) tmp_colsize = 1;
+	
+
+	/* bind the input variable */
+	check_err(
+		SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
+			dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.GetValue(), 
+			tmp_colsize, NULL),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
@@ -454,7 +455,7 @@ void OdbcObj::BindOutput(int pos, void *mem, int *size, int type)
 
 	/* bind the output variable */
 	check_err(
-		odbc.SQLBindCol(m_statement_handle,
+		SQLBindCol(m_statement_handle,
 			pos, // Remember positions start at 1, not 0
 			dbtype2(type),
 			mem,
@@ -480,7 +481,7 @@ void OdbcObj::BindOutput(int pos, twine& data)
 	SQLULEN colsize;
 
 	check_err(
-		odbc.SQLDescribeCol( m_statement_handle,
+		SQLDescribeCol( m_statement_handle,
 			(short)pos,             // Which column are we interested in?
 			cname,                  // buffer for the column name
 			(short)sizeof(cname),   // how big is that buffer
@@ -499,10 +500,30 @@ void OdbcObj::BindOutput(int pos, twine& data)
 
 	// Now bind the twine data buffer to the column itself:
 	check_err(
-		odbc.SQLBindCol(m_statement_handle,
+		SQLBindCol(m_statement_handle,
 			pos, // remember positions start at 1, not 0
 			dbtype2(DB_CHAR),
 			data.data(),
+			size,
+			(SQLLEN*) &throwAwaySize ),
+		SQL_HANDLE_STMT, m_statement_handle
+	);
+
+}
+
+void OdbcObj::BindOutput(int pos, Date& data)
+{
+	EnEx ee(FL, "OdbcObj::BindOutput(int, twine&)");
+	SanityCheck();
+
+	size_t size = 20;
+
+	// Now bind the twine data buffer to the column itself:
+	check_err(
+		SQLBindCol(m_statement_handle,
+			pos, // remember positions start at 1, not 0
+			dbtype2(DB_CHAR),
+			data.GetValue(),
 			size,
 			(SQLLEN*) &throwAwaySize ),
 		SQL_HANDLE_STMT, m_statement_handle
@@ -520,7 +541,7 @@ ColumnInfo OdbcObj::GetColumnInfo(int pos)
 	SQLULEN colsize;
 
 	check_err(
-		odbc.SQLDescribeCol( m_statement_handle,
+		SQLDescribeCol( m_statement_handle,
 			(short)pos,             // Which column are we interested in?
 			cname,                  // buffer for the column name
 			(short)sizeof(cname),   // how big is that buffer
@@ -551,7 +572,7 @@ int OdbcObj::GetResultsetColumnCount(void)
 
 	SQLSMALLINT colCount = 0;
 	check_err(
-		odbc.SQLNumResultCols(m_statement_handle, &colCount),
+		SQLNumResultCols(m_statement_handle, &colCount),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
@@ -636,7 +657,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 	}
 
 	check_err(
-		odbc.SQLGetData(m_statement_handle, pos, SQL_C_CHAR,
+		SQLGetData(m_statement_handle, pos, SQL_C_CHAR,
 			ret.data(), ret.capacity(), &indicator),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
@@ -661,7 +682,7 @@ twine OdbcObj::GetDriverVersion(void)
 	SQLSMALLINT size;
 	twine ret; ret.reserve(256);
 	check_err(
-		odbc.SQLGetInfo(m_conn_handle, SQL_DRIVER_VER,
+		SQLGetInfo(m_conn_handle, SQL_DRIVER_VER,
 			ret.data(), 256, &size),
 		SQL_HANDLE_DBC, m_conn_handle
 	);
@@ -681,7 +702,7 @@ void OdbcObj::ExecStmt(void)
 
 	/* execute only */
 	check_err(
-		odbc.SQLExecute(m_statement_handle),
+		SQLExecute(m_statement_handle),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
@@ -693,7 +714,7 @@ void OdbcObj::Commit(void)
 
 	SanityCheck();
 	check_err(
-		odbc.SQLEndTran(SQL_HANDLE_DBC, m_conn_handle, SQL_COMMIT),
+		SQLEndTran(SQL_HANDLE_DBC, m_conn_handle, SQL_COMMIT),
 		SQL_HANDLE_DBC, m_conn_handle
 	);
 		
@@ -705,7 +726,7 @@ void OdbcObj::Rollback(void)
 
 	SanityCheck();
 	check_err(
-		odbc.SQLEndTran(SQL_HANDLE_DBC, m_conn_handle, SQL_ROLLBACK),
+		SQLEndTran(SQL_HANDLE_DBC, m_conn_handle, SQL_ROLLBACK),
 		SQL_HANDLE_DBC, m_conn_handle
 	);
 		
@@ -720,7 +741,7 @@ int OdbcObj::FetchData(void)
 	m_fetch_count ++;
 
 	fetch_count = check_err(
-		odbc.SQLFetch(m_statement_handle),
+		SQLFetch(m_statement_handle),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
@@ -734,7 +755,7 @@ int OdbcObj::GetSQLRowCount(void)
 
 	SQLLEN rowCount = 0;
 	check_err(
-		odbc.SQLRowCount(m_statement_handle, &rowCount),
+		SQLRowCount(m_statement_handle, &rowCount),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 

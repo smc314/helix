@@ -261,6 +261,23 @@ void Project::createXmlChildren(xmlNodePtr parent, vector<Project* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr Project::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Project* >* vect)
+{
+	EnEx ee(FL, "Project::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Project* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to Project::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	Project::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void Project::deleteVector(vector<Project* >* vect)
@@ -381,7 +398,7 @@ void Project::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Project& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void Project::insert(SqlDB& sqldb, vector< Project* >* v)
+void Project::insert(SqlDB& sqldb, vector< Project* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Project::insert(SqlDB& sqldb, vector<*>* v)");
 
@@ -402,10 +419,12 @@ void Project::insert(SqlDB& sqldb, vector< Project* >* v)
 			EnEx eeExe("Project::insert()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -433,10 +452,12 @@ void Project::insert(SqlDB& sqldb, vector< Project* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 

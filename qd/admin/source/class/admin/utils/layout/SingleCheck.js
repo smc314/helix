@@ -53,6 +53,22 @@ qx.Mixin.define("admin.utils.layout.SingleCheck", {
 		rmcMenuForSingleCheck: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForSingleCheck: function(xmlNode, testSettingsArray)
+		{
+			var varName1 = xmlNode.getAttribute("varName1");
+			if(varName1){
+				var setting1 = {
+					varName : varName1,
+					htmlid : "qx.ui.form.CheckBox." + varName1
+				};
+				testSettingsArray.push( setting1 );
+			}
+
 		}
 
 

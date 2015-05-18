@@ -93,6 +93,14 @@ qx.Mixin.define("admin.utils.layout.VerticalBoxLayout", {
 		rmcVerticalBoxLayout_ConvertToHorizontal: function()
 		{
 
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForVerticalBoxLayout: function(xmlNode, testSettingsArray)
+		{
+			return;
 		}
 
 

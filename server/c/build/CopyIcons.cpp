@@ -26,7 +26,7 @@ void run() ;
 void checkFiles(int sizeIndex);
 void copyFromOriginal(int sizeIndex, twine& filename) ;
 
-int main(void)
+int main(int argc, char** argv)
 {
 	m_sizes.push_back("16x16/plain");
 	m_sizes.push_back("24x24/plain");
@@ -41,12 +41,22 @@ int main(void)
 	m_sizes.push_back("256x256/plain");
 	m_sizes.push_back("256x256/shadow");
 	
-	m_prefix = "../../../qd/admin/source/resource/admin/icon/";
-	run();
-	m_prefix = "../../../qd/dev/source/resource/dev/icon/";
-	run();
-	m_prefix = "../../../qd/welcome/source/resource/welcome/icon/";
-	run();
+	if(argc == 1){
+		// These are the default projects
+		m_prefix = "../../../qd/admin/source/resource/admin/icon/";
+		run();
+		m_prefix = "../../../qd/dev/source/resource/dev/icon/";
+		run();
+		m_prefix = "../../../qd/welcome/source/resource/welcome/icon/";
+		run();
+	} else {
+		// Iterate through the given projects
+		for(int i = 1; i < argc; i++){
+			twine proj = argv[i];
+			m_prefix = "../../../qd/" + proj + "/source/resource/" + proj + "/icon/";
+			run();
+		}
+	}
 
 }
 

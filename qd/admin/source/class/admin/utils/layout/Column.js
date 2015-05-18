@@ -56,6 +56,14 @@ qx.Mixin.define("admin.utils.layout.Column", {
 		rmcMenuForColumn: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForColumn: function(xmlNode, testSettingsArray)
+		{
+			return;
 		}
 
 

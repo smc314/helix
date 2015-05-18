@@ -35,14 +35,17 @@
 
 		<Table name="userauth">
 			<Comment>
-				This is the table that stores the user authentication credentials.
+				This is the table that stores the user authentication credentials. Authmechanism
+				values indicate the following:
+				0 = Plain, unencrypted password
+				1 = Encrypted password stored here
 			</Comment>
 			<Column name="userid" type="int NOT NULL" pk="true"/>
 			<Column name="authmechanism" type="int not null" pk="true"/>
 			<Column name="password" type="varchar(256) not null"/>
 			<PrimaryKey clustered="true"/>
 			<SqlCreate>
-				insert into userauth values (1, 'admin', 0);
+				insert into userauth (userid, authmechanism, password) values (1, 0, 'admin');
 			</SqlCreate>
 			<SqlChange/>
 		</Table>
@@ -76,6 +79,82 @@
 				insert into usergroup values (1, 1);
 				insert into usergroup values (1, 2);
 			</SqlCreate>
+			<SqlChange/>
+		</Table>
+
+		<Table name="action">
+			<Comment>
+				This is an action that can be invoked in this system.
+			</Comment>
+			<Column name="id" type="integer primary key autoincrement"/>
+			<Column name="path" type="varchar(255) not null"/>
+			<Column name="okwosession" type="integer NOT NULL"/>
+			<PrimaryKey clustered="true"/>
+			<Index name="ix_action1" unique="true">
+				<Column name="path"/>
+			</Index>
+			<SqlCreate/>
+			<SqlChange/>
+		</Table>
+
+		<Table name="useraction">
+			<Comment>
+				Maps users to actions that they are allowed to perform.
+			</Comment>
+			<Column name="userid" type="integer NOT NULL" pk="true"/>
+			<Column name="actionid" type="integer NOT NULL" pk="true"/>
+			<Column name="allow" type="integer NOT NULL"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate/>
+			<SqlChange/>
+		</Table>
+
+		<Table name="groupaction">
+			<Comment>
+				Maps groups to actions that they are allowed to perform.
+			</Comment>
+			<Column name="groupid" type="integer NOT NULL" pk="true"/>
+			<Column name="actionid" type="integer NOT NULL" pk="true"/>
+			<Column name="allow" type="integer NOT NULL"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate/>
+			<SqlChange/>
+		</Table>
+
+		<Table name="userproperties">
+			<Comment>
+				Tracks key-value pairs for settings associated to a given user.
+			</Comment>
+			<Column name="userid" type="integer NOT NULL" pk="true"/>
+			<Column name="key" type="varchar(255) NOT NULL" pk="true"/>
+			<Column name="value" type="varchar(255) NOT NULL"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate/>
+			<SqlChange/>
+		</Table>
+
+		<Table name="systemproperties">
+			<Comment>
+				Tracks key-value pairs for settings global to the whole system.
+			</Comment>
+			<Column name="key" type="varchar(255) NOT NULL" pk="true"/>
+			<Column name="value" type="varchar(255) NOT NULL"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate/>
+			<SqlChange/>
+		</Table>
+
+		<Table name="session">
+			<Comment>
+				Tracks key-value pairs for settings associated to a given user.
+			</Comment>
+			<Column name="guid" type="varchar(32) NOT NULL" pk="true"/>
+			<Column name="userid" type="integer NOT NULL"/>
+			<Column name="created" type="varchar(20) NOT NULL"/>
+			<Column name="lastaccess" type="varchar(20) NOT NULL"/>
+			<Column name="active" type="integer NOT NULL"/>
+			<PrimaryKey clustered="true"/>
+			<SqlCreate/>
 			<SqlChange/>
 		</Table>
 

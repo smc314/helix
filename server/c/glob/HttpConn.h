@@ -129,9 +129,14 @@ class HttpConn : public IOConn
 	
 		virtual void SendNotFound();
 
+		/** If the requested msg target is not allowed for the current user, use this
+		 * to send back an appropriate "403 Forbidden" message.
+		 */
+		virtual void SendForbidden(void);
+
 		virtual void SendNotModified();
 
-		virtual void SendRedirect( twine redirectTarget ) ;
+		virtual void SendRedirect( const twine& redirectTarget ) ;
 
 		twine getHttpDomain();
 

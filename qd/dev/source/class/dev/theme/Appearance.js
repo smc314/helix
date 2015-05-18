@@ -7,12 +7,15 @@
    Authors:
 
 ************************************************************************ */
+/* ************************************************************************
+#asset(dev/icon/16x16/plain/error.png)
+************************************************************************ */
 
 /* ************************************************************************
 ************************************************************************ */
 qx.Theme.define("dev.theme.Appearance",
 {
-	extend : qx.theme.modern.Appearance,
+	extend : qx.theme.simple.Appearance,
 	appearances :
 	{
 		"tabview" : {
@@ -27,7 +30,7 @@ qx.Theme.define("dev.theme.Appearance",
 			alias : "atom",
 			style : function(states) {
 				return {
-					icon : "dash/icon/16x16/plain/error.png"
+					icon : "dev/icon/16x16/plain/error.png"
 				};
 			}
 		}

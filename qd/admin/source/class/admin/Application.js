@@ -29,6 +29,8 @@ Authors:
 #asset(admin/icon/16x16/plain/clients.png)
 #asset(admin/icon/16x16/plain/text_align_justified.png)
 #asset(admin/icon/16x16/plain/scroll.png)
+#asset(admin/icon/16x16/plain/user_lock.png)
+#asset(admin/icon/16x16/plain/users4_edit.png)
 #asset(admin/icon/16x16/plain/sports_car.png)
 #asset(admin/icon/16x16/plain/scroll.png)
 #asset(admin/icon/16x16/plain/alarmclock.png)
@@ -71,22 +73,49 @@ qx.Class.define("admin.Application",
 		fillTree: function () {
 			this.treeRoot.removeAll();
 
+			// Main Tree Items:
+			// Users
+			// Groups
+			// Scheduled Tasks
 
-			admin.utils.LoadTestTreeNodes.createRootNode( this.treeRoot );
+			// Main Tools Items:
+			// New -> User
+			// New -> Group
+			// New -> Scheduled Task
+			// Logs ->
+			// Manage Server Configuration (both helix.xml and system properties)
+			// Manage Server Actions
+			// Manage Server Sessions
+			// Monitor Long Running Tasks
+			// Monitor Hit Map - Server Profiling
+			// Show/Hide Sidebar
+			// Help ->
+
+			admin.user.UserTreeNodes.createRootNode( this.treeRoot );
+			admin.user.GroupTreeNodes.createRootNode( this.treeRoot );
+			admin.admin.ScheduleTreeNodes.createRootNode( this.treeRoot );
+
+			if(qx.core.Environment.get("qx.debug")){
+				admin.dev.DevTreeNodes.createRootNode( this.treeRoot );
+			}
 
 			var sysprops = admin.Singleton.getInstance().getSystemProperties();
 			if(sysprops[admin.Singleton.AreWeHomeBase] === "true"){
 				admin.admin.ReleaseTreeNodes.createRootNode( this.treeRoot );
 				admin.admin.SupportTreeNodes.createRootNode( this.treeRoot );
 			}
+
+			/*
+			admin.utils.LoadTestTreeNodes.createRootNode( this.treeRoot );
+
 			admin.utils.UnitTestTreeNodes.createRootNode( this.treeRoot );
 			admin.utils.SqlTestTreeNodes.createRootNode( this.treeRoot );
 			admin.admin.SqlWorkTreeNodes.createRootNode( this.treeRoot );
-			admin.admin.ScheduleTreeNodes.createRootNode( this.treeRoot );
 
 			if(qx.core.Environment.get("qx.debug")){
 				admin.dev.DevTreeNodes.createRootNode( this.treeRoot );
 			}
+			*/
 		},
 
 		handleExpand: function (e) {
@@ -186,11 +215,13 @@ qx.Class.define("admin.Application",
 			var menu = new qx.ui.menu.Menu;
 
 			var button = new qx.ui.menu.Button("New", null, null, this.getNewMenu());
+			admin.Statics.setHtmlID(button, "New");
 			menu.add(button);
 
 			menu.addSeparator();
 
 			var logsButton = new qx.ui.menu.Button("Logs", null, null, this.getLogsMenu());
+			admin.Statics.setHtmlID(logsButton, "Logs");
 			menu.add(logsButton);
 
 			menu.addSeparator();
@@ -243,6 +274,15 @@ qx.Class.define("admin.Application",
 				"admin/icon/16x16/plain/scroll.png", "New Visual Layout",
 				admin.dev.DevTreeNodes.newVisualLayout);
 
+			this.addMenuButton(menu, "Control+Alt+U", "User",
+				"admin/icon/16x16/plain/user_lock.png", "New User",
+				admin.user.UserTreeNodes.newObject);
+
+			this.addMenuButton(menu, "Control+Alt+G", "Group",
+				"admin/icon/16x16/plain/users4_edit.png", "New Group",
+				admin.user.GroupTreeNodes.newObject);
+
+			/*
 			this.addMenuButton(menu, "Control+Alt+T", "Load Test",
 				"admin/icon/16x16/plain/sports_car.png", "New Load Test",
 				admin.utils.LoadTestTreeNodes.newObject);
@@ -250,6 +290,7 @@ qx.Class.define("admin.Application",
 			this.addMenuButton(menu, "Control+Alt+Q", "SQL Test",
 				"admin/icon/16x16/plain/scroll.png", "New SQL Test",
 				admin.utils.SqlTestTreeNodes.newObject);
+			*/
 
 			this.addMenuButton(menu, "Control+Alt+K", "Scheduled Task",
 				"admin/icon/16x16/plain/alarmclock.png", "New Scheduled Task",
@@ -284,10 +325,10 @@ qx.Class.define("admin.Application",
 			}
 
 			// Delegate to the other classes to handle the delete. Keeps things cleaner this way.
-			if(treeNode.helixObj instanceof admin.sqldo.SQLWork){
-				admin.admin.SqlWorkTreeNodes.doDelete( treeNode );
-			} else if(treeNode.helixObj instanceof admin.sqldo.LoadTest){
-				admin.utils.LoadTestTreeNodes.doDelete( treeNode );
+			if(treeNode.helixObj instanceof admin.sqldo.User){
+				admin.user.UserTreeNodes.doDelete( treeNode );
+			} else if(treeNode.helixObj instanceof admin.sqldo.Group){
+				admin.user.GroupTreeNodes.doDelete( treeNode );
 			} else if(treeNode.helixObj instanceof admin.sqldo.SchedItem){
 				admin.admin.ScheduleTreeNodes.doDelete( treeNode );
 			} else {

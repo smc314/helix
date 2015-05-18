@@ -58,6 +58,36 @@ qx.Mixin.define("admin.utils.layout.SpanField", {
 		rmcMenuForSpanField: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForSpanField: function(xmlNode, testSettingsArray)
+		{
+			var varName1 = xmlNode.getAttribute("varName1");
+			if(varName1){
+				var setting1 = {
+					varName : varName1,
+					verify : xmlNode.getAttribute("verify1"),
+					verifyType : xmlNode.getAttribute("verify1type"),
+					verifyMin : xmlNode.getAttribute("verify1min"),
+					verifyMax : xmlNode.getAttribute("verify1max"),
+					upper : xmlNode.getAttribute("upper1"),
+					required : xmlNode.getAttribute("required1")
+				};
+				var type1 = xmlNode.getAttribute("type1");
+				switch( type1 ){
+					case "TextField" : setting1.htmlid = "qx.ui.form.TextField." + varName1; break;
+					case "PasswordField" : setting1.htmlid = "qx.ui.form.PasswordField." + varName1; break;
+					case "ComboBox" : setting1.htmlid = "qx.ui.form.SelectBox." + varName1; break;
+					case "ComboBoxEdit" : setting1.htmlid = "qx.ui.form.ComboBox." + varName1; break;
+					case "DateField" : setting1.htmlid = "qx.ui.form.DateField." + varName1; break;
+					case "TextArea" : setting1.htmlid = "qx.ui.form.TextArea." + varName1; break;
+					case "TextField" : setting1.htmlid = "qx.ui.form.TextField." + varName1; break;
+				}
+				testSettingsArray.push( setting1 );
+			}
 		}
 
 

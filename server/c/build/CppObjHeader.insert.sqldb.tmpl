@@ -19,7 +19,7 @@
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void ${methodName}(SqlDB& sqldb, vector< ${doName}* >* v);
+		static void ${methodName}(SqlDB& sqldb, vector< ${doName}* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.

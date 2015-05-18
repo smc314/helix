@@ -839,7 +839,7 @@ qx.Class.define("welcome.Statics", {
 				if (field3Name) {
 					theThis[field3Name] = f2;
 					welcome.Statics.trackNamedAttr(theThis, field3Name);
-					welcome.Statics.setHtmlID( f3, field3Name );
+					welcome.Statics.setHtmlID( f2, field3Name );
 				}
 			}
 
@@ -872,7 +872,7 @@ qx.Class.define("welcome.Statics", {
 				if (field4Name) {
 					theThis[field4Name] = f2;
 					welcome.Statics.trackNamedAttr(theThis, field4Name);
-					welcome.Statics.setHtmlID( f4, field4Name );
+					welcome.Statics.setHtmlID( f2, field4Name );
 				}
 			}
 
@@ -1462,7 +1462,7 @@ qx.Class.define("welcome.Statics", {
 		/** Use this in your destruct function, we will check for the
 		*  following items to be destroyed:
 		*  	qx.ui.popu.ToolTip
-		*  	qx.ui.core.Command
+		*  	qx.ui.command.Command
 		*/
 		destroyExtraObjects: function (ownerObj) {
 
@@ -1534,7 +1534,7 @@ qx.Class.define("welcome.Statics", {
 		* @return {Object} returns the button created for the menu item.
 		*/
 		addToRMCMenu: function (menu, label, icon, callback, theThis) {
-			var cmd = new qx.ui.core.Command();
+			var cmd = new qx.ui.command.Command();
 			cmd.addListener('execute', callback, theThis);
 			var btn = new qx.ui.menu.Button(label, icon, cmd);
 			menu.add(btn);
@@ -1946,8 +1946,7 @@ qx.Class.define("welcome.Statics", {
 			}
 
 			if (formField instanceof qx.ui.form.TextField ||
-				formField instanceof qx.ui.form.PasswordField ||
-				formField instanceof qx.ui.form.TextArea
+				formField instanceof qx.ui.form.PasswordField
 			) {
 				if (initValue === 0) {
 					// The data object is an integer type.  Coerce to a string in order
@@ -1956,6 +1955,29 @@ qx.Class.define("welcome.Statics", {
 				} else {
 					// Load it as a string.
 					formField.setValue(dataObject[getName]());
+				}
+
+			} else if (formField instanceof qx.ui.form.TextArea) {
+				// Check to see if we also have a CK version of this textArea - if so, that one
+				// takes precedence.
+				var ckField = theThis[ fieldName + "CK" ];
+				if(ckField !== undefined && ckField !== null){
+					// We have a CKEditor on top of the text area
+					if(ckField.status === 'ready'){
+						ckField.setData( dataObject[getName]() );
+					} else {
+						var content = dataObject[getName]();
+						ckField.on('instanceReady', function(evt){
+							ckField.setData( content );
+						});
+					}
+				} else {
+					// Standard textArea
+					if(initValue === 0){
+						formField.setValue( String(dataObject[getName]() ) );
+					} else {
+						formField.setValue( dataObject[getName]() );
+					}
 				}
 
 			} else if (formField instanceof qx.ui.form.DateField) {
@@ -2053,8 +2075,7 @@ qx.Class.define("welcome.Statics", {
 			}
 
 			if (formField instanceof qx.ui.form.TextField ||
-				formField instanceof qx.ui.form.PasswordField ||
-				formField instanceof qx.ui.form.TextArea
+				formField instanceof qx.ui.form.PasswordField
 			) {
 				if (initValue === 0) {
 					// The data object is an integer type.  Coerce to a number in order
@@ -2063,6 +2084,21 @@ qx.Class.define("welcome.Statics", {
 				} else {
 					// Load it as a string.
 					dataObject[setName](formField.getValue());
+				}
+			} else if (formField instanceof qx.ui.form.TextArea) {
+				// Check to see if we also have a CK version of this textArea - if so, that one
+				// takes precedence.
+				var ckField = theThis[ fieldName + "CK" ];
+				if(ckField !== undefined && ckField !== null){
+					// We have a CKEditor on top of the text area
+					dataObject[ setName ]( ckField.getData() );
+				} else {
+					// Standard textArea
+					if(initValue === 0){
+						dataObject[ setName ](Number(formField.getValue()) );
+					} else {
+						dataObject[ setName ](formField.getValue() );
+					}
 				}
 
 			} else if (formField instanceof qx.ui.form.DateField) {
@@ -2351,7 +2387,7 @@ qx.Class.define("welcome.Statics", {
 		addToToolbarWithShortcut: function (toolbar, icon, tooltip, action, action_this, ownerObj, shortcut, label) {
 			// create and configure the command
 			label = (label == undefined) ? null : label;
-			var command = new qx.ui.core.Command(shortcut);
+			var command = new qx.ui.command.Command(shortcut);
 			command.setLabel(label);
 			command.setIcon(icon);
 			command.setToolTipText(tooltip);

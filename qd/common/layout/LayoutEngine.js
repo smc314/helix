@@ -37,6 +37,7 @@ qx.Class.define("PACKAGE.layout.LayoutEngine", {
 		PACKAGE.layout.LayoutStandardTable,
 		PACKAGE.layout.LayoutStandardTreeVirtual,
 		PACKAGE.layout.LayoutTextArea,
+		PACKAGE.layout.LayoutCKTextArea,
 		PACKAGE.layout.LayoutTree,
 		PACKAGE.layout.LayoutTreeVirtual,
 		PACKAGE.layout.LayoutTripleField,

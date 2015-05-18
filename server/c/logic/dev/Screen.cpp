@@ -205,6 +205,23 @@ void Screen::createXmlChildren(xmlNodePtr parent, vector<Screen* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr Screen::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Screen* >* vect)
+{
+	EnEx ee(FL, "Screen::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<Screen* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to Screen::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	Screen::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void Screen::deleteVector(vector<Screen* >* vect)
@@ -319,7 +336,7 @@ void Screen::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Screen& obj )
 /* This is the version that accepts an array of inputs and ensures that they are all      */
 /* written to the database with a single transaction                                      */
 /* ************************************************************************************** */
-void Screen::insert(SqlDB& sqldb, vector< Screen* >* v)
+void Screen::insert(SqlDB& sqldb, vector< Screen* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Screen::insert(SqlDB& sqldb, vector<*>* v)");
 
@@ -340,10 +357,12 @@ void Screen::insert(SqlDB& sqldb, vector< Screen* >* v)
 			EnEx eeExe("Screen::insert()-BindExecStmt");
 
 			// Begin our transaction here:
-			DEBUG(FL, "Beginning the vector insert transaction" );
-			twine beginSql = "begin transaction;";
-			sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
-			sqldb.check_err( sqlite3_step( db_begin ) );
+			if(useTransaction){
+				DEBUG(FL, "Beginning the vector insert transaction" );
+				twine beginSql = "begin transaction;";
+				sqldb.check_err( sqlite3_prepare( db, beginSql(), (int)beginSql.length(), &db_begin, NULL) );
+				sqldb.check_err( sqlite3_step( db_begin ) );
+			}
 
 			// Loop through the vector of inputs
 			for(size_t v_i = 0; v_i < v->size(); v_i++ ){
@@ -365,10 +384,12 @@ void Screen::insert(SqlDB& sqldb, vector< Screen* >* v)
 			} // loop through all of the inputs
 
 			// Commit our transaction here:
-			DEBUG(FL, "Committing the vector insert transaction" );
-			twine commitSql = "commit transaction;";
-			sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
-			sqldb.check_err( sqlite3_step( db_commit ) );
+			if(useTransaction){
+				DEBUG(FL, "Committing the vector insert transaction" );
+				twine commitSql = "commit transaction;";
+				sqldb.check_err( sqlite3_prepare( db, commitSql(), (int)commitSql.length(), &db_commit, NULL ) );
+				sqldb.check_err( sqlite3_step( db_commit ) );
+			}
 
 		} // End the Timing scope
 

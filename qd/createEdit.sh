@@ -87,12 +87,23 @@ qx.Class.define("${PACKAGE}.${FOLDER}.${CLASSNAME}", {
 				"${PACKAGE}/icon/64x64/shadow/control_panel2.png",
 				this.m_object_id === 0 ? "NEW1" : this.m_object_id.getName1() );
 
+			// A status heading is white text with a blue background that spans the width of the box
 			this.addStatusHeading("General");
+
+			// A status hint is plain text aligned to look like help or a long tip describing something.
+			this.addStatusHint(
+				"Use this editor to manipulate the object that is " +
+				"being edited so that you can change it's properties " +
+				"and expose it's functionality to your users. " +
+				"-- And don't forget to change this note!"
+			);
+
+			// A Status item is a label with an icon displayed on one line
 			this.overview_label1 = this.addStatusItem("Overview Label1:", 
 				"${PACKAGE}/icon/16x16/plain/barcode.png");
 
 
-			${PACKAGE}.LayoutEngine.renderLayout( this,
+			${PACKAGE}.layout.LayoutEngine.renderLayout( this,
 				this.getDynamicLayout("${CLASSNAME}.MainPage.xml"),
 				live );
 
@@ -103,7 +114,7 @@ qx.Class.define("${PACKAGE}.${FOLDER}.${CLASSNAME}", {
 		  */
 		createNextTab: function(tab_page)
 		{
-			${PACKAGE}.LayoutEngine.renderLayout( this,
+			${PACKAGE}.layout.LayoutEngine.renderLayout( this,
 				this.getDynamicLayout("${CLASSNAME}.NextPage.xml"),
 				tab_page );
 
@@ -191,7 +202,7 @@ qx.Class.define("${PACKAGE}.${FOLDER}.${CLASSNAME}", {
 			${PACKAGE}.Statics.pullAllFields(this, this.dataObject);
 
 			/* ******************************************************* */
-			/* Any other type of data that needs to be loaded into the */
+			/* Any other type of data that needs to be pulled from the */
 			/* form should be handled here.                            */
 			/* ******************************************************* */
 

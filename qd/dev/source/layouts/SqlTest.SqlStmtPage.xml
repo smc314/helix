@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.SqlStmtPage.xml">
+	<GroupBox legend="SQL Statement" flex="1">
+		<FieldArea columns="2" first="120" second="80">
+			<SpanField varName1="StatementNameField" label1="Statement Name:" type1="TextField" verify1="true" verify1type="string" verify1min="1" verify1max="400" upper1="false" required1="true"/>
+			<SpanField varName1="DescriptionField" label1="Description:" type1="TextField" verify1="true" verify1type="string" verify1min="1" verify1max="400" upper1="false" required1="true"/>
+		
+			<QuadCheck varName1="newConnectionField" label1="New Connection?" width1="120" varName2="ignoreErrorsField" label2="Ignore Errors?" width2="140" varName3="expectErrorsField" label3="Expect Errors?" width3="140" varName4="verifyDataField" label4="Verify Data?" width4="140"/>
+			
+			<QuadCheck varName1="issueCommitField" label1="Issue Commit?" width1="120" varName2="issueRollbackField" label2="Issue Rollback?" width2="140"/>
+
+			<SpanField varName1="expectedErrorMsgField" label1="Expected Error Msg:" type1="TextField"/>
+			<SpanField varName1="statusMessageField" label1="Status Msg:" type1="TextField"/>
+		</FieldArea>
+
+		<Label text="SQL Statement" paddingTop="3"/>
+
+		<TextArea varName="stmtField" flex="1" wrap="true" allowGrowX="true" allowGrowY="true"/>
+
+	</GroupBox>
+</VerticalBoxLayout>

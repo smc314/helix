@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.SqlSavedResultsPage.xml">
+	<GroupBox legend="Saved Results" flex="1">
+		<StandardTable varName="stmtResultsTable" flex="1">
+			<Column title="Row" width="1*" minWidth="50"/>
+		</StandardTable>
+	</GroupBox>
+	<GroupBox legend="Current Results" flex="1">
+		<StandardTable varName="stmtResultsCheckTable" flex="1">
+			<Column title="Row" width="1*" minWidth="50"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

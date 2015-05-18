@@ -53,6 +53,14 @@ qx.Mixin.define("admin.utils.layout.Spacer", {
 		rmcMenuForSpacer: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForSpacer: function(xmlNode, testSettingsArray)
+		{
+			return;
 		}
 
 

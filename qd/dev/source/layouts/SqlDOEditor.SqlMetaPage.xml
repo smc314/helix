@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.SqlMetaPage.xml">
+<VerticalBoxLayout spacing="0" flex="1" filename="dev/SqlTest.SqlMetaPage.xml">
 	<VerticalSplitPane leftsize="1" rightsize="1" flex="1">
 		<VerticalSplitPaneTop>
 			<VerticalBoxLayout spacing="0" flex="1">
 				<GroupBox legend="Results Metadata" flex="1">
 					<HorizontalBoxLayout flex="1">
 						<VerticalBoxLayout paddingTop="20">
-							<Button varName="ioFieldsCopyFromMeta2" icon="dash/icon/16x16/plain/objects_transform.png"/>
+							<Button varName="ioFieldsCopyFromMeta2" icon="dev/icon/16x16/plain/objects_transform.png"/>
 						</VerticalBoxLayout>
 						<StandardTable varName="stmtMetaTable" flex="1">
 							<Column title="Column Position" width="1*" minWidth="50" maxWidth="120"/>

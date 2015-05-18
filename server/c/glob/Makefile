@@ -6,7 +6,7 @@
 3PL=../../../../3rdParty
 GMAKE=make -j 8
 
-CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include"  -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux 
+CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include"  -I ../logic/util -I ../logic/admin -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux 
 
 LFLAGS=
 
@@ -17,36 +17,38 @@ LFLAGS=
 	g++ $(CFLAGS) -c $< -o $@
 
 DOTOH=\
-	OdbcObj.o \
-	ActionClass.o \
-	IOAdapter.o \
-	LongRunningTask.o \
-	AdaptiveLogs.o \
-	ThreadList.o \
-	OdbcDrv.o \
-	HttpIOAdapter.o \
-	ActionHtml.o \
-	HttpConn.o \
-	SessionSerializer.o \
-	ConnectionPool.o \
-	Scaler.o \
-	TheMain.o \
 	IOConn.o \
-	mongoose.o \
-	MsgProcessor.o \
-	SessionList.o \
-	SchedEntry.o \
-	ActionLogic.o \
-	Schedule.o \
+	TheMain.o \
+	Scaler.o \
+	IOAdapter.o \
 	DataObjectTestMap.o \
-	Jvm.o \
-	SessionInfo.o \
 	MsgProcScaler.o \
+	Authenticate.o \
+	AdaptiveLogs.o \
+	HttpIOAdapter.o \
 	DataObjectTestClass.o \
-	SchedConn.o \
+	SessionSerializer.o \
+	ActionClass.o \
+	LongRunningTask.o \
+	mongoose.o \
+	OdbcDrv.o \
+	SessionInfo.o \
 	SqlDB.o \
+	ConnectionPool.o \
+	SchedConn.o \
+	MsgProcessor.o \
+	Schedule.o \
+	OdbcObj.o \
 	ActionMap.o \
-	Threadable.o
+	ThreadList.o \
+	ActionLogic.o \
+	HttpConn.o \
+	SchedEntry.o \
+	TableActions.o \
+	SessionList.o \
+	Threadable.o \
+	MySqlDbInit.o \
+	ActionHtml.o
 
 all: $(DOTOH)
 	g++ -shared -o ../bin/libhelix.glob.so $(DOTOH) $(LFLAGS)

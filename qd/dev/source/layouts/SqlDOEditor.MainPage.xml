@@ -16,8 +16,8 @@
 	<GroupBox legend="Child Vectors" flex="1">
 		<HorizontalBoxLayout flex="1">
 			<VerticalBoxLayout paddingTop="20">
-				<Button varName="childVectAddNew" icon="dash/icon/16x16/plain/scroll2_add.png"/>
-				<Button varName="childVectDelete" icon="dash/icon/16x16/plain/delete2.png"/>
+				<Button varName="childVectAddNew" icon="dev/icon/16x16/plain/scroll2_add.png"/>
+				<Button varName="childVectDelete" icon="dev/icon/16x16/plain/delete2.png"/>
 			</VerticalBoxLayout>
 			<StandardTable varName="childTable" flex="1">
 				<Column title="Child Vector Name" width="1*"/>

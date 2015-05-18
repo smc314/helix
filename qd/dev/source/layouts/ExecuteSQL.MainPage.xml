@@ -1,0 +1,21 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend=" ">
+		<FieldArea columns="2" first="80" second="80">
+			<SpanField 
+				varName1="FileNameField" label1="Name:" type1="TextField"
+				verify1="true" verify1type="string" verify1min="1" verify1max="400"	upper1="false" required1="true"
+			/>
+			<SpanField 
+				varName1="DescriptionField" label1="Description:" type1="TextField"
+				verify1="false" verify1type="string" verify1min="0" verify1max="0" upper1="false" required1="false"
+			/>
+			<DoubleField 
+				varName1="HostDBField" label1="Host DB:" type1="ComboBox"
+				varName2="" label2=" " type2="Spacer"
+			/>
+		</FieldArea>
+	</GroupBox>
+	<GroupBox legend="" flex="1" varName="SQLBorder" paddingTop="5">
+		<!--TextArea varName="SqlField" flex="3" wrap="true" minHeight="200" allowGrowX="true" allowGrowY="true"/-->
+	</GroupBox>
+</VerticalBoxLayout>

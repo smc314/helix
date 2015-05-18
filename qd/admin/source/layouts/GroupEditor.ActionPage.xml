@@ -1,0 +1,4 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	
+	
+<HorizontalBoxLayout varName="" spacing="5" flex="1"><VerticalBoxLayout spacing="0" flex="2"><Label varName="" text="Allowed Actions" paddingTop="3"/><List varName="AllowedActionsList" flex="1"/></VerticalBoxLayout><VerticalBoxLayout spacing="10" flex="1" varName="actionButtonBox"><Button label="Add All Actions" varName="AddAllActionsBtn"/><Button label="Add Selected Actions" varName="AddActionBtn"/><Button label="Remove Selected Actions" varName="RemoveActionBtn"/><Button label="Remove All Actions" varName="RemoveAllActionsBtn"/></VerticalBoxLayout><VerticalBoxLayout spacing="0" flex="2"><Label varName="" text="Available Actions" paddingTop="3"/><List varName="AvailableActionsList" flex="1"/></VerticalBoxLayout></HorizontalBoxLayout></VerticalBoxLayout>

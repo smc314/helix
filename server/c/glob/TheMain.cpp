@@ -38,6 +38,8 @@ extern "C"
 #include "MsgProcScaler.h"
 #include "IOAdapter.h"
 #include "SessionSerializer.h"
+#include "MySqlDbInit.h"
+#include "ActionMap.h"
 using namespace Helix::Glob;
 
 #include <twine.h>
@@ -63,7 +65,6 @@ TheMain::TheMain(char *p_config_file_name)
 		throw AnException(0, FL, "TheMain has already been created.  Use getInstance() instead.");
 	}
 
-	m_odbc_conn = NULL;
 	m_keypair = NULL;
 
 	// Turn all logs on for the moment.  Our AdaptiveLogs will adjust
@@ -190,6 +191,8 @@ void TheMain::InternalExecute(void)
 		// Start draining and writing logs
 		InitLogs();
 
+		LoadLogics(); // Do this before InitStorageDB
+
 		InitStorageDB();
 
 		// Create and launch any IOAdapters that we have defined
@@ -232,6 +235,8 @@ void TheMain::InternalExecute(void)
 		DumpStateToLogs();
 
 		ShutdownThreads();
+
+		ShutdownDatabase();
 
 		ShutdownLogger();
 		// logging goes to stdout at this point.
@@ -469,16 +474,34 @@ void TheMain::GenConfig(void)
 	// Logics node
 	xmlNodePtr logics = xmlNewChild(root, NULL, (const xmlChar*)"Logics", NULL);
 	xmlNodePtr logic = xmlNewChild(logics, NULL, (const xmlChar*)"Logic", NULL);
-	xmlSetProp(logic, (const xmlChar*)"actionmap", (const xmlChar*)"utils.actions.xml");
-	xmlSetProp(logic, (const xmlChar*)"class", (const xmlChar*)"Utils");
-	xmlSetProp(logic, (const xmlChar*)"setup", (const xmlChar*)"Utils");
-	xmlSetProp(logic, (const xmlChar*)"name", (const xmlChar*)"Utils");
+	xmlSetProp(logic, (const xmlChar*)"name", (const xmlChar*)"ExtraLogic");
+	xmlSetProp(logic, (const xmlChar*)"library", (const xmlChar*)"sharedLibraryName.so");
+	xmlSetProp(logic, (const xmlChar*)"active", (const xmlChar*)"false");
 	
 	// Storage node
 	xmlNodePtr storage = xmlNewChild(root, NULL, (const xmlChar*)"Storage", NULL);
 	xmlNodePtr db = xmlNewChild(storage, NULL, (const xmlChar*)"DB", NULL);
+	xmlSetProp(storage, (const xmlChar*)"config", (const xmlChar*)"helixconfig");
 	xmlSetProp(db, (const xmlChar*)"name", (const xmlChar*)"helixconfig");
 	xmlSetProp(db, (const xmlChar*)"layout", (const xmlChar*)"helix.db.xml");
+	xmlSetProp(db, (const xmlChar*)"type", (const xmlChar*)"SqlDB");
+
+	// Security node
+	xmlNodePtr security = xmlNewChild(root, NULL, (const xmlChar*)"Security", NULL);
+	xmlNodePtr authentication = xmlNewChild(security, NULL, (const xmlChar*)"Authentication", NULL);
+	xmlNodePtr authorization = xmlNewChild(security, NULL, (const xmlChar*)"Authorization", NULL);
+	xmlNodePtr allowed = xmlNewChild(security, NULL, (const xmlChar*)"AllowedWOLogin", NULL);
+	xmlNodePtr allow1 = xmlNewChild(allowed, NULL, (const xmlChar*)"Path", NULL);
+	xmlNodePtr allow2 = xmlNewChild(allowed, NULL, (const xmlChar*)"Path", NULL);
+	xmlSetProp(security, (const xmlChar*)"storedin", (const xmlChar*)"helixconfig");
+	xmlSetProp(security, (const xmlChar*)"enabled", (const xmlChar*)"true");
+	xmlSetProp(authentication, (const xmlChar*)"enabled", (const xmlChar*)"true");
+	xmlSetProp(authentication, (const xmlChar*)"loginapp", (const xmlChar*)"/HelixLogin/index.html");
+	xmlSetProp(authorization, (const xmlChar*)"enabled", (const xmlChar*)"true");
+	xmlSetProp(allow1, (const xmlChar*)"startswith", (const xmlChar*)"/HelixLogin/");
+	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/favicon.ico");
+	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/admin");
+	xmlSetProp(allow2, (const xmlChar*)"startswith", (const xmlChar*)"/dev");
 
 	// Now save the file
 	m_config_file_name = "./helix.xml";
@@ -528,6 +551,7 @@ void TheMain::InitStorageDB(void)
 		// Add in the default storage structure:
 		storage = xmlNewChild(root, NULL, (const xmlChar*)"Storage", NULL);
 		xmlNodePtr db = xmlNewChild(storage, NULL, (const xmlChar*)"DB", NULL);
+		xmlSetProp(storage, (const xmlChar*)"config", (const xmlChar*)"helixconfig");
 		xmlSetProp(db, (const xmlChar*)"name", (const xmlChar*)"helixconfig");
 		xmlSetProp(db, (const xmlChar*)"layout", (const xmlChar*)"helix.db.xml");
 		SaveConfig(); // write the update back out to disk
@@ -536,29 +560,22 @@ void TheMain::InitStorageDB(void)
 	vector<xmlNodePtr> dbs = XmlHelpers::FindChildren( storage, "DB" );
 	for(size_t i = 0; i < dbs.size(); i++){
 		twine dbName( dbs[i], "name" );	
-		try {
+		twine dbType( dbs[i], "type" );	
+		// Any type of exception initializing a database will (and should) cause us to
+		// fail to start.  Don't try/catch here.
+		if( dbType == "SqlDB" ){
 			SqlDB* sqldb = new SqlDB( dbs[i] );
 			m_databases[ dbName ] = sqldb;
-		} catch (AnException& e){
-			ERRORL(FL, "Exception opening one of our databases (%s):\n%s",
-				dbName(), e.Msg() );
-			ERRORL(FL, "This is most likely because the database is corrupt.  Moving to backup and starting over.");
-			// Move the corrupt database out of the way
-			twine corruptName = dbName + ".corrupt";
-			if(File::Exists( corruptName )){
-				File::Delete( corruptName );
-			}
-			rename( dbName(), corruptName() );
-
-			// Then re-open it:
-			SqlDB* sqldb = new SqlDB( dbs[i] );
-			m_databases[ dbName ] = sqldb;
-
-			// Exceptions from this are allowed to bubble up and kill TheMain startup.  Exceptions at this
-			// point indicate that we have a bad database setup file, and this should be addressed by
-			// development.
+		} else if ( dbType == "MySQL" ){
+			m_connection_pools[ dbName ] = new ConnectionPool( dbName );
+			MySqlDbInit dbinit( dbName );
+			dbinit.VerifyInstallSchema();
 		}
 	}
+
+	// After we've initialized our storage, ensure that our actions have been
+	// inserted into the database.
+	ActionMap::getInstance().SaveToConfigDB();
 
 }
 
@@ -580,9 +597,91 @@ SqlDB& TheMain::GetSqlDB( const twine& whichOne )
 	throw AnException(0, FL, "Unknown local database requested: (%s)", whichOne() );
 }
 
+SqlDB& TheMain::GetConfigDB( void )
+{
+	EnEx ee(FL, "TheMain::GetConfigDB()");
+
+	xmlNodePtr root = xmlDocGetRootElement(m_config);
+	xmlNodePtr storage = XmlHelpers::FindChild( root, "Storage" );
+	twine config;
+	config.getAttribute(storage, "config");
+
+	return GetSqlDB( config );
+}
+
 BlockingQueue<IOConn*>& TheMain::getIOQueue(void)
 {
 	return m_io_queue;
+}
+
+void TheMain::LoadLogics(void)
+{
+	EnEx ee(FL, "TheMain::LoadLogics()");
+
+	xmlNodePtr logics;
+
+	// Walk our Logics children in the config file
+	logics = XmlHelpers::FindChild(xmlDocGetRootElement(m_config), "Logics");
+	if(logics == NULL){
+		INFO(FL, "Logics Node not listed in config file.");
+		return;
+	}
+
+	vector<xmlNodePtr> nodes = XmlHelpers::FindChildren( logics, "Logic" );
+	for(size_t i = 0; i < nodes.size(); i++){
+		xmlNodePtr node = nodes[i];
+		twine logicName;
+		twine logicLibrary;
+		if(XmlHelpers::getBoolAttr(node, "active")){
+			logicName.getAttribute(node, "name");
+			if(logicName.empty()){
+				ERRORL(FL, "Logic node has missing or empty name attribute.");
+				continue;
+			}
+			logicLibrary.getAttribute(node, "library");
+			if(logicLibrary.empty()){
+				ERRORL(FL, "Logic[%s] library attribute is missing or empty.", logicName() );
+				continue;
+			}
+			try {
+				LoadDLL( logicLibrary );
+			} catch(AnException& e){
+				ERRORL(FL, "Error loading Logic[%s] library[%s]: %s", logicName(), logicLibrary(), e.Msg() );
+				continue;
+			}
+		}
+	}	
+}
+
+#ifdef _WIN32
+HINSTANCE TheMain::LoadDLL(const twine& dll_name)
+#else
+void* TheMain::LoadDLL(const twine& dll_name)
+#endif
+{
+	EnEx ee(FL, "TheMain::LoadDLL(const twine& dll_name)");
+
+	// First look the name up to see if we've already loaded it
+	if(m_loaded_dlls.count(dll_name) > 0){
+		return m_loaded_dlls[ dll_name ]; // found it
+	}
+
+	// Didn't find it - go ahead and load it.
+	DEBUG(FL, "Trying to load library (%s)", dll_name() );
+#ifdef _WIN32
+	HINSTANCE dllHandle = LoadLibrary(dll_name());
+#else
+	void* dllHandle = dlopen(dll_name(), RTLD_LAZY | RTLD_GLOBAL);
+#endif
+
+	if(dllHandle == NULL){
+		throw AnException(0, FL, "Error loading library(%s)", dll_name() );
+	}
+
+	// Record it before returning
+	m_loaded_dlls[ dll_name ] = dllHandle;
+
+	return dllHandle;
 }
 
 void TheMain::LaunchIOAdapters(void)
@@ -669,6 +768,23 @@ void TheMain::LaunchMsgProcScaler(void)
 	m_our_threads.push_back(p2);
 
 
+}
+
+void TheMain::ShutdownDatabase(void)
+{
+	EnEx ee(FL, "TheMain::ShutdownDatabase()");
+
+	INFO(FL, "Shutting down odbc database connection pools");
+	map<twine, ConnectionPool*>::iterator it;
+	for(it = m_connection_pools.begin(); it != m_connection_pools.end(); it++){
+		delete it->second;
+	}
+
+	INFO(FL, "Shutting down local SqlDB databases");
+	map<twine, SqlDB*>::iterator it2;
+	for(it2 = m_databases.begin(); it2 != m_databases.end(); it2++){
+		delete it2->second;
+	}
 }
 
 void TheMain::ShutdownThreads(void)
@@ -771,17 +887,15 @@ twine& TheMain::GetConfigFileName(void)
 	return m_config_file_name;
 }
 
-OdbcObj& TheMain::GetOdbcConnection(twine& whichOne)
+Connection& TheMain::GetOdbcConnection(const twine& whichOne)
 {
 	EnEx ee(FL, "TheMain::GetOdbcConnection()");
 
-	if( m_odbc_conn == NULL){
-		m_odbc_conn = new OdbcObj();
-		m_odbc_conn->Connect("smc", "smc", "DSN=viazos19;");
+	if(m_connection_pools.count( whichOne ) == 0){
+		throw AnException(0, FL, "Unknown Database: %s", whichOne() );
 	}
-
-	return *m_odbc_conn;
-
+	ConnectionPool* cp = m_connection_pools[ whichOne ];
+	return cp->getConnection();
 }
 
 void TheMain::RefreshAdaptiveLogs(void)

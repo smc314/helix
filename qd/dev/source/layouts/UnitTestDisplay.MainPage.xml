@@ -1,0 +1,25 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="Unit Test Overview">
+		<FieldArea columns="2" first="80" second="120">
+			<DoubleField 
+				varName1="TestNameField" label1="Test Name:" type1="TextField"
+				varName2="TestUrlField" label2="Test URL:" type2="TextField"
+			/>
+			<DoubleField 
+				varName1="TotalTestsField" label1="Total Tests:" type1="TextField"
+				varName2="TestsOkField" label2="Tests OK:" type2="TextField"
+			/>
+			<DoubleField 
+				varName1="TestsFailedField" label1="Tests Failed:" type1="TextField"
+				varName2="DurationField" label2="Overall Duration:" type2="TextField"
+			/>
+		</FieldArea>
+	</GroupBox>
+	<GroupBox legend="Test Details" flex="1">
+		<StandardTable varName="testsTable" flex="1">
+			<Column title="Test Method" width="1*" minWidth="60"/>
+			<Column title="Duration" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Status" width="1*" minWidth="60"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

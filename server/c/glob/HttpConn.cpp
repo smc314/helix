@@ -406,10 +406,24 @@ void HttpConn::SendNotFound() {
 	}
 }
 
-void HttpConn::SendRedirect( twine newLocation ) {
+void HttpConn::SendForbidden() {
+	EnEx ee(FL, "HttpConn::SendForbidden()");
+	try {
+		mg_printf(m_conn, "HTTP/1.1 403 Forbidden\r\n");
+		if(m_keepalive == false){
+			mg_printf(m_conn, "Connection: close\r\n\r\n");
+		}
+
+	} catch (AnException& e){
+		WARN(FL, "Error sending response document: %s", e.Msg() );
+	}
+}
+
+
+void HttpConn::SendRedirect( const twine& newLocation ) {
 	EnEx ee(FL, "HttpConn::SendRedirect()");
 	try {
-		mg_printf(m_conn, "HTTP/1.1 301 Moved Permanently\r\n");
+		mg_printf(m_conn, "HTTP/1.1 307 Temporary Redirect\r\n");
 		mg_printf(m_conn, "Location: %s\r\n", newLocation() );
 		if(m_keepalive == false){
 			mg_printf(m_conn, "Connection: close\r\n\r\n");

@@ -1,0 +1,12 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="SQL Metadata" flex="1" varName="metadataGB">
+		<StandardTable varName="metaTable" flex="1">
+			<Column title="Column Position" width="1*" minWidth="100" maxWidth="120"/>
+			<Column title="Column Name" width="1*" minWidth="120" maxWidth="300"/>
+			<Column title="Column DBType" width="1*" minWidth="100" maxWidth="120"/>
+			<Column title="Column Size" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column Scale" width="1*" minWidth="60" maxWidth="100"/>
+			<Column title="Column Nullable" width="1*" minWidth="100" maxWidth="120"/>
+		</StandardTable>
+	</GroupBox>
+</VerticalBoxLayout>

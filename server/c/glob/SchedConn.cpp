@@ -129,3 +129,17 @@ void SchedConn::SendNotFound()
 
 	SendReturn();
 }
+
+void SchedConn::SendForbidden() 
+{
+	EnEx ee(FL, "SchedConn::SendForbidden()");
+
+	SendReturn();
+}
+
+void SchedConn::SendRedirect(const twine& redirectLocation) 
+{
+	EnEx ee(FL, "SchedConn::SendRedirect(const twine& redirectLocation)");
+
+	SendReturn();
+}

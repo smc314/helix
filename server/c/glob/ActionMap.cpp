@@ -8,10 +8,14 @@
 
 *************************************************************************** */
 
+#include "TheMain.h"
 #include "ActionMap.h"
 #include "ActionClass.h"
 #include "ActionHtml.h"
 using namespace Helix::Glob;
+
+#include "Action.h"
+using namespace Helix::Logic::admin;
 
 #include <EnEx.h>
 #include <Log.h>
@@ -179,4 +183,38 @@ vector<pair<twine, twine> > ActionMap::listHandlers()
 	}
 
 	return ret;
+}
+
+void ActionMap::SaveToConfigDB(void)
+{
+	EnEx ee(FL, "ActionMap::SaveToConfigDB()");
+	Lock theLock(m_mut);
+
+	SqlDB& config = TheMain::getInstance()->GetConfigDB();
+
+	Action_svect actions = new vector<Action*>();
+	map<twine, twine>::iterator it;
+	for(it = m_logics.begin(); it != m_logics.end(); it++){
+		dptr<Action> a = new Action;
+		a->Path = it->first;
+		a->OKWOSession = 0;
+		a->userid = 1;
+		a->groupid = 1;
+		a->Allow = 1;
+		// Check to see if we already have this action
+		Action_svect check = Action::selectByPath( config, a->Path );
+		if(check->size() == 0){
+			// Only add it if it's not already there.
+			actions->push_back( a.release() );
+		}
+	}
+
+	// Insert all of the new actions found:
+	Action::insert( config, actions );
+
+	// For every action that was inserted, add a permission to user = 1, group = 1 to
+	// automatically grant the admin user/group permission to use the action
+	Action::addUserToAction( config, actions );
+	Action::addGroupToAction( config, actions );
+
 }

@@ -102,7 +102,7 @@ qx.Class.define("admin.admin.ScheduleEdit", {
 			/* ******************************************************* */
 			this.isNewObject = true;
 
-			this.dataObject = new admin.admin.SchedItem;
+			this.dataObject = new admin.sqldo.SchedItem;
 			this.dataObject.setTaskName( "New Task Name" );
 			this.dataObject.setTaskUrl( "/logic/admin/ProcessObjectName" );
 			this.dataObject.setInputDocument( "<EmptyXmlDoc/>" );

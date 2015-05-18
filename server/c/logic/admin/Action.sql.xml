@@ -1,0 +1,216 @@
+<SQLXml generateClass="Action" package="logic/admin" >
+	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add new action entries into our database
+		</Comment>
+		<Sql>
+			insert into action (path, okwosession)
+			values ( ?, ? )
+		</Sql>
+		<Input name="id" type="autogen"/>
+		<Input name="Path" type="twine"/>
+		<Input name="OKWOSession" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="addUserToAction" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add user's to an action.
+		</Comment>
+		<Sql>
+			insert into useraction (userid, actionid, allow)
+			values ( ?, ?, ? )
+		</Sql>
+		<Input name="userid" type="int"/>
+		<Input name="id" type="int"/>
+		<Input name="Allow" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="addGroupToAction" methodType="INSERT" target="sqldb">
+		<Comment>
+			This is the statement that we use to add group's to an action.
+		</Comment>
+		<Sql>
+			insert into groupaction (groupid, actionid, allow)
+			values ( ?, ?, ? )
+		</Sql>
+		<Input name="groupid" type="int"/>
+		<Input name="id" type="int"/>
+		<Input name="Allow" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
+		<Comment>
+			This is the statement that we use to update existing action entries in our database
+		</Comment>
+		<Sql>
+			update action
+			set path = ?,
+				okwosession = ?
+			where id = ?
+		</Sql>
+		<Input name="Path" type="twine"/>
+		<Input name="OKWOSession" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="deleteByID" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to delete existing action entries in our database
+		</Comment>
+		<Sql>
+			delete from action
+			where id = ?
+		</Sql>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="removeUserFromAction" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to remove user's from an action
+		</Comment>
+		<Sql>
+			delete from useraction
+			where userid = ?
+			and   actionid = ?
+		</Sql>
+		<Input name="userid" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="removeGroupFromAction" methodType="DELETE" target="sqldb">
+		<Comment>
+			This is the statement that we use to remove group's from an action
+		</Comment>
+		<Sql>
+			delete from groupaction
+			where groupid = ?
+			and   actionid = ?
+		</Sql>
+		<Input name="groupid" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectAll" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all action entries in our database
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single action entry in our database.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action
+			where id = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="id" type="autogen"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectByPath" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single action entry in our database.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action
+			where path = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="Path" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectActionsForUser" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all action entries for a given user in our database
+			based on direct permissions.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action, useraction
+			where useraction.userid = ?
+			and   useraction.actionid = action.id
+			and   useraction.allow = 1
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="userid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectActionsForGroup" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all action entries for a given group in our database
+			based on direct permissions.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action, groupaction
+			where groupaction.groupid = ?
+			and   groupaction.actionid = action.id
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="groupid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="selectActionsForUserByGroup" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up all action entries for a given user in our database
+			based on their group membership permissions.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action, groupaction, usergroup
+			where usergroup.userid = ?
+			and   usergroup.groupid = groupaction.groupid
+			and   groupaction.actionid = action.id
+			and   groupaction.allow = 1
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="userid" type="int"/>
+	</SqlStatement>
+	<SqlStatement methodName="checkActionForUser" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to check whether a given user has direct permissions
+			to invoke a given action.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action, useraction
+			where useraction.userid = ?
+			and   useraction.actionid = action.id
+			and   useraction.allow = 1
+			and   action.path = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="userid" type="int"/>
+		<Input name="Path" type="twine"/>
+	</SqlStatement>
+	<SqlStatement methodName="checkActionForUserByGroup" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we to check whether a given user has group permissions
+			to invoke a given action.
+		</Comment>
+		<Sql>
+			select id, path, okwosession
+			from action, groupaction, usergroup
+			where usergroup.userid = ?
+			and   usergroup.groupid = groupaction.groupid
+			and   groupaction.actionid = action.id
+			and   groupaction.allow = 1
+			and   action.path = ?
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Path" type="twine"/>
+		<Output name="OKWOSession" type="int"/>
+		<Input name="userid" type="int"/>
+		<Input name="Path" type="twine"/>
+	</SqlStatement>
+</SQLXml>

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.TestsPage.xml">
+<VerticalBoxLayout spacing="0" flex="1" filename="dev/SqlTest.TestsPage.xml">
 	<HorizontalSplitPane leftsize="1" rightsize="3" flex="1">
 		<HorizontalSplitPaneLeft>
 			<HorizontalBoxLayout flex="4">
 				<VerticalBoxLayout paddingTop="20">
-					<Button varName="testAddNew" icon="dash/icon/16x16/plain/scroll2_add.png"/>
-					<Button varName="testDelete" icon="dash/icon/16x16/plain/delete2.png"/>
-					<Button varName="testMoveUp" icon="dash/icon/16x16/plain/navigate_up2.png"/>
-					<Button varName="testMoveDown" icon="dash/icon/16x16/plain/navigate_down2.png"/>
+					<Button varName="testAddNew" icon="dev/icon/16x16/plain/scroll2_add.png"/>
+					<Button varName="testDelete" icon="dev/icon/16x16/plain/delete2.png"/>
+					<Button varName="testMoveUp" icon="dev/icon/16x16/plain/navigate_up2.png"/>
+					<Button varName="testMoveDown" icon="dev/icon/16x16/plain/navigate_down2.png"/>
 				</VerticalBoxLayout>
 				<StandardTable varName="testTable" flex="1">
 					<Column title="Name" width="3*" minWidth="50"/>

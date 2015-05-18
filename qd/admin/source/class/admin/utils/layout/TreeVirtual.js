@@ -55,6 +55,28 @@ qx.Mixin.define("admin.utils.layout.TreeVirtual", {
 		rmcMenuForTreeVirtual: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForTreeVirtual: function(xmlNode, testSettingsArray)
+		{
+			var varName1 = xmlNode.getAttribute("varName");
+			if(varName1){
+				var setting1 = {
+					varName : varName1,
+					htmlid : "qx.ui.treevirtual.TreeVirtual." + varName1,
+					verify : null,
+					verifyType : null,
+					verifyMin : null,
+					verifyMax : null,
+					upper : null,
+					required : null
+				};
+				testSettingsArray.push( setting1 );
+			}
+
 		}
 
 

@@ -27,7 +27,7 @@ OdbcDrv::OdbcDrv(const twine& dllName)
 #ifdef _WIN32
 	dllHandle = LoadLibrary(dllName());
 #else
-	dllHandle = dlopen(dllName(), RTLD_LAZY | RTLD_GLOBAL);
+	dllHandle = dlopen(dllName(), RTLD_NOW | RTLD_LOCAL); // Load all symbols now and don't share them
 #endif
 	if(dllHandle == NULL){
 		throw AnException(0, FL, "Error loading ODBC DLL (%s).", dllName() );

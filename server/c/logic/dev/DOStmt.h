@@ -92,6 +92,9 @@ class DOStmt
 		/// Create a series of xml child nodes based on the input vector
 		static void createXmlChildren(xmlNodePtr parent, vector<DOStmt* >* vect);
 
+		/// Create a child and series of grandchild nodes based on the input vector.
+		static xmlNodePtr createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<DOStmt* >* vect);
+
 		/// Handle deleting a vector and its contents.
 		static void deleteVector( vector<DOStmt* >* vect);
 
@@ -130,7 +133,7 @@ class DOStmt
 		  * inserted, and we will ensure that all of them are inserted within a single commit
 		  * block within Sqlite.
 		  */
-		static void insert(SqlDB& sqldb, vector< DOStmt* >* v);
+		static void insert(SqlDB& sqldb, vector< DOStmt* >* v, bool useTransaction = true);
 
 		/** This method will do a replacement of all of the parameter markers in
 		  * the sql statement with the standard parameter list that is defined.

@@ -67,6 +67,46 @@ qx.Mixin.define("admin.utils.layout.QuadCheck", {
 		rmcMenuForQuadCheck: function()
 		{
 			return null;
+		},
+
+		/** This will read the data out of the given XML node and convert it into a
+		  * series of test settings that can be used in our automation component.
+		  */
+		testSettingsForQuadCheck: function(xmlNode, testSettingsArray)
+		{
+			var varName1 = xmlNode.getAttribute("varName1");
+			if(varName1){
+				var setting1 = {
+					varName : varName1,
+					htmlid : "qx.ui.form.CheckBox." + varName1
+				};
+				testSettingsArray.push( setting1 );
+			}
+			var varName2 = xmlNode.getAttribute("varName2");
+			if(varName2){
+				var setting2 = {
+					varName : varName2,
+					htmlid : "qx.ui.form.CheckBox." + varName2
+				};
+				testSettingsArray.push( setting2 );
+			}
+			var varName3 = xmlNode.getAttribute("varName3");
+			if(varName3){
+				var setting3 = {
+					varName : varName3,
+					htmlid : "qx.ui.form.CheckBox." + varName3
+				};
+				testSettingsArray.push( setting3 );
+			}
+			var varName4 = xmlNode.getAttribute("varName4");
+			if(varName4){
+				var setting4 = {
+					varName : varName4,
+					htmlid : "qx.ui.form.CheckBox." + varName4
+				};
+				testSettingsArray.push( setting4 );
+			}
+
 		}
 
 

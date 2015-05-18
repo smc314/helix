@@ -303,7 +303,7 @@ qx.Class.define("welcome.StandardPage", {
 		 *
 		 */
 		createComandCreateView : function ( callback ){
-			var c1 = new qx.ui.core.Command();
+			var c1 = new qx.ui.command.Command();
 			c1.addListener("execute", function(event) {
 				var menu_Button = event.getData().getUserData("parentButton"); // button.
 				var parentToolbar = welcome.Statics.findQXParent( menu_Button, qx.ui.toolbar.ToolBar );

@@ -345,6 +345,23 @@ void SQLStmt::createXmlChildren(xmlNodePtr parent, vector<SQLStmt* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr SQLStmt::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLStmt* >* vect)
+{
+	EnEx ee(FL, "SQLStmt::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLStmt* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to SQLStmt::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	SQLStmt::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void SQLStmt::deleteVector(vector<SQLStmt* >* vect)

@@ -65,6 +65,11 @@ class ActionMap {
 
 		virtual ~ActionMap();
 
+		/** Ensures that all of our action logic and html mappings have been saved
+		  * to the database so that permissions can be set on them.
+		  */
+		void SaveToConfigDB(void);
+
 	protected:
 		/// Maps action name to class name that will handle it.
 		map<twine, twine> m_logics;

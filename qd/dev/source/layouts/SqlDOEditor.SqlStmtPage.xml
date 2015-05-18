@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<VerticalBoxLayout spacing="0" flex="1" filename="dash/SqlTest.SqlStmtPage.xml">
+<VerticalBoxLayout spacing="0" flex="1" filename="dev/SqlTest.SqlStmtPage.xml">
 	<VerticalSplitPane leftsize="1" rightsize="1" flex="1">
 		<VerticalSplitPaneTop>
 			<VerticalBoxLayout spacing="0" flex="1">
@@ -19,7 +19,7 @@
 
 					<HorizontalBoxLayout flex="1">
 						<VerticalBoxLayout paddingTop="20">
-							<Button varName="stmtLoadOne" icon="dash/icon/16x16/plain/bullet_triangle_glass_green.png"/>
+							<Button varName="stmtLoadOne" icon="dev/icon/16x16/plain/bullet_triangle_glass_green.png"/>
 						</VerticalBoxLayout>
 						<VerticalBoxLayout flex="1">
 							<Label text="SQL Statement" paddingTop="3"/>
@@ -34,11 +34,11 @@
 				<GroupBox legend="Input/Output Fields" flex="3">
 					<HorizontalBoxLayout flex="1">
 						<VerticalBoxLayout paddingTop="20">
-							<Button varName="ioFieldsAddNew" icon="dash/icon/16x16/plain/cubes_blue_add.png"/>
-							<Button varName="ioFieldsDelete" icon="dash/icon/16x16/plain/delete2.png"/>
-							<Button varName="ioFieldsCopyFromMeta" icon="dash/icon/16x16/plain/objects_transform.png"/>
-							<Button varName="ioFieldsMoveUp" icon="dash/icon/16x16/plain/navigate_up2.png"/>
-							<Button varName="ioFieldsMoveDown" icon="dash/icon/16x16/plain/navigate_down2.png"/>
+							<Button varName="ioFieldsAddNew" icon="dev/icon/16x16/plain/cubes_blue_add.png"/>
+							<Button varName="ioFieldsDelete" icon="dev/icon/16x16/plain/delete2.png"/>
+							<Button varName="ioFieldsCopyFromMeta" icon="dev/icon/16x16/plain/objects_transform.png"/>
+							<Button varName="ioFieldsMoveUp" icon="dev/icon/16x16/plain/navigate_up2.png"/>
+							<Button varName="ioFieldsMoveDown" icon="dev/icon/16x16/plain/navigate_down2.png"/>
 						</VerticalBoxLayout>
 						<StandardTable varName="inputOutputTable" flex="1">
 							<Column title="Name" width="1*" minWidth="50"/>

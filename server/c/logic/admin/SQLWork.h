@@ -94,6 +94,9 @@ class SQLWork
 		/// Create a series of xml child nodes based on the input vector
 		static void createXmlChildren(xmlNodePtr parent, vector<SQLWork* >* vect);
 
+		/// Create a child and series of grandchild nodes based on the input vector.
+		static xmlNodePtr createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLWork* >* vect);
+
 		/// Handle deleting a vector and its contents.
 		static void deleteVector( vector<SQLWork* >* vect);
 

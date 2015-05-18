@@ -1,0 +1,20 @@
+<VerticalBoxLayout spacing="0" flex="1">
+	<GroupBox legend="TextArea Options">
+		<FieldArea columns="2" first="100" second="100">
+			<DoubleField 
+				varName1="varNameField" label1="Variable Name:" type1="TextField"
+				tooltip1="Variable Name to create for the TextArea"
+				verify1="false" verify1type="" verify1min="" verify1max=""
+				upper1="false" required1="false"
+
+				varName2="flexField" label2="Flex:" type2="TextField"
+				tooltip2="Flex value to use in layout of this element"
+				verify2="true" verify2type="number" verify2min="0" verify2max="400"
+				upper2="false" required2="false"
+			/>
+			<SingleCheck varName1="wrapField" label1="Wrap Text?"/>
+			<SingleCheck varName1="allowGrowXField" label1="Allow Grow X?"/>
+			<SingleCheck varName1="allowGrowYField" label1="Allow Grow Y?"/>
+		</FieldArea>
+	</GroupBox>
+</VerticalBoxLayout>

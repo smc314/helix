@@ -99,6 +99,8 @@ class SchedConn : public IOConn
 		virtual void SendError();
 	
 		virtual void SendNotFound();
+		virtual void SendForbidden();
+		virtual void SendRedirect(const twine& redirectLocation);
 
 };
 

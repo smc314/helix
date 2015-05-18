@@ -66,12 +66,13 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 		*/
 		addMenuButton: function (menu, shortcut, label, icon, tooltip, callback) {
 			// Create and configure the command
-			var command = new qx.ui.core.Command(shortcut);
+			var command = new qx.ui.command.Command(shortcut);
 			command.setLabel(label);
 			command.setIcon(icon);
 			command.setToolTipText(tooltip);
 			command.addListener("execute", callback, this);
 			var button = new qx.ui.menu.Button();
+			PACKAGE.Statics.setHtmlID( button, label );
 			button.setCommand(command);
 			menu.add(button);
 			return button;
@@ -182,7 +183,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 				100 : {translate : [null, "0px"]}
 			}};
 
-			var element = this.container1.getContainerElement().getDomElement();
+			var element = this.container1.getContentElement().getDomElement();
 			qx.bom.element.Animation.animate(element, upAndAway);
 		},
 
@@ -194,24 +195,27 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 
 			var welcome = new qx.ui.menu.Button("Welcome To Helix Development",
 					"PACKAGE/icon/16x16/plain/home.png");
-			var admin = new qx.ui.menu.Button("Helix Administration",
+			PACKAGE.Statics.setHtmlID( welcome, "Welcome");
+			var adminBtn = new qx.ui.menu.Button("Helix Administration",
 					"PACKAGE/icon/16x16/plain/control_panel.png");
-			var dev = new qx.ui.menu.Button("Helix Development",
+			PACKAGE.Statics.setHtmlID( adminBtn, "Admin");
+			var devBtn = new qx.ui.menu.Button("Helix Development",
 					"PACKAGE/icon/16x16/plain/compass.png");
+			PACKAGE.Statics.setHtmlID( devBtn, "Dev");
 
 			welcome.addListener("execute", function () {
 				this.openWindow("/qd/welcome/build/index.html", "_blank");
 			}, this);
-			admin.addListener("execute", function () {
+			adminBtn.addListener("execute", function () {
 				this.openWindow("/qd/admin/build/index.html", "_blank");
 			}, this);
-			dev.addListener("execute", function () {
+			devBtn.addListener("execute", function () {
 				this.openWindow("/qd/dev/build/index.html", "_blank");
 			}, this);
 
 			menu.add(welcome);
-			menu.add(admin);
-			menu.add(dev);
+			menu.add(adminBtn);
+			menu.add(devBtn);
 
 			return menu;
 		},
@@ -281,6 +285,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 
 			var btnNew = new qx.ui.menu.Button("New Connection...",
 					"PACKAGE/icon/16x16/plain/server_connection.png");
+			PACKAGE.Statics.setHtmlID( btnNew, "NewConnection");
 
 			btnNew.addListener("execute", function () {
 				this.displayServerConnectDialog();
@@ -290,6 +295,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 
 			var btnMng = new qx.ui.menu.Button("Manage Connections",
 					"PACKAGE/icon/16x16/plain/server_edit.png");
+			PACKAGE.Statics.setHtmlID( btnMng, "ManageConnections");
 
 			btnMng.addListener("execute", function () {
 				this.manageServerConnectDialog();
@@ -310,6 +316,8 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 						// Add this to the list
 						var btn = new qx.ui.menu.Button(p,
 						"PACKAGE/icon/16x16/plain/server_connection.png");
+						PACKAGE.Statics.setHtmlID( btn, p);
+
 						btn.addListener("execute", function (e) {
 							var obj = new PACKAGE.sqldo.LogOn();
 							var label = e.getTarget().getLabel();
@@ -386,6 +394,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 
 			// Label was not found.  Add it in:
 			var btn = new qx.ui.menu.Button(newLabel, "PACKAGE/icon/16x16/plain/server_connection.png");
+			PACKAGE.Statics.setHtmlID( btn, newLabel);
 			btn.addListener("execute", function () {
 				var obj = new PACKAGE.sqldo.LogOn();
 				obj.setConnName(newLabel);
@@ -434,6 +443,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			// Close not found.  Add it in right after New Connection...
 			var closeBtn = new qx.ui.menu.Button("Close Current Connection",
 				"PACKAGE/icon/16x16/plain/server_delete.png");
+			PACKAGE.Statics.setHtmlID( closeBtn, "CloseCurrentConnection");
 			closeBtn.addListener("execute", function () {
 				PACKAGE.Api.CloseConnection(function (response) {
 					this.serverMenu.setLabel("Server: Not Connected");
@@ -549,7 +559,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			if (tab_page != null) { // brand new
 				tab_page.setIcon("PACKAGE/icon/16x16/plain/question_and_answer.png");
 				var iframe = new qx.ui.embed.Iframe().set({
-					source: "http://helix.hericus.com/osqa/"
+					source: "http://www.helixsdk.org/qa/"
 				});
 				tab_page.add(iframe, { flex: 10 });
 			}
@@ -618,6 +628,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			this.container1.add( this.treeTabs );
 
 			this.tree = new qx.ui.tree.Tree();
+			PACKAGE.Statics.setHtmlID( this.tree, "ExplorerTree" );
 			//this.tree.setDecorator(null);
 			this.tree.setRootOpenClose(true);
 			this.tree.addListener("changeSelection", this.handleTreeSelection, this);
@@ -718,7 +729,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			var item = new qx.ui.tree.TreeFile(label);
 
 			item.addListenerOnce("appear", function() {
-				var element = item.getContainerElement().getDomElement();
+				var element = item.getContentElement().getDomElement();
 				qx.bom.element.Scroll.intoView(element);
 
 				var color = {duration: 2000, keyFrames : {
@@ -745,7 +756,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			var item = new qx.ui.tree.TreeFile(label);
 
 			item.addListenerOnce("appear", function() {
-				var element = item.getContainerElement().getDomElement();
+				var element = item.getContentElement().getDomElement();
 				qx.bom.element.Scroll.intoView(element);
 
 				var color = {duration: 2000, keyFrames : {
@@ -913,6 +924,7 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			// create applications menu button
 			var appsMenu = new qx.ui.toolbar.MenuButton("Applications", "PACKAGE/icon/16x16/plain/signpost.png", this.getAppsMenu());
 			appsMenu.setToolTipText("Switch between the Helix applications");
+			PACKAGE.Statics.setHtmlID( appsMenu, "Applications" );
 
 			// create tools menu
 			var toolsmenu = this.getToolsMenu();
@@ -925,10 +937,12 @@ qx.Mixin.define("PACKAGE.StandardApp", {
 			// create tools menu button
 			var toolsMenu = new qx.ui.toolbar.MenuButton("Tools", "PACKAGE/icon/16x16/plain/carabiner.png", toolsmenu);
 			toolsMenu.setToolTipText("Operate this application");
+			PACKAGE.Statics.setHtmlID( toolsMenu, "Tools" );
 
 			// create connection menu button
 			this.serverMenu = new qx.ui.toolbar.MenuButton("Server: Not Connected", "PACKAGE/icon/16x16/plain/server_delete.png", this.getServerMenu(this));
 			this.serverMenu.setToolTipText("Control the Helix database connection");
+			PACKAGE.Statics.setHtmlID( this.serverMenu, "ServerMenu" );
 
 			var frontPart = new qx.ui.toolbar.Part;
 			var backPart = new qx.ui.toolbar.Part;

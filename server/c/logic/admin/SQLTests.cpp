@@ -237,6 +237,23 @@ void SQLTests::createXmlChildren(xmlNodePtr parent, vector<SQLTests* >* vect)
 }
 
 /* ********************************************************************** */
+/* Create a child node and a series of grand-child nodes from the vector. */
+/* ********************************************************************** */
+xmlNodePtr SQLTests::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLTests* >* vect)
+{
+	EnEx ee(FL, "SQLTests::createXmlChildAndGrandchildren(xmlNodePtr parent, const twine& childName, vector<SQLTests* >* vect)");
+
+	if(parent == NULL){
+		throw AnException(0, FL, "xmlNodePtr passed to SQLTests::createXmlChildAndGrandchildren is NULL.");
+	}
+
+	xmlNodePtr child = xmlNewChild( parent, NULL, childName, NULL);
+	SQLTests::createXmlChildren( child, vect );
+
+	return child;
+}
+
+/* ********************************************************************** */
 /* Handle deleting a vector and its contents.                             */
 /* ********************************************************************** */
 void SQLTests::deleteVector(vector<SQLTests* >* vect)

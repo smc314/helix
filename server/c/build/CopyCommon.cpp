@@ -26,15 +26,24 @@ twine m_currentFile;
 void findAllJSFiles(twine start);
 void processFile( twine& file_name );
 
-int main (void)
+int main (int argc, char** argv)
 {
 	printf("============================================================================\n");
 	printf(" CopyCommon copying in global javascript files to each application.         \n");
 	printf("============================================================================\n");
 
-	m_currentPackage = "admin"; findAllJSFiles("../../../qd/common");
-	m_currentPackage = "dev"; findAllJSFiles("../../../qd/common");
-	m_currentPackage = "welcome"; findAllJSFiles("../../../qd/common");
+	if(argc == 1){
+		// These are the default packages
+		m_currentPackage = "admin"; findAllJSFiles("../../../qd/common");
+		m_currentPackage = "dev"; findAllJSFiles("../../../qd/common");
+		m_currentPackage = "welcome"; findAllJSFiles("../../../qd/common");
+	} else {
+		// Iterate through the packages given on the command line:
+		for(int i = 1; i < argc; i++){
+			m_currentPackage = argv[i];
+			findAllJSFiles("../../../qd/common");
+		}
+	}
 
 	return 0;
 }

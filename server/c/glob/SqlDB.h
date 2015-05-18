@@ -12,6 +12,7 @@
 #define SQLDB_H
 
 #include "OdbcObj.h"
+#include "TableActions.h"
 using namespace Helix::Glob;
 
 #include <Mutex.h>
@@ -22,31 +23,6 @@ using namespace SLib;
 
 namespace Helix {
 namespace Glob {
-
-class TableActions {
-	public:
-
-		/// Standard Constructor
-		TableActions(const twine& Name);
-
-		/// Copy Constructor
-		TableActions(const TableActions& c);
-
-		/// Assignment operator
-		TableActions& operator=(const TableActions& c);
-
-		/// Standard Destructor
-		virtual ~TableActions();
-
-		/// Which table are we working with
-		twine TableName;
-
-		/// Did we create it
-		bool Created;
-
-		/// Did we update it
-		bool Updated;
-};
 
 /** This class is used to manage the installation and setup of our database schema.  It is
   * designed to find one or more of our database setup xml control files and then for each file,
@@ -144,6 +120,32 @@ class SqlDB {
 		  */
 		void createNewFile();
 	
+};
+
+/** Helper class that makes creating, committing and rolling back a sqllite transaction easier
+  * to manage by using the scope handling characteristics of the compiler.
+  */
+class SqlDBTransaction {
+	public:
+		SqlDBTransaction ( SqlDB& db ) : m_db(db)
+		{
+			m_db.BeginTransaction();
+		}
+
+		virtual ~SqlDBTransaction() {
+			m_db.RollbackTransaction();
+		}
+
+		void Rollback() {
+			m_db.RollbackTransaction();
+		}
+
+		void Commit() {
+			m_db.CommitTransaction();
+		}
+
+	protected:
+		SqlDB& m_db;
 };
 
 }} // End Namespace Helix::Glob

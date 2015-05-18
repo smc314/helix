@@ -50,8 +50,22 @@ twine lin64LFlags = "-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -lodbc 
 twine mac64LFlags = "-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L$(3PL)/slib/lib -lSLib";
 twine lin64CFlags = "-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I \"$(3PL)/slib/include\" ";
 
-int main (void)
+bool doJni = true;
+
+int main (int argc, char** argv)
 {
+
+	if(argc > 1){
+		twine argv1 = argv[1];
+		if(argv1.startsWith( "-jni=" )){
+			if(argv1.endsWith( "true" )){
+				doJni = true;
+			} else {
+				doJni = false;
+			}
+		}
+	}
+
 	printf("============================================================================\n");
 #ifdef _WIN32
 #	ifdef _X86_
@@ -67,8 +81,12 @@ int main (void)
 
 	findAllSLFolders("../logic");
 
-	createGlobMakefile("../glob");
-	createClientMakefile("../client");
+	try {
+		createGlobMakefile("../glob");
+		createClientMakefile("../client");
+	} catch(AnException& e){
+		printf("%s\n", e.Msg());
+	}
 
 	return 0;
 }
@@ -569,7 +587,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"3PL=../../../../3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"\n"
-		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
+		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I ../logic/admin -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
 		"\n"
 		"LFLAGS=\n"
 		"\n"
@@ -584,6 +602,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 
 	for(size_t i = 0; i < objFiles.size(); i++){
 		vector<twine> splits = objFiles[i].split(".");
+		if(doJni == false && splits[0] == "Jvm") continue; // skip the Jvm.cpp if doJni is false
 		if(i == (objFiles.size() - 1)){
 			output.append( "\t" + splits[0] + ".o\n" );
 		} else {

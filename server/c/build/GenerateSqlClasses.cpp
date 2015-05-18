@@ -787,6 +787,8 @@ void beginCPPDataObjectTest(twine& objName, vector<xmlNodePtr>& statements)
 			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		} else if(attrType == "int"){
 			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
+		} else if(attrType == "Timestamp" || attrType == "Date" || attrType == "DateTime"){
+			compareMembers.append("\tif(!(first->" + attrName + " == second->" + attrName + ")) return false;\n");
 		} else {
 			compareMembers.append("\tif(first->" + attrName + " != second->" + attrName + ") return false;\n");
 		}
@@ -2605,6 +2607,8 @@ twine convertArg(twine type)
 		return "MemBuf";
 	} else if(type == "int" || type == "autogen"){
 		return "intptr_t";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return "Date";
 	} else {
 		return type;
 	}
@@ -2630,6 +2634,8 @@ twine convertType(twine type)
 		return "twine";
 	} else if(type == "bin"){
 		return "MemBuf";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return "Date";
 	} else {
 		return type;
 	}
@@ -2656,9 +2662,11 @@ twine paramForType(twine name, twine type)
 		return ", " + type + " " + name;
 	} else if(type == "int" || type == "autogen" ){
 		return ", intptr_t " + name;
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return ", Date& " + name;
 	} else {
 		// default to twine
-		return ", " + type + "& " + name;
+		return ", " + convertType(type) + "& " + name;
 	}
 }
 	
@@ -2673,6 +2681,8 @@ twine odbcBindOutputForType(size_t pos, twine name, twine type)
 		return "odbc.BindOutput(" + pos_string + ", &(local." + name + "), &sizeof_int, DB_INT);\n";
 	} else if(type == "float"){
 		return "odbc.BindOutput(" + pos_string + ", &(local." + name + "), &sizeof_float, DB_FLOAT);\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return "odbc.BindOutput(" + pos_string + ", local." + name + ");\n";
 	} else {
 		// default to twine
 		return "odbc.BindOutput(" + pos_string + ", local." + name + ");\n";
@@ -2689,6 +2699,8 @@ twine odbcBindOutputForType2(size_t pos, twine name, twine type)
 		return "obj->" + name + " = sqlite3_column_int( db_stmt, " + pos_string + ");\n";
 	} else if(type == "float"){
 		return "obj->" + name + " = sqlite3_column_float( db_stmt, " + pos_string + ");\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return "obj->" + name + ".SetValue( (const char*)sqlite3_column_text( db_stmt, " + pos_string + ") );\n";
 	} else {
 		// default to twine
 		return "obj->" + name + ".set( (const char*)sqlite3_column_text( db_stmt, " + pos_string + "), (size_t)sqlite3_column_bytes(db_stmt, " + pos_string + ") );\n";
@@ -2711,6 +2723,10 @@ twine odbcBindInputForType(size_t pos, twine name, twine type)
 		return 
 			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %f\", " + pos_string + ", " + name + " );\n"
 			"\t\t\todbc.BindInput(" + pos_string + ", &" + name + ", &sizeof_float, DB_FLOAT);\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return 
+			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", " + name + ".GetValue() );\n"
+			"\t\t\todbc.BindInput(" + pos_string + ", " + name + ");\n";
 	} else {
 		// default to twine
 		return 
@@ -2736,6 +2752,10 @@ twine odbcBindInputForType4(size_t pos, twine name, twine type)
 		return 
 			"\t\t\t\tDEBUG(FL, \"Setting input (%d) to value: %f\", " + pos_string + ", " + name + " );\n"
 			"\t\t\t\tsqldb.check_err( sqlite3_bind_float( db_stmt, " + pos_string + ", (int)" + name + ") );\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return 
+			"\t\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", " + name+".GetValue() );\n"
+			"\t\t\t\tsqldb.check_err( sqlite3_bind_text( db_stmt, " + pos_string + ", " + name + ".GetValue(), 20, SQLITE_STATIC) );\n";
 	} else {
 		// default to twine
 		return 
@@ -2762,6 +2782,9 @@ twine replaceInputForType(twine name, twine type)
 	} else if(type == "bin"){
 		return 
 			"\t\tstmt.replace(idx, 1, " + name + "() );\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return
+			"\t\tstmt.replace(idx, 1, " + name + " );\n";
 	} else {
 		// default to twine
 		return 
@@ -2788,6 +2811,9 @@ twine replaceInputForType2(twine name, twine type)
 	} else if(type == "bin"){
 		return 
 			"\t\tstmt.replace(idx, 1, obj." + name + "() );\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return 
+			"\t\tstmt.replace(idx, 1, obj." + name + " );\n";
 	} else {
 		// default to twine
 		return 
@@ -2813,6 +2839,10 @@ twine odbcBindInputForType2(size_t pos, twine name, twine type)
 		return 
 			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %f\", " + pos_string + ", obj." + name + " );\n"
 			"\t\t\todbc.BindInput(" + pos_string + ", &(obj." + name + "), &sizeof_float, DB_FLOAT);\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return 
+			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", obj." + name + ".GetValue() );\n"
+			"\t\t\todbc.BindInput(" + pos_string + ", obj." + name + ");\n";
 	} else {
 		// default to twine
 		return 
@@ -2838,6 +2868,10 @@ twine odbcBindInputForType3(size_t pos, twine name, twine type)
 		return 
 			"\t\t\t\tDEBUG(FL, \"Setting input (%d) to value: %f\", " + pos_string + ", obj." + name + " );\n"
 			"\t\t\t\tsqldb.check_err( sqlite3_bind_float( db_stmt, " + pos_string + ", (float)obj." + name + ") );\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return 
+			"\t\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", obj." + name + ".GetValue() );\n"
+			"\t\t\t\tsqldb.check_err( sqlite3_bind_text( db_stmt, " + pos_string + ", obj." + name + ".GetValue(), 20, SQLITE_STATIC) );\n";
 	} else {
 		// default to twine
 		return 
@@ -2863,6 +2897,10 @@ twine odbcBindInputForType5(size_t pos, twine name, twine type)
 		return 
 			"\t\t\t\tDEBUG(FL, \"Setting input (%d) to value: %f\", " + pos_string + ", v->at( v_i )->" + name + " );\n"
 			"\t\t\t\tsqldb.check_err( sqlite3_bind_float( db_stmt, " + pos_string + ", (float)v->at( v_i )->" + name + ") );\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return 
+			"\t\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", v->at( v_i )->" + name + ".GetValue() );\n"
+			"\t\t\t\tsqldb.check_err( sqlite3_bind_text( db_stmt, " + pos_string + ", v->at( v_i )->" + name + ".GetValue(), 20, SQLITE_STATIC) );\n";
 	} else {
 		// default to twine
 		return 
@@ -2880,8 +2918,8 @@ twine xmlSetForType(twine name, twine type, twine elemname)
 		return "XmlHelpers::setIntAttr(" + elemname + ", \"" + name + "\", (int)" + name + ");\n";
 	} else if(type == "float"){
 		return "XmlHelpers::setFloatAttr(" + elemname + ", \"" + name + "\", " + name + ");\n";
-	} else if(type == "Timestamp"){
-		return "XmlHelpers::setTimestampAttr(" + elemname + ", \"" + name + "\", " + name + ");\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return "XmlHelpers::setDateAttr(" + elemname + ", \"" + name + "\", " + name + ");\n";
 	} else if(type == "base64"){
 		return "XmlHelpers::setBase64(xmlNewChild(" + elemname + ", NULL, (const xmlChar*)\"" + name + "\", NULL), " + name + ");\n";
 	} else if(type == "bin"){
@@ -2899,8 +2937,9 @@ twine xmlGetForType(twine name, twine type, twine elemname)
 		return name + " = XmlHelpers::getIntAttr(" + elemname + ", \"" + name + "\");\n";
 	} else if(type == "float"){
 		return name + " = (float)XmlHelpers::getFloatAttr(" + elemname + ", \"" + name + "\");\n";
-	} else if(type == "Timestamp"){
-		return name + " = XmlHelpers::getTimestampAttr(" + elemname + ", \"" + name + "\");\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return name + ".SetValue( xmlGetProp(" + elemname + ", (const xmlChar*)\"" + name + "\") );\n";
+		//return name + " = XmlHelpers::getTimestampAttr(" + elemname + ", \"" + name + "\");\n";
 	} else if(type == "cdata"){
 		return "xmlNodePtr " + name + "_child = XmlHelpers::FindChild(" + elemname + ", \"" + name + "\"); if( " + name + "_child != NULL) " + name + " = XmlHelpers::getCDATASection(" + name + "_child);\n";
 	} else if(type == "base64"){
@@ -2918,6 +2957,8 @@ twine jsPropDefinition( twine name, twine type )
 		return name + " : {init : 0, event: \"change" + name + "\", check : \"Integer\" }" ;
 	} else if(type == "long"){
 		return name + " : {init : 0, event: \"change" + name + "\", check : \"Number\" }" ;
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return name + " : {event: \"change" + name + "\", check : \"Date\" }" ;
 	} else {
 		return name + " : {init : \"\", event: \"change" + name + "\", check : \"String\" }";
 	}
@@ -2931,8 +2972,8 @@ twine jsGetForType(twine name, twine type, twine elemname)
 		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( Number(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
 	} else if(type == "long"){
 		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( Number(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
-	} else if(type == "Timestamp"){
-		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( " + elemname + ".getAttribute(\"" + name + "\").substr(0,19) ); }\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
+		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( Date(" + elemname + ".getAttribute(\"" + name + "\").substr(0,19) ) ); }\n";
 	} else if(type == "base64" || type == "bin"){
 		return 
 			"this.set" + ucase + "(\n"
@@ -2952,6 +2993,8 @@ twine jsSetForType(twine name, twine type, twine elemname)
 	if(type == "int" || type == "autogen"){
 		return elemname + ".setAttribute( \"" + name + "\", String(this.get" + ucase + "() ) );\n";
 	} else if(type == "long"){
+		return elemname + ".setAttribute( \"" + name + "\", String(this.get" + ucase + "() ) );\n";
+	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return elemname + ".setAttribute( \"" + name + "\", String(this.get" + ucase + "() ) );\n";
 	} else if(type == "cdata"){
 		return 
