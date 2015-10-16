@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Helix</RootNamespace>
     <AssemblyName>Helix</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -50,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
+    <StartupObject>Helix.Glob.TheMain</StartupObject>
     <StartupObject>Helix.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -67,6 +69,8 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -83,6 +87,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -94,6 +99,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="glob\ActionClass.cs" />
+    <Compile Include="glob\ActionHtml.cs" />
+    <Compile Include="glob\ActionLogic.cs" />
+    <Compile Include="glob\ActionMap.cs" />
+    <Compile Include="glob\AdaptiveLogs.cs" />
+    <Compile Include="glob\ConnectionPool.cs" />
+    <Compile Include="glob\HttpConn.cs" />
+    <Compile Include="glob\HttpIOAdapter.cs" />
+    <Compile Include="glob\IOAdapter.cs" />
+    <Compile Include="glob\IOConn.cs" />
+    <Compile Include="glob\LongRunningTask.cs" />
+    <Compile Include="glob\MsgProcessor.cs" />
+    <Compile Include="glob\MsgProcScaler.cs" />
+    <Compile Include="glob\OdbcObj.cs" />
+    <Compile Include="glob\Scaler.cs" />
+    <Compile Include="glob\SchedConn.cs" />
+    <Compile Include="glob\SchedEntry.cs" />
+    <Compile Include="glob\Schedule.cs" />
+    <Compile Include="glob\SessionInfo.cs" />
+    <Compile Include="glob\SessionList.cs" />
+    <Compile Include="glob\SessionSerializer.cs" />
+    <Compile Include="glob\SqlDB.cs" />
+    <Compile Include="glob\Threadable.cs" />
+    <Compile Include="glob\ThreadList.cs" />
+    <Compile Include="glob\TheMain.cs" />
+    <Compile Include="glob\Log.cs" />
+    <Compile Include="glob\EnEx.cs" />
+    <Compile Include="glob\XmlHelpers.cs" />
+    <Compile Include="glob\LogMsg.cs" />
+    <Compile Include="glob\LogFile2.cs" />
+    <Compile Include="glob\MimeTypeMap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -130,4 +167,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="glob\" />
+    <Folder Include="logic\" />
+    <Folder Include="server\" />
+    <Folder Include="logic\admin\" />
+    <Folder Include="logic\dev\" />
+    <Folder Include="logic\util\" />
+  </ItemGroup>
 </Project>
