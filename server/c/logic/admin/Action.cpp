@@ -302,9 +302,6 @@ void Action::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Action& obj )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -361,9 +358,6 @@ void Action::insert(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into action (path, okwosession) 			values ( ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -518,9 +512,6 @@ void Action::addUserToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action& 
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -576,9 +567,6 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransac
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into useraction (userid, actionid, allow) 			values ( ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -733,9 +721,6 @@ void Action::addGroupToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action&
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -791,9 +776,6 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransa
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into groupaction (groupid, actionid, allow) 			values ( ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -950,9 +932,6 @@ void Action::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& Path, intp
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -1072,9 +1051,6 @@ void Action::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -1178,9 +1154,6 @@ void Action::removeUserFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, int
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -1293,9 +1266,6 @@ void Action::removeGroupFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, in
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -1490,7 +1460,6 @@ twine Action::selectAll_prepSQL(IOConn& ioc)
 {
 	EnEx ee(FL, "Action::selectAll_prepSQL()");
 
-	size_t idx = 0;
 	twine stmt = "select id, path, okwosession 			from action";
 
 	// Also take a look at the statement and replace any session variables

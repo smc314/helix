@@ -296,9 +296,6 @@ void DOStmtOutput::insert(SqlDB& sqldb, twine& stmt, bool useInputs, DOStmtOutpu
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -356,9 +353,6 @@ void DOStmtOutput::insert(SqlDB& sqldb, vector< DOStmtOutput* >* v, bool useTran
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into dostmtoutput (guid, dostmtguid, VarName, VarType) 			values ( ?, ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -520,9 +514,6 @@ void DOStmtOutput::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& VarN
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -640,9 +631,6 @@ void DOStmtOutput::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& 
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -744,9 +732,6 @@ void DOStmtOutput::deleteByStmtID(SqlDB& sqldb, twine& stmt, bool useInputs, twi
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 

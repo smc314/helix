@@ -406,7 +406,6 @@ vector<IAFile* >* IAFile::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool useInpu
 	// Use a single local object to handle fetching the data:
 	IAFile local;
 	int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-	int sizeof_float = sizeof(float); // so that we can have an address of this variable
 
 	SQLTRACE(FL, "Using SQL: %s", stmt() );
 	odbc.SetStmt(stmt, SQL_TYPE_SELECT);

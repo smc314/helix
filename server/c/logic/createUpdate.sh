@@ -199,9 +199,9 @@ void ${CLASSNAME}::ExecuteRequest(IOConn& ioc)
 	${OBJNAME} local( XmlHelpers::FindChild( ioc.GetRequestRoot(), ${OBJNAME}::Name()() ) );
 
 	// Do any type of input validation here
-	if(local.RequiredField.empty()){
-		throw AnException(0, FL, "${OBJNAME} must have a valid RequiredField.");
-	}
+	//if(local.RequiredField.empty()){
+	//	throw AnException(0, FL, "${OBJNAME} must have a valid RequiredField.");
+	//}
 
 	// Read from our configuration database - change this to get data from elsewhere
 	SqlDB& db = TheMain::getInstance()->GetConfigDB( );
@@ -230,7 +230,7 @@ void ${CLASSNAME}::ExecuteRequest(IOConn& ioc)
 		/* ******************************************************************* */
 
 	} else {
-		${OBJNAME}::update( db, local.Field1, local.Field2, local.Field3, local.id );
+		//${OBJNAME}::update( db, local.Field1, local.Field2, local.Field3, local.id );
 		// Update any other records here
 
 	}

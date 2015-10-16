@@ -296,9 +296,6 @@ void TableCol::insert(SqlDB& sqldb, twine& stmt, bool useInputs, TableCol& obj )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -356,9 +353,6 @@ void TableCol::insert(SqlDB& sqldb, vector< TableCol* >* v, bool useTransaction)
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into projcol (guid, projtableguid, ColName, ColType ) 			values ( ?, ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -520,9 +514,6 @@ void TableCol::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& ColName,
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -640,9 +631,6 @@ void TableCol::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -744,9 +732,6 @@ void TableCol::deleteByTable(SqlDB& sqldb, twine& stmt, bool useInputs, twine& p
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -935,7 +920,6 @@ twine TableCol::selectAllForTable_prepSQL(IOConn& ioc)
 {
 	EnEx ee(FL, "TableCol::selectAllForTable_prepSQL()");
 
-	size_t idx = 0;
 	twine stmt = "select guid, projtableguid, ColName, ColType 			from projcol";
 
 	// Also take a look at the statement and replace any session variables

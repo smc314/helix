@@ -288,9 +288,6 @@ void Screen::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Screen& obj )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -346,9 +343,6 @@ void Screen::insert(SqlDB& sqldb, vector< Screen* >* v, bool useTransaction)
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into screen (guid, projappguid, ScreenName) 			values ( ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -501,9 +495,6 @@ void Screen::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& ScrnName, 
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -613,9 +604,6 @@ void Screen::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 

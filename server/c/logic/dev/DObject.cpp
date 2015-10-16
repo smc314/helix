@@ -320,9 +320,6 @@ void DObject::insert(SqlDB& sqldb, twine& stmt, bool useInputs, DObject& obj )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -378,9 +375,6 @@ void DObject::insert(SqlDB& sqldb, vector< DObject* >* v, bool useTransaction)
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into dataobject (guid, projappguid, DataObjectName) 			values ( ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -533,9 +527,6 @@ void DObject::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& DataObjec
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -645,9 +636,6 @@ void DObject::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid 
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 

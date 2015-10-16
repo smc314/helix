@@ -1509,6 +1509,8 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 	twine sqldbBindObjInputs;
 	twine sqldbBindVObjInputs;
 	bool has_autogen = false;
+	bool has_int_input = false;
+	bool has_float_input = false;
 	twine autogen_name = "";
 	int autogen_offset = 0;
 	for(size_t i = 0; i < inputs.size(); i++){
@@ -1529,12 +1531,33 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 			sqldbBindObjInputs.append( odbcBindInputForType3(i+1 - autogen_offset, inputName, inputType ));
 			sqldbBindVObjInputs.append( odbcBindInputForType5(i+1 - autogen_offset, inputName, inputType ));
 		}
+
+		if(inputType == "int" || inputType == "autogen" || inputType == "long"){
+			has_int_input = true;
+			printf("%s has int input: %s (%s)\n", m_currentClass(), inputName(), inputType() );
+		}
+		if(inputType == "float"){
+			has_float_input = true;
+		}
 	}
 	vars[ "OdbcBindInputs" ] = odbcBindInputs;
 	vars[ "OdbcBindObjInputs" ] = odbcBindObjInputs;
 	vars[ "SqlDBBindInputs" ] = sqldbBindInputs;
 	vars[ "SqlDBBindObjInputs" ] = sqldbBindObjInputs;
 	vars[ "SqlDBBindVObjInputs" ] = sqldbBindVObjInputs;
+
+	if(has_int_input){
+		vars[ "SizeofInt" ] = "int sizeof_int = sizeof(intptr_t); // so that we can have an address of this variable";
+	} else {
+		vars[ "SizeofInt" ] = "// sizeof_int not required.";
+	}
+
+	if(has_float_input){
+		vars[ "SizeofFloat" ] = "int sizeof_float = sizeof(float);  // so that we can have an address of this variable";
+	} else {
+		vars[ "SizeofFloat" ] = "// sizeof_float not required.";
+	}
+
 
 
 	if(has_autogen){
@@ -1998,13 +2021,46 @@ void generateSelectToDO(xmlNodePtr stmt)
 		"\t\t  */\n"
 		"\t\tstatic vector<" + doName + "* >* " + twine(stmt, "methodName") + "(OdbcObj& odbc, twine& stmt, bool useInputs"
 	);
+	bool has_int_inputoutput = false;
+	bool has_float_inputoutput = false;
 	for(size_t i = 0; i < inputs.size(); i++){
 		xmlNodePtr input = inputs[i];
-		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
-		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
+
+		twine inputName( input, "name" );
+		twine inputType( input, "type" );
+
+		m_output_header.append(paramForType(inputName, inputType) );
+		m_output.append(paramForType(inputName, inputType) );
+
+		if(inputType == "int" || inputType == "autogen" || inputType == "long"){
+			has_int_inputoutput = true;
+		}
+		if(inputType == "float"){
+			has_float_inputoutput = true;
+		}
 	}
 	m_output_header.append(");\n\n");
 	m_output.append(")\n");
+	
+	for(size_t i = 0; i < outputs.size(); i++){
+		xmlNodePtr output = outputs[i];
+		twine i_1; i_1 = (i+1);
+
+		twine memberName(output, "name");
+		twine memberType;
+		if(objAttrs.count(memberName) > 0){
+			memberType = objAttrs[memberName];
+		} else {
+			memberType = "twine";
+		}
+
+		if(memberType == "int" || memberType == "autogen" || memberType == "long"){
+			has_int_inputoutput = true;
+		}
+		if(memberType == "float"){
+			has_float_inputoutput = true;
+		}
+	}
 	
 
 	m_output.append(
@@ -2021,8 +2077,20 @@ void generateSelectToDO(xmlNodePtr stmt)
 		"\n"
 		"\t// Use a single local object to handle fetching the data:\n"
 		"\t" + doName + " local;\n"
-		"\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
-		"\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
+	);
+
+	if(has_int_inputoutput){
+		m_output.append(
+			"\tint sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable\n"
+		);
+	}
+	if(has_float_inputoutput){
+		m_output.append(
+			"\tint sizeof_float = sizeof(float); // so that we can have an address of this variable\n"
+		);
+	}
+
+	m_output.append(
 		"\n"
 		"\tSQLTRACE(FL, \"Using SQL: %s\", stmt() );\n"
 		"\todbc.SetStmt(stmt, SQL_TYPE_SELECT);\n"
@@ -2146,7 +2214,13 @@ void generateSelectToDO(xmlNodePtr stmt)
 		"{\n"
 		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
 		"\n"
-		"\tsize_t idx = 0;\n"
+	);
+	if(inputs.size() != 0){
+		m_output.append(
+			"\tsize_t idx = 0;\n"
+		);
+	}
+	m_output.append(
 		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
 		"\n"
 	);
@@ -2435,7 +2509,13 @@ void generateSelectToDOSqlDB(xmlNodePtr stmt)
 		"{\n"
 		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
 		"\n"
-		"\tsize_t idx = 0;\n"
+	);
+	if(inputs.size() != 0){
+		m_output.append(
+			"\tsize_t idx = 0;\n"
+		);
+	}
+	m_output.append(
 		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
 		"\n"
 	);

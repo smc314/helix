@@ -374,9 +374,6 @@ void SchedItem::insert(SqlDB& sqldb, twine& stmt, bool useInputs, SchedItem& obj
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -459,9 +456,6 @@ void SchedItem::insert(SqlDB& sqldb, vector< SchedItem* >* v, bool useTransactio
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into schedule (TaskName, TaskUrl, InputDocument, isActive, runEvery,  				LastRun, useInterval, RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday, 				dowThursday, dowFriday, dowSaturday) 			values ( ?, ?, ?, ?, ?,  				?, ?, ?, ?, ?, ?, ?, 				?, ?, ?)";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -744,9 +738,6 @@ void SchedItem::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& TaskNam
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -980,9 +971,6 @@ void SchedItem::updateLastRun(SqlDB& sqldb, twine& stmt, bool useInputs, twine& 
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -1093,9 +1081,6 @@ void SchedItem::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t i
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -1335,7 +1320,6 @@ twine SchedItem::selectAll_prepSQL(IOConn& ioc)
 {
 	EnEx ee(FL, "SchedItem::selectAll_prepSQL()");
 
-	size_t idx = 0;
 	twine stmt = "select id, TaskName, TaskUrl, InputDocument, isActive, runEvery, LastRun, useInterval, 				RunAtTime, dowSunday, dowMonday, dowTuesday, dowWednesday, dowThursday, dowFriday, 				dowSaturday 			from schedule";
 
 	// Also take a look at the statement and replace any session variables

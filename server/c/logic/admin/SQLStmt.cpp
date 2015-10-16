@@ -427,8 +427,8 @@ void SQLStmt::unused(OdbcObj& odbc, twine& stmt, bool useInputs, SQLStmt& obj )
 		throw AnException(0, FL, "OdbcObj passed into SQLStmt::unused is not connected.");
 	}
 
-	int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-	int sizeof_float = sizeof(float);      // so that we can have an address of this variable
+	int sizeof_int = sizeof(intptr_t); // so that we can have an address of this variable
+	int sizeof_float = sizeof(float);  // so that we can have an address of this variable
 
 	SQLTRACE(FL, "Using SQL: %s", stmt() );
 	odbc.SetStmt(stmt, SQL_TYPE_UPDATE);

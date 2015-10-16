@@ -292,9 +292,6 @@ void UserGroup::addUserGroup(SqlDB& sqldb, twine& stmt, bool useInputs, UserGrou
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -348,9 +345,6 @@ void UserGroup::addUserGroup(SqlDB& sqldb, vector< UserGroup* >* v, bool useTran
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into usergroup (userid, groupid) 			values ( ?, ?)";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -496,9 +490,6 @@ void UserGroup::deleteGroupsForUser(SqlDB& sqldb, twine& stmt, bool useInputs, i
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -601,9 +592,6 @@ void UserGroup::deleteUsersForGroup(SqlDB& sqldb, twine& stmt, bool useInputs, i
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -795,7 +783,6 @@ twine UserGroup::selectAll_prepSQL(IOConn& ioc)
 {
 	EnEx ee(FL, "UserGroup::selectAll_prepSQL()");
 
-	size_t idx = 0;
 	twine stmt = "select user.id, user.user, groups.id, groups.name 			from user, usergroup, groups 			where user.id = usergroup.userid 			and   usergroup.groupid = groups.id";
 
 	// Also take a look at the statement and replace any session variables

@@ -294,9 +294,6 @@ void Session::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Session& obj )
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -356,9 +353,6 @@ void Session::insert(SqlDB& sqldb, vector< Session* >* v, bool useTransaction)
 	sqlite3_stmt* db_commit = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		twine stmt = "insert into session (guid, userid, created, lastaccess, active) 			values ( ?, ?, ?, ?, ? )";
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
@@ -532,9 +526,6 @@ void Session::update(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t Userid,
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -670,9 +661,6 @@ void Session::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid 
 	sqlite3_stmt* db_stmt = NULL;
 
 	try {
-		int sizeof_int = sizeof(intptr_t);     // so that we can have an address of this variable
-		int sizeof_float = sizeof(float);      // so that we can have an address of this variable
-
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
@@ -865,7 +853,6 @@ twine Session::selectAll_prepSQL(IOConn& ioc)
 {
 	EnEx ee(FL, "Session::selectAll_prepSQL()");
 
-	size_t idx = 0;
 	twine stmt = "select guid, userid, created, lastaccess, active 			from session";
 
 	// Also take a look at the statement and replace any session variables

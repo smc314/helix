@@ -197,7 +197,7 @@ void ${CLASSNAME}::ExecuteRequest(IOConn& ioc)
 	// Transaction trans(db); // Transaction will be rolled back when this object goes out of scope
 
 	// Delete the requested object - adjust this to use the correct inputs and delete call
-	${OBJNAME}::deleteByID( db, local.id );
+	//${OBJNAME}::deleteByID( db, local.id );
 
 	// Delete any other related records here
 
