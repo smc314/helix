@@ -20,12 +20,18 @@ DOJNI=false
 
 3PL=../../../3rdParty
 
-CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2
+ifeq ($(UNAME),Linux)
+	OPENSSLDIR=/usr
+else
+	OPENSSLDIR=/usr/local/opt/openssl
+endif
+
+CFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I$(OPENSSLDIR)/include -I/usr/include -I/usr/include/libxml2
 
 ifeq ($(UNAME),Linux)
-	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lodbc -lz -L./bin -lSLib
+	LFLAGS=-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lodbc -lz -L./bin -lSLib
 else
-	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L./bin -lSLib
+	LFLAGS=-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -lodbc -lz -L./bin -lSLib
 endif
 
 %.o:	%.cpp
@@ -62,7 +68,7 @@ HelixMain:
 HelixDaemon:
 	$(LINK) -o bin/HelixDaemon server/HelixDaemon.o 
 
-subdirs: glob_dir server_dir admin_dir dev_dir test_dir util_dir client_dir
+subdirs: util_dir admin_dir glob_dir server_dir dev_dir test_dir client_dir
 
 glob_dir:
 	cd glob && $(GMAKE) -f Makefile all

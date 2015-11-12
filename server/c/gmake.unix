@@ -12,13 +12,18 @@ UNAME := $(shell uname)
 3PL=../../../../3rdParty
 SOCKET_LIB=
 
+ifeq ($UNAME),Linux)
+	OPENSSLDIR=/usr
+else
+	OPENSSLDIR=/usr/local/opt/openssl
+endif
 
-GCFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I$(3PL)/slib/include
+GCFLAGS=-g -Wall -D_REENTRANT -O2 -rdynamic -I$(OPENSSLDIR)/include -I/usr/include -I/usr/include/libxml2 -I$(3PL)/slib/include
 
 ifeq ($(UNAME),Linux)
-	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -L$(3PL)/slib/lib -lSLib
+	LFLAGS=-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -L$(3PL)/slib/lib -lSLib
 else
-	LFLAGS=-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L$(3PL)/slib/lib -lSLib
+	LFLAGS=-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L$(3PL)/slib/lib -lSLib
 endif
 
 %.o: %.cpp
