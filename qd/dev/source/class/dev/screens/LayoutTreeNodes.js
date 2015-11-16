@@ -49,6 +49,11 @@ qx.Class.define("dev.screens.LayoutTreeNodes", {
 			app.createTreeFolder2( layouts, d, "dev",
 				"dev/icon/16x16/plain/folder_cubes.png", dev.screens.LayoutTreeNodes.populateChildren );
 
+			var t = new dev.sqldo.IAFolder();
+			t.setParentFolder("../../../qd/ttvx/source/layouts/");
+			app.createTreeFolder2( layouts, t, "ttvx",
+				"dev/icon/16x16/plain/folder_cubes.png", dev.screens.LayoutTreeNodes.populateChildren );
+
 		},
 
 		/** This handles populating the children for our root tree node.
