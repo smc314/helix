@@ -43,9 +43,7 @@ endif
 ALLOH=-L./bin \
 	-lhelix.glob \
 	-lhelix.client \
-	-lhelix.logic.admin \
-	-lhelix.logic.dev \
-	-lhelix.logic.util
+	-lhelix.logic.dev
 
 all: install buildPrep subdirs HelixMain HelixDaemon install
 

@@ -380,7 +380,9 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 			// Don't create a shared library for util.so - it's rolled up into glob
 		} else {
 			output.append(
-				"\tg++ -shared -o ../../" + extraDotDot + "bin/" + slibName + " $(DOTOH) $(LFLAGS)\n"
+				"\tg++ -shared -o " + slibName + " $(DOTOH) $(LFLAGS) -L../../" +
+				extraDotDot + "bin -lhelix.glob\n" +
+				"\tcp " + slibName + " ../../" + extraDotDot + "bin/\n"
 			);
 		}
 	}
@@ -639,7 +641,8 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
-		"\tg++ -shared -o ../bin/libhelix.glob.so $(DOTOH) ../logic/util/*.o ../logic/admin/*.o $(LFLAGS)\n"
+		"\tg++ -shared -o libhelix.glob.so $(DOTOH) ../logic/util/*.o ../logic/admin/*.o $(LFLAGS)\n"
+		"\tcp libhelix.glob.so ../bin/\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -930,9 +933,7 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\n"
 		"GLOBOBJS=-L../bin -lhelix.glob\n"
 		"LOGICOBJS=-L../bin \\\n"
-		"\t-lhelix.logic.admin \\\n"
-		"\t-lhelix.logic.dev \\\n"
-		"\t-lhelix.logic.util \n"
+		"\t-lhelix.logic.dev \n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -964,7 +965,8 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"LINKOBJ=-L../bin -lhelix.client $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
-		"\tg++ -shared -o ../bin/libhelix.client.so $(APIOH)\n"
+		"\tg++ -shared -o libhelix.client.so $(APIOH) $(LFLAGS) $(GLOBOBJS) $(LOGICOBJS)\n"
+		"\tcp libhelix.client.so ../bin/\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
 		if(objFiles[i].startsWith("HelixApi_")){
