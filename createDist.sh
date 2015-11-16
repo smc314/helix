@@ -84,4 +84,4 @@ rm -rf ${PROJECT_FOLDER}
 
 #
 # Copy the distribution over to the website - only works if we're on hericus4.hericus.com
-cp helixDist.tgz /home/smc/websites/helixweb/publicweb/
+#cp helixDist.tgz /home/smc/websites/helixweb/publicweb/

@@ -46,9 +46,9 @@ twine win64CFlags = "-c -Zp8 -EHsc -O2 -D_WIN64 -DWIN64 -D_AMD64_=1 -D__64BIT__ 
 twine win32LFlags = "-machine:i386 -subsystem:console -debug";
 twine win32CFlags = "-c -Od -Zi -Zp8 -EHsc -DWIN32 -D_MT -D_DLL -DLINT_ARGS -D_X86_=1 -MP8 -MD -W3 -D \"_CRT_SECURE_NO_DEPRECATE\" -D \"_CRT_NON_CONFORMING_SWPRINTFS\" -D CS_NO_LARGE_IDENTIFIERS -D _USE_32BIT_TIME_T -I \"$(3PL)/include\" ";
 
-twine lin64LFlags = "-lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -lodbc -L$(3PL)/slib/lib -lSLib";
-twine mac64LFlags = "-lssl -lcrypto -lpthread -lresolv -lxml2 -lz -L$(3PL)/slib/lib -lSLib";
-twine lin64CFlags = "-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I \"$(3PL)/slib/include\" ";
+twine lin64LFlags = "-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -lodbc -L$(3PL)/slib/lib -lSLib";
+twine mac64LFlags = "-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -lz -lodbc -L$(3PL)/slib/lib -lSLib";
+twine lin64CFlags = "-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I$(OPENSSLDIR)/include -I/usr/include -I/usr/include/libxml2 -I \"$(3PL)/slib/include\" ";
 
 bool doJni = true;
 
@@ -327,6 +327,12 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"3PL=../../../../../" + extraDotDot + "3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"\n"
+		"ifeq ($(UNAME),Linux)\n"
+		"\tOPENSSLDIR=/usr\n"
+		"else\n"
+		"\tOPENSSLDIR=/usr/local/opt/openssl\n"
+		"endif\n"
+		"\n"
 		"CFLAGS=" + lin64CFlags +
 		"-I ../../" + extraDotDot + "glob "
 		"-I ../../" + extraDotDot + "client "
@@ -336,7 +342,12 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"-I ../" + extraDotDot + "test "
 		"\n"
 		"\n"
-		"LFLAGS=\n"
+		"ifeq ($(UNAME),Linux)\n"
+		"\tLFLAGS=" + lin64LFlags + "\n"
+		"else\n"
+		"\tLFLAGS=" + mac64LFlags + "\n"
+		"endif\n"
+		"\n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -365,9 +376,15 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"all: $(DOTOH)\n"
 	);
 	if(objFiles.size() > 0){
-		output.append(
-			"\tg++ -shared -o ../../" + extraDotDot + "bin/" + slibName + " $(DOTOH) $(LFLAGS)\n"
-		);
+		if(slibName.endsWith(".util.so") || slibName.endsWith(".admin.so")){
+			// Don't create a shared library for util.so - it's rolled up into glob
+		} else {
+			output.append(
+				"\tg++ -shared -o " + slibName + " $(DOTOH) $(LFLAGS) -L../../" +
+				extraDotDot + "bin -lhelix.glob\n" +
+				"\tcp " + slibName + " ../../" + extraDotDot + "bin/\n"
+			);
+		}
 	}
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -587,9 +604,20 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"3PL=../../../../3rdParty\n"
 		"GMAKE=make -j 8\n"
 		"\n"
+		"ifeq ($(UNAME),Linux)\n"
+		"\tOPENSSLDIR=/usr\n"
+		"else\n"
+		"\tOPENSSLDIR=/usr/local/opt/openssl\n"
+		"endif\n"
+		"\n"
 		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I ../logic/admin -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
 		"\n"
-		"LFLAGS=\n"
+		"ifeq ($(UNAME),Linux)\n"
+		"\tLFLAGS=" + lin64LFlags + "\n"
+		"else\n"
+		"\tLFLAGS=" + mac64LFlags + "\n"
+		"endif\n"
+		"\n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -613,7 +641,8 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
-		"\tg++ -shared -o ../bin/libhelix.glob.so $(DOTOH) $(LFLAGS)\n"
+		"\tg++ -shared -o libhelix.glob.so $(DOTOH) ../logic/util/*.o ../logic/admin/*.o $(LFLAGS)\n"
+		"\tcp libhelix.glob.so ../bin/\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -882,6 +911,12 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"LINK=g++\n"
 		"UNAME := $(shell uname)\n"
 		"\n"
+		"ifeq ($(UNAME),Linux)\n"
+		"\tOPENSSLDIR=/usr\n"
+		"else\n"
+		"\tOPENSSLDIR=/usr/local/opt/openssl\n"
+		"endif\n"
+		"\n"
 		"CFLAGS=" + lin64CFlags + " -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux "
 		"-I ../glob "
 		"-I ../logic/admin "
@@ -898,9 +933,7 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\n"
 		"GLOBOBJS=-L../bin -lhelix.glob\n"
 		"LOGICOBJS=-L../bin \\\n"
-		"\t-lhelix.logic.admin \\\n"
-		"\t-lhelix.logic.dev \\\n"
-		"\t-lhelix.logic.util \n"
+		"\t-lhelix.logic.dev \n"
 		"\n"
 		"%.o: %.cpp\n"
 		"\tg++ $(CFLAGS) -c $< -o $@\n"
@@ -932,7 +965,8 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"LINKOBJ=-L../bin -lhelix.client $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
-		"\tg++ -shared -o ../bin/libhelix.client.so $(APIOH)\n"
+		"\tg++ -shared -o libhelix.client.so $(APIOH) $(LFLAGS) $(GLOBOBJS) $(LOGICOBJS)\n"
+		"\tcp libhelix.client.so ../bin/\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
 		if(objFiles[i].startsWith("HelixApi_")){

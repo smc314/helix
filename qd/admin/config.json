@@ -37,7 +37,7 @@
   "let" :
   {
     "APPLICATION"  : "admin",
-    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-4.1-sdk",
+    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-5.0.1-sdk",
     "QXTHEME"      : "admin.theme.Theme",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
     "LOCALES"      : [ "en" ],
