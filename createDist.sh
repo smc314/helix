@@ -51,11 +51,15 @@ cp server/c/bin/libhelix.logic.util.so ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/build/*.tmpl ${PROJECT_FOLDER}/server/c/build/
 cp server/c/glob/*.h ${PROJECT_FOLDER}/server/c/glob/
 cp server/c/logic/admin/*.h ${PROJECT_FOLDER}/server/c/logic/admin/
+grep LOGICCODEGEN server/c/logic/admin/*.cpp |sed -e "s/^.*://" > ${PROJECT_FOLDER}/server/c/logic/admin/LogicCodeGen.cpp
 cp server/c/logic/dev/*.h ${PROJECT_FOLDER}/server/c/logic/dev/
+grep LOGICCODEGEN server/c/logic/dev/*.cpp |sed -e "s/^.*://" > ${PROJECT_FOLDER}/server/c/logic/dev/LogicCodeGen.cpp
 cp server/c/logic/util/*.h ${PROJECT_FOLDER}/server/c/logic/util/
+grep LOGICCODEGEN server/c/logic/util/*.cpp |sed -e "s/^.*://" > ${PROJECT_FOLDER}/server/c/logic/util/LogicCodeGen.cpp
 cp server/c/gmake.unix ${PROJECT_FOLDER}/server/c/
 cp server/c/gmake.win ${PROJECT_FOLDER}/server/c/
 cp server/c/logic/*.sh ${PROJECT_FOLDER}/server/c/logic/
+cp server/c/client/HelixApi_Part1.cpp ${PROJECT_FOLDER}/server/c/client/
 
 #
 # Copy the precompiled web projects
