@@ -8,7 +8,6 @@ all: setup_dirs
 	cd qd/admin && ./generate.py build	
 	cd qd/dev && ./generate.py build	
 	./createDist.sh
-	./createStarter.sh
 
 
 setup_dirs:

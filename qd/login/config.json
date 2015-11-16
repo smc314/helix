@@ -43,7 +43,7 @@
   "let" :
   {
     "APPLICATION"  : "login",
-    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-4.1-sdk",
+    "QOOXDOO_PATH" : "../../../3rdParty/qooxdoo-5.0.1-sdk",
     "QXTHEME"      : "login.theme.Theme",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*"],
     "LOCALES"      : [ "en" ],
