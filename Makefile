@@ -12,7 +12,7 @@ all: setup_dirs
 
 setup_dirs:
 	mkdir -p qd/common/sqldo
-	mkdir -p qd/admin/sqldo
-	mkdir -p qd/dev/sqldo
+	mkdir -p qd/admin/source/class/admin/sqldo
+	mkdir -p qd/dev/source/class/dev/sqldo
 	mkdir -p qd/welcome/source/class/welcome/layout
 	
