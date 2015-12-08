@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Settings Values that define the field ID's for the main application page -->
+  <Setting name="App.AppMenu.ID" value="qx.ui.toolbar.MenuButton.Applications"/>
+  <Setting name="App.ToolsMenu.ID" value="qx.ui.toolbar.MenuButton.Tools"/>
+  <Setting name="App.ServerMenu.ID" value="qx.ui.toolbar.MenuButton.ServerMenu"/>
+
+  <Setting name="App.ExplorerTab.ID" value="qx.ui.tabview.TabButton.Explorer"/>
+  <Setting name="App.ExplorerTab.Refresh" value="qx.ui.toolbar.Button.Refresh"/>
+  <Setting name="App.ExplorerTab.View" value="qx.ui.toolbar.Button.View"/>
+  <Setting name="App.ExplorerTab.Delete" value="qx.ui.toolbar.Button.Delete"/>
+  <Setting name="App.ExplorerTab.Tree" value="qx.ui.tree.Tree.ExplorerTree"/>
+
+  <Setting name="App.WelcomeTab.ID" value="qx.ui.tabview.TabButton.Welcome"/>
+
+  <!-- Application Menu items -->
+  <Setting name="App.AppMenu.WelcomeID" value="qx.ui.menu.Button.Welcome"/>
+  <Setting name="App.AppMenu.AdminID" value="qx.ui.menu.Button.Admin"/>
+  <Setting name="App.AppMenu.DevID" value="qx.ui.menu.Button.Dev"/>
+
+  <!-- Tools Menu items -->
+  <Setting name="App.ToolsMenu.NewMenu.ID" value="qx.ui.menu.Button.New"/>
+  <Setting name="App.ToolsMenu.LogsMenu.ID" value="qx.ui.menu.Button.Logs"/>
+  <Setting name="App.ToolsMenu.NewMenu.VisualLayoutID" value="qx.ui.menu.Button.Visual Layout"/>
+  <Setting name="App.ToolsMenu.NewMenu.UserID" value="qx.ui.menu.Button.User"/>
+  <Setting name="App.ToolsMenu.NewMenu.GroupID" value="qx.ui.menu.Button.Group"/>
+  <Setting name="App.ToolsMenu.NewMenu.ScheduledTaskID" value="qx.ui.menu.Button.Scheduled Task"/>
+
+  <!-- General things that sometimes change from application to application -->
+  <Setting name="MessageDialogClass" value="admin.dialog.MessageDialog"/>
+  <Setting name="QuestionDialogClass" value="admin.dialog.QuestionDialog"/>
+
+
+</HTest>

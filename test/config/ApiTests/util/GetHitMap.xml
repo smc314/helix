@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <DynamicTests>
+	<!-- GetHitMap is a simple api test that invokes the GetHitMap api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="GetHitMap" 
+		apiPath="/logic/util/GetHitMap" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetHitMap/>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetHitMap_NoInputs" 
+		apiPath="/logic/util/GetHitMap" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="false" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetHitMap_MissingInput" 
+		apiPath="/logic/util/GetHitMap" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- InputDocument intentionally missing -->
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetHitMap_ExtraInputs" 
+		apiPath="/logic/util/GetHitMap" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		<GetHitMap>
+			<SomeOddUnusedNode/>
+		</GetHitMap>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

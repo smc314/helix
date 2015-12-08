@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <Setting name="GroupCRUD.Groupname" value="TestGroup"/>
+  
+  <DynamicTests>
+	<!-- GetGroups is a simple api test that invokes the GetGroups api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="GroupCRUD_GetAll" 
+		apiPath="/logic/admin/GetGroups" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step1</Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetGroups/>
+	  </InputDocument>
+
+	  <Output rootElementName="GetGroups">
+		  <ChildNodes name="Group" atLeastOne="true">
+			<Attribute name="Description"/>
+			<Attribute name="Groupname"/>
+			<Attribute name="id"/>
+			<Attribute name="userid"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_VerifyNoTestGroup" 
+		apiPath="/logic/admin/GetGroups" 
+		stopOnFailure="false" 
+		expect="failure" 
+		sendInput="false" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step2</Provides>
+      <Requires>GroupCRUD_Step1</Requires>
+
+	  <Output rootElementName="GetGroups">
+		  <ChildNodes name="Group" atLeastOne="true" whereAttr="Groupname" whereValue="${GroupCRUD.Groupname}">
+			<Attribute name="Description"/>
+			<Attribute name="Groupname"/>
+			<Attribute name="id"/>
+			<Attribute name="userid"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_AddNewGroup" 
+		apiPath="/logic/admin/InsertGroup" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step3</Provides>
+      <Requires>GroupCRUD_Step2</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <InsertGroup>
+			  <Group Description="Test Group" Groupname="${GroupCRUD.Groupname}" id="0" userid="0">
+				  <ActionsForGroup/>
+				  <UsersForGroup/>
+			  </Group>
+		  </InsertGroup>
+	  </InputDocument>
+
+	  <Output rootElementName="InsertGroup">
+		  <ChildNodes name="Group" atLeastOne="true">
+			<Attribute name="Description" verifyValue="Test Group"/>
+			<Attribute name="Groupname" verifyValue="${GroupCRUD.Groupname}"/>
+			<Attribute name="id" saveAs="GroupCRUD.NewGroupId"/>
+			<Attribute name="userid" verifyValue="0"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_GetNewGroup" 
+		apiPath="/logic/admin/GetOneGroup" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step4</Provides>
+      <Requires>GroupCRUD_Step3</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetOneGroup>
+			  <Group Description="" Groupname="" id="${GroupCRUD.NewGroupId}" userid="0">
+				  <ActionsForGroup/>
+				  <UsersForGroup/>
+			  </Group>
+		  </GetOneGroup>
+	  </InputDocument>
+
+	  <Output rootElementName="GetOneGroup">
+		  <ChildNodes name="Group" atLeastOne="true">
+			<Attribute name="Description" verifyValue="Test Group"/>
+			<Attribute name="Groupname" verifyValue="${GroupCRUD.Groupname}"/>
+			<Attribute name="id" verifyValue="${GroupCRUD.NewGroupId}"/>
+			<Attribute name="userid" verifyValue="0"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_UpdateGroup" 
+		apiPath="/logic/admin/UpdateGroup" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step5</Provides>
+      <Requires>GroupCRUD_Step4</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <UpdateGroup>
+			  <Group Description="Group Test" Groupname="${GroupCRUD.Groupname}" id="${GroupCRUD.NewGroupId}" userid="0">
+				  <ActionsForGroup/>
+				  <UsersForGroup/>
+			  </Group>
+		  </UpdateGroup>
+	  </InputDocument>
+
+	  <Output rootElementName="UpdateGroup">
+		  <ChildNodes name="Group" atLeastOne="true">
+			<Attribute name="Description" verifyValue="Group Test"/>
+			<Attribute name="Groupname" verifyValue="${GroupCRUD.Groupname}"/>
+			<Attribute name="id" verifyValue="${GroupCRUD.NewGroupId}"/>
+			<Attribute name="userid" verifyValue="0"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_GetUpdatedGroup" 
+		apiPath="/logic/admin/GetOneGroup" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step6</Provides>
+      <Requires>GroupCRUD_Step5</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetOneGroup>
+			  <Group Description="" Groupname="" id="${GroupCRUD.NewGroupId}" userid="0">
+				  <ActionsForGroup/>
+				  <UsersForGroup/>
+			  </Group>
+		  </GetOneGroup>
+	  </InputDocument>
+
+	  <Output rootElementName="GetOneGroup">
+		  <ChildNodes name="Group" atLeastOne="true">
+			<Attribute name="Description" verifyValue="Group Test"/>
+			<Attribute name="Groupname" verifyValue="${GroupCRUD.Groupname}"/>
+			<Attribute name="id" verifyValue="${GroupCRUD.NewGroupId}"/>
+			<Attribute name="userid" verifyValue="0"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_DeleteGroup" 
+		apiPath="/logic/admin/DeleteGroup" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step7</Provides>
+      <Requires>GroupCRUD_Step6</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <DeleteGroup>
+			  <Group Description="" Groupname="" id="${GroupCRUD.NewGroupId}" userid="0">
+				  <ActionsForGroup/>
+				  <UsersForGroup/>
+			  </Group>
+		  </DeleteGroup>
+	  </InputDocument>
+
+	  <Output rootElementName="DeleteGroup">
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GroupCRUD_GetDeletedGroup" 
+		apiPath="/logic/admin/GetOneGroup" 
+		stopOnFailure="false" 
+		expect="failure" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,GroupCRUD</FunctionalAreas>
+      <Provides>GroupCRUD_Step8</Provides>
+      <Requires>GroupCRUD_Step7</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetOneGroup>
+			  <Group Description="" Groupname="" id="${GroupCRUD.NewGroupId}" userid="0">
+				  <ActionsForGroup/>
+				  <UsersForGroup/>
+			  </Group>
+		  </GetOneGroup>
+	  </InputDocument>
+
+	  <Output rootElementName="GetOneGroup">
+		  <ChildNodes name="Group" atLeastOne="true">
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

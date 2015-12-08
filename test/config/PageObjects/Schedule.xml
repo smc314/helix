@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Settings Values for the Editor elements the user can manipulate on this form -->
+  <Setting name="ScheduleEdit.TaskNameField.EditFieldID" value="qx.ui.form.TextField.TaskNameField"/>
+  <Setting name="ScheduleEdit.TaskNameField.DisplayFieldID" value="qx.ui.form.TextField.TaskNameField"/>
+
+  <Setting name="ScheduleEdit.TaskUrlField.EditFieldID" value="qx.ui.form.TextField.TaskUrlField"/>
+  <Setting name="ScheduleEdit.TaskUrlField.DisplayFieldID" value="qx.ui.form.TextField.TaskUrlField"/>
+
+  <Setting name="ScheduleEdit.LastRunField.EditFieldID" value="qx.ui.form.TextField.LastRunField"/>
+  <Setting name="ScheduleEdit.LastRunField.DisplayFieldID" value="qx.ui.form.TextField.LastRunField"/>
+
+  <Setting name="ScheduleEdit.isActiveField.EditFieldID" value="qx.ui.form.CheckBox.isActiveField"/>
+  <Setting name="ScheduleEdit.isActiveField.DisplayFieldID" value="qx.ui.form.CheckBox.isActiveField"/>
+
+  <Setting name="ScheduleEdit.InputDocumentField.EditFieldID" value="qx.ui.form.TextArea.InputDocumentField"/>
+  <Setting name="ScheduleEdit.InputDocumentField.DisplayFieldID" value="qx.ui.form.TextArea.InputDocumentField"/>
+
+  <Setting name="ScheduleEdit.useIntervalField.EditFieldID" value="qx.ui.groupbox.RadioGroupBox.useIntervalField"/>
+  <Setting name="ScheduleEdit.useIntervalField.DisplayFieldID" value="qx.ui.groupbox.RadioGroupBox.useIntervalField"/>
+
+  <Setting name="ScheduleEdit.runEveryField.EditFieldID" value="qx.ui.form.TextField.runEveryField"/>
+  <Setting name="ScheduleEdit.runEveryField.DisplayFieldID" value="qx.ui.form.TextField.runEveryField"/>
+
+  <Setting name="ScheduleEdit.useTimeOfDayField.EditFieldID" value="qx.ui.groupbox.RadioGroupBox.useTimeOfDayField"/>
+  <Setting name="ScheduleEdit.useTimeOfDayField.DisplayFieldID" value="qx.ui.groupbox.RadioGroupBox.useTimeOfDayField"/>
+
+  <Setting name="ScheduleEdit.RunAtHourField.EditFieldID" value="qx.ui.form.TextField.RunAtHourField"/>
+  <Setting name="ScheduleEdit.RunAtHourField.DisplayFieldID" value="qx.ui.form.TextField.RunAtHourField"/>
+
+  <Setting name="ScheduleEdit.RunAtMinuteField.EditFieldID" value="qx.ui.form.TextField.RunAtMinuteField"/>
+  <Setting name="ScheduleEdit.RunAtMinuteField.DisplayFieldID" value="qx.ui.form.TextField.RunAtMinuteField"/>
+
+  <Setting name="ScheduleEdit.dowSundayField.EditFieldID" value="qx.ui.form.CheckBox.dowSundayField"/>
+  <Setting name="ScheduleEdit.dowSundayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowSundayField"/>
+
+  <Setting name="ScheduleEdit.dowMondayField.EditFieldID" value="qx.ui.form.CheckBox.dowMondayField"/>
+  <Setting name="ScheduleEdit.dowMondayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowMondayField"/>
+
+  <Setting name="ScheduleEdit.dowTuesdayField.EditFieldID" value="qx.ui.form.CheckBox.dowTuesdayField"/>
+  <Setting name="ScheduleEdit.dowTuesdayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowTuesdayField"/>
+
+  <Setting name="ScheduleEdit.dowWednesdayField.EditFieldID" value="qx.ui.form.CheckBox.dowWednesdayField"/>
+  <Setting name="ScheduleEdit.dowWednesdayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowWednesdayField"/>
+
+  <Setting name="ScheduleEdit.dowThursdayField.EditFieldID" value="qx.ui.form.CheckBox.dowThursdayField"/>
+  <Setting name="ScheduleEdit.dowThursdayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowThursdayField"/>
+
+  <Setting name="ScheduleEdit.dowFridayField.EditFieldID" value="qx.ui.form.CheckBox.dowFridayField"/>
+  <Setting name="ScheduleEdit.dowFridayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowFridayField"/>
+
+  <Setting name="ScheduleEdit.dowSaturdayField.EditFieldID" value="qx.ui.form.CheckBox.dowSaturdayField"/>
+  <Setting name="ScheduleEdit.dowSaturdayField.DisplayFieldID" value="qx.ui.form.CheckBox.dowSaturdayField"/>
+
+  <!-- Input Data Values for the Editor elements the user can manipulate on this form -->
+  <Setting name="ScheduleEdit.TaskNameField.DataValue1" value="Sample Task1"/>
+  <Setting name="ScheduleEdit.TaskNameField.DataValue2" value="Sample Task2"/>
+  <Setting name="ScheduleEdit.TaskUrlField.DataValue" value="/logic/admin/GetUsers"/>
+  <Setting name="ScheduleEdit.isActiveField.DataValue" value="true"/>
+  <Setting name="ScheduleEdit.InputDocumentField.DataValue" value=""/>
+
+  <Setting name="ScheduleEdit.useIntervalField.DataValue1" value="true"/>
+  <Setting name="ScheduleEdit.runEveryField.DataValue1" value="6"/>
+  <Setting name="ScheduleEdit.useTimeOfDayField.DataValue1" value="false"/>
+  <Setting name="ScheduleEdit.RunAtHourField.DataValue1" value="3"/>
+  <Setting name="ScheduleEdit.RunAtMinuteField.DataValue1" value="0"/>
+
+  <Setting name="ScheduleEdit.useIntervalField.DataValue2" value="false"/>
+  <Setting name="ScheduleEdit.runEveryField.DataValue2" value="6"/>
+  <Setting name="ScheduleEdit.useTimeOfDayField.DataValue2" value="true"/>
+  <Setting name="ScheduleEdit.RunAtHourField.DataValue2" value="03"/>
+  <Setting name="ScheduleEdit.RunAtMinuteField.DataValue2" value="00"/>
+
+  <Setting name="ScheduleEdit.dowSundayField.DataValue" value="true"/>
+  <Setting name="ScheduleEdit.dowMondayField.DataValue" value="true"/>
+  <Setting name="ScheduleEdit.dowTuesdayField.DataValue" value="false"/>
+  <Setting name="ScheduleEdit.dowWednesdayField.DataValue" value="true"/>
+  <Setting name="ScheduleEdit.dowThursdayField.DataValue" value="false"/>
+  <Setting name="ScheduleEdit.dowFridayField.DataValue" value="true"/>
+  <Setting name="ScheduleEdit.dowSaturdayField.DataValue" value="false"/>
+
+
+
+</HTest>

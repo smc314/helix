@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/ExplorerTree.xml"/>
+
+  <DynamicTests>
+    <TreeTest name="Explorer Tree Layout" stopOnFailure="false" expect="success" treeId="${App.ExplorerTab.Tree}">
+      <!-- 
+      This test checks to ensure that the general setup of the explorer tree is as expected
+      -->
+      <FunctionalAreas>Tree</FunctionalAreas>
+      <Provides>ExplorerTree</Provides>
+      <Requires>Login</Requires>
+      
+      <!-- Top level tree nodes -->
+      <VerifyFolder name="Users Node" path="Users"/>
+      <VerifyFolder name="Groups Node" path="Groups"/>
+      <VerifyFolder name="Schedule Node" path="Scheduled Tasks"/>
+
+      <VerifyFile name="Admin User" path="Users/admin"/>
+
+      <VerifyFolder name="Admin Data Objects" path="Development/Data Objects/admin"/>
+      <VerifyFolder name="Dev Data Objects" path="Development/Data Objects/dev"/>
+
+      <!-- OpenFile name="Open Admin User" path="Users/admin"/ -->
+      
+    </TreeTest>
+
+    <ApplicationComponentsTest name="Admin User Editor Opens" stopOnFailure="false" expect="success">
+      <!-- 
+      This test checks to ensure that the admin editor opens as expected from the test above
+      -->
+      <FunctionalAreas>User</FunctionalAreas>
+      <Provides></Provides>
+      <Requires>Login,ExplorerTree</Requires>
+
+      <!-- Admin User Editor tab -->
+      <!--
+      <Field name="Admin User Editor Tab" value="" displayId="qx.ui.tabview.TabButton.admin" type="Button"/>
+      -->
+    </ApplicationComponentsTest>
+
+  </DynamicTests>
+
+</HTest>

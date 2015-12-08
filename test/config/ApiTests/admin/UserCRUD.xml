@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <Setting name="UserCRUD.Username" value="TestUser"/>
+  <Setting name="UserCRUD.EMail" value="Test@User.com"/>
+  <Setting name="UserCRUD.FullName" value="Mr. Test User"/>
+
+  <Setting name="UserCRUD.Update.EMail" value="User@Test.com"/>
+  <Setting name="UserCRUD.Update.FullName" value="Mr. User Test"/>
+  
+  <DynamicTests>
+	<!-- GetGroups is a simple api test that invokes the GetGroups api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="UserCRUD_GetAll" 
+		apiPath="/logic/admin/GetUsers" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step1</Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetUsers/>
+	  </InputDocument>
+
+	  <Output rootElementName="Response">
+		  <ChildNodes name="User" atLeastOne="true">
+			<Attribute name="Active"/>
+			<Attribute name="AuthMechanism"/>
+			<Attribute name="EMail"/>
+			<Attribute name="FullName"/>
+			<Attribute name="Password"/>
+			<Attribute name="Username"/>
+			<Attribute name="groupid"/>
+			<Attribute name="id"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_VerifyNoTestUser" 
+		apiPath="/logic/admin/GetUsers" 
+		stopOnFailure="false" 
+		expect="failure" 
+		sendInput="false" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step2</Provides>
+      <Requires>UserCRUD_Step1</Requires>
+
+	  <Output rootElementName="Response">
+		  <ChildNodes name="User" atLeastOne="true" whereAttr="Username" whereValue="${UserCRUD.Username}">
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_AddNewUser" 
+		apiPath="/logic/admin/InsertUser" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step3</Provides>
+      <Requires>UserCRUD_Step2</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <InsertUser>
+			  <User Active="1" AuthMechanism="0" EMail="${UserCRUD.EMail}" FullName="${UserCRUD.FullName}"
+				  Password="" Username="${UserCRUD.Username}" groupid="0" id="0">
+				  <AllowedActions/>
+				  <GroupMembership/>
+			  </User>
+		  </InsertUser>
+	  </InputDocument>
+
+	  <Output rootElementName="InsertUser">
+		  <ChildNodes name="User" atLeastOne="true">
+			<Attribute name="Active" verifyValue="1"/>
+			<Attribute name="AuthMechanism" verifyValue="0"/>
+			<Attribute name="EMail" verifyValue="${UserCRUD.EMail}"/>
+			<Attribute name="FullName" verifyValue="${UserCRUD.FullName}"/>
+			<Attribute name="Password"/>
+			<Attribute name="Username" verifyValue="${UserCRUD.Username}"/>
+			<Attribute name="groupid" verifyValue="0"/>
+			<Attribute name="id" saveAs="UserCRUD.NewUserId"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_GetNewUser" 
+		apiPath="/logic/admin/GetOneUser" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step4</Provides>
+      <Requires>UserCRUD_Step3</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetOneUser>
+			  <User Active="" AuthMechanism="" EMail="" FullName=""
+				  Password="" Username="" groupid="0" id="${UserCRUD.NewUserId}">
+				  <AllowedActions/>
+				  <GroupMembership/>
+			  </User>
+		  </GetOneUser>
+	  </InputDocument>
+
+	  <Output rootElementName="GetOneUser">
+		  <ChildNodes name="User" atLeastOne="true">
+			<Attribute name="Active" verifyValue="1"/>
+			<Attribute name="AuthMechanism" verifyValue="0"/>
+			<Attribute name="EMail" verifyValue="${UserCRUD.EMail}"/>
+			<Attribute name="FullName" verifyValue="${UserCRUD.FullName}"/>
+			<Attribute name="Password"/>
+			<Attribute name="Username" verifyValue="${UserCRUD.Username}"/>
+			<Attribute name="groupid" verifyValue="0"/>
+			<Attribute name="id" verifyValue="${UserCRUD.NewUserId}"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_UpdateUser" 
+		apiPath="/logic/admin/UpdateUser" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step5</Provides>
+      <Requires>UserCRUD_Step4</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <UpdateUser>
+			  <User Active="1" AuthMechanism="0" EMail="${UserCRUD.Update.EMail}" 
+				  FullName="${UserCRUD.Update.FullName}"
+				  Password="" Username="${UserCRUD.Username}" groupid="0" id="${UserCRUD.NewUserId}">
+				  <AllowedActions/>
+				  <GroupMembership/>
+			  </User>
+		  </UpdateUser>
+	  </InputDocument>
+
+	  <Output rootElementName="UpdateUser">
+		  <ChildNodes name="User" atLeastOne="true">
+			<Attribute name="Active" verifyValue="1"/>
+			<Attribute name="AuthMechanism" verifyValue="0"/>
+			<Attribute name="EMail" verifyValue="${UserCRUD.Update.EMail}"/>
+			<Attribute name="FullName" verifyValue="${UserCRUD.Update.FullName}"/>
+			<Attribute name="Password"/>
+			<Attribute name="Username" verifyValue="${UserCRUD.Username}"/>
+			<Attribute name="groupid" verifyValue="0"/>
+			<Attribute name="id" verifyValue="${UserCRUD.NewUserId}"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_GetUpdatedUser" 
+		apiPath="/logic/admin/GetOneUser" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step6</Provides>
+      <Requires>UserCRUD_Step5</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetOneUser>
+			  <User Active="" AuthMechanism="" EMail="" FullName=""
+				  Password="" Username="" groupid="0" id="${UserCRUD.NewUserId}">
+				  <AllowedActions/>
+				  <GroupMembership/>
+			  </User>
+		  </GetOneUser>
+	  </InputDocument>
+
+	  <Output rootElementName="GetOneUser">
+		  <ChildNodes name="User" atLeastOne="true">
+			<Attribute name="Active" verifyValue="1"/>
+			<Attribute name="AuthMechanism" verifyValue="0"/>
+			<Attribute name="EMail" verifyValue="${UserCRUD.Update.EMail}"/>
+			<Attribute name="FullName" verifyValue="${UserCRUD.Update.FullName}"/>
+			<Attribute name="Password"/>
+			<Attribute name="Username" verifyValue="${UserCRUD.Username}"/>
+			<Attribute name="groupid" verifyValue="0"/>
+			<Attribute name="id" verifyValue="${UserCRUD.NewUserId}"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_DeleteUser" 
+		apiPath="/logic/admin/DeleteUser" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step7</Provides>
+      <Requires>UserCRUD_Step6</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <DeleteUser>
+			  <User Active="" AuthMechanism="" EMail="" FullName=""
+				  Password="" Username="" groupid="0" id="${UserCRUD.NewUserId}">
+				  <AllowedActions/>
+				  <GroupMembership/>
+			  </User>
+		  </DeleteUser>
+	  </InputDocument>
+
+	  <Output rootElementName="DeleteUser">
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="UserCRUD_GetDeletedUser" 
+		apiPath="/logic/admin/GetOneUser" 
+		stopOnFailure="false" 
+		expect="failure" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi,ApiCRUD,UserCRUD</FunctionalAreas>
+      <Provides>UserCRUD_Step8</Provides>
+      <Requires>UserCRUD_Step7</Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetOneUser>
+			  <User Active="" AuthMechanism="" EMail="" FullName=""
+				  Password="" Username="" groupid="0" id="${UserCRUD.NewUserId}">
+				  <AllowedActions/>
+				  <GroupMembership/>
+			  </User>
+		  </GetOneUser>
+	  </InputDocument>
+
+	  <Output rootElementName="GetOneUser">
+		  <ChildNodes name="User" atLeastOne="true">
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

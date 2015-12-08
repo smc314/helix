@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/Application.xml"/>
+
+  <!-- Load the field ID's for the User Editor and related items -->
+  <Include fileName="PageObjects/User.xml"/>
+
+  <DynamicTests>
+    <CrudTest name="User CRUD Test" stopOnFailure="false" expect="success">
+      <!-- 
+      This test will click on our menuButtonId to open our menu, and then allows you to verify
+      or choose menu items.
+      -->
+      <FunctionalAreas>User</FunctionalAreas>
+      <Provides></Provides>
+      <Requires>Login</Requires>
+      
+      <!-- Tell us which Tools/New menu we need to use to create a new entity: -->
+      <ToolsNewMenu>${App.ToolsMenu.NewMenu.UserID}</ToolsNewMenu>
+      
+      <!-- Tell us what the new editor tab title will be: -->
+      <NewEditorTabTitle>NEW1</NewEditorTabTitle>
+
+      <!-- Tell us where in the Explorer tree we should find the new object: -->
+      <ExplorerTreeItem>Users/${UserEditor.UsernameField.DataValue}</ExplorerTreeItem>
+
+      <!-- Tell us what the editor tab title will be: -->
+      <EditorTabTitle>${UserEditor.UsernameField.DataValue}</EditorTabTitle>
+
+      <!-- After the data is saved initially, we'll change our data values
+           Using these updated settings and then do a save with the new values.
+      -->
+      <UpdatedSettings>
+        <Setting name="UserEditor.UsernameField.DataValue" value="Updated${FileTime}"/>
+        <Setting name="UserEditor.FullNameField.DataValue" value="FirstUpdated${FileTime} LastUpdated${FileTime}"/>
+        <Setting name="UserEditor.EMailField.DataValue" value="Updated${FileTime}@sample.com"/>
+      </UpdatedSettings>
+
+      <!-- Give us a list of fields on the editor to manipulate and validate: -->
+      <Tab name="General">
+        <Field name="UsernameField"
+          value="${UserEditor.UsernameField.DataValue}"
+          editId="${UserEditor.UsernameField.EditFieldID}"
+          displayId="${UserEditor.UsernameField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="FullNameField"
+          value="${UserEditor.FullNameField.DataValue}"
+          editId="${UserEditor.FullNameField.EditFieldID}"
+          displayId="${UserEditor.FullNameField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="EMailField"
+          value="${UserEditor.EMailField.DataValue}"
+          editId="${UserEditor.EMailField.EditFieldID}"
+          displayId="${UserEditor.EMailField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="AuthMechanismField"
+          value="${UserEditor.AuthMechanismField.DataValue}"
+          editId="${UserEditor.AuthMechanismField.EditFieldID}"
+          displayId="${UserEditor.AuthMechanismField.DisplayFieldID}"
+          type="SelectBox" />
+        <Field name="ActiveField"
+          value="${UserEditor.ActiveField.DataValue}"
+          editId="${UserEditor.ActiveField.EditFieldID}"
+          displayId="${UserEditor.ActiveField.DisplayFieldID}"
+          type="CheckBox" />
+      </Tab>
+
+    </CrudTest>
+
+  </DynamicTests>
+
+</HTest>

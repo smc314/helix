@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <DynamicTests>
+	<!-- GetActions is a simple api test that invokes the GetActions api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="GetActions" 
+		apiPath="/logic/admin/GetActions" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetActions/>
+	  </InputDocument>
+
+	  <Output rootElementName="GetActions">
+		  <ChildNodes name="Action" atLeastOne="true">
+			<Attribute name="Allow"/>
+			<Attribute name="OKWOSession"/>
+			<Attribute name="Path" saveAs="ActionPath" saveIfAttr="id" saveIfValue="1"/>
+			<Attribute name="groupid"/>
+			<Attribute name="id"/>
+			<Attribute name="userid"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetActions_NoInputs" 
+		apiPath="/logic/admin/GetActions" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="false" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetActions_MissingInput" 
+		apiPath="/logic/admin/GetActions" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- InputDocument intentionally missing -->
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetActions_ExtraInputs" 
+		apiPath="/logic/admin/GetActions" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		<GetActions>
+			<SomeOddUnusedNode/>
+		</GetActions>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/Application.xml"/>
+
+  <!-- Load the field ID's for the User Editor and related items -->
+  <Include fileName="PageObjects/Schedule.xml"/>
+
+  <DynamicTests>
+    <CrudTest name="Schedule - Interval - CRUD Test" stopOnFailure="false" expect="success">
+      <!-- 
+      This test will click on our menuButtonId to open our menu, and then allows you to verify
+      or choose menu items.
+      -->
+      <FunctionalAreas>Schedule</FunctionalAreas>
+      <Provides></Provides>
+      <Requires>Login</Requires>
+      
+      <!-- Tell us which Tools/New menu we need to use to create a new entity: -->
+      <ToolsNewMenu>${App.ToolsMenu.NewMenu.ScheduledTaskID}</ToolsNewMenu>
+      
+      <!-- Tell us what the new editor tab title will be: -->
+      <NewEditorTabTitle>Scheduled Task</NewEditorTabTitle>
+
+      <!-- Tell us where in the Explorer tree we should find the new object: -->
+      <ExplorerTreeItem>Scheduled Tasks/${ScheduleEdit.TaskNameField.DataValue1}</ExplorerTreeItem>
+
+      <!-- Tell us what the editor tab title will be: -->
+      <EditorTabTitle>${ScheduleEdit.TaskNameField.DataValue1}</EditorTabTitle>
+      
+      <!-- After the data is saved initially, we'll change our data values
+           Using these updated settings and then do a save with the new values.
+      -->
+      <UpdatedSettings>
+        <Setting name="ScheduleEdit.TaskNameField.DataValue1" value="Sample Task1 - Updated"/>
+        <Setting name="ScheduleEdit.TaskUrlField.DataValue" value="/logic/admin/GetActions"/>
+      </UpdatedSettings>
+
+      <!-- Give us a list of fields on the editor to manipulate and validate: -->
+      <Tab name="General">
+        <Field name="TaskNameField"
+          value="${ScheduleEdit.TaskNameField.DataValue1}"
+          editId="${ScheduleEdit.TaskNameField.EditFieldID}"
+          displayId="${ScheduleEdit.TaskNameField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="TaskUrlField"
+          value="${ScheduleEdit.TaskUrlField.DataValue}"
+          editId="${ScheduleEdit.TaskUrlField.EditFieldID}"
+          displayId="${ScheduleEdit.TaskUrlField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="isActiveField"
+          value="${ScheduleEdit.isActiveField.DataValue}"
+          editId="${ScheduleEdit.isActiveField.EditFieldID}"
+          displayId="${ScheduleEdit.isActiveField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="useIntervalField"
+          value="${ScheduleEdit.useIntervalField.DataValue1}"
+          editId="${ScheduleEdit.useIntervalField.EditFieldID}"
+          displayId="${ScheduleEdit.useIntervalField.DisplayFieldID}"
+          type="RadioGroupBox" />
+        <Field name="runEveryField"
+          value="${ScheduleEdit.runEveryField.DataValue1}"
+          editId="${ScheduleEdit.runEveryField.EditFieldID}"
+          displayId="${ScheduleEdit.runEveryField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="useTimeOfDayField"
+          value="${ScheduleEdit.useTimeOfDayField.DataValue1}"
+          editId="${ScheduleEdit.useTimeOfDayField.EditFieldID}"
+          displayId="${ScheduleEdit.useTimeOfDayField.DisplayFieldID}"
+          type="RadioGroupBox" />
+        <!-- When useTimeOfDayField is false, don't use these fields
+        <Field name="RunAtHourField"
+          value="${ScheduleEdit.RunAtHourField.DataValue1}"
+          editId="${ScheduleEdit.RunAtHourField.EditFieldID}"
+          displayId="${ScheduleEdit.RunAtHourField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="RunAtMinuteField"
+          value="${ScheduleEdit.RunAtMinuteField.DataValue1}"
+          editId="${ScheduleEdit.RunAtMinuteField.EditFieldID}"
+          displayId="${ScheduleEdit.RunAtMinuteField.DisplayFieldID}"
+          type="TextField" />
+        -->
+        <Field name="dowSundayField"
+          value="${ScheduleEdit.dowSundayField.DataValue}"
+          editId="${ScheduleEdit.dowSundayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowSundayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowMondayField"
+          value="${ScheduleEdit.dowMondayField.DataValue}"
+          editId="${ScheduleEdit.dowMondayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowMondayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowTuesdayField"
+          value="${ScheduleEdit.dowTuesdayField.DataValue}"
+          editId="${ScheduleEdit.dowTuesdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowTuesdayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowWednesdayField"
+          value="${ScheduleEdit.dowWednesdayField.DataValue}"
+          editId="${ScheduleEdit.dowWednesdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowWednesdayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowThursdayField"
+          value="${ScheduleEdit.dowThursdayField.DataValue}"
+          editId="${ScheduleEdit.dowThursdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowThursdayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowFridayField"
+          value="${ScheduleEdit.dowFridayField.DataValue}"
+          editId="${ScheduleEdit.dowFridayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowFridayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowSaturdayField"
+          value="${ScheduleEdit.dowSaturdayField.DataValue}"
+          editId="${ScheduleEdit.dowSaturdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowSaturdayField.DisplayFieldID}"
+          type="CheckBox" />
+      </Tab>
+
+    </CrudTest>
+
+    <CrudTest name="Schedule - TimeOfDay - CRUD Test" stopOnFailure="false" expect="success">
+      <!-- 
+      This test will click on our menuButtonId to open our menu, and then allows you to verify
+      or choose menu items.
+      -->
+      <FunctionalAreas>Schedule</FunctionalAreas>
+      <Provides></Provides>
+      <Requires>Login</Requires>
+
+      <!-- Tell us which Tools/New menu we need to use to create a new entity: -->
+      <ToolsNewMenu>${App.ToolsMenu.NewMenu.ScheduledTaskID}</ToolsNewMenu>
+
+      <!-- Tell us what the new editor tab title will be: -->
+      <NewEditorTabTitle>Scheduled Task</NewEditorTabTitle>
+
+      <!-- Tell us where in the Explorer tree we should find the new object: -->
+      <ExplorerTreeItem>Scheduled Tasks/${ScheduleEdit.TaskNameField.DataValue2}</ExplorerTreeItem>
+
+      <!-- Tell us what the editor tab title will be: -->
+      <EditorTabTitle>${ScheduleEdit.TaskNameField.DataValue2}</EditorTabTitle>
+
+      <!-- After the data is saved initially, we'll change our data values
+           Using these updated settings and then do a save with the new values.
+      -->
+      <UpdatedSettings>
+        <Setting name="ScheduleEdit.TaskNameField.DataValue2" value="Sample Task2 - Updated"/>
+        <Setting name="ScheduleEdit.TaskUrlField.DataValue" value="/logic/admin/GetActions"/>
+      </UpdatedSettings>
+
+      <!-- Give us a list of fields on the editor to manipulate and validate: -->
+      <Tab name="General">
+        <Field name="TaskNameField"
+          value="${ScheduleEdit.TaskNameField.DataValue2}"
+          editId="${ScheduleEdit.TaskNameField.EditFieldID}"
+          displayId="${ScheduleEdit.TaskNameField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="TaskUrlField"
+          value="${ScheduleEdit.TaskUrlField.DataValue}"
+          editId="${ScheduleEdit.TaskUrlField.EditFieldID}"
+          displayId="${ScheduleEdit.TaskUrlField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="isActiveField"
+          value="${ScheduleEdit.isActiveField.DataValue}"
+          editId="${ScheduleEdit.isActiveField.EditFieldID}"
+          displayId="${ScheduleEdit.isActiveField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="useIntervalField"
+          value="${ScheduleEdit.useIntervalField.DataValue2}"
+          editId="${ScheduleEdit.useIntervalField.EditFieldID}"
+          displayId="${ScheduleEdit.useIntervalField.DisplayFieldID}"
+          type="RadioGroupBox" />
+        <!-- When useIntervalField is false, don't use these fields
+        <Field name="runEveryField"
+          value="${ScheduleEdit.runEveryField.DataValue2}"
+          editId="${ScheduleEdit.runEveryField.EditFieldID}"
+          displayId="${ScheduleEdit.runEveryField.DisplayFieldID}"
+          type="TextField" />
+        -->
+          <Field name="useTimeOfDayField"
+          value="${ScheduleEdit.useTimeOfDayField.DataValue2}"
+          editId="${ScheduleEdit.useTimeOfDayField.EditFieldID}"
+          displayId="${ScheduleEdit.useTimeOfDayField.DisplayFieldID}"
+          type="RadioGroupBox" />
+        <Field name="RunAtHourField"
+          value="${ScheduleEdit.RunAtHourField.DataValue2}"
+          editId="${ScheduleEdit.RunAtHourField.EditFieldID}"
+          displayId="${ScheduleEdit.RunAtHourField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="RunAtMinuteField"
+          value="${ScheduleEdit.RunAtMinuteField.DataValue2}"
+          editId="${ScheduleEdit.RunAtMinuteField.EditFieldID}"
+          displayId="${ScheduleEdit.RunAtMinuteField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="dowSundayField"
+          value="${ScheduleEdit.dowSundayField.DataValue}"
+          editId="${ScheduleEdit.dowSundayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowSundayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowMondayField"
+          value="${ScheduleEdit.dowMondayField.DataValue}"
+          editId="${ScheduleEdit.dowMondayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowMondayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowTuesdayField"
+          value="${ScheduleEdit.dowTuesdayField.DataValue}"
+          editId="${ScheduleEdit.dowTuesdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowTuesdayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowWednesdayField"
+          value="${ScheduleEdit.dowWednesdayField.DataValue}"
+          editId="${ScheduleEdit.dowWednesdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowWednesdayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowThursdayField"
+          value="${ScheduleEdit.dowThursdayField.DataValue}"
+          editId="${ScheduleEdit.dowThursdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowThursdayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowFridayField"
+          value="${ScheduleEdit.dowFridayField.DataValue}"
+          editId="${ScheduleEdit.dowFridayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowFridayField.DisplayFieldID}"
+          type="CheckBox" />
+        <Field name="dowSaturdayField"
+          value="${ScheduleEdit.dowSaturdayField.DataValue}"
+          editId="${ScheduleEdit.dowSaturdayField.EditFieldID}"
+          displayId="${ScheduleEdit.dowSaturdayField.DisplayFieldID}"
+          type="CheckBox" />
+      </Tab>
+
+    </CrudTest>
+
+  </DynamicTests>
+
+</HTest>

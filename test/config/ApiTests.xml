@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <!-- General Configuration Settings For Api Tests -->
+  <Setting name="ApiTestBaseUrl" value="http://hericus4.hericus.com:8085"/>
+  
+  <!-- A list of all of the API Tests that we have in the system
+  -->
+  <Include fileName="ApiTests/util/GetHitMap.xml"/>
+  <Include fileName="ApiTests/util/GetLogFiles.xml"/>
+  <Include fileName="ApiTests/util/GetLogSettings.xml"/>
+  <Include fileName="ApiTests/util/GetProfile.xml"/>
+
+  <Include fileName="ApiTests/admin/GetActions.xml"/>
+  <Include fileName="ApiTests/admin/GetGroups.xml"/>
+  <Include fileName="ApiTests/admin/GroupCRUD.xml"/>
+  <Include fileName="ApiTests/admin/GetUsers.xml"/>
+  <Include fileName="ApiTests/admin/UserCRUD.xml"/>
+</HTest>

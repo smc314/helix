@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Settings Values that define the field ID's for the login page -->
+  <Setting name="Login.EditFieldID.UserName" value="qx.ui.form.TextField.userField"/>
+  <Setting name="Login.DisplayFieldID.UserName" value="qx.ui.form.TextField.userField"/>
+  <Setting name="Login.EditFieldID.Password" value="qx.ui.form.PasswordField.passField"/>
+  <Setting name="Login.DisplayFieldID.Password" value="qx.ui.form.PasswordField.passField"/>
+
+  <!-- Where should we end up after the login goes through correctly? -->
+  <Setting name="Login.RedirectURL" value="qd/admin/source/index.html"/>
+
+</HTest>

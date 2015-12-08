@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/Application.xml"/>
+
+  <DynamicTests>
+    <ApplicationComponentsTest name="General Application Layout" stopOnFailure="true" expect="success">
+      <!-- 
+      This test checks to ensure that the general layout of the application is as expected
+      -->
+      <FunctionalAreas>General</FunctionalAreas>
+      <Provides></Provides>
+      <Requires>Login</Requires>
+      
+      <!-- Main application top level buttons -->
+      <Field name="Application Menu" value="" displayId="${App.AppMenu.ID}" type="Button"/>
+      <Field name="Tools Menu" value="" displayId="${App.ToolsMenu.ID}" type="Button"/>
+      <Field name="Server Menu" value="" displayId="${App.ServerMenu.ID}" type="Button"/>
+
+      <!-- Application Explorer tab -->
+      <Field name="Explorer Tab" value="" displayId="${App.ExplorerTab.ID}" type="Button"/>
+      <Field name="Explorer Tab - Refresh" value="" displayId="${App.ExplorerTab.Refresh}" type="Button"/>
+      <Field name="Explorer Tab - View" value="" displayId="${App.ExplorerTab.Refresh}" type="Button"/>
+      <Field name="Explorer Tab - Delete" value="" displayId="${App.ExplorerTab.Refresh}" type="Button"/>
+      <Field name="Explorer Tab - Tree View" value="" displayId="${App.ExplorerTab.Tree}" type="Tree"/>
+
+      <!-- Application Welcome tab -->
+      <Field name="Welcome Tab" value="" displayId="${App.WelcomeTab.ID}" type="Button"/>
+
+    </ApplicationComponentsTest>
+
+  </DynamicTests>
+
+</HTest>

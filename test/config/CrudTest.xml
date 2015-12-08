@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/Application.xml"/>
+
+  <!-- Load all of the crud tests that should be executed -->
+  <Include fileName="CrudTestUser.xml"/>
+  <Include fileName="CrudTestGroup.xml"/>
+  <Include fileName="CrudTestSchedule.xml"/>
+
+</HTest>

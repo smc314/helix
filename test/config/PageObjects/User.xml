@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Settings Values for the Editor elements the user can manipulate on this form -->
+  <Setting name="UserEditor.UsernameField.EditFieldID" value="qx.ui.form.TextField.UsernameField"/>
+  <Setting name="UserEditor.UsernameField.DisplayFieldID" value="qx.ui.form.TextField.UsernameField"/>
+
+  <Setting name="UserEditor.FullNameField.EditFieldID" value="qx.ui.form.TextField.FullNameField"/>
+  <Setting name="UserEditor.FullNameField.DisplayFieldID" value="qx.ui.form.TextField.FullNameField"/>
+
+  <Setting name="UserEditor.EMailField.EditFieldID" value="qx.ui.form.TextField.EMailField"/>
+  <Setting name="UserEditor.EMailField.DisplayFieldID" value="qx.ui.form.TextField.EMailField"/>
+
+  <Setting name="UserEditor.AuthMechanismField.EditFieldID" value="qx.ui.form.SelectBox.AuthMechanismField"/>
+  <Setting name="UserEditor.AuthMechanismField.DisplayFieldID" value="qx.ui.form.SelectBox.AuthMechanismField"/>
+
+  <Setting name="UserEditor.ActiveField.EditFieldID" value="qx.ui.form.CheckBox.ActiveField"/>
+  <Setting name="UserEditor.ActiveField.DisplayFieldID" value="qx.ui.form.CheckBox.ActiveField"/>
+
+  <!-- Input Data Values for the Editor elements the user can manipulate on this form -->
+  <Setting name="UserEditor.UsernameField.DataValue" value="TestUser${FileTime}"/>
+  <Setting name="UserEditor.FullNameField.DataValue" value="First${FileTime} Last${FileTime}"/>
+  <Setting name="UserEditor.EMailField.DataValue" value="TestUser${FileTime}@sample.com"/>
+  <Setting name="UserEditor.AuthMechanismField.DataValue" value="Plaintext Password"/>
+  <Setting name="UserEditor.ActiveField.DataValue" value="true"/>
+
+</HTest>

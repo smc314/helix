@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <DynamicTests>
+	<!-- GetGroups is a simple api test that invokes the GetGroups api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="GetGroups" 
+		apiPath="/logic/admin/GetGroups" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetGroups/>
+	  </InputDocument>
+
+	  <Output rootElementName="GetGroups">
+		  <ChildNodes name="Group" atLeastOne="true">
+			<Attribute name="Description"/>
+			<Attribute name="Groupname"/>
+			<Attribute name="id"/>
+			<Attribute name="userid"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetGroups_NoInputs" 
+		apiPath="/logic/admin/GetGroups" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="false" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetGroups_MissingInput" 
+		apiPath="/logic/admin/GetGroups" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- InputDocument intentionally missing -->
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetGroups_ExtraInputs" 
+		apiPath="/logic/admin/GetGroups" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		<GetGroups>
+			<SomeOddUnusedNode/>
+		</GetGroups>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

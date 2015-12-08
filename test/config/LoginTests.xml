@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the Login page -->
+  <Include fileName="PageObjects/Login.xml"/>
+
+  <DynamicTests>
+    <LoginTest name="Missing User and Password" stopOnFailure="true" expect="fail">
+      <!-- 
+      This test checks to ensure that if we don't put anything in for the user or 
+      the password that the login form will give us an error message for each field
+      that is missing.
+      -->
+      <FunctionalAreas>Login</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+      <ExpectedMessages>
+        <Error>User Name is required</Error>
+        <Error>Password is required</Error>
+      </ExpectedMessages>
+      <Field name="User Name" value="" editId="${Login.EditFieldID.UserName}" displayId="${Login.DisplayFieldID.UserName}" type="TextInput"/>
+      <Field name="Password" value="" editId="${Login.EditFieldID.Password}" displayId="${Login.DisplayFieldID.Password}" type="TextInput"/>
+    </LoginTest>
+
+    <LoginTest name="Bad User Information" stopOnFailure="true" expect="fail">
+      <!-- 
+      This test checks to ensure that if we provide bad information for the user and
+      the password that the login form will give us an error message indicating that
+      it couldn't log in.
+      -->
+      <FunctionalAreas>Login</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+      <ExpectedMessages>
+        <Error>Invalid User Name or Password given</Error>
+      </ExpectedMessages>
+      <Field name="User Name" value="foo" editId="${Login.EditFieldID.UserName}" displayId="${Login.DisplayFieldID.UserName}" type="TextInput"/>
+      <Field name="Password" value="bar" editId="${Login.EditFieldID.Password}" displayId="${Login.DisplayFieldID.Password}" type="TextInput"/>
+    </LoginTest>
+
+    <LoginTest name="Good User Information" stopOnFailure="true" expect="success">
+      <!-- 
+      This test checks to ensure that if we provide good values for the user and
+      the password that the login will work and we will be greeted to the application.
+      -->
+      <FunctionalAreas>Login</FunctionalAreas>
+      <Provides>Login</Provides>
+      <Requires></Requires>
+      <ExpectedMessages>
+        <Message>Welcome to Helix</Message>
+      </ExpectedMessages>
+      <Field name="User Name" value="${user}" editId="${Login.EditFieldID.UserName}" displayId="${Login.DisplayFieldID.UserName}" type="TextInput"/>
+      <Field name="Password" value="${pass}" editId="${Login.EditFieldID.Password}" displayId="${Login.DisplayFieldID.Password}" type="TextInput"/>
+    </LoginTest>
+  </DynamicTests>
+</HTest>

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/Application.xml"/>
+
+  <!-- Load the field ID's for the User Editor and related items -->
+  <Include fileName="PageObjects/Group.xml"/>
+
+  <DynamicTests>
+    <CrudTest name="Group CRUD Test" stopOnFailure="false" expect="success">
+      <!-- 
+      This test will click on our menuButtonId to open our menu, and then allows you to verify
+      or choose menu items.
+      -->
+      <FunctionalAreas>Group</FunctionalAreas>
+      <Provides></Provides>
+      <Requires>Login</Requires>
+      
+      <!-- Tell us which Tools/New menu we need to use to create a new entity: -->
+      <ToolsNewMenu>${App.ToolsMenu.NewMenu.GroupID}</ToolsNewMenu>
+      
+      <!-- Tell us what the new editor tab title will be: -->
+      <NewEditorTabTitle>NEW1</NewEditorTabTitle>
+
+      <!-- Tell us where in the Explorer tree we should find the new object: -->
+      <ExplorerTreeItem>Groups/${GroupEditor.GroupnameField.DataValue}</ExplorerTreeItem>
+
+      <!-- Tell us what the editor tab title will be: -->
+      <EditorTabTitle>${GroupEditor.GroupnameField.DataValue}</EditorTabTitle>
+      
+      <!-- After the data is saved initially, we'll change our data values
+           Using these updated settings and then do a save with the new values.
+      -->
+      <UpdatedSettings>
+        <Setting name="GroupEditor.GroupnameField.DataValue" value="Updated Group Name"/>
+        <Setting name="GroupEditor.DescriptionField.DataValue" value="Updated description from automation"/>
+        <Setting name="User.Edit.NewEmail" value="Updated${FileTime}@sample.com"/>
+      </UpdatedSettings>
+
+      <!-- Give us a list of fields on the editor to manipulate and validate: -->
+      <!-- Sample set of fields as represented by this layout design -->
+      <Tab name="General">
+        <Field name="GroupnameField"
+          value="${GroupEditor.GroupnameField.DataValue}"
+          editId="${GroupEditor.GroupnameField.EditFieldID}"
+          displayId="${GroupEditor.GroupnameField.DisplayFieldID}"
+          type="TextField" />
+        <Field name="DescriptionField"
+          value="${GroupEditor.DescriptionField.DataValue}"
+          editId="${GroupEditor.DescriptionField.EditFieldID}"
+          displayId="${GroupEditor.DescriptionField.DisplayFieldID}"
+          type="TextField" />
+      </Tab>
+
+    </CrudTest>
+
+  </DynamicTests>
+
+</HTest>

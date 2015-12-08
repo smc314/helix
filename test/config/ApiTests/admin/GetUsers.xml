@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <DynamicTests>
+	<!-- GetUsers is a simple api test that invokes the GetUsers api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="GetUsers" 
+		apiPath="/logic/admin/GetUsers" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="true" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetUsers/>
+	  </InputDocument>
+
+	  <Output rootElementName="Response">
+		  <ChildNodes name="User" atLeastOne="true">
+			<Attribute name="Active"/>
+			<Attribute name="AuthMechanism"/>
+			<Attribute name="EMail"/>
+			<Attribute name="FullName"/>
+			<Attribute name="Password"/>
+			<Attribute name="Username"/>
+			<Attribute name="groupid"/>
+			<Attribute name="id"/>
+		  </ChildNodes>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetUsers_NoInputs" 
+		apiPath="/logic/admin/GetUsers" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="false" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetUsers_MissingInput" 
+		apiPath="/logic/admin/GetUsers" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- InputDocument intentionally missing -->
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetUsers_ExtraInputs" 
+		apiPath="/logic/admin/GetUsers" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,AdminApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		<GetUsers>
+			<SomeOddUnusedNode/>
+		</GetUsers>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

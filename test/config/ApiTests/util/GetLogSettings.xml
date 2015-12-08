@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <DynamicTests>
+	<!-- GetLogSettings is a simple api test that invokes the GetLogSettings api.  No inputs are required and the
+	     outputs are not verified.
+    -->
+	<ApiTest name="GetLogSettings" 
+		apiPath="/logic/util/GetLogSettings" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="true">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		  <GetLogSettings/>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetLogSettings_NoInputs" 
+		apiPath="/logic/util/GetLogSettings" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="false" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetLogSettings_MissingInput" 
+		apiPath="/logic/util/GetLogSettings" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- InputDocument intentionally missing -->
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+	<ApiTest name="GetLogSettings_ExtraInputs" 
+		apiPath="/logic/util/GetLogSettings" 
+		stopOnFailure="false" 
+		expect="success" 
+		sendInput="true" 
+		verifyOutput="false" 
+		logInput="true"
+		logOutput="false">
+
+      <FunctionalAreas>Api,UtilApi</FunctionalAreas>
+      <Provides></Provides>
+      <Requires></Requires>
+
+	  <!-- The contents of the InputDocument element will be sent as the input document to the server -->
+	  <InputDocument>
+		<GetLogSettings>
+			<SomeOddUnusedNode/>
+		</GetLogSettings>
+	  </InputDocument>
+
+	  <Output>
+		  <!-- If verifyOutput is set to true, then the response from the server will be compared against
+			   the content of the OutputDocument element.
+			-->
+		  <OutputDocument></OutputDocument>
+	  </Output>
+
+    </ApiTest>
+
+  </DynamicTests>
+</HTest>

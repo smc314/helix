@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Settings Values that define the field ID's for the explorer tree -->
+  <Setting name="App.ExplorerTab.Tree" value="qx.ui.tree.Tree.ExplorerTree"/>
+
+</HTest>

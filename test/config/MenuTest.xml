@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Load the field ID's for the main application page -->
+  <Include fileName="PageObjects/Application.xml"/>
+
+  <DynamicTests>
+    <MenuTest name="Applications Menu" stopOnFailure="false" expect="success" menuButtonId="${App.AppMenu.ID}">
+      <!-- 
+      This test will click on our menuButtonId to open our menu, and then allows you to verify
+      or choose menu items.
+      -->
+      <FunctionalAreas>Menu</FunctionalAreas>
+      <Provides>ApplicationMenu</Provides>
+      <Requires>Login</Requires>
+      
+      <!-- Top level menu choices -->
+      <VerifyMenuItem name="Welcome To Helix" id="${App.AppMenu.WelcomeID}"/>
+      <VerifyMenuItem name="Administration" id="${App.AppMenu.AdminID}"/>
+      <VerifyMenuItem name="Development" id="${App.AppMenu.DevID}"/>
+
+    </MenuTest>
+
+    <MenuTest name="Tools Menu" stopOnFailure="false" expect="success" menuButtonId="${App.ToolsMenu.ID}">
+      <!-- 
+      This test will click on our menuButtonId to open our menu, and then allows you to verify
+      or choose menu items.
+      -->
+      <FunctionalAreas>Menu</FunctionalAreas>
+      <Provides>ToolsMenu</Provides>
+      <Requires>Login</Requires>
+
+      <!-- Top level menu choices -->
+      <VerifyMenuItem name="New Menu" id="${App.ToolsMenu.NewMenu.ID}"/>
+      <VerifyMenuItem name="Logs Menu" id="${App.ToolsMenu.LogsMenu.ID}"/>
+      
+      <!-- Click on an item to open the edior/view or open a sub-menu -->
+      <OpenMenuItem name="New Menu" id="${App.ToolsMenu.NewMenu.ID}"/>
+
+      <!-- Items on the New submenu -->
+      <VerifyMenuItem name="Visual Layout" id="${App.ToolsMenu.NewMenu.VisualLayoutID}"/>
+      <VerifyMenuItem name="User" id="${App.ToolsMenu.NewMenu.UserID}"/>
+      <VerifyMenuItem name="Scheduled Task" id="${App.ToolsMenu.NewMenu.ScheduledTaskID}"/>
+
+    </MenuTest>
+
+  </DynamicTests>
+
+</HTest>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <!-- General Configuration Settings -->
+  <Setting name="baseURL" value="http://smcdeb:8085/qd/ttvx/source/index.html"/>
+  <Setting name="user" value="admin"/>
+  <Setting name="pass" value="admin"/>
+  
+</HTest>

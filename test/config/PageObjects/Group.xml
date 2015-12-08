@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+
+  <!-- Settings Values for the Editor elements the user can manipulate on this form -->
+  <Setting name="GroupEditor.GroupnameField.EditFieldID" value="qx.ui.form.TextField.GroupnameField"/>
+  <Setting name="GroupEditor.GroupnameField.DisplayFieldID" value="qx.ui.form.TextField.GroupnameField"/>
+
+  <Setting name="GroupEditor.DescriptionField.EditFieldID" value="qx.ui.form.TextField.DescriptionField"/>
+  <Setting name="GroupEditor.DescriptionField.DisplayFieldID" value="qx.ui.form.TextField.DescriptionField"/>
+
+  <!-- Input Data Values for the Editor elements the user can manipulate on this form -->
+  <Setting name="GroupEditor.GroupnameField.DataValue" value="Test Group Name"/>
+  <Setting name="GroupEditor.DescriptionField.DataValue" value="Group used by automated testing"/>
+
+
+</HTest>

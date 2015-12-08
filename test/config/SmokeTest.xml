@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTest>
+  
+  <!-- General Configuration Settings -->
+  <Setting name="DriverType" value="ChromeDriver"/>
+  <Setting name="BrowserWidth" value="1224"/> <!-- 1024 + 200 -->
+  <Setting name="BrowserHeight" value="968"/> <!-- 768 + 200 -->
+  <Setting name="ScreenShotFolder" value="./screenshots"/> <!-- Remember to give the process permission to write to the path -->
+  
+  <!-- Include Configuration settings.  We use a setting value here
+       to specify the name of the include file so that it can be overridden on the 
+       command line to force different settings to be used depending on how you want
+       this test to be directed.  The default value for this will be used if you don't
+       override on the command line.
+  -->
+  <Setting name="SettingsFile" value="LocalTestData.xml"/>
+  <Include fileName="${SettingsFile}"/>
+  
+  <!-- Use the Include option to pull in test configuration information from other
+       files.  The tests will be processed in the order that the includes are listed.
+  -->
+  <Include fileName="LoginTests.xml"/>
+  <Include fileName="ApplicationComponentsTest.xml"/>
+  <Include fileName="TreeTest.xml"/>
+  <Include fileName="MenuTest.xml"/>
+  <Include fileName="CrudTest.xml"/>
+
+  <Include fileName="ApiTests.xml"/>
+
+  <!-- Any dynamic tests that we want to define directly go in here.  You can have as
+       many DynamicTests sections as you like in your configuration file.
+  -->
+  <DynamicTests>
+  </DynamicTests>
+  
+</HTest>
