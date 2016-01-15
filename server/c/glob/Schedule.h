@@ -12,7 +12,7 @@ using namespace std;
 #include "Threadable.h"
 
 #include "SchedItem.h"
-using namespace Helix::Logic::util;
+using namespace Helix::Logic::admin;
 
 namespace Helix {
 namespace Glob {

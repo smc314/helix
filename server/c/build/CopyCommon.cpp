@@ -32,17 +32,23 @@ int main (int argc, char** argv)
 	printf(" CopyCommon copying in global javascript files to each application.         \n");
 	printf("============================================================================\n");
 
-	if(argc == 1){
-		// These are the default packages
-		m_currentPackage = "admin"; findAllJSFiles("../../../qd/common");
-		m_currentPackage = "dev"; findAllJSFiles("../../../qd/common");
-		m_currentPackage = "welcome"; findAllJSFiles("../../../qd/common");
-	} else {
-		// Iterate through the packages given on the command line:
-		for(int i = 1; i < argc; i++){
-			m_currentPackage = argv[i];
-			findAllJSFiles("../../../qd/common");
+	try {
+		if(argc == 1){
+			// These are the default packages
+			m_currentPackage = "admin"; findAllJSFiles("../../../qd/common");
+			m_currentPackage = "dev"; findAllJSFiles("../../../qd/common");
+			m_currentPackage = "welcome"; findAllJSFiles("../../../qd/common");
+		} else {
+			// Iterate through the packages given on the command line:
+			for(int i = 1; i < argc; i++){
+				m_currentPackage = argv[i];
+				findAllJSFiles("../../../qd/common");
+			}
 		}
+	} catch(AnException& e){
+		printf("AnException caught: %s\n", e.Msg() );
+	} catch(...){
+		printf("unknown exception caught!");
 	}
 
 	return 0;

@@ -163,10 +163,10 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"-I ../" + extraDotDot + "test "
 		"\n"
 		"\n"
-		"%.obj: %.cpp\n"
+		".cpp.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
-		"%.obj: %.c\n"
+		".c.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
 		"DOTOH=\\\n"
@@ -188,7 +188,7 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
-				"\tcd " + subFolders[i] + " && $(GMAKE) -f Makefile all\n"
+				"\tcd " + subFolders[i] + " && nmake -f Makefile all\n"
 			);
 		}
 	}
@@ -196,13 +196,13 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 	output.append(
 		"\n"
 		"clean:\n"
-		"\trm -f $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
+		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
 		"\ttouch -c *.sql.xml\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
-				"\tcd " + subFolders[i] + " && $(GMAKE) -f Makefile clean\n"
+				"\tcd " + subFolders[i] + " && nmake -f Makefile clean\n"
 			);
 		}
 	}
@@ -462,14 +462,14 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"\n"
-		"CFLAGS=" + win64CFlags + " -I ../logic/util -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\"\n"
+		"CFLAGS=" + win64CFlags + " -I ../logic/util -I ../logic/admin\n"
 		"\n"
 		"LFLAGS=\n"
 		"\n"
-		"%.obj: %.cpp\n"
+		".cpp.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
-		"%.obj: %.c\n"
+		".c.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
 		"DOTOH=\\\n"
@@ -477,6 +477,7 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 
 	for(size_t i = 0; i < objFiles.size(); i++){
 		vector<twine> splits = objFiles[i].split(".");
+		if(splits[0] == "Jvm") continue; // Skip this one
 		if(i == (objFiles.size() - 1)){
 			output.append( "\t" + splits[0] + ".obj\n" );
 		} else {
@@ -499,7 +500,7 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"clean:\n"
-		"\trm -f $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
+		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -725,17 +726,17 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"-I ../logic/util "
 		"\n"
 		"\n"
-		"SSLLIBS=$(3PL)/x64/lib/libeay32.lib $(3PL)/x64/lib/ssleay32.lib \\\n"
-		"\t$(3PL)/x64/lib/libxml2.lib $(3PL)/x64/lib/libSLib.lib $(3PL)/x64/lib/zdll.lib \\\n"
-		"\t$(3PL)/x64/lib/libcurl_imp.lib\n"
+		"SSLLIBS=$(3PL)/lib/libeay32.lib $(3PL)/lib/ssleay32.lib \\\n"
+		"\t$(3PL)/lib/libxml2.lib $(3PL)/lib/libSLib.lib $(3PL)/lib/zdll.lib \\\n"
+		"\t$(3PL)/lib/libcurl.lib\n"
 		"\n"
 		"LFLAGS=" + win64LFlags + "\n"
 		"LLIBS=$(SSLLIBS) $(SOCKET_LIB)\n"
 		"\n"
-		"%.obj: %.cpp\n"
+		".cpp.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
-		"%.obj: %.c\n"
+		".c.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
 		"\n"
 		"GLOBOBJS=../glob/*.obj\n"
@@ -771,7 +772,7 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 			continue; // skip these
 		}
 		vector<twine> splits = objFiles[i].split(".");
-		output.append( "\t$(LINK) $(LFLAGS) /OUT:../../bin/" + splits[0] + ".exe " + splits[0] + ".obj $(LINKOBJ)\n" );
+		output.append( "\t$(LINK) $(LFLAGS) /OUT:../bin/" + splits[0] + ".exe " + splits[0] + ".obj $(LINKOBJ)\n" );
 	}
 
 
