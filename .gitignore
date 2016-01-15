@@ -2,6 +2,7 @@
 *.slo
 *.lo
 *.o
+*.obj
 
 # Compiled Dynamic libraries
 *.so
@@ -46,6 +47,12 @@ server/net/bin
 server/net/obj
 
 # Generated makefiles
+server/c/glob/Makefile
+server/c/logic/Makefile
+server/c/logic/admin/Makefile
+server/c/logic/dev/Makefile
+server/c/logic/util/Makefile
+server/c/client/Makefile
 
 # Generated html packages
 html/HelixLogin

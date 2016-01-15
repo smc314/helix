@@ -1,0 +1,43 @@
+CC=cl.exe
+LINK=link.exe
+OHEXT=obj
+CP=cp
+RM=del /Q /S
+
+3PL=../../../../3rdParty
+SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib
+
+
+GCFLAGS=-c -Zp8 -EHsc -O2 -D_WIN64 -DWIN64 -D_AMD64_=1 -D__64BIT__ -DWIN32 -D_MT -D_DLL -DLINT_ARGS -MP8 -MD -W3 -D "_CRT_SECURE_NO_DEPRECATE" -D "_CRT_NON_CONFORMING_SWPRINTFS" -D CS_NO_LARGE_IDENTIFIERS -I "$(3PL)/include" -I "$(3PL)/include/libxml2"
+
+
+SSLLIBS=$(3PL)/lib/libeay32.lib $(3PL)/lib/ssleay32.lib \
+	$(3PL)/lib/libxml2.lib $(3PL)/lib/libSLib.lib
+
+LFLAGS=-machine:x64 -subsystem:console
+LLIBS=$(SSLLIBS) $(SOCKET_LIB)
+
+.cpp.obj:
+	$(CC) $(CFLAGS) $<
+
+.c.obj:
+	$(CC) $(CFLAGS) $<
+
+clean:
+	-$(RM) $(DOTOH) *.$(OHEXT) core *.pch *.lib *.exp *.exe.manifest *.exe *.dll.manifest
+
+CFLAGS=$(GCFLAGS) -I ..\glob
+
+DOTOH=GenerateSqlClasses.obj \
+	AutoAsset.obj \
+	CopyIcons.obj \
+	CopyCommon.obj \
+	MakeMakefiles.obj
+
+all: $(DOTOH)
+	$(LINK) $(LFLAGS) /OUT:../bin/GenerateSqlClasses.exe GenerateSqlClasses.obj $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../bin/AutoAsset.exe AutoAsset.obj $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../bin/CopyIcons.exe CopyIcons.obj $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../bin/CopyCommon.exe CopyCommon.obj $(LLIBS)
+	$(LINK) $(LFLAGS) /OUT:../bin/MakeMakefiles.exe MakeMakefiles.obj $(LLIBS)
+

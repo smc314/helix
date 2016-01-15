@@ -1,0 +1,183 @@
+#
+# This is the MS VC++ 64-bit build version of the makefile
+# Use nmake -f Makefile.msvc to run this
+#
+# Note that we expect that the GIT utilities have been installed
+# with Visual Studio 2015.
+###############################################################
+
+MINGW_BINDIR=c:/Program Files/Git/mingw64/bin
+GIT_USRBIN=c:/Program Files/Git/usr/bin
+
+CC=cl.exe
+LINK=link.exe
+OHEXT=obj
+CP=copy
+RM=del /Q
+MKDIR="$(GIT_USRBIN)/mkdir.exe"
+MKDIRP="$(GIT_USRBIN)/mkdir.exe" -p
+PYTHON=c:/cygwin/bin/python.exe
+O_PYTHON=c:\python27\python.exe
+DOXYGEN="c:\Program Files (x86)\doxygen\bin\doxygen.exe"
+
+3PL=..\..\..\3rdParty
+SOCKET_LIB=ws2_32.lib odbc32.lib advapi32.lib user32.lib Shlwapi.lib rpcrt4.lib
+
+
+CFLAGS=-c -Zp8 -EHsc -O2 -D_WIN64 -DWIN64 -D_AMD64_=1 -D__64BIT__ -DWIN32 -D_MT -D_DLL -DLINT_ARGS -MD -W3 -D "_CRT_SECURE_NO_DEPRECATE" -D "_CRT_NON_CONFORMING_SWPRINTFS" -D CS_NO_LARGE_IDENTIFIERS -I "$(3PL)\include" 
+
+
+SSLLIBS=$(3PL)\lib\libeay32.lib $(3PL)\lib\ssleay32.lib \
+	$(3PL)\lib\libxml2.lib $(3PL)\lib\libSLib.lib \
+	$(3PL)\lib\zdll.lib
+
+LFLAGS=-machine:x64 -subsystem:console
+LLIBS=$(SSLLIBS) $(SOCKET_LIB)
+
+.cpp.obj:
+	$(CC) $(CFLAGS) $<
+
+.c.obj:
+	$(CC) $(CFLAGS) $<
+
+
+ALLOH=glob/*.obj \
+	logic/admin/*.obj \
+	logic/dev/*.obj \
+	logic/util/*.obj \
+	client/HelixApi_Part1.obj client/HelixApi_Part2.obj
+
+COREOH=glob/*.obj logic/utils/*.obj 
+
+all: install buildPrep subdirs CmdMain SvcMain install
+
+buildPrep:
+	cd build && nmake -f Makefile.msvc all
+	-cd ../../qd/common/sqldo && del /Q *.js
+	-cd ../../qd/admin/source/class/admin/sqldo && del /Q *.js
+	-cd ../../qd/dev/source/class/dev/sqldo && del /Q *.js
+	-cd ../../qd/login/source/class/login/sqldo && del /Q *.js
+	-cd ../../qd/welcome/source/class/welcome/sqldo && del /Q *.js
+	cd bin && GenerateSqlClasses.exe 
+	cd bin && CopyCommon.exe 
+	cd bin && AutoAsset.exe 
+	cd bin && CopyIcons.exe 
+	cd bin && MakeMakefiles.exe 
+
+CmdMain:
+	$(LINK) $(LFLAGS) /OUT:bin/HelixMain.exe server/HelixMain.obj $(ALLOH) $(LLIBS)
+
+# SvcMain should have none of our libraries required for it.  We don't want it dependent on
+# SLib or anything else that can be upgraded.  It only depends on native windows libraries.
+SvcMain:
+	$(LINK) $(LFLAGS) /OUT:bin/HelixSvc.exe server/HelixSvc.obj advapi32.lib user32.lib Shlwapi.lib
+
+subdirs: glob_dir server_dir util_dir admin_dir dev_dir client_dir 
+
+glob_dir:
+	cd glob && nmake -f Makefile all
+
+server_dir:
+	cd server && nmake -f Makefile.msvc all
+
+admin_dir:
+	cd logic\admin && nmake -f Makefile all
+
+dev_dir:
+	cd logic\dev && nmake -f Makefile all
+
+util_dir:
+	cd logic\util && nmake -f Makefile all
+
+client_dir:
+	cd client && nmake -f Makefile all
+
+clean: subdirs_clean 
+	set PATH=$(PATH);c:\cygwin\bin
+	cd ..\bin && $(RM) *.$(OHEXT) core *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest
+
+subdirs_clean: build_clean glob_clean server_clean utils_clean ascfg_clean ldm_clean dash_clean ia_clean client_clean test_clean csa_clean drvdep_clean
+
+build_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd build && $(GMAKE) -f Makefile.gmake clean
+
+glob_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd glob && $(GMAKE) -f Makefile clean
+
+server_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd server && $(GMAKE) -f Makefile.gmake clean
+
+utils_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\utils && $(GMAKE) -f Makefile clean
+
+ascfg_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\ascfg && $(GMAKE) -f Makefile clean
+
+ldm_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\ldm && $(GMAKE) -f Makefile clean
+
+dash_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\dash && $(GMAKE) -f Makefile clean
+
+csa_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\csa && $(GMAKE) -f Makefile clean
+
+drvdep_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\drvdep && $(GMAKE) -f Makefile clean
+
+ia_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\ia && $(GMAKE) -f Makefile clean
+
+test_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd logic\test && $(GMAKE) -f Makefile clean
+
+client_clean:
+	set PATH=$(PATH);c:\cygwin\bin
+	cd client && $(GMAKE) -f Makefile clean
+
+install:
+	copy $(3PL)\bin\libSLib.dll bin
+	copy $(3PL)\bin\SqlShell.exe bin
+	copy $(3PL)\bin\LogDump.exe bin
+	copy $(3PL)\bin\SLogDump.exe bin
+	copy $(3PL)\bin\libeay32.dll bin
+	copy $(3PL)\bin\libxml2.dll bin
+	copy $(3PL)\bin\libiconv.dll bin
+	copy $(3PL)\bin\ssleay32.dll bin
+	copy $(3PL)\bin\libcurl.dll bin
+	copy $(3PL)\bin\zlib1.dll bin
+	copy logic\*.db.xml bin
+	copy "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\x64\Microsoft.VC140.CRT\*.dll" bin
+
+docs:
+	-mkdir ..\html
+	-mkdir ..\html\devdoc
+	$(DOXYGEN) dev.doxy
+
+qd: 
+	cd ../qd && $(MAKE) -f Makefile.msvc build
+
+qd_source: 
+	cd ../qd && $(MAKE) -f Makefile.msvc source
+
+qd_api: 
+	cd ../qd && $(MAKE) -f Makefile.msvc api
+
+qd_test: 
+	cd ../qd && $(MAKE) -f Makefile.msvc test
+
+# this is a series of builds that I run every morning after updating from version control.
+morning: clean all qd_source qd qd_api qd_test docs
+
+

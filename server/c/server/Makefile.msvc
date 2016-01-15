@@ -1,0 +1,27 @@
+#
+# This is a Win64 Makefile for folder ../server
+######################################################################
+
+3PL=../../../../3rdParty
+SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib
+GMAKE=c:/cygwin/bin/make.exe -j 8
+
+CFLAGS=-c -Zp8 -EHsc -O2 -D_WIN64 -DWIN64 -D_AMD64_=1 -D__64BIT__ -DWIN32 -D_MT -D_DLL -DLINT_ARGS -MP8 -MD -W3 -D "_CRT_SECURE_NO_DEPRECATE" -D "_CRT_NON_CONFORMING_SWPRINTFS" -D CS_NO_LARGE_IDENTIFIERS -I "$(3PL)/include"  -I ../glob
+
+LFLAGS=
+
+.cpp.obj:
+	cl.exe $(CFLAGS) $<
+
+.c.obj:
+	cl.exe $(CFLAGS) $<
+
+DOTOH=\
+	HelixMain.obj \
+	HelixSvc.obj
+
+all: $(DOTOH)
+
+clean:
+	del /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest
+
