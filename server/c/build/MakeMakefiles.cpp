@@ -152,7 +152,9 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"\n"
 		"3PL=../../../../../" + extraDotDot + "3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
-		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
+		"MINGW_BINDIR=c:/Program Files/Git/mingw64/bin\n"
+		"GIT_USRBIN=c:/Program Files/Git/usr/bin\n"
+		"TOUCH=\"$(GIT_USRBIN)/touch.exe\"\n"
 		"\n"
 		"CFLAGS=" + win64CFlags +
 		"-I ../../" + extraDotDot + "glob "
@@ -197,7 +199,7 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"\n"
 		"clean:\n"
 		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
-		"\ttouch -c *.sql.xml\n"
+		"\t$(TOUCH) -c *.sql.xml\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -779,15 +781,17 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 	output.append(
 		"\n"
 		"clean:\n"
-		"\trm -f $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
+		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
 	);
+	/*
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
-				"\tcd " + subFolders[i] + " && $(GMAKE) -f Makefile clean\n"
+				"\tcd " + subFolders[i] + " && nmake -f Makefile clean\n"
 			);
 		}
 	}
+	*/
 
 	output.append(
 		"\n"

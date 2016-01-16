@@ -93,58 +93,30 @@ client_dir:
 	cd client && nmake -f Makefile all
 
 clean: subdirs_clean 
-	set PATH=$(PATH);c:\cygwin\bin
-	cd ..\bin && $(RM) *.$(OHEXT) core *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest
+	cd bin && $(RM) *.$(OHEXT) core *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest
 
-subdirs_clean: build_clean glob_clean server_clean utils_clean ascfg_clean ldm_clean dash_clean ia_clean client_clean test_clean csa_clean drvdep_clean
+subdirs_clean: build_clean glob_clean server_clean client_clean admin_clean dev_clean util_clean
 
 build_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd build && $(GMAKE) -f Makefile.gmake clean
+	cd build && nmake -f Makefile.msvc clean
 
 glob_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd glob && $(GMAKE) -f Makefile clean
+	cd glob && nmake -f Makefile clean
 
 server_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd server && $(GMAKE) -f Makefile.gmake clean
+	cd server && nmake -f Makefile.msvc clean
 
-utils_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\utils && $(GMAKE) -f Makefile clean
+admin_clean:
+	cd logic\admin && nmake -f Makefile clean
 
-ascfg_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\ascfg && $(GMAKE) -f Makefile clean
+dev_clean:
+	cd logic\dev && nmake -f Makefile clean
 
-ldm_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\ldm && $(GMAKE) -f Makefile clean
-
-dash_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\dash && $(GMAKE) -f Makefile clean
-
-csa_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\csa && $(GMAKE) -f Makefile clean
-
-drvdep_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\drvdep && $(GMAKE) -f Makefile clean
-
-ia_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\ia && $(GMAKE) -f Makefile clean
-
-test_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd logic\test && $(GMAKE) -f Makefile clean
+util_clean:
+	cd logic\util && nmake -f Makefile clean
 
 client_clean:
-	set PATH=$(PATH);c:\cygwin\bin
-	cd client && $(GMAKE) -f Makefile clean
+	cd client && nmake -f Makefile clean
 
 install:
 	copy $(3PL)\bin\libSLib.dll bin
