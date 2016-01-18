@@ -111,13 +111,13 @@ void copyFromOriginal(int sizeIndex, twine& filename)
 	
 	twine copy_to = m_prefix + m_sizes[sizeIndex] + "/" + filename;
 	
-	printf("Copying from: %s\n", copy_from());
-	printf("Copying to  : %s\n", copy_to());
+	//printf("Copying from: %s\n", copy_from());
+	//printf("Copying to  : %s\n", copy_to());
 	
 	try {
 		File::Copy(copy_from, copy_to);
 	} catch (AnException& e){
-		printf("\tException: %s\n", e.Msg());
+		//printf("\tException: %s\n", e.Msg());
 	}
 	
 }

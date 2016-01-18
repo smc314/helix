@@ -88,7 +88,7 @@ void processFile( twine& file_name )
 		targetPath = "../../../qd/" + m_currentPackage + "/source/class/" + m_currentPackage + "/" +
 			pathElements[5] + "/" + pathElements[6];
 	}
-	printf("Copy (%s) to (%s)\n", file_name(), targetPath() );
+	//printf("Copy (%s) to (%s)\n", file_name(), targetPath() );
 
 	vector<twine> lines;
 	try {
@@ -115,6 +115,7 @@ void processFile( twine& file_name )
 		for(size_t i = 0; i < lines.size(); i++){
 			output += lines[i] + "\n";
 		}
+		File::EnsurePath(targetPath);
 		File::writeToFile(targetPath, output);
 	} catch (AnException& e){
 		printf("Error writing to file %s:\n%s\n", targetPath(), e.Msg() );

@@ -225,7 +225,7 @@ void processFile(twine file_name, int pass)
 		name.getAttribute(statement, "methodName"); 
 		type.getAttribute(statement, "methodType"); 
 		target.getAttribute(statement, "target"); 
-		printf("Creating method (%s)::(%s) of type (%s)\n", m_currentClass(), name(), type());
+		//printf("Creating method (%s)::(%s) of type (%s)\n", m_currentClass(), name(), type());
 		
 		if(type != "MULTIINSERT"){
 			xmlNodePtr qdRoot = xmlDocGetRootElement(m_namedQueryDoc);
@@ -282,7 +282,7 @@ void checkCPPFile(twine fileName)
 	){
 		return; // this is us, or something ignorable.  skip it.
 	}
-	printf("Checking cpp file: %s\n", fileName() );
+	//printf("Checking cpp file: %s\n", fileName() );
 
 	File cppFile(fileName);
 	twine contents = cppFile.readContentsAsTwine();
@@ -612,10 +612,10 @@ void finalizeOutputFile()
 
 	try {
 		twine filename = "../" + m_currentPackage;
-		twine headername = filename + "/" + m_currentClass + ".h";
-		twine headertestname = filename + "/" + m_currentClass + "_test.h";
-		twine bodyname = filename + "/" + m_currentClass + ".cpp";
-		twine bodytestname = filename + "/" + m_currentClass + "_test.cpp";
+		twine headername = filename + "/sqldo/" + m_currentClass + ".h";
+		twine headertestname = filename + "/sqldo/" + m_currentClass + "_test.h";
+		twine bodyname = filename + "/sqldo/" + m_currentClass + ".cpp";
+		twine bodytestname = filename + "/sqldo/" + m_currentClass + "_test.cpp";
 		twine dotestinput = filename + "/test/" + m_currentClass + "0001.xml";
 
 		// Check to see if our current file is newer than the .h header.
@@ -634,11 +634,13 @@ void finalizeOutputFile()
 		}
 		//printf("Writing to (%s)\n", headername());
 		//fflush(stdout);
+		File::EnsurePath( headername );
 		File::writeToFile(headername, m_output_header);
 		File::writeToFile(headertestname, m_output_test_header);
 		
 		//printf("Writing to (%s)\n", bodyname());
 		//fflush(stdout);
+		File::EnsurePath( bodyname );
 		File::writeToFile(bodyname, m_output);
 		File::writeToFile(bodytestname, m_output_test);
 
@@ -1109,7 +1111,7 @@ void dumpJSDataObject(twine& objName)
 	out.append( loadTmpl("JsObj06.tmpl", &vars ) );
 	
 	try {
-		printf("Creating: %s\n", filename());
+		//printf("Creating: %s\n", filename());
 		File::writeToFile(filename, out);
 		
 	} catch (AnException& e) {
@@ -1534,7 +1536,7 @@ map<twine, twine> buildStatementParms( xmlNodePtr stmt )
 
 		if(inputType == "int" || inputType == "autogen" || inputType == "long"){
 			has_int_input = true;
-			printf("%s has int input: %s (%s)\n", m_currentClass(), inputName(), inputType() );
+			//printf("%s has int input: %s (%s)\n", m_currentClass(), inputName(), inputType() );
 		}
 		if(inputType == "float"){
 			has_float_input = true;

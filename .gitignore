@@ -50,9 +50,17 @@ server/net/obj
 server/c/glob/Makefile
 server/c/logic/Makefile
 server/c/logic/admin/Makefile
+server/c/logic/admin/test/Makefile
 server/c/logic/dev/Makefile
+server/c/logic/dev/test/Makefile
 server/c/logic/util/Makefile
+server/c/logic/util/test/Makefile
 server/c/client/Makefile
 
 # Generated html packages
 html/HelixLogin
+
+# Generated Server Components
+server/c/logic/admin/sqldo
+server/c/logic/dev/sqldo
+server/c/logic/util/sqldo

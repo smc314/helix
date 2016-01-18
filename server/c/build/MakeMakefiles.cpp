@@ -79,9 +79,9 @@ int main (int argc, char** argv)
 	printf("Generating src/logic makefiles based on a %s platform.\n", m_platform());
 	printf("============================================================================\n");
 
-	findAllSLFolders("../logic");
-
 	try {
+		findAllSLFolders("../logic");
+
 		createGlobMakefile("../glob");
 		createClientMakefile("../client");
 	} catch(AnException& e){
@@ -96,7 +96,7 @@ void findAllSLFolders(twine start)
 	// Find all folders under the given start:
 	vector<twine> folders = File::listFolders(start);
 	for(size_t i = 0; i < folders.size(); i++){
-		if(folders[i] != "." && folders[i] != ".."){
+		if(folders[i] != "." && folders[i] != ".." && folders[i] != "sqldo"){
 			twine targetFolder = start + "/" + folders[i];
 			// Create the makefile
 			createLogicMakefile( targetFolder );
@@ -159,9 +159,9 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"CFLAGS=" + win64CFlags +
 		"-I ..\\..\\" + extraDotDot + "glob "
 		"-I ..\\..\\" + extraDotDot + "client "
-		"-I ..\\" + extraDotDot + "util "
-		"-I ..\\" + extraDotDot + "admin "
-		"-I ..\\" + extraDotDot + "dev "
+		"-I ..\\" + extraDotDot + "util -I ..\\" + extraDotDot + "util\\sqldo "
+		"-I ..\\" + extraDotDot + "admin -I ..\\" + extraDotDot + "admin\\sqldo "
+		"-I ..\\" + extraDotDot + "dev -I ..\\" + extraDotDot + "dev\\sqldo "
 		"-I ..\\" + extraDotDot + "test "
 		"\n"
 		"LFLAGS=" + win64LFlags + "\n"
@@ -187,6 +187,27 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		}
 	}
 
+	output.append(
+		"\n"
+		"SQLDOTOH=\\\n"
+	);
+	twine sqldoFolder = targetFolder + "/sqldo";
+	try {
+		vector<twine> sqldoFiles = File::listFiles(sqldoFolder);
+		for(size_t i = 0; i < sqldoFiles.size(); i++){
+			if(sqldoFiles[i].endsWith(".cpp")){
+				vector<twine> splits = sqldoFiles[i].split(".");
+				if(i == (sqldoFiles.size() - 1)){
+					output.append( "\tsqldo\\" + splits[0] + ".o\n" );
+				} else {
+					output.append( "\tsqldo\\" + splits[0] + ".o \\\n" );
+				}
+			}
+		}
+	} catch (AnException& e){
+		// Eat this error - occurs when sqldo subdir doesn't exist.
+	}
+	
 	twine slibName = "libhelix/" + targetFolder.substr(3);
 	slibName.replace('/', '.');
 	twine slib2Name; slib2Name = slibName;
@@ -195,21 +216,21 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 
 	output.append(
 		"\n"
-		"all: $(DOTOH)\n"
+		"all: $(DOTOH) $(SQLDOTOH)\n"
 	);
 	if(objFiles.size() > 0){
 		if(slibName.endsWith(".util.dll") || slibName.endsWith(".admin.dll")){
 			// Don't create a shared library for util.so or admin.so it's rolled into glob.dll
 		} else {
 			output.append(
-				"\tlink.exe $(LFLAGS) /OUT:" + slibName + " /DLL $(DOTOH) $(LLIBS) ..\\..\\" + extraDotDot + "bin\\libhelix.glob.lib\n"
+				"\tlink.exe $(LFLAGS) /OUT:" + slibName + " /DLL $(DOTOH) $(SQLDOTOH) $(LLIBS) ..\\..\\" + extraDotDot + "bin\\libhelix.glob.lib\n"
 				"\tcopy " + slibName + " ..\\..\\" + extraDotDot + "bin\n"
 				"\tcopy " + slib2Name + " ..\\..\\" + extraDotDot + "bin\n"
 			);
 		}
 	}
 	for(size_t i = 0; i < subFolders.size(); i++){
-		if(subFolders[i] != "." && subFolders[i] != ".."){
+		if(subFolders[i] != "." && subFolders[i] != ".." && subFolders[i] != "sqldo"){
 			output.append(
 				"\tcd " + subFolders[i] + " && nmake -f Makefile all\n"
 			);
@@ -219,7 +240,7 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 	output.append(
 		"\n"
 		"clean:\n"
-		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
+		"\tdel /Q /S $(DOTOH) $(SQLDOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
 		"\t$(TOUCH) -c *.sql.xml\n"
 	);
 	if(objFiles.size() > 0){
@@ -229,7 +250,7 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		);
 	}
 	for(size_t i = 0; i < subFolders.size(); i++){
-		if(subFolders[i] != "." && subFolders[i] != ".."){
+		if(subFolders[i] != "." && subFolders[i] != ".." && subFolders[i] != "sqldo"){
 			output.append(
 				"\tcd " + subFolders[i] + " && nmake -f Makefile clean\n"
 			);
@@ -365,9 +386,9 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"CFLAGS=" + lin64CFlags +
 		"-I ../../" + extraDotDot + "glob "
 		"-I ../../" + extraDotDot + "client "
-		"-I ../" + extraDotDot + "util "
-		"-I ../" + extraDotDot + "admin "
-		"-I ../" + extraDotDot + "dev "
+		"-I ../" + extraDotDot + "util -I ../" + extraDotDot + "util/sqldo "
+		"-I ../" + extraDotDot + "admin -I ../" + extraDotDot + "admin/sqldo "
+		"-I ../" + extraDotDot + "dev -I ../" + extraDotDot + "dev/sqldo "
 		"-I ../" + extraDotDot + "test "
 		"\n"
 		"\n"
@@ -396,27 +417,49 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		}
 	}
 
+	output.append(
+		"\n"
+		"SQLDOTOH=\\\n"
+	);
+	twine sqldoFolder = targetFolder + "/sqldo";
+	try {
+		vector<twine> sqldoFiles = File::listFiles(sqldoFolder);
+		for(size_t i = 0; i < sqldoFiles.size(); i++){
+			if(sqldoFiles[i].endsWith(".cpp")){
+				vector<twine> splits = sqldoFiles[i].split(".");
+				if(i == (sqldoFiles.size() - 1)){
+					output.append( "\tsqldo/" + splits[0] + ".o\n" );
+				} else {
+					output.append( "\tsqldo/" + splits[0] + ".o \\\n" );
+				}
+			}
+		}
+	} catch (AnException& e){
+		// Eat this error - occurs when sqldo subdir doesn't exist.
+	}
+	
+
 	twine slibName = "libhelix/" + targetFolder.substr(3);
 	slibName.replace('/', '.');
 	slibName.append( ".so" );
 
 	output.append(
 		"\n"
-		"all: $(DOTOH)\n"
+		"all: $(DOTOH) $(SQLDOTOH)\n"
 	);
 	if(objFiles.size() > 0){
 		if(slibName.endsWith(".util.so") || slibName.endsWith(".admin.so")){
 			// Don't create a shared library for util.so - it's rolled up into glob
 		} else {
 			output.append(
-				"\tg++ -shared -o " + slibName + " $(DOTOH) $(LFLAGS) -L../../" +
+				"\tg++ -shared -o " + slibName + " $(DOTOH) $(SQLDOTOH) $(LFLAGS) -L../../" +
 				extraDotDot + "bin -lhelix.glob\n" +
 				"\tcp " + slibName + " ../../" + extraDotDot + "bin/\n"
 			);
 		}
 	}
 	for(size_t i = 0; i < subFolders.size(); i++){
-		if(subFolders[i] != "." && subFolders[i] != ".."){
+		if(subFolders[i] != "." && subFolders[i] != ".." && subFolders[i] != "sqldo" ){
 			output.append(
 				"\tcd " + subFolders[i] + " && $(GMAKE) -f Makefile all\n"
 			);
@@ -426,7 +469,7 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 	output.append(
 		"\n"
 		"clean:\n"
-		"\trm -f $(DOTOH) *.o *.obj core *.so\n"
+		"\trm -f $(DOTOH) $(SQLDOTOH) *.o *.obj core *.so\n"
 		"\ttouch -c *.sql.xml\n"
 	);
 	if(objFiles.size() > 0){
@@ -435,7 +478,7 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		);
 	}
 	for(size_t i = 0; i < subFolders.size(); i++){
-		if(subFolders[i] != "." && subFolders[i] != ".."){
+		if(subFolders[i] != "." && subFolders[i] != ".." && subFolders[i] != "sqldo" ){
 			output.append(
 				"\tcd " + subFolders[i] + " && $(GMAKE) -f Makefile clean\n"
 			);
@@ -491,7 +534,7 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"GMAKE=c:/cygwin/bin/make.exe -j 8\n"
 		"\n"
-		"CFLAGS=" + win64CFlags + " -I ../logic/util -I ../logic/admin\n"
+		"CFLAGS=" + win64CFlags + " -I ../logic/util -I ../logic/util/sqldo -I ../logic/admin -I ../logic/admin/sqldo\n"
 		"\n"
 		"LFLAGS=" + win64LFlags + "\n"
 		"LLIBS=$(3PL)\\lib\\libeay32.lib $(3PL)\\lib\\ssleay32.lib \\\n"
@@ -520,7 +563,7 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
-		"\tlink.exe $(LFLAGS) /OUT:libhelix.glob.dll /DLL $(DOTOH) ..\\logic\\util\\*.obj ..\\logic\\admin\\*.obj $(LLIBS)\n"
+		"\tlink.exe $(LFLAGS) /OUT:libhelix.glob.dll /DLL $(DOTOH) ..\\logic\\util\\*.obj ..\\logic\\util\\sqldo\\*.obj ..\\logic\\admin\\*.obj ..\\logic\\admin\\sqldo\\*.obj $(LLIBS)\n"
 		"\tcopy libhelix.glob.lib ..\\bin\n"
 		"\tcopy libhelix.glob.dll ..\\bin\n"
 	);
@@ -648,7 +691,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\tOPENSSLDIR=/usr/local/opt/openssl\n"
 		"endif\n"
 		"\n"
-		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I ../logic/admin -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
+		"CFLAGS=" + lin64CFlags + " -I ../logic/util -I ../logic/util/sqldo -I ../logic/admin -I ../logic/admin/sqldo -I. -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux \n"
 		"\n"
 		"ifeq ($(UNAME),Linux)\n"
 		"\tLFLAGS=" + lin64LFlags + "\n"
@@ -679,7 +722,7 @@ void createGlobLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
-		"\tg++ -shared -o libhelix.glob.so $(DOTOH) ../logic/util/*.o ../logic/admin/*.o $(LFLAGS)\n"
+		"\tg++ -shared -o libhelix.glob.so $(DOTOH) ../logic/util/*.o ../logic/util/sqldo/*.o ../logic/admin/*.o ../logic/admin/sqldo/*.o $(LFLAGS)\n"
 		"\tcp libhelix.glob.so ../bin/\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
@@ -757,10 +800,10 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\n"
 		"CFLAGS=" + win64CFlags + " -I \"$(3PL)/programs/jdk5u22/include\" -I \"$(3PL)/programs/jdk5u22/include/win32\" "
 		"-I ../glob "
-		"-I ../logic/admin "
-		"-I ../logic/dev "
+		"-I ../logic/admin -I ../logic/admin/sqldo "
+		"-I ../logic/dev -I ../logic/dev/sqldo "
+		"-I ../logic/util -I ../logic/util/sqldo "
 		"-I ../logic/test "
-		"-I ../logic/util "
 		"\n"
 		"\n"
 		"SSLLIBS=$(3PL)/lib/libeay32.lib $(3PL)/lib/ssleay32.lib \\\n"
@@ -775,12 +818,6 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\n"
 		".c.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
-		"\n"
-		"GLOBOBJS=../glob/*.obj\n"
-		"LOGICOBJS=../logic/admin/*.obj \\\n"
-		"\t../logic/dev/*.obj \\\n"
-		"\t../logic/test/*.obj \\\n"
-		"\t../logic/util/*.obj \n"
 		"\n"
 		"APIOH=HelixApi_Part1.obj HelixApi_Part2.obj\n"
 		"DOTOH=\\\n"
@@ -800,7 +837,7 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 
 	output.append(
 		"\n"
-		"LINKOBJ=$(APIOH) $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
+		"LINKOBJ=$(APIOH) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
 		"\tlink.exe $(LFLAGS) /OUT:libhelix.client.dll /DLL $(APIOH) ..\\bin\\libhelix.glob.lib ..\\bin\\libhelix.logic.dev.lib $(LLIBS)\n"
@@ -964,10 +1001,10 @@ void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\n"
 		"CFLAGS=" + lin64CFlags + " -I /Library/Java/Home/include -I /usr/lib/jvm/default/include -I/usr/lib/jvm/default/include/linux "
 		"-I ../glob "
-		"-I ../logic/admin "
-		"-I ../logic/dev "
+		"-I ../logic/admin -I ../logic/admin/sqldo "
+		"-I ../logic/dev -I ../logic/dev/sqldo "
+		"-I ../logic/util -I ../logic/util/sqldo "
 		"-I ../logic/test "
-		"-I ../logic/util "
 		"\n"
 		"\n"
 		"ifeq ($(UNAME),Linux)\n"
