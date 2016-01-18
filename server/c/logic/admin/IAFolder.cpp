@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "IAFolder.h"
@@ -297,6 +298,9 @@ vector<IAFolder* >* IAFolder::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool use
 {
 	EnEx ee(FL, "IAFolder::unusedSqlStmt(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	if(odbc.isConnected() == 0){
 		throw AnException(0, FL, "OdbcObj passed into IAFolder::unusedSqlStmt is not connected.");
 	}
@@ -316,6 +320,7 @@ vector<IAFolder* >* IAFolder::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool use
 			odbc.BindInput(1, ParentFolder);
 	}
 
+	selectTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("IAFolder::unusedSqlStmt()-ExecStmt");
 
@@ -323,6 +328,11 @@ vector<IAFolder* >* IAFolder::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool use
 		DEBUG(FL, "Executing the statement for IAFolder::unusedSqlStmt");
 		odbc.ExecStmt();
 	}
+	selectTimer.Finish();
+	if(selectTimer.Duration() > 0.2){
+		WARN(FL, "Statement took longer than 200ms to execute.");
+	}
+
 
 	// Now that we've executed the statement, we'll know how many output columns we have.
 	// Grab the column count so that we don't bind invalid output positions.
@@ -341,6 +351,7 @@ vector<IAFolder* >* IAFolder::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool use
 	}
 
 	int count;
+	fetchTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("IAFolder::unusedSqlStmt()-FetchLoop");
 		DEBUG(FL, "Fetching data...");
@@ -356,6 +367,10 @@ vector<IAFolder* >* IAFolder::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool use
 			local.init();
 
 		}
+	}
+	fetchTimer.Finish();
+	if(fetchTimer.Duration() > 1.0){
+		WARN(FL, "Statement took longer than 1000ms to fetch.");
 	}
 
 	// When we return, ensure that we release the sptr, so that we don't accidentally

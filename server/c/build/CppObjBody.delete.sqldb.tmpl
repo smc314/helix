@@ -27,6 +27,8 @@ void ${doName}::${methodName}(SqlDB& sqldb, twine& stmt, bool useInputs${TypedPa
 {
 	EnEx ee(FL, "${doName}::${methodName}()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -34,6 +36,7 @@ void ${doName}::${methodName}(SqlDB& sqldb, twine& stmt, bool useInputs${TypedPa
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("${doName}::${methodName}()-BindExecStmt");
 
@@ -45,6 +48,10 @@ ${SqlDBBindInputs}
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for ${doName}::${methodName}");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){

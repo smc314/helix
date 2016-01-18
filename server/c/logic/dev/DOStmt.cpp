@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "DOStmt.h"
@@ -348,6 +349,8 @@ void DOStmt::insert(SqlDB& sqldb, twine& stmt, bool useInputs, DOStmt& obj )
 {
 	EnEx ee(FL, "DOStmt::insert()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -355,6 +358,7 @@ void DOStmt::insert(SqlDB& sqldb, twine& stmt, bool useInputs, DOStmt& obj )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("DOStmt::insert()-BindExecStmt");
 
@@ -383,6 +387,10 @@ void DOStmt::insert(SqlDB& sqldb, twine& stmt, bool useInputs, DOStmt& obj )
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -409,6 +417,8 @@ void DOStmt::insert(SqlDB& sqldb, vector< DOStmt* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "DOStmt::insert(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -419,6 +429,7 @@ void DOStmt::insert(SqlDB& sqldb, vector< DOStmt* >* v, bool useTransaction)
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("DOStmt::insert()-BindExecStmt");
 
@@ -466,6 +477,10 @@ void DOStmt::insert(SqlDB& sqldb, vector< DOStmt* >* v, bool useTransaction)
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -599,6 +614,8 @@ void DOStmt::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& StmtName, 
 {
 	EnEx ee(FL, "DOStmt::update()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -606,6 +623,7 @@ void DOStmt::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& StmtName, 
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("DOStmt::update()-BindExecStmt");
 
@@ -629,6 +647,10 @@ void DOStmt::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& StmtName, 
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for DOStmt::update");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -740,6 +762,8 @@ void DOStmt::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 {
 	EnEx ee(FL, "DOStmt::deleteByID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -747,6 +771,7 @@ void DOStmt::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("DOStmt::deleteByID()-BindExecStmt");
 
@@ -760,6 +785,10 @@ void DOStmt::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for DOStmt::deleteByID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -841,6 +870,8 @@ void DOStmt::deleteByDOID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& dogu
 {
 	EnEx ee(FL, "DOStmt::deleteByDOID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -848,6 +879,7 @@ void DOStmt::deleteByDOID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& dogu
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("DOStmt::deleteByDOID()-BindExecStmt");
 
@@ -861,6 +893,10 @@ void DOStmt::deleteByDOID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& dogu
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for DOStmt::deleteByDOID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -956,6 +992,9 @@ vector<DOStmt* >* DOStmt::selectAllForDO(SqlDB& sqldb, twine& stmt, bool useInpu
 {
 	EnEx ee(FL, "DOStmt::selectAllForDO(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -974,6 +1013,7 @@ vector<DOStmt* >* DOStmt::selectAllForDO(SqlDB& sqldb, twine& stmt, bool useInpu
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 1, doguid(), (int)doguid.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("DOStmt::selectAllForDO()-ExecStmt");
 
@@ -981,11 +1021,16 @@ vector<DOStmt* >* DOStmt::selectAllForDO(SqlDB& sqldb, twine& stmt, bool useInpu
 			DEBUG(FL, "Executing the statement for DOStmt::selectAllForDO");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			DOStmt* obj = new DOStmt( );
@@ -1019,6 +1064,11 @@ vector<DOStmt* >* DOStmt::selectAllForDO(SqlDB& sqldb, twine& stmt, bool useInpu
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.

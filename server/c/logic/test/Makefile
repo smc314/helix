@@ -6,9 +6,20 @@
 3PL=../../../../../3rdParty
 GMAKE=make -j 8
 
-CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include" -I ../../glob -I ../../client -I ../util -I ../admin -I ../dev -I ../test 
+ifeq ($(UNAME),Linux)
+	OPENSSLDIR=/usr
+else
+	OPENSSLDIR=/usr/local/opt/openssl
+endif
 
-LFLAGS=
+CFLAGS=-g -Wall -D_REENTRANT -fPIC -O2 -rdynamic -I$(OPENSSLDIR)/include -I/usr/include -I/usr/include/libxml2 -I "$(3PL)/slib/include" -I ../../glob -I ../../client -I ../util -I ../admin -I ../dev -I ../test 
+
+ifeq ($(UNAME),Linux)
+	LFLAGS=-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -luuid -lz -lodbc -L$(3PL)/slib/lib -lSLib
+else
+	LFLAGS=-L$(OPENSSLDIR)/lib -lssl -lcrypto -lpthread -lresolv -lxml2 -lz -lodbc -L$(3PL)/slib/lib -lSLib
+endif
+
 
 %.o: %.cpp
 	g++ $(CFLAGS) -c $< -o $@

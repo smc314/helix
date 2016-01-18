@@ -174,6 +174,8 @@ qx.Class.define("admin.ObjectEdit", {
 				}
 				if(this.isDirty === false){
 					// nothing to warn about.
+					this.cancelAutoRefreshTimer();
+					this.cancelAutoSaveTimer();
 					return;
 				}
 				// We are dirty.  Warn the user:
@@ -185,6 +187,8 @@ qx.Class.define("admin.ObjectEdit", {
 				qx.core.Init.getApplication().getRoot().add( dialog );
 				dialog.addOkEventListener("execute", function(){
 					// forcibly remove the tab page:
+					this.cancelAutoRefreshTimer();
+					this.cancelAutoSaveTimer();
 					var tabView = admin.Statics.findQXParent(our_page, qx.ui.tabview.TabView);
 					tabView.remove( our_page );
 				}, this);
@@ -375,6 +379,32 @@ qx.Class.define("admin.ObjectEdit", {
 			}
 		},
 
+		setAutoSaveTimer: function (recurTime) {
+			// if we already have a timer, then just return
+			if (this.saveTimer) {
+				return;
+			}
+			var timer = qx.util.TimerManager.getInstance();
+			this.saveTimer = timer.start(this.autoSave, recurTime, this);
+		},
+
+		cancelAutoSaveTimer: function () {
+			if (this.saveTimer) {
+				qx.util.TimerManager.getInstance().stop(this.saveTimer);
+				this.saveTimer = null;
+			}
+		},
+
+		autoSave: function() {
+
+			if(this.isDirty === false){
+				return; // Nothing to do
+			}
+
+			this.doSaveToServer();
+
+		},
+
 		createOverviewLayout: function (layoutParent, editorName, editorIcon, objName) {
 			var root = new qx.ui.container.Composite(new qx.ui.layout.HBox);
 			layoutParent.add(root, { flex: 10 });
@@ -414,7 +444,9 @@ qx.Class.define("admin.ObjectEdit", {
 		},
 
 		updateSummaryName: function (name) {
-			this.summaryName.setLabel("<b>" + name + "</b>");
+			if(this.summaryName){
+				this.summaryName.setLabel("<b>" + name + "</b>");
+			}
 		},
 
 		addStatusHeading: function (label) {

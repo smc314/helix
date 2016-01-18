@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "Screen.h"
@@ -284,6 +285,8 @@ void Screen::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Screen& obj )
 {
 	EnEx ee(FL, "Screen::insert()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -291,6 +294,7 @@ void Screen::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Screen& obj )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Screen::insert()-BindExecStmt");
 
@@ -311,6 +315,10 @@ void Screen::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Screen& obj )
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -337,6 +345,8 @@ void Screen::insert(SqlDB& sqldb, vector< Screen* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Screen::insert(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -347,6 +357,7 @@ void Screen::insert(SqlDB& sqldb, vector< Screen* >* v, bool useTransaction)
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Screen::insert()-BindExecStmt");
 
@@ -386,6 +397,10 @@ void Screen::insert(SqlDB& sqldb, vector< Screen* >* v, bool useTransaction)
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -491,6 +506,8 @@ void Screen::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& ScrnName, 
 {
 	EnEx ee(FL, "Screen::update()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -498,6 +515,7 @@ void Screen::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& ScrnName, 
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Screen::update()-BindExecStmt");
 
@@ -513,6 +531,10 @@ void Screen::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& ScrnName, 
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Screen::update");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -600,6 +622,8 @@ void Screen::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 {
 	EnEx ee(FL, "Screen::deleteByID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -607,6 +631,7 @@ void Screen::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Screen::deleteByID()-BindExecStmt");
 
@@ -620,6 +645,10 @@ void Screen::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid )
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Screen::deleteByID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -711,6 +740,9 @@ vector<Screen* >* Screen::selectAllForApp(SqlDB& sqldb, twine& stmt, bool useInp
 {
 	EnEx ee(FL, "Screen::selectAllForApp(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -729,6 +761,7 @@ vector<Screen* >* Screen::selectAllForApp(SqlDB& sqldb, twine& stmt, bool useInp
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 1, projappguid(), (int)projappguid.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Screen::selectAllForApp()-ExecStmt");
 
@@ -736,11 +769,16 @@ vector<Screen* >* Screen::selectAllForApp(SqlDB& sqldb, twine& stmt, bool useInp
 			DEBUG(FL, "Executing the statement for Screen::selectAllForApp");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Screen* obj = new Screen( );
@@ -762,6 +800,11 @@ vector<Screen* >* Screen::selectAllForApp(SqlDB& sqldb, twine& stmt, bool useInp
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.

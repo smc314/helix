@@ -27,6 +27,8 @@ void ${doName}::${methodName}(OdbcObj& odbc, twine& stmt, bool useInputs${TypedP
 {
 	EnEx ee(FL, "${doName}::${methodName}()");
 
+	Timer selectTimer;
+
 	if(odbc.isConnected() == 0){
 		throw AnException(0, FL, "OdbcObj passed into ${doName}::${methodName} is not connected.");
 	}
@@ -37,6 +39,7 @@ void ${doName}::${methodName}(OdbcObj& odbc, twine& stmt, bool useInputs${TypedP
 	SQLTRACE(FL, "Using SQL: %s", stmt() );
 	odbc.SetStmt(stmt, SQL_TYPE_UPDATE);
 
+	selectTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("${doName}::${methodName}()-BindExecStmt");
 
@@ -48,6 +51,10 @@ ${OdbcBindInputs}
 		// Execute the statement
 		DEBUG(FL, "Executing the statement for ${doName}::${methodName}");
 		odbc.ExecStmt();
+	}
+	selectTimer.Finish();
+	if(selectTimer.Duration() > 0.2){
+		WARN(FL, "Statement took longer than 200ms to execute.");
 	}
 
 	// That's it.

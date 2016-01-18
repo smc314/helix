@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "HitMap.h"
@@ -297,6 +298,8 @@ void HitMap::dummy(OdbcObj& odbc, twine& stmt, bool useInputs, HitMap& obj )
 {
 	EnEx ee(FL, "HitMap::dummy()");
 
+	Timer selectTimer;
+
 	if(odbc.isConnected() == 0){
 		throw AnException(0, FL, "OdbcObj passed into HitMap::dummy is not connected.");
 	}
@@ -307,6 +310,7 @@ void HitMap::dummy(OdbcObj& odbc, twine& stmt, bool useInputs, HitMap& obj )
 	SQLTRACE(FL, "Using SQL: %s", stmt() );
 	odbc.SetStmt(stmt, SQL_TYPE_UPDATE);
 
+	selectTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("HitMap::dummy()-BindExecStmt");
 
@@ -330,6 +334,10 @@ void HitMap::dummy(OdbcObj& odbc, twine& stmt, bool useInputs, HitMap& obj )
 		// Execute the statement
 		DEBUG(FL, "Executing the statement for HitMap::dummy");
 		odbc.ExecStmt();
+	}
+	selectTimer.Finish();
+	if(selectTimer.Duration() > 0.2){
+		WARN(FL, "Statement took longer than 200ms to execute.");
 	}
 
 	// That's it.

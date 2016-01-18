@@ -29,6 +29,14 @@ qx.Mixin.define("welcome.layout.LayoutCKTextArea", {
 						toolbar : 'Standard'
 					}
 				);
+				// If the owner object has a dirty flag, and supports fieldModification
+				// notifications, then go ahead and subscribe to change events:
+				if(theThis.isDirty !== undefined && theThis.fieldModified !== undefined){
+					ckField.helixOwner = theThis;
+					ckField.on("change", function() {
+						this.helixOwner.fieldModified();
+					} );
+				}
 				theThis[ elem.getAttribute("varName") + "CK" ] = ckField;
 			}, theThis );
 

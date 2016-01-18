@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "Col.h"
@@ -295,6 +296,8 @@ void Col::unused(OdbcObj& odbc, twine& stmt, bool useInputs, Col& obj )
 {
 	EnEx ee(FL, "Col::unused()");
 
+	Timer selectTimer;
+
 	if(odbc.isConnected() == 0){
 		throw AnException(0, FL, "OdbcObj passed into Col::unused is not connected.");
 	}
@@ -305,6 +308,7 @@ void Col::unused(OdbcObj& odbc, twine& stmt, bool useInputs, Col& obj )
 	SQLTRACE(FL, "Using SQL: %s", stmt() );
 	odbc.SetStmt(stmt, SQL_TYPE_UPDATE);
 
+	selectTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("Col::unused()-BindExecStmt");
 
@@ -326,6 +330,10 @@ void Col::unused(OdbcObj& odbc, twine& stmt, bool useInputs, Col& obj )
 		// Execute the statement
 		DEBUG(FL, "Executing the statement for Col::unused");
 		odbc.ExecStmt();
+	}
+	selectTimer.Finish();
+	if(selectTimer.Duration() > 0.2){
+		WARN(FL, "Statement took longer than 200ms to execute.");
 	}
 
 	// That's it.

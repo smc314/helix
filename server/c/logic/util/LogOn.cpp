@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "LogOn.h"
@@ -320,6 +321,9 @@ vector<LogOn* >* LogOn::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool useInputs
 {
 	EnEx ee(FL, "LogOn::unusedSqlStmt(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	if(odbc.isConnected() == 0){
 		throw AnException(0, FL, "OdbcObj passed into LogOn::unusedSqlStmt is not connected.");
 	}
@@ -347,6 +351,7 @@ vector<LogOn* >* LogOn::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool useInputs
 			odbc.BindInput(5, Alias);
 	}
 
+	selectTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("LogOn::unusedSqlStmt()-ExecStmt");
 
@@ -354,6 +359,11 @@ vector<LogOn* >* LogOn::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool useInputs
 		DEBUG(FL, "Executing the statement for LogOn::unusedSqlStmt");
 		odbc.ExecStmt();
 	}
+	selectTimer.Finish();
+	if(selectTimer.Duration() > 0.2){
+		WARN(FL, "Statement took longer than 200ms to execute.");
+	}
+
 
 	// Now that we've executed the statement, we'll know how many output columns we have.
 	// Grab the column count so that we don't bind invalid output positions.
@@ -388,6 +398,7 @@ vector<LogOn* >* LogOn::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool useInputs
 	}
 
 	int count;
+	fetchTimer.Start();
 	{ // Used for scope for the timing object.
 		EnEx eeExe("LogOn::unusedSqlStmt()-FetchLoop");
 		DEBUG(FL, "Fetching data...");
@@ -403,6 +414,10 @@ vector<LogOn* >* LogOn::unusedSqlStmt(OdbcObj& odbc, twine& stmt, bool useInputs
 			local.init();
 
 		}
+	}
+	fetchTimer.Finish();
+	if(fetchTimer.Duration() > 1.0){
+		WARN(FL, "Statement took longer than 1000ms to fetch.");
 	}
 
 	// When we return, ensure that we release the sptr, so that we don't accidentally

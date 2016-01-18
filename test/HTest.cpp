@@ -302,7 +302,9 @@ bool ExecuteTestDependencies(DynamicTest* test)
 			// Execute the providers dependencies
 			if(ExecuteTestDependencies( provider )){
 				// Execute the provider itself
-				return ExecuteTest( provider );
+				if(!ExecuteTest( provider )){
+					return false;
+				}
 			} else {
 				return false;
 			}
@@ -311,6 +313,8 @@ bool ExecuteTestDependencies(DynamicTest* test)
 			return false;
 		}
 	}
+
+	// Once all requirements have been satisfied, return true
 	return true;
 }
 

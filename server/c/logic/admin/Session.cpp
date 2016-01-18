@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "Session.h"
@@ -290,6 +291,8 @@ void Session::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Session& obj )
 {
 	EnEx ee(FL, "Session::insert()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -297,6 +300,7 @@ void Session::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Session& obj )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Session::insert()-BindExecStmt");
 
@@ -321,6 +325,10 @@ void Session::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Session& obj )
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -347,6 +355,8 @@ void Session::insert(SqlDB& sqldb, vector< Session* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Session::insert(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -357,6 +367,7 @@ void Session::insert(SqlDB& sqldb, vector< Session* >* v, bool useTransaction)
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Session::insert()-BindExecStmt");
 
@@ -400,6 +411,10 @@ void Session::insert(SqlDB& sqldb, vector< Session* >* v, bool useTransaction)
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -522,6 +537,8 @@ void Session::update(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t Userid,
 {
 	EnEx ee(FL, "Session::update()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -529,6 +546,7 @@ void Session::update(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t Userid,
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Session::update()-BindExecStmt");
 
@@ -550,6 +568,10 @@ void Session::update(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t Userid,
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Session::update");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -657,6 +679,8 @@ void Session::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid 
 {
 	EnEx ee(FL, "Session::deleteByID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -664,6 +688,7 @@ void Session::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid 
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Session::deleteByID()-BindExecStmt");
 
@@ -677,6 +702,10 @@ void Session::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& guid 
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Session::deleteByID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -769,6 +798,9 @@ vector<Session* >* Session::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 {
 	EnEx ee(FL, "Session::selectAll(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -785,6 +817,7 @@ vector<Session* >* Session::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 		if(useInputs){
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Session::selectAll()-ExecStmt");
 
@@ -792,11 +825,16 @@ vector<Session* >* Session::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 			DEBUG(FL, "Executing the statement for Session::selectAll");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Session* obj = new Session( );
@@ -824,6 +862,11 @@ vector<Session* >* Session::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -908,6 +951,9 @@ vector<Session* >* Session::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs
 {
 	EnEx ee(FL, "Session::selectByID(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -926,6 +972,7 @@ vector<Session* >* Session::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 1, guid(), (int)guid.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Session::selectByID()-ExecStmt");
 
@@ -933,11 +980,16 @@ vector<Session* >* Session::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs
 			DEBUG(FL, "Executing the statement for Session::selectByID");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Session* obj = new Session( );
@@ -965,6 +1017,11 @@ vector<Session* >* Session::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.

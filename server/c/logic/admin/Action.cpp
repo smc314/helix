@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "Action.h"
@@ -298,6 +299,8 @@ void Action::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Action& obj )
 {
 	EnEx ee(FL, "Action::insert()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -305,6 +308,7 @@ void Action::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Action& obj )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::insert()-BindExecStmt");
 
@@ -326,6 +330,10 @@ void Action::insert(SqlDB& sqldb, twine& stmt, bool useInputs, Action& obj )
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -352,6 +360,8 @@ void Action::insert(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 {
 	EnEx ee(FL, "Action::insert(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -362,6 +372,7 @@ void Action::insert(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::insert()-BindExecStmt");
 
@@ -402,6 +413,10 @@ void Action::insert(SqlDB& sqldb, vector< Action* >* v, bool useTransaction)
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -508,6 +523,8 @@ void Action::addUserToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action& 
 {
 	EnEx ee(FL, "Action::addUserToAction()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -515,6 +532,7 @@ void Action::addUserToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action& 
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::addUserToAction()-BindExecStmt");
 
@@ -535,6 +553,10 @@ void Action::addUserToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action& 
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -561,6 +583,8 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransac
 {
 	EnEx ee(FL, "Action::addUserToAction(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -571,6 +595,7 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransac
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::addUserToAction()-BindExecStmt");
 
@@ -610,6 +635,10 @@ void Action::addUserToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransac
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -717,6 +746,8 @@ void Action::addGroupToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action&
 {
 	EnEx ee(FL, "Action::addGroupToAction()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -724,6 +755,7 @@ void Action::addGroupToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action&
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::addGroupToAction()-BindExecStmt");
 
@@ -744,6 +776,10 @@ void Action::addGroupToAction(SqlDB& sqldb, twine& stmt, bool useInputs, Action&
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -770,6 +806,8 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransa
 {
 	EnEx ee(FL, "Action::addGroupToAction(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -780,6 +818,7 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransa
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::addGroupToAction()-BindExecStmt");
 
@@ -819,6 +858,10 @@ void Action::addGroupToAction(SqlDB& sqldb, vector< Action* >* v, bool useTransa
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -928,6 +971,8 @@ void Action::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& Path, intp
 {
 	EnEx ee(FL, "Action::update()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -935,6 +980,7 @@ void Action::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& Path, intp
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::update()-BindExecStmt");
 
@@ -952,6 +998,10 @@ void Action::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& Path, intp
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Action::update");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -1047,6 +1097,8 @@ void Action::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id )
 {
 	EnEx ee(FL, "Action::deleteByID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1054,6 +1106,7 @@ void Action::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id )
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::deleteByID()-BindExecStmt");
 
@@ -1067,6 +1120,10 @@ void Action::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t id )
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Action::deleteByID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -1150,6 +1207,8 @@ void Action::removeUserFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, int
 {
 	EnEx ee(FL, "Action::removeUserFromAction()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1157,6 +1216,7 @@ void Action::removeUserFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, int
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::removeUserFromAction()-BindExecStmt");
 
@@ -1172,6 +1232,10 @@ void Action::removeUserFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, int
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Action::removeUserFromAction");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -1262,6 +1326,8 @@ void Action::removeGroupFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, in
 {
 	EnEx ee(FL, "Action::removeGroupFromAction()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1269,6 +1335,7 @@ void Action::removeGroupFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, in
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::removeGroupFromAction()-BindExecStmt");
 
@@ -1284,6 +1351,10 @@ void Action::removeGroupFromAction(SqlDB& sqldb, twine& stmt, bool useInputs, in
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for Action::removeGroupFromAction");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -1382,6 +1453,9 @@ vector<Action* >* Action::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 {
 	EnEx ee(FL, "Action::selectAll(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1398,6 +1472,7 @@ vector<Action* >* Action::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 		if(useInputs){
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::selectAll()-ExecStmt");
 
@@ -1405,11 +1480,16 @@ vector<Action* >* Action::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 			DEBUG(FL, "Executing the statement for Action::selectAll");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -1431,6 +1511,11 @@ vector<Action* >* Action::selectAll(SqlDB& sqldb, twine& stmt, bool useInputs)
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -1513,6 +1598,9 @@ vector<Action* >* Action::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs, 
 {
 	EnEx ee(FL, "Action::selectByID(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1531,6 +1619,7 @@ vector<Action* >* Action::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs, 
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)id) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::selectByID()-ExecStmt");
 
@@ -1538,11 +1627,16 @@ vector<Action* >* Action::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs, 
 			DEBUG(FL, "Executing the statement for Action::selectByID");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -1564,6 +1658,11 @@ vector<Action* >* Action::selectByID(SqlDB& sqldb, twine& stmt, bool useInputs, 
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -1654,6 +1753,9 @@ vector<Action* >* Action::selectByPath(SqlDB& sqldb, twine& stmt, bool useInputs
 {
 	EnEx ee(FL, "Action::selectByPath(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1672,6 +1774,7 @@ vector<Action* >* Action::selectByPath(SqlDB& sqldb, twine& stmt, bool useInputs
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 1, Path(), (int)Path.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::selectByPath()-ExecStmt");
 
@@ -1679,11 +1782,16 @@ vector<Action* >* Action::selectByPath(SqlDB& sqldb, twine& stmt, bool useInputs
 			DEBUG(FL, "Executing the statement for Action::selectByPath");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -1705,6 +1813,11 @@ vector<Action* >* Action::selectByPath(SqlDB& sqldb, twine& stmt, bool useInputs
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -1797,6 +1910,9 @@ vector<Action* >* Action::selectActionsForUser(SqlDB& sqldb, twine& stmt, bool u
 {
 	EnEx ee(FL, "Action::selectActionsForUser(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1815,6 +1931,7 @@ vector<Action* >* Action::selectActionsForUser(SqlDB& sqldb, twine& stmt, bool u
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)userid) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::selectActionsForUser()-ExecStmt");
 
@@ -1822,11 +1939,16 @@ vector<Action* >* Action::selectActionsForUser(SqlDB& sqldb, twine& stmt, bool u
 			DEBUG(FL, "Executing the statement for Action::selectActionsForUser");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -1848,6 +1970,11 @@ vector<Action* >* Action::selectActionsForUser(SqlDB& sqldb, twine& stmt, bool u
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -1940,6 +2067,9 @@ vector<Action* >* Action::selectActionsForGroup(SqlDB& sqldb, twine& stmt, bool 
 {
 	EnEx ee(FL, "Action::selectActionsForGroup(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1958,6 +2088,7 @@ vector<Action* >* Action::selectActionsForGroup(SqlDB& sqldb, twine& stmt, bool 
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)groupid) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::selectActionsForGroup()-ExecStmt");
 
@@ -1965,11 +2096,16 @@ vector<Action* >* Action::selectActionsForGroup(SqlDB& sqldb, twine& stmt, bool 
 			DEBUG(FL, "Executing the statement for Action::selectActionsForGroup");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -1991,6 +2127,11 @@ vector<Action* >* Action::selectActionsForGroup(SqlDB& sqldb, twine& stmt, bool 
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -2085,6 +2226,9 @@ vector<Action* >* Action::selectActionsForUserByGroup(SqlDB& sqldb, twine& stmt,
 {
 	EnEx ee(FL, "Action::selectActionsForUserByGroup(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -2103,6 +2247,7 @@ vector<Action* >* Action::selectActionsForUserByGroup(SqlDB& sqldb, twine& stmt,
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)userid) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::selectActionsForUserByGroup()-ExecStmt");
 
@@ -2110,11 +2255,16 @@ vector<Action* >* Action::selectActionsForUserByGroup(SqlDB& sqldb, twine& stmt,
 			DEBUG(FL, "Executing the statement for Action::selectActionsForUserByGroup");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -2136,6 +2286,11 @@ vector<Action* >* Action::selectActionsForUserByGroup(SqlDB& sqldb, twine& stmt,
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -2230,6 +2385,9 @@ vector<Action* >* Action::checkActionForUser(SqlDB& sqldb, twine& stmt, bool use
 {
 	EnEx ee(FL, "Action::checkActionForUser(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -2250,6 +2408,7 @@ vector<Action* >* Action::checkActionForUser(SqlDB& sqldb, twine& stmt, bool use
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 2, Path(), (int)Path.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::checkActionForUser()-ExecStmt");
 
@@ -2257,11 +2416,16 @@ vector<Action* >* Action::checkActionForUser(SqlDB& sqldb, twine& stmt, bool use
 			DEBUG(FL, "Executing the statement for Action::checkActionForUser");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -2283,6 +2447,11 @@ vector<Action* >* Action::checkActionForUser(SqlDB& sqldb, twine& stmt, bool use
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -2384,6 +2553,9 @@ vector<Action* >* Action::checkActionForUserByGroup(SqlDB& sqldb, twine& stmt, b
 {
 	EnEx ee(FL, "Action::checkActionForUserByGroup(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -2404,6 +2576,7 @@ vector<Action* >* Action::checkActionForUserByGroup(SqlDB& sqldb, twine& stmt, b
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 2, Path(), (int)Path.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("Action::checkActionForUserByGroup()-ExecStmt");
 
@@ -2411,11 +2584,16 @@ vector<Action* >* Action::checkActionForUserByGroup(SqlDB& sqldb, twine& stmt, b
 			DEBUG(FL, "Executing the statement for Action::checkActionForUserByGroup");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			Action* obj = new Action( );
@@ -2437,6 +2615,11 @@ vector<Action* >* Action::checkActionForUserByGroup(SqlDB& sqldb, twine& stmt, b
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.

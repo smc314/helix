@@ -1,27 +1,28 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../c/glob/SessionList.cpp">
+  <MonoDevelop.Ide.Workbench ActiveDocument="glob/IOConn.cs">
     <Files>
       <File FileName="glob/TheMain.cs" Line="1" Column="1" />
       <File FileName="glob/Log.cs" Line="1" Column="1" />
       <File FileName="glob/EnEx.cs" Line="1" Column="1" />
       <File FileName="glob/ActionClass.cs" Line="18" Column="18" />
-      <File FileName="glob/ActionHtml.cs" Line="28" Column="28" />
-      <File FileName="glob/ActionLogic.cs" Line="26" Column="26" />
-      <File FileName="glob/LogMsg.cs" Line="21" Column="21" />
-      <File FileName="glob/AdaptiveLogs.cs" Line="28" Column="28" />
-      <File FileName="glob/IOConn.cs" Line="34" Column="34" />
-      <File FileName="glob/HttpConn.cs" Line="29" Column="29" />
-      <File FileName="glob/IOAdapter.cs" Line="24" Column="24" />
+      <File FileName="glob/ActionHtml.cs" Line="1" Column="1" />
+      <File FileName="glob/ActionLogic.cs" Line="1" Column="1" />
+      <File FileName="glob/LogMsg.cs" Line="1" Column="1" />
+      <File FileName="glob/AdaptiveLogs.cs" Line="1" Column="1" />
+      <File FileName="glob/IOConn.cs" Line="17" Column="17" />
+      <File FileName="glob/HttpConn.cs" Line="1" Column="1" />
+      <File FileName="glob/IOAdapter.cs" Line="1" Column="1" />
       <File FileName="glob/HttpIOAdapter.cs" Line="1" Column="1" />
-      <File FileName="glob/ActionMap.cs" Line="28" Column="28" />
+      <File FileName="glob/ActionMap.cs" Line="1" Column="1" />
       <File FileName="glob/MimeTypeMap.cs" Line="1" Column="1" />
-      <File FileName="glob/Threadable.cs" Line="39" Column="39" />
+      <File FileName="glob/Threadable.cs" Line="1" Column="1" />
       <File FileName="glob/SessionInfo.cs" Line="1" Column="1" />
       <File FileName="glob/SessionList.cs" Line="1" Column="1" />
+      <File FileName="Properties/AssemblyInfo.cs" Line="1" Column="1" />
       <File FileName="glob/XmlHelpers.cs" Line="1" Column="1" NotebookId="1" />
       <File FileName="../c/glob/SessionList.h" Line="1" Column="1" NotebookId="1" />
-      <File FileName="../c/glob/SessionList.cpp" Line="49" Column="49" NotebookId="1" />
+      <File FileName="../c/glob/SessionList.cpp" Line="1" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

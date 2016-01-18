@@ -132,7 +132,6 @@
     <Compile Include="glob\LogFile2.cs" />
     <Compile Include="glob\MimeTypeMap.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

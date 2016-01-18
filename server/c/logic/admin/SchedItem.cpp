@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "SchedItem.h"
@@ -370,6 +371,8 @@ void SchedItem::insert(SqlDB& sqldb, twine& stmt, bool useInputs, SchedItem& obj
 {
 	EnEx ee(FL, "SchedItem::insert()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -377,6 +380,7 @@ void SchedItem::insert(SqlDB& sqldb, twine& stmt, bool useInputs, SchedItem& obj
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::insert()-BindExecStmt");
 
@@ -424,6 +428,10 @@ void SchedItem::insert(SqlDB& sqldb, twine& stmt, bool useInputs, SchedItem& obj
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -450,6 +458,8 @@ void SchedItem::insert(SqlDB& sqldb, vector< SchedItem* >* v, bool useTransactio
 {
 	EnEx ee(FL, "SchedItem::insert(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -460,6 +470,7 @@ void SchedItem::insert(SqlDB& sqldb, vector< SchedItem* >* v, bool useTransactio
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::insert()-BindExecStmt");
 
@@ -526,6 +537,10 @@ void SchedItem::insert(SqlDB& sqldb, vector< SchedItem* >* v, bool useTransactio
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -734,6 +749,8 @@ void SchedItem::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& TaskNam
 {
 	EnEx ee(FL, "SchedItem::update()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -741,6 +758,7 @@ void SchedItem::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& TaskNam
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::update()-BindExecStmt");
 
@@ -784,6 +802,10 @@ void SchedItem::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& TaskNam
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for SchedItem::update");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -967,6 +989,8 @@ void SchedItem::updateLastRun(SqlDB& sqldb, twine& stmt, bool useInputs, twine& 
 {
 	EnEx ee(FL, "SchedItem::updateLastRun()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -974,6 +998,7 @@ void SchedItem::updateLastRun(SqlDB& sqldb, twine& stmt, bool useInputs, twine& 
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::updateLastRun()-BindExecStmt");
 
@@ -989,6 +1014,10 @@ void SchedItem::updateLastRun(SqlDB& sqldb, twine& stmt, bool useInputs, twine& 
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for SchedItem::updateLastRun");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -1077,6 +1106,8 @@ void SchedItem::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t i
 {
 	EnEx ee(FL, "SchedItem::deleteByID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1084,6 +1115,7 @@ void SchedItem::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t i
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::deleteByID()-BindExecStmt");
 
@@ -1097,6 +1129,10 @@ void SchedItem::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, intptr_t i
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for SchedItem::deleteByID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -1203,6 +1239,9 @@ vector<SchedItem* >* SchedItem::selectAll(SqlDB& sqldb, twine& stmt, bool useInp
 {
 	EnEx ee(FL, "SchedItem::selectAll(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1219,6 +1258,7 @@ vector<SchedItem* >* SchedItem::selectAll(SqlDB& sqldb, twine& stmt, bool useInp
 		if(useInputs){
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::selectAll()-ExecStmt");
 
@@ -1226,11 +1266,16 @@ vector<SchedItem* >* SchedItem::selectAll(SqlDB& sqldb, twine& stmt, bool useInp
 			DEBUG(FL, "Executing the statement for SchedItem::selectAll");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			SchedItem* obj = new SchedItem( );
@@ -1291,6 +1336,11 @@ vector<SchedItem* >* SchedItem::selectAll(SqlDB& sqldb, twine& stmt, bool useInp
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -1388,6 +1438,9 @@ vector<SchedItem* >* SchedItem::selectByID(SqlDB& sqldb, twine& stmt, bool useIn
 {
 	EnEx ee(FL, "SchedItem::selectByID(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1406,6 +1459,7 @@ vector<SchedItem* >* SchedItem::selectByID(SqlDB& sqldb, twine& stmt, bool useIn
 				sqldb.check_err( sqlite3_bind_int( db_stmt, 1, (int)id) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("SchedItem::selectByID()-ExecStmt");
 
@@ -1413,11 +1467,16 @@ vector<SchedItem* >* SchedItem::selectByID(SqlDB& sqldb, twine& stmt, bool useIn
 			DEBUG(FL, "Executing the statement for SchedItem::selectByID");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			SchedItem* obj = new SchedItem( );
@@ -1478,6 +1537,11 @@ vector<SchedItem* >* SchedItem::selectByID(SqlDB& sqldb, twine& stmt, bool useIn
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.

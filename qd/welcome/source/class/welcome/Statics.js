@@ -2173,12 +2173,12 @@ qx.Class.define("welcome.Statics", {
 		},
 
 		isFreeVersion: function () {
-			var license = welcome.LicenseCode.getInstance();
-			if (license["/is/free/version"]) {
-				return true;
-			} else {
+			//var license = welcome.LicenseCode.getInstance();
+			//if (license["/is/free/version"]) {
+			//	return true;
+			//} else {
 				return false;
-			}
+			//}
 		},
 
 		areWeHomeBase: function () {
@@ -2540,7 +2540,7 @@ qx.Class.define("welcome.Statics", {
 		},
 
 		getUserFromCurConnection : function() {
-			var uprops = ldm.Singleton.getInstance().getUserProperties();
+			var uprops = welcome.Singleton.getInstance().getUserProperties();
 			var curcon = uprops["CurrentConnection"];
 			var myregexp = /.*?[(]?(\S+)([@]\S+[:]\S+)/;
 			var match = myregexp.exec(curcon);

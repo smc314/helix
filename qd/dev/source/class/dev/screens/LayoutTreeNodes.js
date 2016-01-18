@@ -11,6 +11,7 @@
 #asset(dev/icon/16x16/plain/folder_cubes.png)
 #asset(dev/icon/16x16/plain/folder_cubes.png)
 #asset(dev/icon/16x16/plain/folder_cubes.png)
+#asset(dev/icon/16x16/plain/folder_cubes.png)
 #asset(dev/icon/16x16/plain/folder_green.png)
 #asset(dev/icon/16x16/plain/code.png)
 #asset(dev/icon/16x16/plain/code_cplusplus.png)

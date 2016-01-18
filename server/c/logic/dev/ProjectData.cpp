@@ -12,6 +12,7 @@
 #include <EnEx.h>
 #include <Log.h>
 #include <XmlHelpers.h>
+#include <Timer.h>
 using namespace SLib;
 
 #include "ProjectData.h"
@@ -372,6 +373,8 @@ void ProjectData::insert(SqlDB& sqldb, twine& stmt, bool useInputs, ProjectData&
 {
 	EnEx ee(FL, "ProjectData::insert()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -379,6 +382,7 @@ void ProjectData::insert(SqlDB& sqldb, twine& stmt, bool useInputs, ProjectData&
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("ProjectData::insert()-BindExecStmt");
 
@@ -409,6 +413,10 @@ void ProjectData::insert(SqlDB& sqldb, twine& stmt, bool useInputs, ProjectData&
 
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -435,6 +443,8 @@ void ProjectData::insert(SqlDB& sqldb, vector< ProjectData* >* v, bool useTransa
 {
 	EnEx ee(FL, "ProjectData::insert(SqlDB& sqldb, vector<*>* v)");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 	sqlite3_stmt* db_begin = NULL;
@@ -445,6 +455,7 @@ void ProjectData::insert(SqlDB& sqldb, vector< ProjectData* >* v, bool useTransa
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("ProjectData::insert()-BindExecStmt");
 
@@ -494,6 +505,10 @@ void ProjectData::insert(SqlDB& sqldb, vector< ProjectData* >* v, bool useTransa
 			}
 
 		} // End the Timing scope
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.4){
+			WARN(FL, "Array Insert took longer than 400ms to execute.");
+		}
 
 	} catch (AnException& e){
 		// Ensure that no matter the exception we release the database back to the object
@@ -635,6 +650,8 @@ void ProjectData::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& DataN
 {
 	EnEx ee(FL, "ProjectData::update()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -642,6 +659,7 @@ void ProjectData::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& DataN
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("ProjectData::update()-BindExecStmt");
 
@@ -667,6 +685,10 @@ void ProjectData::update(SqlDB& sqldb, twine& stmt, bool useInputs, twine& DataN
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for ProjectData::update");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -785,6 +807,8 @@ void ProjectData::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& g
 {
 	EnEx ee(FL, "ProjectData::deleteByID()");
 
+	Timer selectTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -792,6 +816,7 @@ void ProjectData::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& g
 		SQLTRACE(FL, "Using SQL: %s", stmt() );
 		sqldb.check_err( sqlite3_prepare( db, stmt(), (int)stmt.length(), &db_stmt, NULL) );
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("ProjectData::deleteByID()-BindExecStmt");
 
@@ -805,6 +830,10 @@ void ProjectData::deleteByID(SqlDB& sqldb, twine& stmt, bool useInputs, twine& g
 			// Execute the statement
 			DEBUG(FL, "Executing the statement for ProjectData::deleteByID");
 			sqldb.check_err( sqlite3_step( db_stmt ) );
+		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
 		}
 
 	} catch (AnException& e){
@@ -902,6 +931,9 @@ vector<ProjectData* >* ProjectData::selectAllForProj(SqlDB& sqldb, twine& stmt, 
 {
 	EnEx ee(FL, "ProjectData::selectAllForProj(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -920,6 +952,7 @@ vector<ProjectData* >* ProjectData::selectAllForProj(SqlDB& sqldb, twine& stmt, 
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 1, projguid(), (int)projguid.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("ProjectData::selectAllForProj()-ExecStmt");
 
@@ -927,11 +960,16 @@ vector<ProjectData* >* ProjectData::selectAllForProj(SqlDB& sqldb, twine& stmt, 
 			DEBUG(FL, "Executing the statement for ProjectData::selectAllForProj");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			ProjectData* obj = new ProjectData( );
@@ -968,6 +1006,11 @@ vector<ProjectData* >* ProjectData::selectAllForProj(SqlDB& sqldb, twine& stmt, 
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
@@ -1061,6 +1104,9 @@ vector<ProjectData* >* ProjectData::selectByID(SqlDB& sqldb, twine& stmt, bool u
 {
 	EnEx ee(FL, "ProjectData::selectByID(twine& stmt, bool useInputs)");
 
+	Timer selectTimer;
+	Timer fetchTimer;
+
 	sqlite3* db = sqldb.GetDatabase();
 	sqlite3_stmt* db_stmt = NULL;
 
@@ -1079,6 +1125,7 @@ vector<ProjectData* >* ProjectData::selectByID(SqlDB& sqldb, twine& stmt, bool u
 				sqldb.check_err( sqlite3_bind_text( db_stmt, 1, guid(), (int)guid.length(), SQLITE_STATIC) );
 		}
 
+		selectTimer.Start();
 		{ // Used for scope for the timing object.
 			EnEx eeExe("ProjectData::selectByID()-ExecStmt");
 
@@ -1086,11 +1133,16 @@ vector<ProjectData* >* ProjectData::selectByID(SqlDB& sqldb, twine& stmt, bool u
 			DEBUG(FL, "Executing the statement for ProjectData::selectByID");
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		selectTimer.Finish();
+		if(selectTimer.Duration() > 0.2){
+			WARN(FL, "Statement took longer than 200ms to execute.");
+		}
 
 		// Now that we've executed the statement, we'll know how many output columns we have.
 		// Grab the column count so that we don't bind invalid output positions.
 		int colCount = sqlite3_column_count( db_stmt );
 
+		fetchTimer.Start();
 		while( count != 0 ){
 			// Create the new object for this row
 			ProjectData* obj = new ProjectData( );
@@ -1121,6 +1173,11 @@ vector<ProjectData* >* ProjectData::selectByID(SqlDB& sqldb, twine& stmt, bool u
 			// Advance to the next row of data
 			count = sqldb.check_err( sqlite3_step( db_stmt ) );
 		}
+		fetchTimer.Finish();
+		if(fetchTimer.Duration() > 1.0){
+			WARN(FL, "Statement took longer than 1000ms to fetch.");
+		}
+
 
 	} catch (AnException& e) {
 		// Ensure that no matter the exception we release the database back to the object.
