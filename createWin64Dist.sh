@@ -32,6 +32,7 @@ mkdir -p ${PROJECT_FOLDER}/server/c/logic/util
 # Copy the precompiled binares required for the new project
 cp server/c/bin/*.exe ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/bin/*.dll ${PROJECT_FOLDER}/server/c/bin/
+cp server/c/bin/*.lib ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/bin/helix.db.xml ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/bin/helixdev.db.xml ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/build/*.tmpl ${PROJECT_FOLDER}/server/c/build/

@@ -43,7 +43,7 @@ namespace Helix {
 namespace Logic {
 namespace ${PACKAGE} {
 
-class ${CLASSNAME} : public ActionClass
+class DLLEXPORT ${CLASSNAME} : public ActionClass
 {
 	public:
 		/// Standard Constructor

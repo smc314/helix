@@ -139,7 +139,7 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 	vector<twine> pathElements = tmpFolder.split("/");
 	twine extraDotDot;
 	for(size_t i = 4; i < pathElements.size(); i++){
-		extraDotDot.append( "../" );
+		extraDotDot.append( "..\\" );
 	}
 
 
@@ -150,20 +150,24 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"# To adjust the settings in this makefile, please edit hub/src/build/MakeMakefiles.cpp\n"
 		"######################################################################\n"
 		"\n"
-		"3PL=../../../../../" + extraDotDot + "3rdParty\n"
+		"3PL=..\\..\\..\\..\\..\\" + extraDotDot + "3rdParty\n"
 		"SOCKET_LIB=ws2_32.lib odbc32.lib rpcrt4.lib\n"
 		"MINGW_BINDIR=c:/Program Files/Git/mingw64/bin\n"
 		"GIT_USRBIN=c:/Program Files/Git/usr/bin\n"
 		"TOUCH=\"$(GIT_USRBIN)/touch.exe\"\n"
 		"\n"
 		"CFLAGS=" + win64CFlags +
-		"-I ../../" + extraDotDot + "glob "
-		"-I ../../" + extraDotDot + "client "
-		"-I ../" + extraDotDot + "util "
-		"-I ../" + extraDotDot + "admin "
-		"-I ../" + extraDotDot + "dev "
-		"-I ../" + extraDotDot + "test "
+		"-I ..\\..\\" + extraDotDot + "glob "
+		"-I ..\\..\\" + extraDotDot + "client "
+		"-I ..\\" + extraDotDot + "util "
+		"-I ..\\" + extraDotDot + "admin "
+		"-I ..\\" + extraDotDot + "dev "
+		"-I ..\\" + extraDotDot + "test "
 		"\n"
+		"LFLAGS=" + win64LFlags + "\n"
+		"LLIBS=$(3PL)\\lib\\libeay32.lib $(3PL)\\lib\\ssleay32.lib \\\n"
+		"\t$(3PL)\\lib\\libxml2.lib $(3PL)\\lib\\libSLib.lib \\\n"
+		"\t$(3PL)\\lib\\zdll.lib $(SOCKET_LIB)"
 		"\n"
 		".cpp.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
@@ -183,10 +187,27 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		}
 	}
 
+	twine slibName = "libhelix/" + targetFolder.substr(3);
+	slibName.replace('/', '.');
+	twine slib2Name; slib2Name = slibName;
+	slibName.append(".dll");
+	slib2Name.append(".lib");
+
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
 	);
+	if(objFiles.size() > 0){
+		if(slibName.endsWith(".util.dll") || slibName.endsWith(".admin.dll")){
+			// Don't create a shared library for util.so or admin.so it's rolled into glob.dll
+		} else {
+			output.append(
+				"\tlink.exe $(LFLAGS) /OUT:" + slibName + " /DLL $(DOTOH) $(LLIBS) ..\\..\\" + extraDotDot + "bin\\libhelix.glob.lib\n"
+				"\tcopy " + slibName + " ..\\..\\" + extraDotDot + "bin\n"
+				"\tcopy " + slib2Name + " ..\\..\\" + extraDotDot + "bin\n"
+			);
+		}
+	}
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
@@ -201,6 +222,12 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
 		"\t$(TOUCH) -c *.sql.xml\n"
 	);
+	if(objFiles.size() > 0){
+		output.append(
+			"\tdel /Q /S ..\\..\\" + extraDotDot + "bin\\" + slibName + "\n"
+			"\tdel /Q /S ..\\..\\" + extraDotDot + "bin\\" + slib2Name + "\n"
+		);
+	}
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
@@ -466,7 +493,10 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\n"
 		"CFLAGS=" + win64CFlags + " -I ../logic/util -I ../logic/admin\n"
 		"\n"
-		"LFLAGS=\n"
+		"LFLAGS=" + win64LFlags + "\n"
+		"LLIBS=$(3PL)\\lib\\libeay32.lib $(3PL)\\lib\\ssleay32.lib \\\n"
+		"\t$(3PL)\\lib\\libxml2.lib $(3PL)\\lib\\libSLib.lib \\\n"
+		"\t$(3PL)\\lib\\zdll.lib $(SOCKET_LIB)"
 		"\n"
 		".cpp.obj:\n"
 		"\tcl.exe $(CFLAGS) $<\n"
@@ -490,6 +520,9 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 	output.append(
 		"\n"
 		"all: $(DOTOH)\n"
+		"\tlink.exe $(LFLAGS) /OUT:libhelix.glob.dll /DLL $(DOTOH) ..\\logic\\util\\*.obj ..\\logic\\admin\\*.obj $(LLIBS)\n"
+		"\tcopy libhelix.glob.lib ..\\bin\n"
+		"\tcopy libhelix.glob.dll ..\\bin\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
@@ -503,11 +536,13 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\n"
 		"clean:\n"
 		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
+		"\tdel /Q /S ..\\bin\\libhelix.glob.lib\n"
+		"\tdel /Q /S ..\\bin\\libhelix.glob.lib\n"
 	);
 	for(size_t i = 0; i < subFolders.size(); i++){
 		if(subFolders[i] != "." && subFolders[i] != ".."){
 			output.append(
-				"\tcd " + subFolders[i] + " && $(GMAKE) -f Makefile clean\n"
+				"\tcd " + subFolders[i] + " && nmake -f Makefile clean\n"
 			);
 		}
 	}
@@ -768,6 +803,9 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"LINKOBJ=$(APIOH) $(GLOBOBJS) $(LOGICOBJS) $(LLIBS)\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
+		"\tlink.exe $(LFLAGS) /OUT:libhelix.client.dll /DLL $(APIOH) ..\\bin\\libhelix.glob.lib ..\\bin\\libhelix.logic.dev.lib $(LLIBS)\n"
+		"\tcopy libhelix.client.lib ..\\bin\n"
+		"\tcopy libhelix.client.dll ..\\bin\n"
 	);
 	for(size_t i = 0; i < objFiles.size(); i++){
 		if(objFiles[i].startsWith("HelixApi_")){
@@ -782,6 +820,8 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"\n"
 		"clean:\n"
 		"\tdel /Q /S $(DOTOH) *.obj *.pch *.lib *.exp *.exe.manifest *.exe *.dll *.dll.manifest\n"
+		"\tdel /Q /S ..\\bin\\libhelix.client.lib\n"
+		"\tdel /Q /S ..\\bin\\libhelix.client.dll\n"
 	);
 	/*
 	for(size_t i = 0; i < subFolders.size(); i++){

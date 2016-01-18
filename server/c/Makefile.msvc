@@ -41,13 +41,9 @@ LLIBS=$(SSLLIBS) $(SOCKET_LIB)
 	$(CC) $(CFLAGS) $<
 
 
-ALLOH=glob/*.obj \
-	logic/admin/*.obj \
-	logic/dev/*.obj \
-	logic/util/*.obj \
-	client/HelixApi_Part1.obj client/HelixApi_Part2.obj
-
-COREOH=glob/*.obj logic/utils/*.obj 
+ALLOH=bin/libhelix.glob.lib \
+	bin/libhelix.client.lib \
+	bin/libhelix.logic.dev.lib 
 
 all: install buildPrep subdirs CmdMain SvcMain install
 
@@ -72,7 +68,7 @@ CmdMain:
 SvcMain:
 	$(LINK) $(LFLAGS) /OUT:bin/HelixSvc.exe server/HelixSvc.obj advapi32.lib user32.lib Shlwapi.lib
 
-subdirs: glob_dir server_dir util_dir admin_dir dev_dir client_dir 
+subdirs: util_dir admin_dir glob_dir server_dir dev_dir client_dir 
 
 glob_dir:
 	cd glob && nmake -f Makefile all
