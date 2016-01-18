@@ -1,0 +1,18 @@
+#
+# This is the windows build version of the makefile
+########################################################################################
+
+all: setup_dirs
+	cd server/c && nmake -f Makefile.msvc buildPrep clean all
+	cd qd\login && generate.py build	
+	cd qd\admin && generate.py build	
+	cd qd\dev && generate.py build	
+	"c:\Program Files\Git\usr\bin\bash.exe" -l -c ./createWin64Dist.sh
+
+
+setup_dirs:
+	-mkdir qd\common\sqldo
+	-mkdir qd\admin\source\class\admin\sqldo
+	-mkdir qd\dev\source\class\dev\sqldo
+	-mkdir qd\welcome\source\class\welcome\layout
+	
