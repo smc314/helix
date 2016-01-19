@@ -66,7 +66,7 @@ HelixMain:
 HelixDaemon:
 	$(LINK) -o bin/HelixDaemon server/HelixDaemon.o 
 
-subdirs: util_dir admin_dir glob_dir server_dir dev_dir test_dir client_dir
+subdirs: util_dir admin_dir glob_dir server_dir dev_dir client_dir
 
 glob_dir:
 	cd glob && $(GMAKE) -f Makefile all
@@ -80,9 +80,6 @@ admin_dir:
 dev_dir:
 	cd logic/dev && $(GMAKE) -f Makefile all
 
-test_dir:
-	cd logic/test && $(GMAKE) -f Makefile all
-
 util_dir:
 	cd logic/util && $(GMAKE) -f Makefile all
 
@@ -92,7 +89,7 @@ client_dir:
 clean: subdirs_clean 
 	cd bin && $(RM) *.o core *.so HelixMain HelixDaemon
 
-subdirs_clean: build_clean glob_clean server_clean admin_clean dev_clean test_clean util_clean client_clean 
+subdirs_clean: build_clean glob_clean server_clean admin_clean dev_clean util_clean client_clean 
 
 build_clean:
 	cd build && $(GMAKE) -f Makefile.unix clean
@@ -108,9 +105,6 @@ admin_clean:
 
 dev_clean:
 	cd logic/dev && $(GMAKE) -f Makefile clean
-
-test_clean:
-	cd logic/test && $(GMAKE) -f Makefile clean
 
 util_clean:
 	cd logic/util && $(GMAKE) -f Makefile clean

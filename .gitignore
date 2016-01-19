@@ -67,6 +67,7 @@ html/HelixLogin
 server/c/client/HelixApi.h
 server/c/client/HelixApiTest.h
 server/c/client/HelixApi_Part2.h
+server/c/client/HelixApi_Part2.cpp
 server/c/logic/admin/sqldo
 server/c/logic/dev/sqldo
 server/c/logic/util/sqldo
