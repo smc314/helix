@@ -581,14 +581,14 @@ int OdbcObj::GetResultsetColumnCount(void)
 
 twine OdbcObj::GetColumnData(int pos)
 {
-	EnEx ee(FL, "OdbcObj::GetResultsetColumnCount()");
+	EnEx ee(FL, "OdbcObj::GetColumnData(int pos)");
 
 	return GetColumnData(pos, true);
 }
 
 twine OdbcObj::GetColumnData(int pos, bool trim)
 {
-	EnEx ee(FL, "OdbcObj::GetResultsetColumnCount()");
+	EnEx ee(FL, "OdbcObj::GetColumnData(int pos, bool trim)");
 	SanityCheck();
 
 	int colCount = GetResultsetColumnCount();
@@ -597,6 +597,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 			pos, 1, colCount);
 	}
 
+	WARN(FL, "Determining size to reserve based on data type for col %d", pos);
 	SQLLEN indicator;
 	ColumnInfo ci = GetColumnInfo(pos);
 	twine ret; ret.reserve( ci.size );
@@ -655,6 +656,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 			ret.reserve( 32 );
 			break;
 	}
+	WARN(FL, "Reserved %ld bytes.", ret.capacity());
 
 	check_err(
 		SQLGetData(m_statement_handle, pos, SQL_C_CHAR,
@@ -662,6 +664,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
+	WARN(FL, "Pulled data from result set.");
 	if(indicator == SQL_NULL_DATA){
 		ret = "[null]";
 	} else {
@@ -671,6 +674,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 		}
 	}
 
+	WARN(FL, "Optionally trimmed and returning data.");
 	return ret;
 }
 
