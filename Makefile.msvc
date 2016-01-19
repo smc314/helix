@@ -3,7 +3,7 @@
 ########################################################################################
 
 all: setup_dirs
-	cd server/c && nmake -f Makefile.msvc buildPrep clean all
+	cd server/c && nmake -f Makefile.msvc 
 	cd qd\login && generate.py build	
 	cd qd\admin && generate.py build	
 	cd qd\dev && generate.py build	
