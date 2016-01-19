@@ -113,6 +113,7 @@ client_clean:
 	cd client && $(GMAKE) -f Makefile clean
 
 install:
+	-mkdir bin
 	cp $(3PL)/x64/lib/libSLib.so bin/
 	cp $(3PL)/x64/bin/LogDump bin/
 	cp $(3PL)/x64/bin/SLogDump bin/
