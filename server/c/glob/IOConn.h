@@ -24,7 +24,7 @@ using namespace SLib;
 namespace Helix {
 namespace Glob {
 
-class TheMain;
+class DLLEXPORT TheMain;
 
 }} // End the namespaces
 
@@ -46,7 +46,7 @@ namespace Glob {
   * @author Steven M. Cherry
   * @copyright 2011 Steven M. Cherry
   */
-class IOConn
+class DLLEXPORT IOConn
 {
 	public:
 		/// Standard constructor.

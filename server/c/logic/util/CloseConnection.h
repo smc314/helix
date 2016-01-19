@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class CloseConnection : public ActionClass
+class DLLEXPORT CloseConnection : public ActionClass
 {
 	public:
 		/// Standard Constructor

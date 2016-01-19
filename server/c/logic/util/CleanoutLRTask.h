@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class CleanoutLRTask : public ActionClass
+class DLLEXPORT CleanoutLRTask : public ActionClass
 {
 	public:
 		/// Standard Constructor

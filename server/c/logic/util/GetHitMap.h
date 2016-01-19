@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class GetHitMap : public ActionClass
+class DLLEXPORT GetHitMap : public ActionClass
 {
 	public:
 		/// Standard Constructor

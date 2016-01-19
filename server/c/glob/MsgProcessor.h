@@ -35,7 +35,7 @@ namespace Glob {
   * @author Steven M. Cherry
   * @copyright 2011 Steven M. Cherry
   */
-class MsgProcessor : public Threadable
+class DLLEXPORT MsgProcessor : public Threadable
 {
 	public:
 		/**

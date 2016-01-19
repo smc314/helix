@@ -31,7 +31,7 @@ namespace Glob {
   *
   * This should be a fast process, so it is safe to run this every time the application starts up.
   */
-class MySqlDbInit {
+class DLLEXPORT MySqlDbInit {
 
 	protected:
 		map<twine, TableActions> _setupSummary; 

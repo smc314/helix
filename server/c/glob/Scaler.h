@@ -32,7 +32,7 @@ namespace Glob {
   *
   * @author Steven M. Cherry
   */
-class Scaler : public Threadable
+class DLLEXPORT Scaler : public Threadable
 {
 	public:
 		/// Standard constructor

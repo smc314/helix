@@ -26,7 +26,7 @@ namespace Glob {
 *
 * @author Steven M. Cherry
 */
-class HttpConn : public IOConn 
+class DLLEXPORT HttpConn : public IOConn 
 {
 
 	protected:

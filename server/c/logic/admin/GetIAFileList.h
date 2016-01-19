@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class GetIAFileList : public ActionClass
+class DLLEXPORT GetIAFileList : public ActionClass
 {
 	public:
 		/// Standard Constructor

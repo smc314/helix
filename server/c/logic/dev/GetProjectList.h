@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace dev {
 
-class GetProjectList : public ActionClass
+class DLLEXPORT GetProjectList : public ActionClass
 {
 	public:
 		/// Standard Constructor

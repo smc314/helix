@@ -22,7 +22,7 @@ namespace Helix {
 namespace Glob {
 
 
-class ActionLogic : public ActionClass 
+class DLLEXPORT ActionLogic : public ActionClass 
 {
 	public:
 		twine handler;

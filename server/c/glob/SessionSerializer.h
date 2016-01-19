@@ -38,7 +38,7 @@ namespace Glob {
   * @author Steven M. Cherry
   * @copyright 2011 Steven M. Cherry
   */
-class SessionSerializer : public Threadable
+class DLLEXPORT SessionSerializer : public Threadable
 {
 	public:
 		/**

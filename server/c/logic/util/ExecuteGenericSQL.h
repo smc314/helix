@@ -24,7 +24,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class ExecuteGenericSQL : public ActionClass
+class DLLEXPORT ExecuteGenericSQL : public ActionClass
 {
 	public:
 		/// Standard Constructor

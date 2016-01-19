@@ -21,7 +21,7 @@ namespace Helix {
 namespace Glob {
 
 
-class LongRunningTask {
+class DLLEXPORT LongRunningTask {
 
 	protected:
 		map<twine, LRTask*> m_tasks; 

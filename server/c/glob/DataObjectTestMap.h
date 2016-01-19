@@ -23,9 +23,9 @@ namespace Helix {
 namespace Glob {
 
 
-class DataObjectTestClass;
+class DLLEXPORT DataObjectTestClass;
 
-class DataObjectTestMap {
+class DLLEXPORT DataObjectTestMap {
 	
 	public:
 		static DataObjectTestMap& getInstance(void);

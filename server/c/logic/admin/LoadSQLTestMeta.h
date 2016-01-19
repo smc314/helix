@@ -26,7 +26,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class LoadSQLTestMeta : public ActionClass
+class DLLEXPORT LoadSQLTestMeta : public ActionClass
 {
 	public:
 		/// Standard Constructor

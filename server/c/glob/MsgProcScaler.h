@@ -23,7 +23,7 @@ namespace Glob {
   *
   * @author Steven M. Cherry
   */
-class MsgProcScaler : public Scaler 
+class DLLEXPORT MsgProcScaler : public Scaler 
 {
 	public:
 		/**

@@ -22,7 +22,7 @@ namespace Helix {
 namespace Glob {
 
 
-class ActionHtml : public ActionClass {
+class DLLEXPORT ActionHtml : public ActionClass {
 	
 	public:
 		

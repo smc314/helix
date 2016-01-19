@@ -19,7 +19,7 @@ namespace Helix {
 namespace Glob {
 
 
-class TheMain;
+class DLLEXPORT TheMain;
 
 /**
   * This is the parent that any class that wants to be the main
@@ -31,7 +31,7 @@ class TheMain;
   *
   * @author Steven M. Cherry
   */
-class Threadable
+class DLLEXPORT Threadable
 {
 	public:
 		/**

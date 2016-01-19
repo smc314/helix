@@ -22,7 +22,7 @@ namespace Helix {
 namespace Glob {
 
 
-class DataObjectTestClass 
+class DLLEXPORT DataObjectTestClass 
 {
 
 	public:
@@ -38,7 +38,7 @@ class DataObjectTestClass
 template<typename T> DataObjectTestClass* createTestClass() { return new T(); }
 typedef std::map<twine, DataObjectTestClass*(*)() > test_class_map_type;	
 
-class DataObjectTestClassFactory 
+class DLLEXPORT DataObjectTestClassFactory 
 {
 	public:
 
@@ -50,7 +50,7 @@ class DataObjectTestClassFactory
 };
 
 template<typename T>
-class DataObjectTestClassRegister : DataObjectTestClassFactory
+class DLLEXPORT DataObjectTestClassRegister : DataObjectTestClassFactory
 {
 	public:
 		DataObjectTestClassRegister(twine className, twine act1 = ""){

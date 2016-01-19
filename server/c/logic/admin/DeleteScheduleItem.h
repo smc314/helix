@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class DeleteScheduleItem : public ActionClass
+class DLLEXPORT DeleteScheduleItem : public ActionClass
 {
 	public:
 		/// Standard Constructor

@@ -34,7 +34,7 @@ namespace Glob {
 
 /** This class is used when querying about result set column metadata.
  */
-class ColumnInfo
+class DLLEXPORT ColumnInfo
 {
 	public:
 		int position;
@@ -56,7 +56,7 @@ class ColumnInfo
   * @copyright 2011
   */
 
-class OdbcObj
+class DLLEXPORT OdbcObj
 {
 	public:
 

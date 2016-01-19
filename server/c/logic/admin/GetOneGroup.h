@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class GetOneGroup : public ActionClass
+class DLLEXPORT GetOneGroup : public ActionClass
 {
 	public:
 		/// Standard Constructor

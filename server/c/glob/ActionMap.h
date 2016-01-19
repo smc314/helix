@@ -23,10 +23,10 @@ namespace Helix {
 namespace Glob {
 
 
-class ActionClass;
-class ActionHtml;
+class DLLEXPORT ActionClass;
+class DLLEXPORT ActionHtml;
 
-class ActionMap {
+class DLLEXPORT ActionMap {
 	
 	public:
 		static ActionMap& getInstance(void);

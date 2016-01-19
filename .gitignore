@@ -7,6 +7,9 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
+*.dll
+*.exp
+*.lib
 
 # Compiled Static libraries
 *.lai
@@ -60,7 +63,10 @@ server/c/client/Makefile
 # Generated html packages
 html/HelixLogin
 
-# Generated Server Components
+# Generated Server Componentss
+server/c/client/HelixApi.h
+server/c/client/HelixApiTest.h
+server/c/client/HelixApi_Part2.h
 server/c/logic/admin/sqldo
 server/c/logic/dev/sqldo
 server/c/logic/util/sqldo

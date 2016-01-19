@@ -26,7 +26,7 @@ using namespace std;
 namespace Helix {
 namespace Glob {
 
-class SessionInfo {
+class DLLEXPORT SessionInfo {
 	public:
 		int userid;
 		twine username;

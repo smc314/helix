@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class GetAllLRTasks : public ActionClass
+class DLLEXPORT GetAllLRTasks : public ActionClass
 {
 	public:
 		/// Standard Constructor

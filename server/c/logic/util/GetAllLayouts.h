@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class GetAllLayouts : public ActionClass
+class DLLEXPORT GetAllLayouts : public ActionClass
 {
 	public:
 		/// Standard Constructor

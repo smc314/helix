@@ -26,13 +26,13 @@ namespace Helix {
 namespace Glob {
 
 
-class ConnectionPool;
+class DLLEXPORT ConnectionPool;
 
 /** This is the class handed back to the caller when they request an entry from the
   * connection pool.  We keep track of the Odbc connection that they have, and which
   * connection pool it came from, so that they can easily release it back to the pool.
   */
-class Connection {
+class DLLEXPORT Connection {
 	public:
 		OdbcObj* odbc;
 		ConnectionPool* pool;
@@ -47,7 +47,7 @@ class Connection {
 		void release();
 };
 
-class CPEntry {
+class DLLEXPORT CPEntry {
 	public:
 		int usage_count;
 		bool in_use;
@@ -62,7 +62,7 @@ class CPEntry {
  * @author Steven M. Cherry
  *
  */
-class ConnectionPool {
+class DLLEXPORT ConnectionPool {
 
 	private:
 		/// Copy constructor is private to prevent use:

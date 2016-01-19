@@ -39,7 +39,7 @@ namespace Helix {
 namespace Glob {
 
 
-class ProtocolMaster;
+class DLLEXPORT ProtocolMaster;
 
 /**
   * This class does double duty as our main execution body
@@ -50,7 +50,7 @@ class ProtocolMaster;
   *
   * @author Steven M. Cherry
   */
-class TheMain
+class DLLEXPORT TheMain
 {
 	private:
 

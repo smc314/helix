@@ -115,6 +115,7 @@ client_clean:
 	cd client && nmake -f Makefile clean
 
 install:
+	-mkdir bin
 	copy $(3PL)\bin\libSLib.dll bin
 	copy $(3PL)\bin\SqlShell.exe bin
 	copy $(3PL)\bin\LogDump.exe bin

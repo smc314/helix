@@ -24,7 +24,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class GetLogMsgCount : public ActionClass
+class DLLEXPORT GetLogMsgCount : public ActionClass
 {
 	public:
 		/// Standard Constructor

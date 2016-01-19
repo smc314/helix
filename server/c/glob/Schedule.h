@@ -26,7 +26,7 @@ namespace Glob {
   *
   * @author Steven M. Cherry
   */
-class Schedule : public Threadable {
+class DLLEXPORT Schedule : public Threadable {
 
 	public:
 

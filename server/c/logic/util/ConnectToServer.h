@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class ConnectToServer : public ActionClass
+class DLLEXPORT ConnectToServer : public ActionClass
 {
 	public:
 		/// Standard Constructor

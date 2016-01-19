@@ -37,7 +37,7 @@ namespace Glob {
   *
   * @author Steven M. Cherry
   */
-class AdaptiveLogParm
+class DLLEXPORT AdaptiveLogParm
 {
 	public:
 		bool onoff;
@@ -60,7 +60,7 @@ class AdaptiveLogParm
   *
   * @author Steven M. Cherry
   */
-class AdaptiveLogs : public Threadable
+class DLLEXPORT AdaptiveLogs : public Threadable
 {
 	private:
 		/// copy constructor is private to prevent use

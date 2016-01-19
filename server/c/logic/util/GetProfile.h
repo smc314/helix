@@ -23,7 +23,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class GetProfile : public ActionClass 
+class DLLEXPORT GetProfile : public ActionClass 
 {
 
 	public:

@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class DeleteSQLWork : public ActionClass
+class DLLEXPORT DeleteSQLWork : public ActionClass
 {
 	public:
 		/// Standard Constructor

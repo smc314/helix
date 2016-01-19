@@ -26,7 +26,7 @@ namespace Glob {
 /** This class contains the implementation for loading a JVM and executing methods
  *  inside the JVM that has been loaded.
  */
-class Jvm
+class DLLEXPORT Jvm
 {
 	public:
 		/// Standard Constructor

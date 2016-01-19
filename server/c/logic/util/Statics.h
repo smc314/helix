@@ -25,7 +25,7 @@ namespace util {
 /** This class holds a number of static methods that we use throughout the hub logic 
  * classes.
  */
-class Statics
+class DLLEXPORT Statics
 {
 	public:
 		/** This method handles replacing session variables in the given string.  The

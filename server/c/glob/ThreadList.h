@@ -22,7 +22,7 @@ namespace Helix {
 namespace Glob {
 
 
-class TheMain;
+class DLLEXPORT TheMain;
 
 /**
   * This class is used as a global storage for Threadable
@@ -32,7 +32,7 @@ class TheMain;
   *
   * @author Steven M. Cherry
   */
-class ThreadList
+class DLLEXPORT ThreadList
 {
 	private:
 

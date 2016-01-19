@@ -24,7 +24,7 @@ namespace Glob {
  *
  * @author Steven M. Cherry
  */
-class HttpIOAdapter : public IOAdapter 
+class DLLEXPORT HttpIOAdapter : public IOAdapter 
 {
 
 	public:

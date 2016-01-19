@@ -22,7 +22,7 @@ namespace Helix {
 namespace Glob {
 
 
-class ActionClass 
+class DLLEXPORT ActionClass 
 {
 
 	public:
@@ -43,7 +43,7 @@ class ActionClass
 template<typename T> ActionClass* createT(xmlNodePtr node) { return new T(node); }
 typedef std::map<twine, ActionClass*(*)(xmlNodePtr) > map_type;	
 
-class ActionClassFactory 
+class DLLEXPORT ActionClassFactory 
 {
 	public:
 
@@ -55,7 +55,7 @@ class ActionClassFactory
 };
 
 template<typename T>
-class ActionClassRegister : ActionClassFactory
+class DLLEXPORT ActionClassRegister : ActionClassFactory
 {
 	public:
 		ActionClassRegister(twine className, int type = 0, twine act1 = "", twine act2 = "", twine act3 = ""){

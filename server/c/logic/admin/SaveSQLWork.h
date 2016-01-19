@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class SaveSQLWork : public ActionClass
+class DLLEXPORT SaveSQLWork : public ActionClass
 {
 	public:
 		/// Standard Constructor

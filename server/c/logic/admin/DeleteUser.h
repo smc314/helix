@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class DeleteUser : public ActionClass
+class DLLEXPORT DeleteUser : public ActionClass
 {
 	public:
 		/// Standard Constructor

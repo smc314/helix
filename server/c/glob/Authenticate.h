@@ -22,7 +22,7 @@ using namespace Helix::Glob;
 namespace Helix {
 namespace Glob {
 
-class Authenticate : public ActionClass
+class DLLEXPORT Authenticate : public ActionClass
 {
 	public:
 		/// Standard Constructor

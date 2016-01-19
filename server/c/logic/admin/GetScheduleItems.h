@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class GetScheduleItems : public ActionClass
+class DLLEXPORT GetScheduleItems : public ActionClass
 {
 	public:
 		/// Standard Constructor

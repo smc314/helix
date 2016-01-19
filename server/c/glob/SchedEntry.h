@@ -35,7 +35,7 @@ namespace Glob {
   *
   * @author Steven M. Cherry
   */
-class SchedEntry {
+class DLLEXPORT SchedEntry {
 
 	public:
 

@@ -27,7 +27,7 @@ namespace Glob {
  *
  * @author Steven M. Cherry
  */
-class IOAdapter : public Threadable
+class DLLEXPORT IOAdapter : public Threadable
 {
 
 	public:

@@ -17,7 +17,7 @@ using namespace SLib;
 namespace Helix {
 namespace Glob {
 
-class TableActions {
+class DLLEXPORT TableActions {
 	public:
 
 		/// Standard Constructor

@@ -170,10 +170,10 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"\t$(3PL)\\lib\\zdll.lib $(SOCKET_LIB)"
 		"\n"
 		".cpp.obj:\n"
-		"\tcl.exe $(CFLAGS) $<\n"
+		"\tcl.exe $(CFLAGS) $< -Fo$@\n"
 		"\n"
 		".c.obj:\n"
-		"\tcl.exe $(CFLAGS) $<\n"
+		"\tcl.exe $(CFLAGS) $< -Fo$@\n"
 		"\n"
 		"DOTOH=\\\n"
 	);
@@ -198,9 +198,9 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 			if(sqldoFiles[i].endsWith(".cpp")){
 				vector<twine> splits = sqldoFiles[i].split(".");
 				if(i == (sqldoFiles.size() - 1)){
-					output.append( "\tsqldo\\" + splits[0] + ".o\n" );
+					output.append( "\tsqldo\\" + splits[0] + ".obj\n" );
 				} else {
-					output.append( "\tsqldo\\" + splits[0] + ".o \\\n" );
+					output.append( "\tsqldo\\" + splits[0] + ".obj \\\n" );
 				}
 			}
 		}
@@ -542,10 +542,10 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"\t$(3PL)\\lib\\zdll.lib $(SOCKET_LIB)"
 		"\n"
 		".cpp.obj:\n"
-		"\tcl.exe $(CFLAGS) $<\n"
+		"\tcl.exe $(CFLAGS) $< -Fo$@\n"
 		"\n"
 		".c.obj:\n"
-		"\tcl.exe $(CFLAGS) $<\n"
+		"\tcl.exe $(CFLAGS) $< -Fo$@\n"
 		"\n"
 		"DOTOH=\\\n"
 	);
@@ -814,10 +814,10 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 		"LLIBS=$(SSLLIBS) $(SOCKET_LIB)\n"
 		"\n"
 		".cpp.obj:\n"
-		"\tcl.exe $(CFLAGS) $<\n"
+		"\tcl.exe $(CFLAGS) $< -Fo$@\n"
 		"\n"
 		".c.obj:\n"
-		"\tcl.exe $(CFLAGS) $<\n"
+		"\tcl.exe $(CFLAGS) $< -Fo$@\n"
 		"\n"
 		"APIOH=HelixApi_Part1.obj HelixApi_Part2.obj\n"
 		"DOTOH=\\\n"
@@ -837,10 +837,10 @@ void createClientWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 
 	output.append(
 		"\n"
-		"LINKOBJ=$(APIOH) $(LLIBS)\n"
+		"LINKOBJ=$(APIOH) $(LLIBS) ..\\bin\\libhelix.glob.lib ..\\bin\\libhelix.logic.dev.lib\n"
 		"\n"
 		"all: $(DOTOH) $(APIOH)\n"
-		"\tlink.exe $(LFLAGS) /OUT:libhelix.client.dll /DLL $(APIOH) ..\\bin\\libhelix.glob.lib ..\\bin\\libhelix.logic.dev.lib $(LLIBS)\n"
+		"\tlink.exe $(LFLAGS) /OUT:libhelix.client.dll /DLL $(LINKOBJ)\n"
 		"\tcopy libhelix.client.lib ..\\bin\n"
 		"\tcopy libhelix.client.dll ..\\bin\n"
 	);

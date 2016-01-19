@@ -22,7 +22,7 @@ namespace Helix {
 namespace Glob {
 
 
-class SessionList {
+class DLLEXPORT SessionList {
 
 	protected:
 		map<twine, SessionInfo*> m_sessions; 

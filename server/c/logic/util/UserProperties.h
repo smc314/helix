@@ -22,7 +22,7 @@ namespace Helix {
 namespace Logic {
 namespace util {
 
-class UserProperties : public ActionClass
+class DLLEXPORT UserProperties : public ActionClass
 {
 	public:
 		/// Standard Constructor
