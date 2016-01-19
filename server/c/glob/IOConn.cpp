@@ -374,7 +374,7 @@ OdbcObj* IOConn::getDBConnection()
 
 	// If we don't already have one - get a connection from our pool
 	if(m_db == NULL){
-		m_db = &TheMain::getInstance()->GetOdbcConnection( "writing" ); // FIXME: shouldn't be hard-coded
+		m_db = &TheMain::getInstance()->GetOdbcConnection( );
 	}
 
 	//Make sure that auto commit is set to true

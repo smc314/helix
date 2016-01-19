@@ -887,9 +887,24 @@ twine& TheMain::GetConfigFileName(void)
 	return m_config_file_name;
 }
 
-Connection& TheMain::GetOdbcConnection(const twine& whichOne)
+Connection& TheMain::GetOdbcConnection()
 {
 	EnEx ee(FL, "TheMain::GetOdbcConnection()");
+
+	xmlNodePtr root = xmlDocGetRootElement(m_config);
+	xmlNodePtr storage = XmlHelpers::FindChild( root, "Storage" );
+	twine defaultDB;
+	defaultDB.getAttribute(storage, "default");
+	if(defaultDB.length() == 0){
+		throw AnException(0, FL, "Storage node has no 'default' database indicated.");
+	}
+
+	return GetOdbcConnection( defaultDB );
+}
+
+Connection& TheMain::GetOdbcConnection(const twine& whichOne)
+{
+	EnEx ee(FL, "TheMain::GetOdbcConnection(const twine& whichOne)");
 
 	if(m_connection_pools.count( whichOne ) == 0){
 		throw AnException(0, FL, "Unknown Database: %s", whichOne() );

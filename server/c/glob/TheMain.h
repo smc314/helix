@@ -129,6 +129,9 @@ class DLLEXPORT TheMain
 		/// Dumps interesting things to the logs.
 		void DumpStateToLogs(void);
 
+		/// Returns an entry from our ODBC Connection pool for the default database
+		Connection& GetOdbcConnection();
+
 		/// Returns an entry from our ODBC Connection pool with the given name
 		Connection& GetOdbcConnection(const twine& whichOne);
 
