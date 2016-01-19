@@ -590,6 +590,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 {
 	EnEx ee(FL, "OdbcObj::GetColumnData(int pos, bool trim)");
 	SanityCheck();
+	size_t sizeMax = 4000;
 
 	int colCount = GetResultsetColumnCount();
 	if(pos < 1 || pos > colCount){
@@ -597,20 +598,22 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 			pos, 1, colCount);
 	}
 
-	WARN(FL, "Determining size to reserve based on data type for col %d", pos);
+	DEBUG(FL, "Determining size to reserve based on data type for col %d", pos);
 	SQLLEN indicator;
 	ColumnInfo ci = GetColumnInfo(pos);
-	twine ret; ret.reserve( ci.size );
+
+	DEBUG(FL, "Called GetColumnInfo, size returned is %d", ci.size);
+	twine ret; ret.reserve( min(ci.size, sizeMax) );
 	switch (ci.dbtype) {
 		case SQL_CHAR:
 		case SQL_VARCHAR:
 		case SQL_LONGVARCHAR:
-			ret.reserve( ci.size );
+			ret.reserve( min(ci.size, sizeMax) );
 			break;
 		case SQL_WCHAR:
 		case SQL_WVARCHAR:
 		case SQL_WLONGVARCHAR:
-			ret.reserve( ci.size * 2 );
+			ret.reserve( min(ci.size, sizeMax) * 2 );
 			break;
 		case SQL_DECIMAL:
 		case SQL_NUMERIC:
@@ -631,7 +634,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 		case SQL_BINARY:
 		case SQL_VARBINARY:
 		case SQL_LONGVARBINARY:
-			ret.reserve( ci.size * 2);
+			ret.reserve( min(ci.size, sizeMax) * 2);
 			break;
 		case SQL_TYPE_DATE:
 		case SQL_TYPE_TIME:
@@ -656,7 +659,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 			ret.reserve( 32 );
 			break;
 	}
-	WARN(FL, "Reserved %ld bytes.", ret.capacity());
+	DEBUG(FL, "Reserved %ld bytes.", ret.capacity());
 
 	check_err(
 		SQLGetData(m_statement_handle, pos, SQL_C_CHAR,
@@ -664,7 +667,7 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
-	WARN(FL, "Pulled data from result set.");
+	DEBUG(FL, "Pulled data from result set.");
 	if(indicator == SQL_NULL_DATA){
 		ret = "[null]";
 	} else {
@@ -674,7 +677,6 @@ twine OdbcObj::GetColumnData(int pos, bool trim)
 		}
 	}
 
-	WARN(FL, "Optionally trimmed and returning data.");
 	return ret;
 }
 
