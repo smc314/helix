@@ -943,7 +943,7 @@ void TheMain::CreateKeys(void)
 		return;
 	}
 
-	FILE* fp = fopen("./Helix.rsa", "wb" );
+	BIO* fp = BIO_new_file("./Helix.rsa", "wb" );
 	if(fp == NULL){
 		WARN(FL, "Saving RSA key pair failed.");
 		RSA_free( m_keypair );
@@ -951,32 +951,32 @@ void TheMain::CreateKeys(void)
 		return;
 	}
 	int ret = 0;
-	ret = PEM_write_RSAPrivateKey(fp, m_keypair, NULL, NULL, 0, NULL, NULL);
+	ret = PEM_write_bio_RSAPrivateKey(fp, m_keypair, NULL, NULL, 0, NULL, NULL);
 	if(!ret){
 		WARN(FL, "Error writing RSA private key.");
 		RSA_free( m_keypair );
 		m_keypair = NULL;
-		fclose( fp );
+		BIO_free( fp );
 		return;
 	}
-	fclose(fp);
+	BIO_free(fp);
 
-	fp = fopen("./Helix.rsa_pub", "wb");
+	fp = BIO_new_file("./Helix.rsa_pub", "wb");
 	if(fp == NULL){
 		WARN(FL, "Saving RSA key pair failed.");
 		RSA_free( m_keypair );
 		m_keypair = NULL;
 		return;
 	}
-	ret = PEM_write_RSAPublicKey(fp, m_keypair);
+	ret = PEM_write_bio_RSAPublicKey(fp, m_keypair);
 	if(!ret){
 		WARN(FL, "Error writing RSA public key.");
 		RSA_free( m_keypair );
 		m_keypair = NULL;
-		fclose( fp );
+		BIO_free( fp );
 		return;
 	}
-	fclose(fp);
+	BIO_free(fp);
 
 	DEBUG(FL, "RSA public/private keypair generated and saved as Helix.rsa_pub, Helix.rsa");
 }
@@ -985,21 +985,21 @@ void TheMain::ReadKeys(void)
 {
 	EnEx ee(FL, "TheMain::ReadKeys()");
 
-	FILE* fp = fopen("./Helix.rsa", "rb" );
+	BIO* fp = BIO_new_file("./Helix.rsa", "rb" );
 	if(fp == NULL){
 		WARN(FL, "Reading RSA private key failed - error opening file.");
 		return;
 	}
 	
-	m_keypair = PEM_read_RSAPrivateKey(fp, &m_keypair, NULL, NULL);
+	m_keypair = PEM_read_bio_RSAPrivateKey(fp, &m_keypair, NULL, NULL);
 	if(m_keypair == NULL){
 		WARN(FL, "Error reading RSA private key.");
-		fclose(fp);
+		BIO_free(fp);
 		return;
 	}
-	fclose(fp);
+	BIO_free(fp);
 
-	fp = fopen("./Helix.rsa_pub", "rb");
+	fp = BIO_new_file("./Helix.rsa_pub", "rb");
 	if(fp == NULL){
 		WARN(FL, "Reading RSA public key failed - error opening file.");
 		RSA_free( m_keypair );
@@ -1007,13 +1007,13 @@ void TheMain::ReadKeys(void)
 		return;
 	}
 
-	m_keypair = PEM_read_RSAPublicKey(fp, &m_keypair, NULL, NULL);
+	m_keypair = PEM_read_bio_RSAPublicKey(fp, &m_keypair, NULL, NULL);
 	if(m_keypair == NULL){
 		WARN(FL, "Error reading RSA public key.");
-		fclose(fp);
+		BIO_free(fp);
 		return;
 	}
-	fclose(fp);
+	BIO_free(fp);
 
 	DEBUG(FL, "RSA public/private keypair read from Helix.rsa_pub, Helix.rsa");
 }

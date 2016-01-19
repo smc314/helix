@@ -12,7 +12,7 @@
 #include "OdbcObj.h"
 using namespace Helix::Glob;
 
-#include "GetProjectList.h"
+#include "GetHelixProjectList.h"
 using namespace Helix::Logic::dev;
 
 #include "Statics.h"
@@ -27,42 +27,42 @@ using namespace Helix::Logic::util;
 using namespace SLib;
 
 // Include local data objects here
-#include "Project.h"
+#include "HelixProject.h"
 
 // This adds us to the global ActionClass Registry:
-ActionClassRegister<GetProjectList> GetProjectList::reg("GetProjectList", 1, "/logic/dev/GetProjectList");
+ActionClassRegister<GetHelixProjectList> GetHelixProjectList::reg("GetHelixProjectList", 1, "/logic/dev/GetHelixProjectList");
 
 // Used for auto generating the API on the javascript side:
-// LOGICCODEGEN API=/logic/dev/GetProjectList Input=NULL
+// LOGICCODEGEN API=/logic/dev/GetHelixProjectList Input=NULL
 
-GetProjectList::GetProjectList(xmlNodePtr action)
+GetHelixProjectList::GetHelixProjectList(xmlNodePtr action)
 {
-	EnEx ee(FL, "GetProjectList::GetProjectList(xmlNodePtr action)");
+	EnEx ee(FL, "GetHelixProjectList::GetHelixProjectList(xmlNodePtr action)");
 	
 }
 
-GetProjectList::GetProjectList(const GetProjectList& c)
+GetHelixProjectList::GetHelixProjectList(const GetHelixProjectList& c)
 {
-	EnEx ee(FL, "GetProjectList::GetProjectList(const GetProjectList& c)");
+	EnEx ee(FL, "GetHelixProjectList::GetHelixProjectList(const GetHelixProjectList& c)");
 
 }
 
-GetProjectList& GetProjectList::operator=(const GetProjectList& c)
+GetHelixProjectList& GetHelixProjectList::operator=(const GetHelixProjectList& c)
 {
-	EnEx ee(FL, "GetProjectList::operator=(const GetProjectList& c)");
+	EnEx ee(FL, "GetHelixProjectList::operator=(const GetHelixProjectList& c)");
 
 	return *this;
 }
 
-GetProjectList::~GetProjectList()
+GetHelixProjectList::~GetHelixProjectList()
 {
-	EnEx ee(FL, "GetProjectList::~GetProjectList()");
+	EnEx ee(FL, "GetHelixProjectList::~GetHelixProjectList()");
 
 }
 
-bool GetProjectList::isLongRunning()
+bool GetHelixProjectList::isLongRunning()
 {
-	EnEx ee(FL, "GetProjectList::isLongRunning()");
+	EnEx ee(FL, "GetHelixProjectList::isLongRunning()");
 
 	// If we are a long running transaction, we need to return true here.  This will trigger
 	// special logic that causes an immediate return to the caller, and for us to be executed
@@ -77,28 +77,28 @@ bool GetProjectList::isLongRunning()
 	return false;
 }
 
-twine GetProjectList::lrTaskName()
+twine GetHelixProjectList::lrTaskName()
 {
-	EnEx ee(FL, "GetProjectList::lrTaskName()");
+	EnEx ee(FL, "GetHelixProjectList::lrTaskName()");
 
 	// Read above comments in isLongRunning.  Delete this method if not required.
-	return "GetProjectList Request";
+	return "GetHelixProjectList Request";
 }
 
 
-void GetProjectList::ExecuteRequest(IOConn& ioc)
+void GetHelixProjectList::ExecuteRequest(IOConn& ioc)
 {
 	// The "true" parameter at the end here indicates to the entry/exit timing
 	// mechanism that it should copy this thread's stats to the global collection.
 	// This should not be done everywhere, but is appropriate to do at this point.
-	EnEx ee(FL, "GetProjectList::ExecuteRequest(IOConn& ioc)", true);
+	EnEx ee(FL, "GetHelixProjectList::ExecuteRequest(IOConn& ioc)", true);
 
 	// Set up the response document name
-	ioc.initializeResponseDocument("GetProjectList");
+	ioc.initializeResponseDocument("GetHelixProjectList");
 
 	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixdev" );
-	Project_svect vect = Project::selectAll( sqldb );
-	Project::createXmlChildren( ioc.getResponseRoot(), vect );
+	HelixProject_svect vect = HelixProject::selectAll( sqldb );
+	HelixProject::createXmlChildren( ioc.getResponseRoot(), vect );
 
 	// Send the response back to the caller and close the connection.
 	ioc.SendReturn();

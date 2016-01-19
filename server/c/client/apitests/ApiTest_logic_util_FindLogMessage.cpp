@@ -52,8 +52,15 @@ void ApiTest_logic_util_FindLogMessage_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_FindLogMessage_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/FindLogMessage requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->FindLogMessage(inputObj);
@@ -83,17 +90,21 @@ void ApiTest_logic_util_FindLogMessage_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_FindLogMessage_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/FindLogMessage requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->FindLogMessage(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogMessageFilter_svect respList = LogMessageFilter::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS( 1, respList->size(), "Response should only have 1 item in it.");
-	ASSERT_NOTEQUALS( 0, (*respList)[0]->FirstRow, "FirstRow value should not be 0.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -114,19 +125,21 @@ void ApiTest_logic_util_FindLogMessage_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_FindLogMessage_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/FindLogMessage requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
-	inputObj.FindByID = 5;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->FindLogMessage(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogMessageFilter_svect respList = LogMessageFilter::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS( 1, respList->size(), "Response should only have 1 item in it.");
-	ASSERT_NOTEQUALS( 0, (*respList)[0]->FirstRow, "FirstRow value should not be 0.");
-	ASSERT_EQUALS( inputObj.FindByID, (*respList)[0]->FirstRow, "FirstRow should be FindByID when FindByID is non-zero.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -147,17 +160,21 @@ void ApiTest_logic_util_FindLogMessage_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_FindLogMessage_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/FindLogMessage requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->FindLogMessage(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogMessageFilter_svect respList = LogMessageFilter::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS( 1, respList->size(), "Response should only have 1 item in it.");
-	ASSERT_NOTEQUALS( 0, (*respList)[0]->FirstRow, "FirstRow value should not be 0.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")

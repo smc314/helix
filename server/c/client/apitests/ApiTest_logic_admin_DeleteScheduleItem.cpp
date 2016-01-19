@@ -52,6 +52,9 @@ void ApiTest_logic_admin_DeleteScheduleItem_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteScheduleItem_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -87,6 +90,9 @@ void ApiTest_logic_admin_DeleteScheduleItem_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteScheduleItem_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -119,53 +125,21 @@ void ApiTest_logic_admin_DeleteScheduleItem_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteScheduleItem_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
-	inputObj.TaskName = "ApiTest_logic_admin_DeleteScheduleItem_CallWithValidPayload";
-	inputObj.TaskUrl = "/logic/admin/GetScheduleItems";
-	inputObj.isActive = 0;
-	inputObj.dowMonday = 1;
-	inputObj.dowTuesday = 2;
-	inputObj.dowWednesday = 3;
-	inputObj.dowThursday = 4;
-	inputObj.dowFriday = 5;
-	inputObj.dowSaturday = 6;
-	inputObj.dowSunday = 7;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	// Insert this item first so that we can play with the delete:
-	SchedItem_svect insertList = SchedItem::readXmlChildren(
-		xmlDocGetRootElement(
-			m_api->InsertScheduleItem( inputObj )
-		)
-	);
-	ASSERT_EQUALS(1, insertList->size(), "Insert list does not have 1 item in it.");
-	SchedItem* insertResp = (*insertList)[0];
-
-	// Now delete the item
 	xmlDocPtr resp;
-	resp = m_api->DeleteScheduleItem( *insertResp );
+	resp = m_api->DeleteScheduleItem(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-
-	// Now try to retrieve the item by id:
-	SchedItem_svect getOneList = SchedItem::readXmlChildren(
-		xmlDocGetRootElement(
-			m_api->GetOneScheduleItem( *insertResp )
-		)
-	);
-	ASSERT_EQUALS(0, getOneList->size(), "Response from GetOneScheduleItem should be empty.");
-
-	// Now try to retrieve all items, and ensure the deleted one is not in the list
-	SchedItem_svect getAllList = SchedItem::readXmlChildren(
-		xmlDocGetRootElement(
-			m_api->GetScheduleItems()
-		)
-	);
-	for(size_t i = 0; i < getAllList->size(); i++){
-		ASSERT_NOTEQUALS( insertResp->id, (*getAllList)[i]->id, "Should not have found the deleted id.")
-	}
-	
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -185,6 +159,9 @@ void ApiTest_logic_admin_DeleteScheduleItem_CallWithValidPayload()
 void ApiTest_logic_admin_DeleteScheduleItem_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteScheduleItem_CallWithInvalidPayload" )
+
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/admin/DeleteScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;

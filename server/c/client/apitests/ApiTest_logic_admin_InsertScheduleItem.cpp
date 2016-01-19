@@ -52,6 +52,9 @@ void ApiTest_logic_admin_InsertScheduleItem_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_InsertScheduleItem_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/InsertScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -61,7 +64,6 @@ void ApiTest_logic_admin_InsertScheduleItem_NoAuthorization_ShouldFail()
 
 	xmlDocPtr resp;
 	resp = m_api->InsertScheduleItem(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -88,6 +90,9 @@ void ApiTest_logic_admin_InsertScheduleItem_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_InsertScheduleItem_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/InsertScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -95,12 +100,10 @@ void ApiTest_logic_admin_InsertScheduleItem_CallWithEmptyPayload()
 	//inputObj.memberName2 = 2;
 	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->InsertScheduleItem(inputObj);
-		ASSERT_TRUE(false, "We should have received an error when inserting an empty item.");
-	} catch (AnException& e){
-		// Ignore this exception - it's what we are expecting.
+	xmlDocPtr resp;
+	resp = m_api->InsertScheduleItem(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -122,67 +125,21 @@ void ApiTest_logic_admin_InsertScheduleItem_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_InsertScheduleItem_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/InsertScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
-	inputObj.TaskName = "Sample task from ApiTest_logic_admin_InsertScheduleItem_CallWithValidPayload";
-	inputObj.TaskUrl = "/logic/admin/GetScheduleItems";
-	inputObj.isActive = 0;
-	inputObj.dowMonday = 1;
-	inputObj.dowTuesday = 2;
-	inputObj.dowWednesday= 3;
-	inputObj.dowThursday = 3;
-	inputObj.dowFriday = 5;
-	inputObj.dowSaturday = 6;
-	inputObj.dowSunday = 7;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	// Insert the new object and check the response
 	xmlDocPtr resp;
 	resp = m_api->InsertScheduleItem(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	SchedItem_svect respList = SchedItem::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(1, respList->size(), "Should be one elements in the response list.");
-	SchedItem* respObj = (*respList)[0];
-
-	ASSERT_NOTEQUALS(inputObj.id, respObj->id, "ID Fields should not be the same.");
-	ASSERT_EQUALS(inputObj.TaskName, respObj->TaskName, "TaskName Fields don't match.");
-	ASSERT_EQUALS(inputObj.TaskUrl, respObj->TaskUrl, "TaskUrl Fields don't match.");
-	ASSERT_EQUALS(inputObj.isActive, respObj->isActive, "isActive Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowMonday, respObj->dowMonday, "dowMonday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowTuesday, respObj->dowTuesday, "dowTuesday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowWednesday, respObj->dowWednesday, "dowWednesday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowThursday, respObj->dowThursday, "dowThursday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowFriday, respObj->dowFriday, "dowFriday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowSaturday, respObj->dowSaturday, "dowSaturday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowSunday, respObj->dowSunday, "dowSunday Fields don't match.");
-
-	// Now query for the object directly by ID:
-	SchedItem_svect respList2 = SchedItem::readXmlChildren(
-		xmlDocGetRootElement(
-			m_api->GetOneScheduleItem( *respObj )
-		)
-	);
-
-	ASSERT_EQUALS(1, respList2->size(), "Should be one elements in the response list.");
-	SchedItem* respObj2 = (*respList2)[0];
-
-	ASSERT_NOTEQUALS(inputObj.id, respObj2->id, "ID Fields should not be the same.");
-	ASSERT_EQUALS(respObj->id, respObj2->id, "ID Fields should not be the same.");
-	ASSERT_EQUALS(inputObj.TaskName, respObj2->TaskName, "TaskName Fields don't match.");
-	ASSERT_EQUALS(inputObj.TaskUrl, respObj2->TaskUrl, "TaskUrl Fields don't match.");
-	ASSERT_EQUALS(inputObj.isActive, respObj2->isActive, "isActive Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowMonday, respObj2->dowMonday, "dowMonday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowTuesday, respObj2->dowTuesday, "dowTuesday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowWednesday, respObj2->dowWednesday, "dowWednesday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowThursday, respObj2->dowThursday, "dowThursday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowFriday, respObj2->dowFriday, "dowFriday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowSaturday, respObj2->dowSaturday, "dowSaturday Fields don't match.");
-	ASSERT_EQUALS(inputObj.dowSunday, respObj2->dowSunday, "dowSunday Fields don't match.");
-
-	// Once we're done testing with this one, remove it from the database
-	m_api->DeleteScheduleItem( *respObj);
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -203,6 +160,9 @@ void ApiTest_logic_admin_InsertScheduleItem_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_InsertScheduleItem_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/InsertScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -210,12 +170,10 @@ void ApiTest_logic_admin_InsertScheduleItem_CallWithInvalidPayload()
 	//inputObj.memberName2 = 2;
 	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->InsertScheduleItem(inputObj);
-		ASSERT_TRUE(false, "We should have received an error when inserting an empty item.");
-	} catch (AnException& e){
-		// Ignore this exception - it's what we are expecting.
+	xmlDocPtr resp;
+	resp = m_api->InsertScheduleItem(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:

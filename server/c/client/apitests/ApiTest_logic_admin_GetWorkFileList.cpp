@@ -52,6 +52,9 @@ void ApiTest_logic_admin_GetWorkFileList_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetWorkFileList_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetWorkFileList requires an object of type IAFolder as input.
 	IAFolder inputObj;
 	// Fill out the details for inputObj here:
@@ -61,7 +64,6 @@ void ApiTest_logic_admin_GetWorkFileList_NoAuthorization_ShouldFail()
 
 	xmlDocPtr resp;
 	resp = m_api->GetWorkFileList(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -88,15 +90,20 @@ void ApiTest_logic_admin_GetWorkFileList_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetWorkFileList_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetWorkFileList requires an object of type IAFolder as input.
 	IAFolder inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->GetWorkFileList(inputObj);
-		ASSERT_TRUE(false, "Should have received an exception for an empty payload.");
-	} catch (AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->GetWorkFileList(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -118,18 +125,21 @@ void ApiTest_logic_admin_GetWorkFileList_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetWorkFileList_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetWorkFileList requires an object of type IAFolder as input.
 	IAFolder inputObj;
-	inputObj.ParentFolder = ".";
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetWorkFileList(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	IAFile_svect fileList = IAFile::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_TRUE(fileList->size() > 0, "File list should not be empty.")
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -150,15 +160,20 @@ void ApiTest_logic_admin_GetWorkFileList_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetWorkFileList_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetWorkFileList requires an object of type IAFolder as input.
 	IAFolder inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->GetWorkFileList(inputObj);
-		ASSERT_TRUE(false, "Should have received an exception for an empty payload.");
-	} catch (AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->GetWorkFileList(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:

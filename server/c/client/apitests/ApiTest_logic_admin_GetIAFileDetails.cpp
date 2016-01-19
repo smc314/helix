@@ -52,8 +52,15 @@ void ApiTest_logic_admin_GetIAFileDetails_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetIAFileDetails_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetIAFileDetails requires an object of type IAFile as input.
 	IAFile inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetIAFileDetails(inputObj);
@@ -83,15 +90,20 @@ void ApiTest_logic_admin_GetIAFileDetails_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetIAFileDetails_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetIAFileDetails requires an object of type IAFile as input.
 	IAFile inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->GetIAFileDetails(inputObj);
-		ASSERT_TRUE(false, "API Call should fail.");
-	} catch (AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->GetIAFileDetails(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -113,31 +125,21 @@ void ApiTest_logic_admin_GetIAFileDetails_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetIAFileDetails_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetIAFileDetails requires an object of type IAFile as input.
-	
-	// Save the file first, so that we can play with retrieving it's details
 	IAFile inputObj;
-	inputObj.ParentFolder = "./";
-	inputObj.FileName = "ApiTest_logic_admin_GetIAFileDetails_CallWithValidPayload";
-	inputObj.FileContents = "Something\nVery\nInteresting\ngoes in here!\n";
-	m_api->SaveIAFile( inputObj );
-		
-	// Now pull up the saved file and verify the details
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
+
 	xmlDocPtr resp;
 	resp = m_api->GetIAFileDetails(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	IAFile_svect fileList = IAFile::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS( 1, fileList->size(), "Should be one element in file list.")
-	IAFile* respFile = (*fileList)[0];
-
-	ASSERT_EQUALS(inputObj.ParentFolder, respFile->ParentFolder, "ParentFolder fields don't match.")
-	ASSERT_EQUALS(inputObj.FileName, respFile->FileName, "FileName fields don't match.")
-	ASSERT_EQUALS(inputObj.FileContents, respFile->FileContents, "FileContents fields don't match.")
-
-	// When we are done with it, go ahead and remove it
-	m_api->DeleteIAFile( inputObj );
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -158,15 +160,20 @@ void ApiTest_logic_admin_GetIAFileDetails_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetIAFileDetails_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetIAFileDetails requires an object of type IAFile as input.
 	IAFile inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->GetIAFileDetails(inputObj);
-		ASSERT_TRUE(false, "API Call should fail.");
-	} catch (AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->GetIAFileDetails(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:

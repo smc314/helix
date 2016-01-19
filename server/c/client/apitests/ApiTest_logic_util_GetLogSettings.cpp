@@ -52,6 +52,9 @@ void ApiTest_logic_util_GetLogSettings_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogSettings_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogSettings has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogSettings();
@@ -81,14 +84,15 @@ void ApiTest_logic_util_GetLogSettings_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogSettings_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogSettings has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogSettings();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogSettings_svect respList = LogSettings::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(1, respList->size(), "Should be one item returned.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -109,14 +113,15 @@ void ApiTest_logic_util_GetLogSettings_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogSettings_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogSettings has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogSettings();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogSettings_svect respList = LogSettings::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(1, respList->size(), "Should be one item returned.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -137,14 +142,15 @@ void ApiTest_logic_util_GetLogSettings_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogSettings_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogSettings has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogSettings();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogSettings_svect respList = LogSettings::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(1, respList->size(), "Should be one item returned.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")

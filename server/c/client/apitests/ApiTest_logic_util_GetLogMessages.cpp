@@ -52,8 +52,15 @@ void ApiTest_logic_util_GetLogMessages_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogMessages_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogMessages requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetLogMessages(inputObj);
@@ -83,6 +90,9 @@ void ApiTest_logic_util_GetLogMessages_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogMessages_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogMessages requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
 	// Fill out the details for inputObj here:
@@ -95,8 +105,6 @@ void ApiTest_logic_util_GetLogMessages_CallWithEmptyPayload()
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogObj_svect respList = LogObj::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS( 0, respList->size(), "Response list should be empty.")
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -117,25 +125,21 @@ void ApiTest_logic_util_GetLogMessages_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogMessages_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogMessages requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
-	inputObj.StartId = -1;
-	inputObj.GetMax = 2;
-	inputObj.Panic = 1;
-	inputObj.Error = 1;
-	inputObj.Warn = 1;
-	inputObj.Info = 1;
-	inputObj.Debug = 1;
-	inputObj.Trace = 1;
-	inputObj.SqlTrace = 1;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetLogMessages(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogObj_svect respList = LogObj::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_NOTEQUALS( 0, respList->size(), "Response list should not be empty.")
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -156,6 +160,9 @@ void ApiTest_logic_util_GetLogMessages_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogMessages_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogMessages requires an object of type LogMessageFilter as input.
 	LogMessageFilter inputObj;
 	// Fill out the details for inputObj here:
@@ -168,8 +175,6 @@ void ApiTest_logic_util_GetLogMessages_CallWithInvalidPayload()
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LogObj_svect respList = LogObj::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS( 0, respList->size(), "Response list should be empty.")
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")

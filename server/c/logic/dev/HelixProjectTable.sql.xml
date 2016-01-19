@@ -1,4 +1,4 @@
-<SQLXml generateClass="ProjectTable" package="logic/dev" >
+<SQLXml generateClass="HelixProjectTable" package="logic/dev" >
 
 	<ChildVector name="Columns" type="TableCol" />
 

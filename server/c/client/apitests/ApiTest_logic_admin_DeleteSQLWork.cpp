@@ -52,8 +52,15 @@ void ApiTest_logic_admin_DeleteSQLWork_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteSQLWork_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->DeleteSQLWork(inputObj);
@@ -83,8 +90,15 @@ void ApiTest_logic_admin_DeleteSQLWork_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteSQLWork_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->DeleteSQLWork(inputObj);
@@ -111,53 +125,21 @@ void ApiTest_logic_admin_DeleteSQLWork_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteSQLWork_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// First create an working file that we can test with
+	// Api /logic/admin/DeleteSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
-	inputObj.FileName = "ApiTest_logic_admin_DeleteSQLWork_CallWithValidPayload";
-	inputObj.Sql = "lots\nof\nwonderful\nsql\nstatements go in here;";
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
-	resp = m_api->SaveSQLWork(inputObj);
-
-	// Now query for the list of sqlwork files
-	IAFolder parentFolder;
-	parentFolder.ParentFolder = "./sqlwork/";
-	resp = m_api->GetWorkFileList( parentFolder );
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
-	if(m_log_steps){
-		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
-	}
-	IAFile_svect fileList = IAFile::readXmlChildren( xmlDocGetRootElement( resp ) );
-	bool foundOurFile = false;
-	for(size_t i = 0; i < fileList->size(); i++){
-		if( (*fileList)[i]->FileName == inputObj.FileName ){
-			foundOurFile = true;
-			break;
-		}
-	}
-	ASSERT_TRUE(foundOurFile, "Did not find our file after the save.");
-
-	// Now verify that the delete works
 	resp = m_api->DeleteSQLWork(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-
-	// Query for the file list again, and verify that it is gone:
-	resp = m_api->GetWorkFileList( parentFolder );
-	if(m_log_steps){
-		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
-	}
-	fileList = IAFile::readXmlChildren( xmlDocGetRootElement( resp ) );
-	foundOurFile = false;
-	for(size_t i = 0; i < fileList->size(); i++){
-		if( (*fileList)[i]->FileName == inputObj.FileName ){
-			foundOurFile = true;
-			break;
-		}
-	}
-	ASSERT_FALSE(foundOurFile, "Our file still exists after the delete.");
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -178,8 +160,15 @@ void ApiTest_logic_admin_DeleteSQLWork_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteSQLWork_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->DeleteSQLWork(inputObj);

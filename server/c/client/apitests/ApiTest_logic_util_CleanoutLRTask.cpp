@@ -52,8 +52,15 @@ void ApiTest_logic_util_CleanoutLRTask_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_CleanoutLRTask_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/CleanoutLRTask requires an object of type LRTask as input.
 	LRTask inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->CleanoutLRTask(inputObj);
@@ -83,8 +90,15 @@ void ApiTest_logic_util_CleanoutLRTask_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_CleanoutLRTask_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/CleanoutLRTask requires an object of type LRTask as input.
 	LRTask inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->CleanoutLRTask(inputObj);
@@ -110,6 +124,9 @@ void ApiTest_logic_util_CleanoutLRTask_CallWithEmptyPayload()
 void ApiTest_logic_util_CleanoutLRTask_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_CleanoutLRTask_CallWithValidPayload" )
+
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/util/CleanoutLRTask requires an object of type LRTask as input.
 	LRTask inputObj;
@@ -142,6 +159,9 @@ void ApiTest_logic_util_CleanoutLRTask_CallWithValidPayload()
 void ApiTest_logic_util_CleanoutLRTask_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_CleanoutLRTask_CallWithInvalidPayload" )
+
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/util/CleanoutLRTask requires an object of type LRTask as input.
 	LRTask inputObj;

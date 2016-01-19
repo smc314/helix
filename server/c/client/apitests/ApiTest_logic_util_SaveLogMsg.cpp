@@ -52,26 +52,15 @@ void ApiTest_logic_util_SaveLogMsg_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_SaveLogMsg_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/SaveLogMsg requires an object of type LogObj as input.
 	LogObj inputObj;
-	inputObj.file = __FILE__;
-	inputObj.line = __LINE__;
-	inputObj.tid = 0;
-#ifdef _WIN32
-	struct timeb timestamp;
-	ftime(&timestamp);
-	inputObj.timestamp_a = timestamp.time;
-	inputObj.timestamp_b = timestamp.millitm;
-#else
-	struct timeval timestamp;
-	gettimeofday(&timestamp, NULL);
-	inputObj.timestamp_a = timestamp.tv_sec;
-	inputObj.timestamp_b = timestamp.tv_usec;
-#endif
-	inputObj.channel = 5;
-	inputObj.appName = "HelixApiTest";
-	inputObj.machineName = "TestMachine";
-	inputObj.msg = "ApiTest_logic_util_SaveLogMsg_NoAuthorization_ShouldFail";
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->SaveLogMsg(inputObj);
@@ -101,27 +90,15 @@ void ApiTest_logic_util_SaveLogMsg_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_SaveLogMsg_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/SaveLogMsg requires an object of type LogObj as input.
 	LogObj inputObj;
-	inputObj.file = __FILE__;
-	inputObj.line = __LINE__;
-	inputObj.tid = 0;
-#ifdef _WIN32
-	struct timeb timestamp;
-	ftime(&timestamp);
-	inputObj.timestamp_a = timestamp.time;
-	inputObj.timestamp_b = timestamp.millitm;
-#else
-	struct timeval timestamp;
-	gettimeofday(&timestamp, NULL);
-	inputObj.timestamp_a = timestamp.tv_sec;
-	inputObj.timestamp_b = timestamp.tv_usec;
-#endif
-	inputObj.channel = 5;
-	inputObj.appName = "HelixApiTest";
-	inputObj.machineName = "TestMachine";
-	inputObj.msg = "ApiTest_logic_util_SaveLogMsg_CallWithEmptyPayload";
-
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->SaveLogMsg(inputObj);
@@ -148,27 +125,15 @@ void ApiTest_logic_util_SaveLogMsg_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_SaveLogMsg_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/SaveLogMsg requires an object of type LogObj as input.
 	LogObj inputObj;
-	inputObj.file = __FILE__;
-	inputObj.line = __LINE__;
-	inputObj.tid = 0;
-#ifdef _WIN32
-	struct timeb timestamp;
-	ftime(&timestamp);
-	inputObj.timestamp_a = timestamp.time;
-	inputObj.timestamp_b = timestamp.millitm;
-#else
-	struct timeval timestamp;
-	gettimeofday(&timestamp, NULL);
-	inputObj.timestamp_a = timestamp.tv_sec;
-	inputObj.timestamp_b = timestamp.tv_usec;
-#endif
-	inputObj.channel = 5;
-	inputObj.appName = "HelixApiTest";
-	inputObj.machineName = "TestMachine";
-	inputObj.msg = "ApiTest_logic_util_SaveLogMsg_CallWithValidPayload";
-
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->SaveLogMsg(inputObj);
@@ -195,27 +160,15 @@ void ApiTest_logic_util_SaveLogMsg_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_SaveLogMsg_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/SaveLogMsg requires an object of type LogObj as input.
 	LogObj inputObj;
-	inputObj.file = __FILE__;
-	inputObj.line = __LINE__;
-	inputObj.tid = 0;
-#ifdef _WIN32
-	struct timeb timestamp;
-	ftime(&timestamp);
-	inputObj.timestamp_a = timestamp.time;
-	inputObj.timestamp_b = timestamp.millitm;
-#else
-	struct timeval timestamp;
-	gettimeofday(&timestamp, NULL);
-	inputObj.timestamp_a = timestamp.tv_sec;
-	inputObj.timestamp_b = timestamp.tv_usec;
-#endif
-	inputObj.channel = 5;
-	inputObj.appName = "HelixApiTest";
-	inputObj.machineName = "TestMachine";
-	inputObj.msg = "ApiTest_logic_util_SaveLogMsg_CallWithInvalidPayload";
-
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->SaveLogMsg(inputObj);

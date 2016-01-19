@@ -12,7 +12,7 @@
 #include "OdbcObj.h"
 using namespace Helix::Glob;
 
-#include "GetProject.h"
+#include "GetHelixProject.h"
 using namespace Helix::Logic::dev;
 
 #include "Statics.h"
@@ -27,42 +27,42 @@ using namespace Helix::Logic::util;
 using namespace SLib;
 
 // Include local data objects here
-#include "Project.h"
+#include "HelixProject.h"
 
 // This adds us to the global ActionClass Registry:
-ActionClassRegister<GetProject> GetProject::reg("GetProject", 1, "/logic/dev/GetProject");
+ActionClassRegister<GetHelixProject> GetHelixProject::reg("GetHelixProject", 1, "/logic/dev/GetHelixProject");
 
 // Used for auto generating the API on the javascript side:
-// LOGICCODEGEN API=/logic/dev/GetProject Input=Project
+// LOGICCODEGEN API=/logic/dev/GetHelixProject Input=HelixProject
 
-GetProject::GetProject(xmlNodePtr action)
+GetHelixProject::GetHelixProject(xmlNodePtr action)
 {
-	EnEx ee(FL, "GetProject::GetProject(xmlNodePtr action)");
+	EnEx ee(FL, "GetHelixProject::GetHelixProject(xmlNodePtr action)");
 	
 }
 
-GetProject::GetProject(const GetProject& c)
+GetHelixProject::GetHelixProject(const GetHelixProject& c)
 {
-	EnEx ee(FL, "GetProject::GetProject(const GetProject& c)");
+	EnEx ee(FL, "GetHelixProject::GetHelixProject(const GetHelixProject& c)");
 
 }
 
-GetProject& GetProject::operator=(const GetProject& c)
+GetHelixProject& GetHelixProject::operator=(const GetHelixProject& c)
 {
-	EnEx ee(FL, "GetProject::operator=(const GetProject& c)");
+	EnEx ee(FL, "GetHelixProject::operator=(const GetHelixProject& c)");
 
 	return *this;
 }
 
-GetProject::~GetProject()
+GetHelixProject::~GetHelixProject()
 {
-	EnEx ee(FL, "GetProject::~GetProject()");
+	EnEx ee(FL, "GetHelixProject::~GetHelixProject()");
 
 }
 
-bool GetProject::isLongRunning()
+bool GetHelixProject::isLongRunning()
 {
-	EnEx ee(FL, "GetProject::isLongRunning()");
+	EnEx ee(FL, "GetHelixProject::isLongRunning()");
 
 	// If we are a long running transaction, we need to return true here.  This will trigger
 	// special logic that causes an immediate return to the caller, and for us to be executed
@@ -77,38 +77,38 @@ bool GetProject::isLongRunning()
 	return false;
 }
 
-twine GetProject::lrTaskName()
+twine GetHelixProject::lrTaskName()
 {
-	EnEx ee(FL, "GetProject::lrTaskName()");
+	EnEx ee(FL, "GetHelixProject::lrTaskName()");
 
 	// Read above comments in isLongRunning.  Delete this method if not required.
-	return "GetProject Request";
+	return "GetHelixProject Request";
 }
 
 
-void GetProject::ExecuteRequest(IOConn& ioc)
+void GetHelixProject::ExecuteRequest(IOConn& ioc)
 {
 	// The "true" parameter at the end here indicates to the entry/exit timing
 	// mechanism that it should copy this thread's stats to the global collection.
 	// This should not be done everywhere, but is appropriate to do at this point.
-	EnEx ee(FL, "GetProject::ExecuteRequest(IOConn& ioc)", true);
+	EnEx ee(FL, "GetHelixProject::ExecuteRequest(IOConn& ioc)", true);
 
 	// Set up the response document name
-	ioc.initializeResponseDocument("GetProject");
+	ioc.initializeResponseDocument("GetHelixProject");
 
-	Project local( XmlHelpers::FindChild( ioc.GetRequestRoot(), Project::Name()() ) );
+	HelixProject local( XmlHelpers::FindChild( ioc.GetRequestRoot(), HelixProject::Name()() ) );
 	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixdev" );
-	Project_svect vect = Project::selectByID( sqldb, local.guid );
+	HelixProject_svect vect = HelixProject::selectByID( sqldb, local.guid );
 	if(vect->size() == 0){
 		throw AnException(0, FL, "Did not find the requested project: %s", local.ProjName() );
 	}
 
 	// Load the Apps and Data children:
 	vect->at(0)->Apps = Application::selectAllForProject( sqldb, local.guid );
-	vect->at(0)->Data = ProjectData::selectAllForProj( sqldb, local.guid );
+	vect->at(0)->Data = HelixProjectData::selectAllForProj( sqldb, local.guid );
 	
 	// Add that data to the response
-	Project::createXmlChildren( ioc.getResponseRoot(), vect );
+	HelixProject::createXmlChildren( ioc.getResponseRoot(), vect );
 
 	// Send the response back to the caller and close the connection.
 	ioc.SendReturn();

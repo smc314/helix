@@ -52,6 +52,9 @@ void ApiTest_logic_util_GetHitMap_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetHitMap_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetHitMap has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetHitMap();
@@ -81,6 +84,9 @@ void ApiTest_logic_util_GetHitMap_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetHitMap_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetHitMap has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetHitMap();
@@ -107,6 +113,9 @@ void ApiTest_logic_util_GetHitMap_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetHitMap_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetHitMap has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetHitMap();
@@ -132,6 +141,9 @@ void ApiTest_logic_util_GetHitMap_CallWithValidPayload()
 void ApiTest_logic_util_GetHitMap_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetHitMap_CallWithInvalidPayload" )
+
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/util/GetHitMap has no input values.
 	xmlDocPtr resp;

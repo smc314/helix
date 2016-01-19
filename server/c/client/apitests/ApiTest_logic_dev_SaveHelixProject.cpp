@@ -13,51 +13,57 @@
 /* Define all Local test methods here.                                                    */
 /* ************************************************************************************** */
 
-void ApiTest_logic_dev_GetProjectList_NoAuthorization_ShouldFail();
-void ApiTest_logic_dev_GetProjectList_CallWithEmptyPayload();
-void ApiTest_logic_dev_GetProjectList_CallWithValidPayload();
-void ApiTest_logic_dev_GetProjectList_CallWithInvalidPayload();
+void ApiTest_logic_dev_SaveHelixProject_NoAuthorization_ShouldFail();
+void ApiTest_logic_dev_SaveHelixProject_CallWithEmptyPayload();
+void ApiTest_logic_dev_SaveHelixProject_CallWithValidPayload();
+void ApiTest_logic_dev_SaveHelixProject_CallWithInvalidPayload();
 
-// Define more of your own tests and methods for testing /logic/dev/GetProjectList here
+// Define more of your own tests and methods for testing /logic/dev/SaveHelixProject here
 
-/** This is the main method that executes the tests for the /logic/dev/GetProjectList api.  All tests
+/** This is the main method that executes the tests for the /logic/dev/SaveHelixProject api.  All tests
   * that should be executed against this api should be invoked directly here.
   */
-void ApiTest_logic_dev_GetProjectList()
+void ApiTest_logic_dev_SaveHelixProject()
 {
 	// Ensure that we should be testing this API
-	if(runTestsForApi("/logic/dev/GetProjectList") == false){
+	if(runTestsForApi("/logic/dev/SaveHelixProject") == false){
 		return; // Tests for this api are not included in this run.
 	}
 
 	// Test the Api without authorization:
-	ApiTest_logic_dev_GetProjectList_NoAuthorization_ShouldFail();
+	ApiTest_logic_dev_SaveHelixProject_NoAuthorization_ShouldFail();
 
 	// Test the Api with an empty payload
-	ApiTest_logic_dev_GetProjectList_CallWithEmptyPayload();
+	ApiTest_logic_dev_SaveHelixProject_CallWithEmptyPayload();
 
 	// Test the Api with a valid payload
-	ApiTest_logic_dev_GetProjectList_CallWithValidPayload();
+	ApiTest_logic_dev_SaveHelixProject_CallWithValidPayload();
 
 	// Test the Api with an invalid payload
-	ApiTest_logic_dev_GetProjectList_CallWithInvalidPayload();
+	ApiTest_logic_dev_SaveHelixProject_CallWithInvalidPayload();
 
 	// Call any other tests that you have defined here:
 }
 
-/** This will call the /logic/dev/GetProjectList without any authorization information.  This should
+/** This will call the /logic/dev/SaveHelixProject without any authorization information.  This should
   * be rejected by the server, and we should receive the error message.
   */
-void ApiTest_logic_dev_GetProjectList_NoAuthorization_ShouldFail()
+void ApiTest_logic_dev_SaveHelixProject_NoAuthorization_ShouldFail()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetProjectList_NoAuthorization_ShouldFail" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_SaveHelixProject_NoAuthorization_ShouldFail" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/dev/GetProjectList has no input values.
+	// Api /logic/dev/SaveHelixProject requires an object of type HelixProject as input.
+	HelixProject inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
+
 	xmlDocPtr resp;
-	resp = m_api->GetProjectList();
+	resp = m_api->SaveHelixProject(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -77,19 +83,25 @@ void ApiTest_logic_dev_GetProjectList_NoAuthorization_ShouldFail()
 	END_TEST_METHOD
 }
 
-/** This test will call the /logic/dev/GetProjectList with an empty payload and check the response
+/** This test will call the /logic/dev/SaveHelixProject with an empty payload and check the response
   * that is received.
   */
-void ApiTest_logic_dev_GetProjectList_CallWithEmptyPayload()
+void ApiTest_logic_dev_SaveHelixProject_CallWithEmptyPayload()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetProjectList_CallWithEmptyPayload" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_SaveHelixProject_CallWithEmptyPayload" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/dev/GetProjectList has no input values.
+	// Api /logic/dev/SaveHelixProject requires an object of type HelixProject as input.
+	HelixProject inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
+
 	xmlDocPtr resp;
-	resp = m_api->GetProjectList();
+	resp = m_api->SaveHelixProject(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -106,19 +118,25 @@ void ApiTest_logic_dev_GetProjectList_CallWithEmptyPayload()
 	END_TEST_METHOD
 }
 
-/** This test will call the /logic/dev/GetProjectList with a valid payload and check the response
+/** This test will call the /logic/dev/SaveHelixProject with a valid payload and check the response
   * that is received.
   */
-void ApiTest_logic_dev_GetProjectList_CallWithValidPayload()
+void ApiTest_logic_dev_SaveHelixProject_CallWithValidPayload()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetProjectList_CallWithValidPayload" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_SaveHelixProject_CallWithValidPayload" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/dev/GetProjectList has no input values.
+	// Api /logic/dev/SaveHelixProject requires an object of type HelixProject as input.
+	HelixProject inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
+
 	xmlDocPtr resp;
-	resp = m_api->GetProjectList();
+	resp = m_api->SaveHelixProject(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -135,19 +153,25 @@ void ApiTest_logic_dev_GetProjectList_CallWithValidPayload()
 	END_TEST_METHOD
 }
 
-/** This test will call the /logic/dev/GetProjectList with an invalid payload and check the response
+/** This test will call the /logic/dev/SaveHelixProject with an invalid payload and check the response
   * that is received.
   */
-void ApiTest_logic_dev_GetProjectList_CallWithInvalidPayload()
+void ApiTest_logic_dev_SaveHelixProject_CallWithInvalidPayload()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetProjectList_CallWithInvalidPayload" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_SaveHelixProject_CallWithInvalidPayload" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/dev/GetProjectList has no input values.
+	// Api /logic/dev/SaveHelixProject requires an object of type HelixProject as input.
+	HelixProject inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
+
 	xmlDocPtr resp;
-	resp = m_api->GetProjectList();
+	resp = m_api->SaveHelixProject(inputObj);
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}

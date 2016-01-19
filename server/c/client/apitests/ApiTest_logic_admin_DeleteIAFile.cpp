@@ -52,8 +52,15 @@ void ApiTest_logic_admin_DeleteIAFile_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteIAFile_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteIAFile requires an object of type IAFile as input.
 	IAFile inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->DeleteIAFile(inputObj);
@@ -83,8 +90,15 @@ void ApiTest_logic_admin_DeleteIAFile_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteIAFile_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteIAFile requires an object of type IAFile as input.
 	IAFile inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->DeleteIAFile(inputObj);
@@ -111,54 +125,20 @@ void ApiTest_logic_admin_DeleteIAFile_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteIAFile_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteIAFile requires an object of type IAFile as input.
 	IAFile inputObj;
-	inputObj.ParentFolder = "./";
-	inputObj.FileName = "ApiTest_logic_admin_DeleteIAFile_CallWithValidPayload";
-	inputObj.FileContents = "Something\nVery\nInteresting\ngoes in here!\n";
-	m_api->SaveIAFile( inputObj );
-	if(m_log_steps){
-		printf("++ Created test file.\n");
-	}
-		
-	// Now pull up the file list and ensure that our file is in it.
-	IAFolder inputFolder;
-	inputFolder.ParentFolder = "./";
-	xmlDocPtr resp;
-	resp = m_api->GetIAFileList(inputFolder);
-	IAFile_svect fileList = IAFile::readXmlChildren( xmlDocGetRootElement( resp ) );
-	bool foundOurFile = false;
-	for(size_t i = 0; i < fileList->size(); i++){
-		if( (*fileList)[i]->FileName == inputObj.FileName ){
-			foundOurFile = true;
-			break;
-		}
-	}
-	ASSERT_TRUE( foundOurFile, "Did not find our file after a save.")
-	if(m_log_steps){
-		printf("++ Found test file in list.\n");
-	}
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	// Now proceed with the delete
+	xmlDocPtr resp;
 	resp = m_api->DeleteIAFile(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
-	}
-
-	// Get the file list again and verify that our file is gone
-	resp = m_api->GetIAFileList(inputFolder);
-	fileList = IAFile::readXmlChildren( xmlDocGetRootElement( resp ) );
-	foundOurFile = false;
-	for(size_t i = 0; i < fileList->size(); i++){
-		if( (*fileList)[i]->FileName == inputObj.FileName ){
-			foundOurFile = true;
-			break;
-		}
-	}
-	ASSERT_FALSE( foundOurFile, "File still exists after delete.")
-	if(m_log_steps){
-		printf("++ Test file deleted correctly.\n");
 	}
 
 	// Useful macros:
@@ -180,8 +160,15 @@ void ApiTest_logic_admin_DeleteIAFile_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_DeleteIAFile_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/DeleteIAFile requires an object of type IAFile as input.
 	IAFile inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->DeleteIAFile(inputObj);

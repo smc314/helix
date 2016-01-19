@@ -8,8 +8,8 @@
 
 *************************************************************************** */
 
-#ifndef SaveProject_H
-#define SaveProject_H
+#ifndef SaveHelixProject_H
+#define SaveHelixProject_H
 
 #include <xmlinc.h>
 #include <twine.h>
@@ -22,20 +22,20 @@ namespace Helix {
 namespace Logic {
 namespace dev {
 
-class DLLEXPORT SaveProject : public ActionClass
+class DLLEXPORT SaveHelixProject : public ActionClass
 {
 	public:
 		/// Standard Constructor
-		SaveProject(xmlNodePtr action);
+		SaveHelixProject(xmlNodePtr action);
 
 		/// Standard Copy Constructor
-		SaveProject(const SaveProject& c);
+		SaveHelixProject(const SaveHelixProject& c);
 
 		/// Standard Copy operator
-		SaveProject& operator=(const SaveProject& c);
+		SaveHelixProject& operator=(const SaveHelixProject& c);
 
 		/// Standard Destructor
-		virtual ~SaveProject();
+		virtual ~SaveHelixProject();
 
 		/// We implement the ExecuteRequest method
 		virtual void ExecuteRequest(IOConn& ioc);
@@ -49,10 +49,10 @@ class DLLEXPORT SaveProject : public ActionClass
 	private:
 
 		// Registers us with the global factory map:
-		static ActionClassRegister<SaveProject> reg;
+		static ActionClassRegister<SaveHelixProject> reg;
 
 };
 
 }}} // End of Namespace definitions
 
-#endif // SaveProject_H Defined
+#endif // SaveHelixProject_H Defined

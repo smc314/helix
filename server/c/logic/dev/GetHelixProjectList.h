@@ -8,8 +8,8 @@
 
 *************************************************************************** */
 
-#ifndef GetProjectList_H
-#define GetProjectList_H
+#ifndef GetHelixProjectList_H
+#define GetHelixProjectList_H
 
 #include <xmlinc.h>
 #include <twine.h>
@@ -22,20 +22,20 @@ namespace Helix {
 namespace Logic {
 namespace dev {
 
-class DLLEXPORT GetProjectList : public ActionClass
+class DLLEXPORT GetHelixProjectList : public ActionClass
 {
 	public:
 		/// Standard Constructor
-		GetProjectList(xmlNodePtr action);
+		GetHelixProjectList(xmlNodePtr action);
 
 		/// Standard Copy Constructor
-		GetProjectList(const GetProjectList& c);
+		GetHelixProjectList(const GetHelixProjectList& c);
 
 		/// Standard Copy operator
-		GetProjectList& operator=(const GetProjectList& c);
+		GetHelixProjectList& operator=(const GetHelixProjectList& c);
 
 		/// Standard Destructor
-		virtual ~GetProjectList();
+		virtual ~GetHelixProjectList();
 
 		/// We implement the ExecuteRequest method
 		virtual void ExecuteRequest(IOConn& ioc);
@@ -49,10 +49,10 @@ class DLLEXPORT GetProjectList : public ActionClass
 	private:
 
 		// Registers us with the global factory map:
-		static ActionClassRegister<GetProjectList> reg;
+		static ActionClassRegister<GetHelixProjectList> reg;
 
 };
 
 }}} // End of Namespace definitions
 
-#endif // GetProjectList_H Defined
+#endif // GetHelixProjectList_H Defined

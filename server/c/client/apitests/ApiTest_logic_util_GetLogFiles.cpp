@@ -52,6 +52,9 @@ void ApiTest_logic_util_GetLogFiles_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogFiles_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogFiles has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogFiles();
@@ -81,6 +84,9 @@ void ApiTest_logic_util_GetLogFiles_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogFiles_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogFiles has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogFiles();
@@ -107,6 +113,9 @@ void ApiTest_logic_util_GetLogFiles_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogFiles_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetLogFiles has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetLogFiles();
@@ -132,6 +141,9 @@ void ApiTest_logic_util_GetLogFiles_CallWithValidPayload()
 void ApiTest_logic_util_GetLogFiles_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetLogFiles_CallWithInvalidPayload" )
+
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/util/GetLogFiles has no input values.
 	xmlDocPtr resp;

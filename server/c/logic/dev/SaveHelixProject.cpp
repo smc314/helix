@@ -12,7 +12,7 @@
 #include "OdbcObj.h"
 using namespace Helix::Glob;
 
-#include "SaveProject.h"
+#include "SaveHelixProject.h"
 using namespace Helix::Logic::dev;
 
 #include "Statics.h"
@@ -27,42 +27,42 @@ using namespace Helix::Logic::util;
 using namespace SLib;
 
 // Include local data objects here
-#include "Project.h"
+#include "HelixProject.h"
 
 // This adds us to the global ActionClass Registry:
-ActionClassRegister<SaveProject> SaveProject::reg("SaveProject", 1, "/logic/dev/SaveProject");
+ActionClassRegister<SaveHelixProject> SaveHelixProject::reg("SaveHelixProject", 1, "/logic/dev/SaveHelixProject");
 
 // Used for auto generating the API on the javascript side:
-// LOGICCODEGEN API=/logic/dev/SaveProject Input=Project
+// LOGICCODEGEN API=/logic/dev/SaveHelixProject Input=HelixProject
 
-SaveProject::SaveProject(xmlNodePtr action)
+SaveHelixProject::SaveHelixProject(xmlNodePtr action)
 {
-	EnEx ee(FL, "SaveProject::SaveProject(xmlNodePtr action)");
+	EnEx ee(FL, "SaveHelixProject::SaveHelixProject(xmlNodePtr action)");
 	
 }
 
-SaveProject::SaveProject(const SaveProject& c)
+SaveHelixProject::SaveHelixProject(const SaveHelixProject& c)
 {
-	EnEx ee(FL, "SaveProject::SaveProject(const SaveProject& c)");
+	EnEx ee(FL, "SaveHelixProject::SaveHelixProject(const SaveHelixProject& c)");
 
 }
 
-SaveProject& SaveProject::operator=(const SaveProject& c)
+SaveHelixProject& SaveHelixProject::operator=(const SaveHelixProject& c)
 {
-	EnEx ee(FL, "SaveProject::operator=(const SaveProject& c)");
+	EnEx ee(FL, "SaveHelixProject::operator=(const SaveHelixProject& c)");
 
 	return *this;
 }
 
-SaveProject::~SaveProject()
+SaveHelixProject::~SaveHelixProject()
 {
-	EnEx ee(FL, "SaveProject::~SaveProject()");
+	EnEx ee(FL, "SaveHelixProject::~SaveHelixProject()");
 
 }
 
-bool SaveProject::isLongRunning()
+bool SaveHelixProject::isLongRunning()
 {
-	EnEx ee(FL, "SaveProject::isLongRunning()");
+	EnEx ee(FL, "SaveHelixProject::isLongRunning()");
 
 	// If we are a long running transaction, we need to return true here.  This will trigger
 	// special logic that causes an immediate return to the caller, and for us to be executed
@@ -77,25 +77,25 @@ bool SaveProject::isLongRunning()
 	return false;
 }
 
-twine SaveProject::lrTaskName()
+twine SaveHelixProject::lrTaskName()
 {
-	EnEx ee(FL, "SaveProject::lrTaskName()");
+	EnEx ee(FL, "SaveHelixProject::lrTaskName()");
 
 	// Read above comments in isLongRunning.  Delete this method if not required.
-	return "SaveProject Request";
+	return "SaveHelixProject Request";
 }
 
-void SaveProject::ExecuteRequest(IOConn& ioc)
+void SaveHelixProject::ExecuteRequest(IOConn& ioc)
 {
 	// The "true" parameter at the end here indicates to the entry/exit timing
 	// mechanism that it should copy this thread's stats to the global collection.
 	// This should not be done everywhere, but is appropriate to do at this point.
-	EnEx ee(FL, "SaveProject::ExecuteRequest(IOConn& ioc)", true);
+	EnEx ee(FL, "SaveHelixProject::ExecuteRequest(IOConn& ioc)", true);
 
 	// Set up the response document name
-	ioc.initializeResponseDocument("SaveProject");
+	ioc.initializeResponseDocument("SaveHelixProject");
 
-	Project local( XmlHelpers::FindChild( ioc.GetRequestRoot(), Project::Name()() ) );
+	HelixProject local( XmlHelpers::FindChild( ioc.GetRequestRoot(), HelixProject::Name()() ) );
 
 	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( "helixdev" );
 	
@@ -113,12 +113,12 @@ void SaveProject::ExecuteRequest(IOConn& ioc)
 		}
 
 		// Then run the inserts:
-		Project::insert( sqldb, local );
+		HelixProject::insert( sqldb, local );
 		Application::insert( sqldb, local.Apps );
-		ProjectData::insert( sqldb, local.Data );
+		HelixProjectData::insert( sqldb, local.Data );
 	} else {
 		// Run the updates
-		Project::update( sqldb, 
+		HelixProject::update( sqldb, 
 			local.ProjName, 
 			local.ShortName, 
 			local.Description, 
@@ -135,7 +135,7 @@ void SaveProject::ExecuteRequest(IOConn& ioc)
 			);
 		}
 		for(size_t i = 0; i < local.Data->size(); i++){
-			ProjectData::update( sqldb, 
+			HelixProjectData::update( sqldb, 
 				local.Data->at(i)->DataName,
 				local.Data->at(i)->Description,
 				local.Data->at(i)->DataType,

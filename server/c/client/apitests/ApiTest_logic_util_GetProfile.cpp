@@ -52,6 +52,9 @@ void ApiTest_logic_util_GetProfile_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetProfile_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetProfile has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetProfile();
@@ -81,6 +84,9 @@ void ApiTest_logic_util_GetProfile_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetProfile_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetProfile has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetProfile();
@@ -107,6 +113,9 @@ void ApiTest_logic_util_GetProfile_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetProfile_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetProfile has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetProfile();
@@ -132,6 +141,9 @@ void ApiTest_logic_util_GetProfile_CallWithValidPayload()
 void ApiTest_logic_util_GetProfile_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetProfile_CallWithInvalidPayload" )
+
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/util/GetProfile has no input values.
 	xmlDocPtr resp;

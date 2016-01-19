@@ -967,49 +967,49 @@ qx.Class.define("welcome.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/dev/GetProject
+		/** This function will call the /logic/dev/GetHelixProject
 		  * server API.
 		  */
-		GetProject : function ( inputObj,
+		GetHelixProject : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetProject");
+			var requestDoc = qx.xml.Document.create(null, "GetHelixProject");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			welcome.Api.SendRequest(requestDoc, "/logic/dev/GetProject",
+			welcome.Api.SendRequest(requestDoc, "/logic/dev/GetHelixProject",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/dev/GetProjectList
+		/** This function will call the /logic/dev/GetHelixProjectList
 		  * server API.
 		  */
-		GetProjectList : function (
+		GetHelixProjectList : function (
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetProjectList");
+			var requestDoc = qx.xml.Document.create(null, "GetHelixProjectList");
 
 			// Now send the request to the server.
-			welcome.Api.SendRequest(requestDoc, "/logic/dev/GetProjectList",
+			welcome.Api.SendRequest(requestDoc, "/logic/dev/GetHelixProjectList",
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/dev/SaveProject
+		/** This function will call the /logic/dev/SaveHelixProject
 		  * server API.
 		  */
-		SaveProject : function ( inputObj,
+		SaveHelixProject : function ( inputObj,
 			completionFunction, theThis
 		){
 			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "SaveProject");
+			var requestDoc = qx.xml.Document.create(null, "SaveHelixProject");
 			var requestRoot = requestDoc.documentElement;
 			inputObj.createXMLElement( requestRoot );
 
 			// Now send the request to the server.
-			welcome.Api.SendRequest(requestDoc, "/logic/dev/SaveProject",
+			welcome.Api.SendRequest(requestDoc, "/logic/dev/SaveHelixProject",
 				completionFunction, theThis);
 		},
 

@@ -1,7 +1,7 @@
-<SQLXml generateClass="Project" package="logic/dev" >
+<SQLXml generateClass="HelixProject" package="logic/dev" >
 
 	<ChildVector name="Apps" type="Application" />
-	<ChildVector name="Data" type="ProjectData" />
+	<ChildVector name="Data" type="HelixProjectData" />
 
 	<SqlStatement methodName="insert" methodType="INSERT" target="sqldb">
 		<Comment>

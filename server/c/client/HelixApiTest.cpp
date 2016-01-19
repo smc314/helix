@@ -360,9 +360,9 @@ void RunApiTests()
 	m_api = new Helix::Client::HelixApi(m_test_host.c_str(), atoi(m_test_port.c_str()));
 
 	// Invoke all of our test methods here directly:
-	ApiTest_logic_dev_GetProject();
-	ApiTest_logic_dev_SaveProject();
-	ApiTest_logic_dev_GetProjectList();
+	ApiTest_logic_dev_GetHelixProject();
+	ApiTest_logic_dev_SaveHelixProject();
+	ApiTest_logic_dev_GetHelixProjectList();
 	ApiTest_logic_util_GetLogMsgCount();
 	ApiTest_logic_util_CloseConnection();
 	ApiTest_logic_util_GetAllLayouts();

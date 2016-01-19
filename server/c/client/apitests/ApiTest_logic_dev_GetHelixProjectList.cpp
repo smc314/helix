@@ -13,51 +13,51 @@
 /* Define all Local test methods here.                                                    */
 /* ************************************************************************************** */
 
-void ApiTest_logic_admin_Authenticate_NoAuthorization_ShouldFail();
-void ApiTest_logic_admin_Authenticate_CallWithEmptyPayload();
-void ApiTest_logic_admin_Authenticate_CallWithValidPayload();
-void ApiTest_logic_admin_Authenticate_CallWithInvalidPayload();
+void ApiTest_logic_dev_GetHelixProjectList_NoAuthorization_ShouldFail();
+void ApiTest_logic_dev_GetHelixProjectList_CallWithEmptyPayload();
+void ApiTest_logic_dev_GetHelixProjectList_CallWithValidPayload();
+void ApiTest_logic_dev_GetHelixProjectList_CallWithInvalidPayload();
 
-// Define more of your own tests and methods for testing /logic/admin/Authenticate here
+// Define more of your own tests and methods for testing /logic/dev/GetHelixProjectList here
 
-/** This is the main method that executes the tests for the /logic/admin/Authenticate api.  All tests
+/** This is the main method that executes the tests for the /logic/dev/GetHelixProjectList api.  All tests
   * that should be executed against this api should be invoked directly here.
   */
-void ApiTest_logic_admin_Authenticate()
+void ApiTest_logic_dev_GetHelixProjectList()
 {
 	// Ensure that we should be testing this API
-	if(runTestsForApi("/logic/admin/Authenticate") == false){
+	if(runTestsForApi("/logic/dev/GetHelixProjectList") == false){
 		return; // Tests for this api are not included in this run.
 	}
 
 	// Test the Api without authorization:
-	ApiTest_logic_admin_Authenticate_NoAuthorization_ShouldFail();
+	ApiTest_logic_dev_GetHelixProjectList_NoAuthorization_ShouldFail();
 
 	// Test the Api with an empty payload
-	ApiTest_logic_admin_Authenticate_CallWithEmptyPayload();
+	ApiTest_logic_dev_GetHelixProjectList_CallWithEmptyPayload();
 
 	// Test the Api with a valid payload
-	ApiTest_logic_admin_Authenticate_CallWithValidPayload();
+	ApiTest_logic_dev_GetHelixProjectList_CallWithValidPayload();
 
 	// Test the Api with an invalid payload
-	ApiTest_logic_admin_Authenticate_CallWithInvalidPayload();
+	ApiTest_logic_dev_GetHelixProjectList_CallWithInvalidPayload();
 
 	// Call any other tests that you have defined here:
 }
 
-/** This will call the /logic/admin/Authenticate without any authorization information.  This should
+/** This will call the /logic/dev/GetHelixProjectList without any authorization information.  This should
   * be rejected by the server, and we should receive the error message.
   */
-void ApiTest_logic_admin_Authenticate_NoAuthorization_ShouldFail()
+void ApiTest_logic_dev_GetHelixProjectList_NoAuthorization_ShouldFail()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_admin_Authenticate_NoAuthorization_ShouldFail" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetHelixProjectList_NoAuthorization_ShouldFail" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/admin/Authenticate has no input values.
+	// Api /logic/dev/GetHelixProjectList has no input values.
 	xmlDocPtr resp;
-	resp = m_api->Authenticate();
+	resp = m_api->GetHelixProjectList();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -77,19 +77,19 @@ void ApiTest_logic_admin_Authenticate_NoAuthorization_ShouldFail()
 	END_TEST_METHOD
 }
 
-/** This test will call the /logic/admin/Authenticate with an empty payload and check the response
+/** This test will call the /logic/dev/GetHelixProjectList with an empty payload and check the response
   * that is received.
   */
-void ApiTest_logic_admin_Authenticate_CallWithEmptyPayload()
+void ApiTest_logic_dev_GetHelixProjectList_CallWithEmptyPayload()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_admin_Authenticate_CallWithEmptyPayload" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetHelixProjectList_CallWithEmptyPayload" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/admin/Authenticate has no input values.
+	// Api /logic/dev/GetHelixProjectList has no input values.
 	xmlDocPtr resp;
-	resp = m_api->Authenticate();
+	resp = m_api->GetHelixProjectList();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -106,19 +106,19 @@ void ApiTest_logic_admin_Authenticate_CallWithEmptyPayload()
 	END_TEST_METHOD
 }
 
-/** This test will call the /logic/admin/Authenticate with a valid payload and check the response
+/** This test will call the /logic/dev/GetHelixProjectList with a valid payload and check the response
   * that is received.
   */
-void ApiTest_logic_admin_Authenticate_CallWithValidPayload()
+void ApiTest_logic_dev_GetHelixProjectList_CallWithValidPayload()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_admin_Authenticate_CallWithValidPayload" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetHelixProjectList_CallWithValidPayload" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/admin/Authenticate has no input values.
+	// Api /logic/dev/GetHelixProjectList has no input values.
 	xmlDocPtr resp;
-	resp = m_api->Authenticate();
+	resp = m_api->GetHelixProjectList();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -135,19 +135,19 @@ void ApiTest_logic_admin_Authenticate_CallWithValidPayload()
 	END_TEST_METHOD
 }
 
-/** This test will call the /logic/admin/Authenticate with an invalid payload and check the response
+/** This test will call the /logic/dev/GetHelixProjectList with an invalid payload and check the response
   * that is received.
   */
-void ApiTest_logic_admin_Authenticate_CallWithInvalidPayload()
+void ApiTest_logic_dev_GetHelixProjectList_CallWithInvalidPayload()
 {
-	BEGIN_TEST_METHOD( "ApiTest_logic_admin_Authenticate_CallWithInvalidPayload" )
+	BEGIN_TEST_METHOD( "ApiTest_logic_dev_GetHelixProjectList_CallWithInvalidPayload" )
 
 	// Remove this out when you've updated these tests to be real
 	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Api /logic/admin/Authenticate has no input values.
+	// Api /logic/dev/GetHelixProjectList has no input values.
 	xmlDocPtr resp;
-	resp = m_api->Authenticate();
+	resp = m_api->GetHelixProjectList();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}

@@ -52,12 +52,18 @@ void ApiTest_logic_admin_GetSQLWork_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetSQLWork_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetSQLWork(inputObj);
-	ASSERT_NOTNULL(resp, "resp should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -84,15 +90,20 @@ void ApiTest_logic_admin_GetSQLWork_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetSQLWork_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->GetSQLWork(inputObj);
-		ASSERT_TRUE(false, "API Call should have failed.");
-	} catch (AnException& e){
-		// Ignore this - this is what we expect to happen.
+	xmlDocPtr resp;
+	resp = m_api->GetSQLWork(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -114,30 +125,21 @@ void ApiTest_logic_admin_GetSQLWork_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetSQLWork_CallWithValidPayload" )
 
-	// Save a test file to the server first so that we can test the Get call.
-	SQLWork newWork;
-	newWork.FileName = "ApiTest_logic_admin_GetSQLWork_CallWithValidPayload";
-	m_api->SaveSQLWork( newWork );
-
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
 	// Api /logic/admin/GetSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
-	inputObj.FileName = newWork.FileName;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetSQLWork(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	SQLWork_svect workList = SQLWork::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(1, workList->size(), "Returned list of SQLWork files should have a size of 1.")
-	SQLWork* respWork = (*workList)[0];
-
-	ASSERT_EQUALS(newWork.FileName, respWork->FileName, "FileName fields don't match.")
-
-	// When we are done with it - ensure that we delete the work file:
-	m_api->DeleteSQLWork( newWork );
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -158,15 +160,20 @@ void ApiTest_logic_admin_GetSQLWork_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetSQLWork_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->GetSQLWork(inputObj);
-		ASSERT_TRUE(false, "Api call should have failed.")
-	} catch(AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->GetSQLWork(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:

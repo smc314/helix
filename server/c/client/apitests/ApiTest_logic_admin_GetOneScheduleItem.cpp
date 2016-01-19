@@ -52,6 +52,9 @@ void ApiTest_logic_admin_GetOneScheduleItem_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetOneScheduleItem_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetOneScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -61,7 +64,6 @@ void ApiTest_logic_admin_GetOneScheduleItem_NoAuthorization_ShouldFail()
 
 	xmlDocPtr resp;
 	resp = m_api->GetOneScheduleItem(inputObj);
-	ASSERT_NOTNULL(resp, "Response document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -88,6 +90,9 @@ void ApiTest_logic_admin_GetOneScheduleItem_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetOneScheduleItem_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetOneScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
 	// Fill out the details for inputObj here:
@@ -97,12 +102,9 @@ void ApiTest_logic_admin_GetOneScheduleItem_CallWithEmptyPayload()
 
 	xmlDocPtr resp;
 	resp = m_api->GetOneScheduleItem(inputObj);
-	ASSERT_NOTNULL(resp, "Response document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	SchedItem_svect respList = SchedItem::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(0, respList->size(), "Should be no elements in the response list")
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -123,29 +125,20 @@ void ApiTest_logic_admin_GetOneScheduleItem_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetOneScheduleItem_CallWithValidPayload" )
 
-	// First pull up the full list of schedule items:
-	SchedItem_svect list = SchedItem::readXmlChildren( 
-		xmlDocGetRootElement(
-			m_api->GetScheduleItems()
-		)
-	);
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
 
-	// Now verify that we can call for each by id:
-	for(size_t i = 0; i < list->size(); i++){
-		// Api /logic/admin/GetOneScheduleItem requires an object of type SchedItem as input.
-		SchedItem inputObj;
-		inputObj.id = (*list)[ i ]->id;
+	// Api /logic/admin/GetOneScheduleItem requires an object of type SchedItem as input.
+	SchedItem inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-		xmlDocPtr resp;
-		resp = m_api->GetOneScheduleItem(inputObj);
-		ASSERT_NOTNULL(resp, "Response document should not be null, but it is.")
-		if(m_log_steps){
-			printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
-		}
-
-		SchedItem_svect respList = SchedItem::readXmlChildren( xmlDocGetRootElement( resp ) );
-		ASSERT_EQUALS(1, respList->size(), "Should only be one element in the response list")
-		ASSERT_EQUALS(inputObj.id, (*respList)[0]->id, "ID's in the request and response should match.");
+	xmlDocPtr resp;
+	resp = m_api->GetOneScheduleItem(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -167,18 +160,21 @@ void ApiTest_logic_admin_GetOneScheduleItem_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_GetOneScheduleItem_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/GetOneScheduleItem requires an object of type SchedItem as input.
 	SchedItem inputObj;
-	inputObj.id = 314159;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->GetOneScheduleItem(inputObj);
-	ASSERT_NOTNULL(resp, "Response document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	SchedItem_svect respList = SchedItem::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(0, respList->size(), "Should be no elements in the response list")
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")

@@ -52,6 +52,9 @@ void ApiTest_logic_util_GetAllLRTasks_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetAllLRTasks_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetAllLRTasks has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetAllLRTasks();
@@ -81,13 +84,15 @@ void ApiTest_logic_util_GetAllLRTasks_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetAllLRTasks_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetAllLRTasks has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetAllLRTasks();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LRTask_svect respList = LRTask::readXmlChildren( xmlDocGetRootElement( resp ) );
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -108,13 +113,15 @@ void ApiTest_logic_util_GetAllLRTasks_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetAllLRTasks_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetAllLRTasks has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetAllLRTasks();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LRTask_svect respList = LRTask::readXmlChildren( xmlDocGetRootElement( resp ) );
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -135,13 +142,15 @@ void ApiTest_logic_util_GetAllLRTasks_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_GetAllLRTasks_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/GetAllLRTasks has no input values.
 	xmlDocPtr resp;
 	resp = m_api->GetAllLRTasks();
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	LRTask_svect respList = LRTask::readXmlChildren( xmlDocGetRootElement( resp ) );
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")

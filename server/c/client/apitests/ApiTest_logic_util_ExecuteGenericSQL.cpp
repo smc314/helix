@@ -52,8 +52,15 @@ void ApiTest_logic_util_ExecuteGenericSQL_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_ExecuteGenericSQL_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/ExecuteGenericSQL requires an object of type SQLStatement as input.
 	SQLStatement inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->ExecuteGenericSQL(inputObj);
@@ -83,15 +90,20 @@ void ApiTest_logic_util_ExecuteGenericSQL_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_ExecuteGenericSQL_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/ExecuteGenericSQL requires an object of type SQLStatement as input.
 	SQLStatement inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->ExecuteGenericSQL(inputObj);
-		ASSERT_TRUE(false, "API Call should have failed.")
-	} catch (AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->ExecuteGenericSQL(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -113,14 +125,18 @@ void ApiTest_logic_util_ExecuteGenericSQL_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_ExecuteGenericSQL_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/ExecuteGenericSQL requires an object of type SQLStatement as input.
 	SQLStatement inputObj;
-	inputObj.HostDB = "Director-Config";
-	inputObj.Sql = "select * from schedule;";
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->ExecuteGenericSQL(inputObj);
-	ASSERT_NOTNULL(resp, "Response document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -144,18 +160,21 @@ void ApiTest_logic_util_ExecuteGenericSQL_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_util_ExecuteGenericSQL_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/util/ExecuteGenericSQL requires an object of type SQLStatement as input.
 	SQLStatement inputObj;
-	inputObj.HostDB = "SomethingElse";
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->ExecuteGenericSQL(inputObj);
-		ASSERT_TRUE(false, "API Call should have failed.")
-	} catch (AnException& e){
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->ExecuteGenericSQL(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")

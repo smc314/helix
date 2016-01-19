@@ -52,12 +52,18 @@ void ApiTest_logic_admin_SaveSQLWork_NoAuthorization_ShouldFail()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_SaveSQLWork_NoAuthorization_ShouldFail" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/SaveSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->SaveSQLWork(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
@@ -84,15 +90,20 @@ void ApiTest_logic_admin_SaveSQLWork_CallWithEmptyPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_SaveSQLWork_CallWithEmptyPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/SaveSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->SaveSQLWork(inputObj);
-		ASSERT_TRUE(false, "API call should have failed.");
-	} catch (AnException& e){
-		// Ignore this - we expect an exception to be raised
+	xmlDocPtr resp;
+	resp = m_api->SaveSQLWork(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
@@ -114,34 +125,21 @@ void ApiTest_logic_admin_SaveSQLWork_CallWithValidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_SaveSQLWork_CallWithValidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/SaveSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
-	inputObj.FileName = "ApiTest_logic_admin_SaveSQLWork_CallWithValidPayload";
-	inputObj.Sql = "lots\nof\nwonderful\nsql\nstatements go in here;";
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
 	xmlDocPtr resp;
 	resp = m_api->SaveSQLWork(inputObj);
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
 	if(m_log_steps){
 		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
-	SQLWork_svect respList = SQLWork::readXmlChildren( xmlDocGetRootElement( resp ) );
-	ASSERT_EQUALS(0, respList->size(), "Response list should have no elements in it.")
-
-	// Now query for the file directly:
-	resp = m_api->GetSQLWork( inputObj );
-	ASSERT_NOTNULL(resp, "Response Document should not be null, but it is.")
-	if(m_log_steps){
-		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
-	}
-	SQLWork_svect respList2 = SQLWork::readXmlChildren( xmlDocGetRootElement( resp ) );
-	SQLWork* respObj2 = (*respList2)[0];
-
-	ASSERT_EQUALS(inputObj.FileName, respObj2->FileName, "FileName fields don't match.")
-	ASSERT_EQUALS(inputObj.Sql, respObj2->Sql, "Sql fields don't match.")
-
-	// When we are done - delete the working file
-	m_api->DeleteSQLWork( inputObj );
 
 	// Useful macros:
 	// ASSERT_EQUALS(a, b, "a is not equal to b, but it should be.")
@@ -162,15 +160,20 @@ void ApiTest_logic_admin_SaveSQLWork_CallWithInvalidPayload()
 {
 	BEGIN_TEST_METHOD( "ApiTest_logic_admin_SaveSQLWork_CallWithInvalidPayload" )
 
+	// Remove this out when you've updated these tests to be real
+	ASSERT_TRUE(false, "Test not implemented yet.");
+
 	// Api /logic/admin/SaveSQLWork requires an object of type SQLWork as input.
 	SQLWork inputObj;
+	// Fill out the details for inputObj here:
+	//inputObj.memberName1 = 1;
+	//inputObj.memberName2 = 2;
+	// etc...
 
-	try {
-		xmlDocPtr resp;
-		resp = m_api->SaveSQLWork(inputObj);
-		ASSERT_TRUE(false, "API call should have failed.")
-	} catch (AnException& e) {
-		// Ignore this - we expect an exception
+	xmlDocPtr resp;
+	resp = m_api->SaveSQLWork(inputObj);
+	if(m_log_steps){
+		printf("++ Received XML Response:\n%s\n", XmlHelpers::docToStringPretty( resp )() );
 	}
 
 	// Useful macros:
