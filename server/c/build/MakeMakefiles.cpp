@@ -159,6 +159,7 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"CFLAGS=" + win64CFlags +
 		"-I ..\\..\\" + extraDotDot + "glob "
 		"-I ..\\..\\" + extraDotDot + "client "
+		"-I sqldo "
 		"-I ..\\" + extraDotDot + "util -I ..\\" + extraDotDot + "util\\sqldo "
 		"-I ..\\" + extraDotDot + "admin -I ..\\" + extraDotDot + "admin\\sqldo "
 		"-I ..\\" + extraDotDot + "dev -I ..\\" + extraDotDot + "dev\\sqldo "
@@ -386,6 +387,7 @@ void createLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"CFLAGS=" + lin64CFlags +
 		"-I ../../" + extraDotDot + "glob "
 		"-I ../../" + extraDotDot + "client "
+		"-I sqldo "
 		"-I ../" + extraDotDot + "util -I ../" + extraDotDot + "util/sqldo "
 		"-I ../" + extraDotDot + "admin -I ../" + extraDotDot + "admin/sqldo "
 		"-I ../" + extraDotDot + "dev -I ../" + extraDotDot + "dev/sqldo "
