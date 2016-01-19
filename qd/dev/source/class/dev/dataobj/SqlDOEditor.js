@@ -940,7 +940,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			if (this.isNewObject === true)
 			{
 				this.m_object_id = new dev.sqldo.IAFile;
-				this.m_object_id.setParentFolder("../src/" + this.PackageField.getValue() + "/");
+				this.m_object_id.setParentFolder("../" + this.PackageField.getValue() + "/");
 				this.m_object_id.setFileName(this.GenerateClassField.getValue() + ".sql.xml");
 				this.m_object_id.setFileContents(xmlString);
 				dev.Api.SaveIAFile(this.m_object_id, function(response)
@@ -970,7 +970,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 					if (xmlStringTests)
 					{
 						var testIAFile = new dev.sqldo.IAFile;
-						testIAFile.setParentFolder("../src/" + this.PackageField.getValue() + "/test/");
+						testIAFile.setParentFolder("../" + this.PackageField.getValue() + "/test/");
 						testIAFile.setFileName(this.GenerateClassField.getValue() + "0001.xml");
 						testIAFile.setFileContents(xmlStringTests);
 						dev.Api.SaveIAFile(testIAFile, function(response)
@@ -981,7 +981,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 				}, this);
 			} else
 			{
-				this.m_object_id.setParentFolder("../src/" + this.PackageField.getValue() + "/");
+				this.m_object_id.setParentFolder("../" + this.PackageField.getValue() + "/");
 				this.m_object_id.setFileName(this.GenerateClassField.getValue() + ".sql.xml");
 				this.m_object_id.setFileContents(xmlString);
 				dev.Api.SaveIAFile(this.m_object_id, function(response)
@@ -994,7 +994,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 					if (xmlStringTests)
 					{
 						var testIAFile = new dev.sqldo.IAFile;
-						testIAFile.setParentFolder("../src/" + this.PackageField.getValue() + "/test/");
+						testIAFile.setParentFolder("../" + this.PackageField.getValue() + "/test/");
 						testIAFile.setFileName(this.GenerateClassField.getValue() + "0001.xml");
 						testIAFile.setFileContents(xmlStringTests);
 						dev.Api.SaveIAFile(testIAFile, function(response)
