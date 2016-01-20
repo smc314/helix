@@ -470,6 +470,7 @@ void OdbcObj::BindOutput(int pos, twine& data)
 {
 	EnEx ee(FL, "OdbcObj::BindOutput(int, twine&)");
 	SanityCheck();
+	size_t colMax = 5 * 1024 * 1024; // 5M max col size;
 
 	// We expect this version of BindOutput to be called after
 	// the ExecStmt, but before a fetch.  This means that we have
@@ -494,6 +495,7 @@ void OdbcObj::BindOutput(int pos, twine& data)
 	);
 
 	// Now use that information to reserve space in the twine:
+	colsize = min(colsize, colMax);
 	DEBUG(FL, "Reserving %d in the output twine.", colsize);
 	data.reserve( colsize );
 	size_t size = data.capacity() + 1;
