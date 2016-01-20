@@ -246,8 +246,9 @@ qx.Class.define("PACKAGE.ObjectEdit", {
 			var help_part = new qx.ui.toolbar.Part;
 			
 			// Help button
-			PACKAGE.Statics.addToToolbar(help_part, "PACKAGE/icon/16x16/plain/help2.png",
-					this.tr("View Help"), this.doShowHelp, this, this, "Help");
+			var helpBtn = PACKAGE.Statics.addToToolbar(help_part, "",
+					this.tr("View Help"), this.doShowHelp, this, this);
+			helpBtn.setAppearance("help-button");
 
 			tb.add(help_part);
 
