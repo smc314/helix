@@ -72,11 +72,19 @@ cp -a qd/dev/source/layouts ${PROJECT_FOLDER}/html/dev/
 cp -a qd/login/build/* ${PROJECT_FOLDER}/html/HelixLogin/
 cp qd/*.sh ${PROJECT_FOLDER}/qd/
 
+UNAME=`uname`
+if [ "${UNAME}" = "Darwin" ]
+then
+	DISTNAME="helixOsxDist.tgz"
+else
+	DISTNAME="helixDist.tgz"
+fi
+
 #
 # zip up the distribution folder
-rm -f helixDist.tgz
+rm -f ${DISTNAME}
 cd helixDist 
-tar cvfz ../helixDist.tgz *
+tar cvfz ../$(DISTNAME} *
 cd ..
 #
 # Remove the distribution temp folder
@@ -84,4 +92,4 @@ rm -rf ${PROJECT_FOLDER}
 
 #
 # Copy the distribution over to the website - only works if we're on hericus4.hericus.com
-scp helixDist.tgz hericus4.hericus.com:/home/smc/websites/helixweb/publicweb/
+scp ${DISTNAME} hericus4.hericus.com:/home/smc/websites/helixweb/publicweb/
