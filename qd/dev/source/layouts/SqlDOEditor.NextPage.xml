@@ -6,6 +6,7 @@
 				<VerticalBoxLayout paddingTop="20">
 					<Button varName="stmtAddNew" icon="dev/icon/16x16/plain/scroll2_add.png"/>
 					<Button varName="stmtDelete" icon="dev/icon/16x16/plain/delete2.png"/>
+					<Button varName="stmtCreateCrud" icon="dev/icon/16x16/plain/delete2.png"/>
 				</VerticalBoxLayout>
 				<StandardTable varName="stmtTable" flex="1">
 					<Column title="SQL Statement" width="3*" minWidth="50"/>
