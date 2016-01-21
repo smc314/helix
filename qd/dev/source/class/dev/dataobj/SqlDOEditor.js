@@ -29,6 +29,7 @@
 #asset(dev/icon/16x16/plain/floppy_disk_yellow.png)
 #asset(dev/icon/16x16/plain/cubes_blue_add.png)
 #asset(dev/icon/16x16/plain/objects_transform.png)
+#asset(dev/icon/64x64/shadow/code_c.png)
 #asset(dev/icon/16x16/plain/data_scroll.png)
 ************************************************************************ */
 qx.Class.define("dev.dataobj.SqlDOEditor",
@@ -127,15 +128,15 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		  */
 		createMainTab : function(tab_page)
 		{
-			var live = this.createOverviewLayout(tab_page, "Data Object Editor", 
-				"dev/icon/64x64/shadow/data_scroll.png", 
+			var live = this.createOverviewLayout(tab_page, "Data Object Editor",
+				"dev/icon/64x64/shadow/data_scroll.png",
 				this.m_object_id === 0 ? "NEW1" : this.m_object_id.getFileName());
 			this.addStatusHeading("General");
 			this.addStatusHint("Use this editor to define the Data Object that you would like to use " + "in your code." + "<p>" + "Group related SQL statements together into a single Data Object so that you can share " + "fields between the statements.  Try to keep unrelated statements in different Data Objects " + "so that the Object class layout is reasonable.");
 
-			dev.layout.LayoutEngine.renderLayout(this, 
+			dev.layout.LayoutEngine.renderLayout(this,
 				this.getDynamicLayout("SqlDOEditor.MainPage.xml"), live);
-			this.childStandardTable = new dev.StandardTable(this.childTable, 
+			this.childStandardTable = new dev.StandardTable(this.childTable,
 				this.childVectAddNew, this.childVectDelete);
 			this.childStandardTable.setDefaultRowData(["NewChildVector", "ChildVectorDataType"]);
 			this.childVectAddNew.setToolTipText("Add New Child Vector");
@@ -185,7 +186,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.stmtDelete.setToolTipText("Delete Selected SQL Statements");
 			this.stmtCreateCrud.addListener("execute", this.createCrudStatements, this);
 			this.stmtCreateCrud.setToolTipText("Create Standard CRUD SQL Statements");
-			
+
 		},
 
 		createTestsTab : function(tab_page)
@@ -762,7 +763,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		{
 			// Set up the SQLStatement object that is used by the ExecuteGenericSQL Api.
 			var sqlDO = new dev.sqldo.SQLStatement();
-			sqlDO.setSql( "select top 1 * from " + tableName); 
+			sqlDO.setSql( "select top 1 * from " + tableName);
 			sqlDO.setHostDB("lds");
 
 			// Now send our sql test group to the server for processing:
@@ -807,8 +808,8 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 						if (node.nodeName === "Column")
 						{
 							metaRowData.push([
-								node.getAttribute("position"), 
-								node.getAttribute("name"), 
+								node.getAttribute("position"),
+								node.getAttribute("name"),
 								dt[Number(node.getAttribute("dbtype")) + 10]
 							]);
 							colNames.push(node.getAttribute("name"));
@@ -834,7 +835,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		{
 			var counter = 1;
 			do {
-				var sqlNode = dev.Statics.xmlFindChildWithAttr(root, "SqlStatement", 
+				var sqlNode = dev.Statics.xmlFindChildWithAttr(root, "SqlStatement",
 					"methodName", prefix);
 				if(sqlNode === null){
 					return prefix;
@@ -846,7 +847,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 
 		generateInsertSql : function(tableName, metaRowData)
-		{	
+		{
 			var root = this.dataObject.documentElement;
 			var doc = root.ownerDocument;
 			var stmt = doc.createElement("SqlStatement");
@@ -890,7 +891,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 
 		generateUpdateSql : function(tableName, metaRowData)
-		{	
+		{
 			var root = this.dataObject.documentElement;
 			var doc = root.ownerDocument;
 			var stmt = doc.createElement("SqlStatement");
@@ -935,7 +936,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 
 		generateDeleteByIdSql: function(tableName, metaRowData)
-		{	
+		{
 			var root = this.dataObject.documentElement;
 			var doc = root.ownerDocument;
 			var stmt = doc.createElement("SqlStatement");
@@ -961,7 +962,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 
 		generateSelectIdentitySql: function(tableName, metaRowData)
-		{	
+		{
 			var root = this.dataObject.documentElement;
 			var doc = root.ownerDocument;
 			var stmt = doc.createElement("SqlStatement");
@@ -986,7 +987,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 
 		generateSelectAllSql: function(tableName, metaRowData)
-		{	
+		{
 			var root = this.dataObject.documentElement;
 			var doc = root.ownerDocument;
 			var stmt = doc.createElement("SqlStatement");
@@ -1026,7 +1027,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		},
 
 		generateSelectByIdSql: function(tableName, metaRowData)
-		{	
+		{
 			var root = this.dataObject.documentElement;
 			var doc = root.ownerDocument;
 			var stmt = doc.createElement("SqlStatement");

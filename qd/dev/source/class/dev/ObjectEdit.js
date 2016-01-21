@@ -9,6 +9,8 @@ Authors: Steven M. Cherry
 ************************************************************************ */
 /* ************************************************************************
 #asset(dev/icon/32x32/shadow/sign_warning.png)
+#asset(dev/icon/16x16/plain/floppy_disk_ok.png)
+#asset(dev/icon/16x16/plain/refresh.png)
 ************************************************************************ */
 qx.Class.define("dev.ObjectEdit", {
 	extend: qx.ui.container.Composite,
@@ -232,14 +234,12 @@ qx.Class.define("dev.ObjectEdit", {
 			// Save/Cancel part
 			var sc_part = new qx.ui.toolbar.Part;
 			// Save button
-			var saveBtn = dev.Statics.addToToolbar(sc_part, "",
-					this.tr("Save To Server"), this.doSaveToServer, this, this);
-			saveBtn.setAppearance("grid-refresh-button");
+			dev.Statics.addToToolbarWithShortcut(sc_part, "dev/icon/16x16/plain/floppy_disk_ok.png",
+				this.tr("Save To Server"), this.doSaveToServer, this, this, null, "Save");
 
 			// Revert button
-			var refreshBtn = dev.Statics.addToToolbar(sc_part, "",
-					this.tr("Reload From Server"), this.doRevert, this, this);
-			refreshBtn.setAppearance("grid-refresh-button");
+			dev.Statics.addToToolbarWithShortcut(sc_part, "dev/icon/16x16/plain/refresh.png",
+				this.tr("Reload From Server"), this.doRevert, this, this, null, "Revert");
 
 			tb.add(sc_part);
 

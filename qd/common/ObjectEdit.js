@@ -234,14 +234,12 @@ qx.Class.define("PACKAGE.ObjectEdit", {
 			// Save/Cancel part
 			var sc_part = new qx.ui.toolbar.Part;
 			// Save button
-			var saveBtn = PACKAGE.Statics.addToToolbar(sc_part, "",
-					this.tr("Save To Server"), this.doSaveToServer, this, this);
-			saveBtn.setAppearance("grid-refresh-button");
+			PACKAGE.Statics.addToToolbarWithShortcut(sc_part, "PACKAGE/icon/16x16/plain/floppy_disk_ok.png",
+				this.tr("Save To Server"), this.doSaveToServer, this, this, null, "Save");
 
 			// Revert button
-			var refreshBtn = PACKAGE.Statics.addToToolbar(sc_part, "",
-					this.tr("Reload From Server"), this.doRevert, this, this);
-			refreshBtn.setAppearance("grid-refresh-button");
+			PACKAGE.Statics.addToToolbarWithShortcut(sc_part, "PACKAGE/icon/16x16/plain/refresh.png",
+				this.tr("Reload From Server"), this.doRevert, this, this, null, "Revert");
 
 			tb.add(sc_part);
 

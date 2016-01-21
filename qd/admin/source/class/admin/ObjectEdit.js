@@ -11,7 +11,6 @@ Authors: Steven M. Cherry
 #asset(admin/icon/32x32/shadow/sign_warning.png)
 #asset(admin/icon/16x16/plain/floppy_disk_ok.png)
 #asset(admin/icon/16x16/plain/refresh.png)
-#asset(admin/icon/16x16/plain/help2.png)
 ************************************************************************ */
 qx.Class.define("admin.ObjectEdit", {
 	extend: qx.ui.container.Composite,
@@ -24,7 +23,10 @@ qx.Class.define("admin.ObjectEdit", {
 		* warranted, it will have been issued and returned prior to changing the
 		* property value and firing an "editorLoaded" event.
 		*/
-		editorLoaded : {init : false, event : "editorLoaded", check : "Boolean", inheritable : true}
+		editorLoaded : {init : false, event : "editorLoaded", check : "Boolean", inheritable : true},
+
+		editList : {init: null, check : "Object" }
+
 	},
 
 	construct: function (object_id) {
@@ -180,21 +182,26 @@ qx.Class.define("admin.ObjectEdit", {
 				}
 				// We are dirty.  Warn the user:
 				e.stop();
-				var windowTitle = "Unsaved Changes!";
-				var windowIcon = "admin/icon/32x32/shadow/sign_warning.png";
-				var windowLabel = "You have unsaved changes and are about to close the editor.<br/><br/>Press OK to close the editor and lose your changes.<br/>Press Cancel to keep the editor open.";
-				var dialog = new admin.dialog.QuestionDialog(windowTitle, windowIcon, windowLabel);
-				qx.core.Init.getApplication().getRoot().add( dialog );
-				dialog.addOkEventListener("execute", function(){
+				this.warnIfDirty(function(){
 					// forcibly remove the tab page:
 					this.cancelAutoRefreshTimer();
 					this.cancelAutoSaveTimer();
 					var tabView = admin.Statics.findQXParent(our_page, qx.ui.tabview.TabView);
 					tabView.remove( our_page );
 				}, this);
-				dialog.open();
 
 			}, this);
+		},
+
+		warnIfDirty : function(discardFn, discardThis){
+			var windowTitle = "Unsaved Changes!";
+			var windowIcon = "admin/icon/32x32/shadow/sign_warning.png";
+			var windowLabel = "You have unsaved changes and are about to close the editor.<br/><br/>Press OK to close the editor and lose your changes.<br/>Press Cancel to keep the editor open.";
+
+			var dialog = new admin.dialog.QuestionDialog(windowTitle, windowIcon, windowLabel);
+			qx.core.Init.getApplication().getRoot().add( dialog );
+			dialog.addOkEventListener("execute", discardFn, discardThis);
+			dialog.open();
 		},
 
 		/** This function will reset the name of our tab to be the string that you have
@@ -228,11 +235,11 @@ qx.Class.define("admin.ObjectEdit", {
 			var sc_part = new qx.ui.toolbar.Part;
 			// Save button
 			admin.Statics.addToToolbarWithShortcut(sc_part, "admin/icon/16x16/plain/floppy_disk_ok.png",
-					this.tr("Save To Server"), this.doSaveToServer, this, this, null, "Save");
+				this.tr("Save To Server"), this.doSaveToServer, this, this, null, "Save");
 
 			// Revert button
 			admin.Statics.addToToolbarWithShortcut(sc_part, "admin/icon/16x16/plain/refresh.png",
-					this.tr("Reload From Server"), this.doRevert, this, this, null, "Revert");
+				this.tr("Reload From Server"), this.doRevert, this, this, null, "Revert");
 
 			tb.add(sc_part);
 
@@ -247,8 +254,9 @@ qx.Class.define("admin.ObjectEdit", {
 			var help_part = new qx.ui.toolbar.Part;
 
 			// Help button
-			admin.Statics.addToToolbar(help_part, "admin/icon/16x16/plain/help2.png",
-					this.tr("View Help"), this.doShowHelp, this, this, "Help");
+			var helpBtn = admin.Statics.addToToolbar(help_part, "",
+					this.tr("View Help"), this.doShowHelp, this, this);
+			helpBtn.setAppearance("help-button");
 
 			tb.add(help_part);
 
@@ -303,6 +311,35 @@ qx.Class.define("admin.ObjectEdit", {
 		},
 
 		getObjectDetails: function (response) {
+		},
+
+		/** This is used to move the editor from one object to another.
+		  */
+		setCurrentObject : function(object_id){
+			if(this.isDirty){
+				// Warn the user about loosing their changes
+				this.warnIfDirty( function(){
+					// go ahead and move to the new object.
+					this.m_object_id = object_id;
+					if (this.m_object_id !== 0 && this.selectApiCall) {
+						this.selectApiCall(this.m_object_id, this.firstGetObjectDetails, this);
+					} else {
+						this.initializeNewObject();
+						this.setFocusFirst();
+					}
+
+				}, this);
+			} else {
+				// Not dirty, just move to the new object
+				this.m_object_id = object_id;
+				if (this.m_object_id !== 0 && this.selectApiCall) {
+					this.selectApiCall(this.m_object_id, this.firstGetObjectDetails, this);
+				} else {
+					this.initializeNewObject();
+					this.setFocusFirst();
+				}
+			}
+
 		},
 
 		/** This will save our current task information to the server
