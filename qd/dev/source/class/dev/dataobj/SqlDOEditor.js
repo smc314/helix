@@ -127,11 +127,16 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		  */
 		createMainTab : function(tab_page)
 		{
-			var live = this.createOverviewLayout(tab_page, "Data Object Editor", "dev/icon/64x64/shadow/data_scroll.png", this.m_object_id === 0 ? "NEW1" : this.m_object_id.getFileName());
+			var live = this.createOverviewLayout(tab_page, "Data Object Editor", 
+				"dev/icon/64x64/shadow/data_scroll.png", 
+				this.m_object_id === 0 ? "NEW1" : this.m_object_id.getFileName());
 			this.addStatusHeading("General");
 			this.addStatusHint("Use this editor to define the Data Object that you would like to use " + "in your code." + "<p>" + "Group related SQL statements together into a single Data Object so that you can share " + "fields between the statements.  Try to keep unrelated statements in different Data Objects " + "so that the Object class layout is reasonable.");
-			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.MainPage.xml"), live);
-			this.childStandardTable = new dev.StandardTable(this.childTable, this.childVectAddNew, this.childVectDelete);
+
+			dev.layout.LayoutEngine.renderLayout(this, 
+				this.getDynamicLayout("SqlDOEditor.MainPage.xml"), live);
+			this.childStandardTable = new dev.StandardTable(this.childTable, 
+				this.childVectAddNew, this.childVectDelete);
 			this.childStandardTable.setDefaultRowData(["NewChildVector", "ChildVectorDataType"]);
 			this.childVectAddNew.setToolTipText("Add New Child Vector");
 			this.childVectDelete.setToolTipText("Delete Selected Child Vectors");
@@ -178,7 +183,11 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.stmtAddNew.setToolTipText("Add New SQL Statement");
 			this.stmtDelete.addListener("execute", this.deleteSqlStatement, this);
 			this.stmtDelete.setToolTipText("Delete Selected SQL Statements");
+			this.stmtCreateCrud.addListener("execute", this.createCrudStatements, this);
+			this.stmtCreateCrud.setToolTipText("Create Standard CRUD SQL Statements");
+			
 		},
+
 		createTestsTab : function(tab_page)
 		{
 			dev.layout.LayoutEngine.renderLayout(this, this.getDynamicLayout("SqlDOEditor.TestsPage.xml"), tab_page);
@@ -198,6 +207,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.createSavedResultsTab(dev.Statics.addEditorSubTab(this.testResultsView, "Saved Results", false));
 			this.createSavedMetadataTab(dev.Statics.addEditorSubTab(this.testResultsView, "Saved Metadata", false));
 		},
+
 		createLiveResultsTab : function(tab_page)
 		{
 			// These are icons referenced in the layout.  Do not delete these comments:
@@ -209,6 +219,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.liveResultsCompare.setToolTipText("Compare Live and Saved Results in a new Window");
 			this.liveResultsSave.setToolTipText("Save the Live Results and Metadata.");
 		},
+
 		createLiveMetadataTab : function(tab_page)
 		{
 			// These are icons referenced in the layout.  Do not delete these comments:
@@ -220,6 +231,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.liveMetaCompare.setToolTipText("Compare Live and Saved Metadata in a new Window");
 			this.liveMetaSave.setToolTipText("Save the Live Results and Metadata.");
 		},
+
 		createSavedResultsTab : function(tab_page)
 		{
 			// These are icons referenced in the layout.  Do not delete these comments:
@@ -231,6 +243,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.savedResultsCompare.setToolTipText("Compare Live and Saved Results in a new Window");
 			this.savedResultsSave.setToolTipText("Save the Live Results and Metadata.");
 		},
+
 		createSavedMetadataTab : function(tab_page)
 		{
 			// These are icons referenced in the layout.  Do not delete these comments:
@@ -242,6 +255,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.savedMetaCompare.setToolTipText("Compare Live and Saved Metadata in a new Window");
 			this.savedMetaSave.setToolTipText("Save the Live Results and Metadata.");
 		},
+
 		createSqlStmtTab : function(tab_page)
 		{
 			// These are icons referenced in the layout.  Do not delete these comments:
@@ -441,7 +455,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 		mangleFieldName : function(orig)
 		{
 			var ret = qx.lang.String.clean(orig);         // first clean it up.
-			ret = ret.toLowerCase();                      // lower-case the whole string
+			//ret = ret.toLowerCase();                      // lower-case the whole string
 
 			// Remove invalid characters:
 			ret = ret.replace(/[^a-z,A-Z,0-9,_]/g, function(match, chr) {
@@ -730,6 +744,331 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.loadStatementTable();
 			this.stmtTable.getSelectionModel().resetSelection();
 			this.clearStatement();
+		},
+
+		createCrudStatements : function()
+		{
+			var winTitle = "Table name";
+			var winLabel = "Enter table name for CRUD Statements";
+			var winIcon = "dev/icon/64x64/shadow/code_c.png";
+			var dialog = new dev.SingleTextEntryDialog(winTitle, winIcon, winLabel);
+			dialog.addOkEventListener("execute", function() {
+				this.generateCrudStatements( dialog.getTextValue() );
+			}, this);
+			dialog.open();
+		},
+
+		generateCrudStatements : function(tableName)
+		{
+			// Set up the SQLStatement object that is used by the ExecuteGenericSQL Api.
+			var sqlDO = new dev.sqldo.SQLStatement();
+			sqlDO.setSql( "select top 1 * from " + tableName); 
+			sqlDO.setHostDB("lds");
+
+			// Now send our sql test group to the server for processing:
+			dev.Api.ExecuteGenericSQL(sqlDO, function(response)
+			{
+				// Walk the results for metadata and column rows
+				var dt =
+				{
+					0 : "WLONGVARCHAR",
+					1 : "WVARCHAR",
+					2 : "WCHAR",
+					3 : "BIT",
+					4 : "BYTEINT",
+					5 : "BIGINT",
+					6 : "LONGVARBINARY",
+					7 : "VARBINARY",
+					8 : "BINARY",
+					9 : "LONGVARCHAR",
+					11 : "CHAR",
+					12 : "NUMERIC",
+					13 : "DECIMAL",
+					14 : "INTEGER",
+					15 : "SMALLINT",
+					16 : "FLOAT",
+					17 : "REAL",
+					18 : "DOUBLE",
+					19 : "DATE",
+					20 : "TIME",
+					21 : "TIMESTAMP",
+					22 : "VARCHAR"
+				};
+
+				// Find the metadata node and read the metadata
+				var metaNode = dev.Statics.xmlFindChild(response, "MetaData");
+				var colNames = [];
+				if (metaNode !== null)
+				{
+					var metaRowData = [];
+					for (var i = 0, l = metaNode.childNodes.length; i < l; i++)
+					{
+						var node = metaNode.childNodes[i];
+						if (node.nodeName === "Column")
+						{
+							metaRowData.push([
+								node.getAttribute("position"), 
+								node.getAttribute("name"), 
+								dt[Number(node.getAttribute("dbtype")) + 10]
+							]);
+							colNames.push(node.getAttribute("name"));
+						}
+					}
+				}
+
+				this.generateInsertSql( tableName, metaRowData );
+				this.generateUpdateSql( tableName, metaRowData );
+				this.generateDeleteByIdSql( tableName, metaRowData );
+				this.generateSelectIdentitySql( tableName, metaRowData );
+				this.generateSelectAllSql( tableName, metaRowData );
+				this.generateSelectByIdSql( tableName, metaRowData );
+
+				this.loadStatementTable();
+				this.stmtTable.getSelectionModel().resetSelection();
+				this.clearStatement();
+
+			}, this);
+		},
+
+		getUniqueName : function( root, prefix )
+		{
+			var counter = 1;
+			do {
+				var sqlNode = dev.Statics.xmlFindChildWithAttr(root, "SqlStatement", 
+					"methodName", prefix);
+				if(sqlNode === null){
+					return prefix;
+				}
+				prefix = prefix + counter;
+				counter++;
+			} while(sqlNode !== null);
+
+		},
+
+		generateInsertSql : function(tableName, metaRowData)
+		{	
+			var root = this.dataObject.documentElement;
+			var doc = root.ownerDocument;
+			var stmt = doc.createElement("SqlStatement");
+			root.appendChild(stmt);
+			stmt.setAttribute("methodName", this.getUniqueName(root, "insert"));
+			stmt.setAttribute("methodType", "INSERT");
+			stmt.setAttribute("target", "odbc");
+			var commentNode = doc.createElement("Comment");
+			stmt.appendChild(commentNode);
+			dev.Statics.xmlSetText(commentNode, "Inserts a single row into the table " + tableName);
+			var sql = doc.createElement("Sql");
+			stmt.appendChild(sql);
+
+			var sqlText = "insert into " + tableName + "(\n    ";
+			var valuesText = "values (\n    ";
+			for(var i = 0, l = metaRowData.length; i < l; i++){
+				sqlText += "[" + metaRowData[i][1] + "]";
+				valuesText += "?";
+
+				if(i < (l-1)){
+					sqlText += ", ";
+					valuesText += ", ";
+				}
+
+				if( (i+1) % 3 == 0){
+					sqlText += "\n    ";
+					valuesText += "\n    ";
+				}
+			}
+			dev.Statics.xmlSetText(sql, sqlText + ")\n" + valuesText + ")\n" );
+
+			// Next, create new Input fields based on the results metadata
+			for (var i = 0, l = metaRowData.length; i < l; i++)
+			{
+				var oNode = doc.createElement("Input");
+				stmt.appendChild(oNode);
+				oNode.setAttribute("name", this.mangleFieldName(metaRowData[i][1]));
+				oNode.setAttribute("type", this.translateType(metaRowData[i][2]));
+			}
+
+		},
+
+		generateUpdateSql : function(tableName, metaRowData)
+		{	
+			var root = this.dataObject.documentElement;
+			var doc = root.ownerDocument;
+			var stmt = doc.createElement("SqlStatement");
+			root.appendChild(stmt);
+			stmt.setAttribute("methodName", this.getUniqueName(root, "update"));
+			stmt.setAttribute("methodType", "UPDATE");
+			stmt.setAttribute("target", "odbc");
+			var commentNode = doc.createElement("Comment");
+			stmt.appendChild(commentNode);
+			dev.Statics.xmlSetText(commentNode, "Updates a single row by Id in the table " + tableName);
+			var sql = doc.createElement("Sql");
+			stmt.appendChild(sql);
+
+			var sqlText = "update " + tableName + " set\n";
+			for(var i = 0, l = metaRowData.length; i < l; i++){
+				if(metaRowData[i][1] === "Id") continue;
+				sqlText += "    [" + metaRowData[i][1] + "] = ?";
+
+				if(i < (l-1)){
+					sqlText += ",\n";
+				} else {
+					sqlText += "\n";
+				}
+			}
+			dev.Statics.xmlSetText(sql, sqlText + "where Id = ?\n" );
+
+			// Next, create new Input fields based on the results metadata
+			for (var i = 0, l = metaRowData.length; i < l; i++)
+			{
+				if(metaRowData[i][1] === "Id") continue;
+				var oNode = doc.createElement("Input");
+				stmt.appendChild(oNode);
+				oNode.setAttribute("name", this.mangleFieldName(metaRowData[i][1]));
+				oNode.setAttribute("type", this.translateType(metaRowData[i][2]));
+			}
+			// Add in the Id field
+			var oNode = doc.createElement("Input");
+			stmt.appendChild(oNode);
+			oNode.setAttribute("name", "Id");
+			oNode.setAttribute("type", "int");
+
+		},
+
+		generateDeleteByIdSql: function(tableName, metaRowData)
+		{	
+			var root = this.dataObject.documentElement;
+			var doc = root.ownerDocument;
+			var stmt = doc.createElement("SqlStatement");
+			root.appendChild(stmt);
+			stmt.setAttribute("methodName", this.getUniqueName(root, "deleteById"));
+			stmt.setAttribute("methodType", "DELETE");
+			stmt.setAttribute("target", "odbc");
+			var commentNode = doc.createElement("Comment");
+			stmt.appendChild(commentNode);
+			dev.Statics.xmlSetText(commentNode, "Removes a single row by Id from the table " + tableName);
+			var sql = doc.createElement("Sql");
+			stmt.appendChild(sql);
+
+			var sqlText = "delete from " + tableName + " where Id = ?\n";
+			dev.Statics.xmlSetText(sql, sqlText);
+
+			// Add in the Id field
+			var oNode = doc.createElement("Input");
+			stmt.appendChild(oNode);
+			oNode.setAttribute("name", "Id");
+			oNode.setAttribute("type", "int");
+
+		},
+
+		generateSelectIdentitySql: function(tableName, metaRowData)
+		{	
+			var root = this.dataObject.documentElement;
+			var doc = root.ownerDocument;
+			var stmt = doc.createElement("SqlStatement");
+			root.appendChild(stmt);
+			stmt.setAttribute("methodName", this.getUniqueName(root, "selectIdentity"));
+			stmt.setAttribute("methodType", "SELECTTOXML");
+			stmt.setAttribute("target", "odbc");
+			var commentNode = doc.createElement("Comment");
+			stmt.appendChild(commentNode);
+			dev.Statics.xmlSetText(commentNode, "Retrieves the Id of the last inserted record.");
+			var sql = doc.createElement("Sql");
+			stmt.appendChild(sql);
+
+			dev.Statics.xmlSetText(sql, "select @@IDENTITY as Id\n");
+
+			// Add in the Id field
+			var oNode = doc.createElement("Output");
+			stmt.appendChild(oNode);
+			oNode.setAttribute("name", "Id");
+			oNode.setAttribute("type", "int");
+
+		},
+
+		generateSelectAllSql: function(tableName, metaRowData)
+		{	
+			var root = this.dataObject.documentElement;
+			var doc = root.ownerDocument;
+			var stmt = doc.createElement("SqlStatement");
+			root.appendChild(stmt);
+			stmt.setAttribute("methodName", this.getUniqueName(root, "selectAll"));
+			stmt.setAttribute("methodType", "SELECTTOXML");
+			stmt.setAttribute("target", "odbc");
+			var commentNode = doc.createElement("Comment");
+			stmt.appendChild(commentNode);
+			dev.Statics.xmlSetText(commentNode, "Retrieves all rows from the table " + tableName);
+			var sql = doc.createElement("Sql");
+			stmt.appendChild(sql);
+
+			var sqlText = "select ";
+			for(var i = 0, l = metaRowData.length; i < l; i++){
+				sqlText += "[" + metaRowData[i][1] + "]";
+
+				if(i < (l-1)){
+					sqlText += ", ";
+				}
+
+				if( (i+1) % 3 == 0){
+					sqlText += "\n    ";
+				}
+			}
+			dev.Statics.xmlSetText(sql, sqlText + "\nfrom " + tableName + "\norder by Id\n" );
+
+			// Next, create new Input fields based on the results metadata
+			for (var i = 0, l = metaRowData.length; i < l; i++)
+			{
+				var oNode = doc.createElement("Output");
+				stmt.appendChild(oNode);
+				oNode.setAttribute("name", this.mangleFieldName(metaRowData[i][1]));
+				oNode.setAttribute("type", this.translateType(metaRowData[i][2]));
+			}
+
+		},
+
+		generateSelectByIdSql: function(tableName, metaRowData)
+		{	
+			var root = this.dataObject.documentElement;
+			var doc = root.ownerDocument;
+			var stmt = doc.createElement("SqlStatement");
+			root.appendChild(stmt);
+			stmt.setAttribute("methodName", this.getUniqueName(root, "selectById"));
+			stmt.setAttribute("methodType", "SELECTTOXML");
+			stmt.setAttribute("target", "odbc");
+			var commentNode = doc.createElement("Comment");
+			stmt.appendChild(commentNode);
+			dev.Statics.xmlSetText(commentNode, "Retrieves a single row by Id from the table " + tableName);
+			var sql = doc.createElement("Sql");
+			stmt.appendChild(sql);
+
+			var sqlText = "select ";
+			for(var i = 0, l = metaRowData.length; i < l; i++){
+				sqlText += "[" + metaRowData[i][1] + "]";
+
+				if(i < (l-1)){
+					sqlText += ", ";
+				}
+
+				if( (i+1) % 3 == 0){
+					sqlText += "\n    ";
+				}
+			}
+			dev.Statics.xmlSetText(sql, sqlText + "\nfrom " + tableName + "\nwhere Id = ?\n" );
+
+			// Next, create new Input fields based on the results metadata
+			for (var i = 0, l = metaRowData.length; i < l; i++)
+			{
+				var oNode = doc.createElement("Output");
+				stmt.appendChild(oNode);
+				oNode.setAttribute("name", this.mangleFieldName(metaRowData[i][1]));
+				oNode.setAttribute("type", this.translateType(metaRowData[i][2]));
+			}
+
+			// Add in the Id field
+			var oNode = doc.createElement("Input");
+			stmt.appendChild(oNode);
+			oNode.setAttribute("name", "Id");
+			oNode.setAttribute("type", "int");
+
 		},
 
 		/** Clears out all of the fields on the editing form - use this when the selection goes
@@ -1029,7 +1368,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 				sqlDO.setHostDB("Director-Config");
 			} else
 			{
-				sqlDO.setHostDB("lds");                      // Default to lds if we don't recognize the target.
+				sqlDO.setHostDB("lds");  // Default to lds if we don't recognize the target.
 			}
 
 			// Now send our sql test group to the server for processing:
