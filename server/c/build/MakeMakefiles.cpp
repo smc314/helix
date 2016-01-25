@@ -40,7 +40,7 @@ void createClientWin32Makefile( vector<twine>& objFiles, vector<twine>& subFolde
 void createClientLin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, const twine& targetFolder);
 
 twine win64LFlags = "-machine:x64 -subsystem:console";
-twine win64CFlags = "-c -Zp8 -EHsc -O2 -D_WIN64 -DWIN64 -D_AMD64_=1 -D__64BIT__ -DWIN32 -D_MT -D_DLL -DLINT_ARGS -MP8 -MD -W3 -D \"_CRT_SECURE_NO_DEPRECATE\" -D \"_CRT_NON_CONFORMING_SWPRINTFS\" -D CS_NO_LARGE_IDENTIFIERS -I \"$(3PL)/include\" ";
+twine win64CFlags = "-c -wd4251 -Zp8 -EHsc -O2 -D_WIN64 -DWIN64 -D_AMD64_=1 -D__64BIT__ -DWIN32 -D_MT -D_DLL -DLINT_ARGS -MP8 -MD -W3 -D \"_CRT_SECURE_NO_DEPRECATE\" -D \"_CRT_NON_CONFORMING_SWPRINTFS\" -D CS_NO_LARGE_IDENTIFIERS -I \"$(3PL)/include\" ";
 
 // Debug flags are -debug for linker and -Od -Zi for compiler.
 twine win32LFlags = "-machine:i386 -subsystem:console -debug";
