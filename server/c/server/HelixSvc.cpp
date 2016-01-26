@@ -93,7 +93,7 @@ VOID ServiceMainProc()
 		PathRemoveFileSpec(pWorkDir);
 	}
 
-	strcpy_s(pServiceName,"IvoryHub");
+	strcpy_s(pServiceName,"Helix");
 
 	if(_stricmp("-i",lpCmdLineData) == 0 || _stricmp("-I",lpCmdLineData) == 0)
 		Install(pExeFile, pServiceName);
