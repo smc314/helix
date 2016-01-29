@@ -57,7 +57,6 @@ buildPrep:
 	cd bin && GenerateSqlClasses.exe 
 	cd bin && CopyCommon.exe 
 	cd bin && AutoAsset.exe 
-	cd bin && CopyIcons.exe 
 	cd bin && MakeMakefiles.exe 
 
 CmdMain:

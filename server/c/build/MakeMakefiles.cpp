@@ -80,9 +80,13 @@ int main (int argc, char** argv)
 	printf("============================================================================\n");
 
 	try {
+		printf("Generating src/logic makefiles\n");
 		findAllSLFolders("../logic");
 
+		printf("Generating glob makefiles\n");
 		createGlobMakefile("../glob");
+
+		printf("Generating client makefiles\n");
 		createClientMakefile("../client");
 	} catch(AnException& e){
 		printf("%s\n", e.Msg());
@@ -179,12 +183,15 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 		"DOTOH=\\\n"
 	);
 
+	twine allcpp = "\nALLCPP=\\\n";
 	for(size_t i = 0; i < objFiles.size(); i++){
 		vector<twine> splits = objFiles[i].split(".");
 		if(i == (objFiles.size() - 1)){
 			output.append( "\t" + splits[0] + ".obj\n" );
+			allcpp.append( "\t" + objFiles[i] + " \\\n" );
 		} else {
 			output.append( "\t" + splits[0] + ".obj \\\n" );
+			allcpp.append( "\t" + objFiles[i] + " \\\n" );
 		}
 	}
 
@@ -199,15 +206,19 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 			if(sqldoFiles[i].endsWith(".cpp")){
 				vector<twine> splits = sqldoFiles[i].split(".");
 				if(i == (sqldoFiles.size() - 1)){
-					output.append( "\tsqldo\\" + splits[0] + ".obj\n" );
+					output.append( "\t" + splits[0] + ".obj\n" );
+					allcpp.append( "\tsqldo\\" + sqldoFiles[i] + "\n" );
 				} else {
-					output.append( "\tsqldo\\" + splits[0] + ".obj \\\n" );
+					output.append( "\t" + splits[0] + ".obj \\\n" );
+					allcpp.append( "\tsqldo\\" + sqldoFiles[i] + " \\\n" );
 				}
 			}
 		}
 	} catch (AnException& e){
 		// Eat this error - occurs when sqldo subdir doesn't exist.
 	}
+
+	output.append( allcpp );
 	
 	twine slibName = "libhelix/" + targetFolder.substr(3);
 	slibName.replace('/', '.');
@@ -217,9 +228,11 @@ void createWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders, co
 
 	output.append(
 		"\n"
-		"all: $(DOTOH) $(SQLDOTOH)\n"
+		"all:\n"
 	);
 	if(objFiles.size() > 0){
+		output.append("\tcl.exe $(CFLAGS) $(ALLCPP)\n");
+
 		if(slibName.endsWith(".util.dll") || slibName.endsWith(".admin.dll")){
 			// Don't create a shared library for util.so or admin.so it's rolled into glob.dll
 		} else {
@@ -552,19 +565,25 @@ void createGlobWin64Makefile( vector<twine>& objFiles, vector<twine>& subFolders
 		"DOTOH=\\\n"
 	);
 
+	twine allcpp = "\nALLCPP=\\\n";
 	for(size_t i = 0; i < objFiles.size(); i++){
 		vector<twine> splits = objFiles[i].split(".");
 		if(splits[0] == "Jvm") continue; // Skip this one
 		if(i == (objFiles.size() - 1)){
 			output.append( "\t" + splits[0] + ".obj\n" );
+			allcpp.append( "\t" + objFiles[i] + "\n" );
 		} else {
 			output.append( "\t" + splits[0] + ".obj \\\n" );
+			allcpp.append( "\t" + objFiles[i] + " \\\n" );
 		}
 	}
 
+	output.append( allcpp );
+
 	output.append(
 		"\n"
-		"all: $(DOTOH)\n"
+		"all:\n"
+		"\tcl.exe $(CFLAGS) $(ALLCPP)\n"
 		"\tlink.exe $(LFLAGS) /OUT:libhelix.glob.dll /DLL $(DOTOH) ..\\logic\\util\\*.obj ..\\logic\\util\\sqldo\\*.obj ..\\logic\\admin\\*.obj ..\\logic\\admin\\sqldo\\*.obj $(LLIBS)\n"
 		"\tcopy libhelix.glob.lib ..\\bin\n"
 		"\tcopy libhelix.glob.dll ..\\bin\n"
