@@ -130,22 +130,40 @@ class SqlDBTransaction {
 		SqlDBTransaction ( SqlDB& db ) : m_db(db)
 		{
 			m_db.BeginTransaction();
+			m_transOpen = true;
 		}
 
 		virtual ~SqlDBTransaction() {
-			m_db.RollbackTransaction();
+			if(m_transOpen){
+				m_db.RollbackTransaction();
+				m_transOpen = false;
+			}
+		}
+
+		void Begin() {
+			if(m_transOpen == false){
+				m_transOpen = true;
+				m_db.BeginTransaction();
+			}
 		}
 
 		void Rollback() {
-			m_db.RollbackTransaction();
+			if(m_transOpen){
+				m_transOpen = false;
+				m_db.RollbackTransaction();
+			}
 		}
 
 		void Commit() {
-			m_db.CommitTransaction();
+			if(m_transOpen){
+				m_transOpen = false;
+				m_db.CommitTransaction();
+			}
 		}
 
 	protected:
 		SqlDB& m_db;
+		bool m_transOpen = false;
 };
 
 }} // End Namespace Helix::Glob
