@@ -48,7 +48,8 @@ cp server/c/client/HelixApi_Part1.cpp ${PROJECT_FOLDER}/server/c/client/
 
 #
 # Copy the precompiled web projects
-cp -a qd/login ${PROJECT_FOLDER}/qd/
+# Don't include qd/login any more
+#cp -a qd/login ${PROJECT_FOLDER}/qd/
 # Don't include qd/common any more
 #cp -a qd/common ${PROJECT_FOLDER}/qd/
 cp -a qd/admin/build/* ${PROJECT_FOLDER}/html/admin/
