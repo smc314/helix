@@ -847,7 +847,8 @@ int OdbcObj::dbtype2(int type)
 
 	switch (type) {
 		case DB_INT :
-			return SQL_C_LONG ;
+			return SQL_C_SBIGINT ; // In a 64-Bit build we use all 64-bit ints.
+			//return SQL_C_LONG ; // Works correctly for 32-bit build
 		case DB_CHAR :
 			return SQL_C_CHAR ;
 		case DB_FLOAT :

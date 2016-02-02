@@ -1444,7 +1444,10 @@ map<twine, twine> buildObjectParms( twine& objName )
 		const twine& childName = it->first;
 		const twine& childType = it->second;
 		xmlReadMembers.append(
-			"\t" + childName + " = " + childType + "::readXmlChildren( XmlHelpers::FindChild( node, \"" + childName + "\") );\n"
+			"\txmlNodePtr " + childName + "_node = XmlHelpers::FindChild( node, \"" + childName + "\");\n" +
+			"\tif( " + childName + "_node != NULL ){\n" +
+			"\t\t" + childName + " = " + childType + "::readXmlChildren( " + childName + "_node );\n" +
+			"\t}\n"
 		);
 	}
 	vars[ "XmlReadMembers" ] = xmlReadMembers;
