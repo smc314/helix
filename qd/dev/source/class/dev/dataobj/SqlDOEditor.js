@@ -186,6 +186,8 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.stmtDelete.setToolTipText("Delete Selected SQL Statements");
 			this.stmtCreateCrud.addListener("execute", this.createCrudStatements, this);
 			this.stmtCreateCrud.setToolTipText("Create Standard CRUD SQL Statements");
+			this.stmtDuplicate.addListener("execute", this.duplicateSqlStatement, this);
+			this.stmtDuplicate.setToolTipText("Duplicate Selected SQL Statements");
 
 		},
 
@@ -694,6 +696,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			elem.setAttribute("generateClass", this.GenerateClassField.getValue());
 			elem.setAttribute("package", this.PackageField.getValue());
 		},
+
 		addSqlStatement : function()
 		{
 			var root = this.dataObject.documentElement;
@@ -718,6 +721,7 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			var lastRow = this.stmtTable.getTableModel().getRowCount() - 1;
 			this.stmtTable.getSelectionModel().setSelectionInterval(lastRow, lastRow);
 		},
+
 		deleteSqlStatement : function()
 		{
 			var smodel = this.stmtTable.getSelectionModel();
@@ -745,6 +749,37 @@ qx.Class.define("dev.dataobj.SqlDOEditor",
 			this.loadStatementTable();
 			this.stmtTable.getSelectionModel().resetSelection();
 			this.clearStatement();
+		},
+
+		duplicateSqlStatement : function()
+		{
+			var smodel = this.stmtTable.getSelectionModel();
+			if (smodel.isSelectionEmpty())
+			{
+				return;                                      // nothing selected.  bail out.
+			}
+			var root = this.dataObject.documentElement;
+
+			// Run the table selection and remove the named nodes from the xml
+			var tmodel = this.stmtTable.getTableModel();
+			smodel.iterateSelection(function(index)
+			{
+				var stmtName = tmodel.getValue(0, index);
+				var sqlNode = dev.Statics.xmlFindChildWithAttr(root, "SqlStatement", "methodName", stmtName);
+				if (sqlNode !== null) {
+					var dupNode = sqlNode.cloneNode(true);
+					dupNode.setAttribute("methodName", stmtName + "_copy");
+					root.appendChild(dupNode);
+				}
+			});
+
+			// re-load our statement table:
+			this.loadStatementTable();
+
+			// Select the last statement in the table:
+			this.stmtTable.getSelectionModel().resetSelection();
+			var lastRow = this.stmtTable.getTableModel().getRowCount() - 1;
+			this.stmtTable.getSelectionModel().setSelectionInterval(lastRow, lastRow);
 		},
 
 		createCrudStatements : function()
