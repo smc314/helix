@@ -175,8 +175,10 @@ void ${shortName}::createXmlChildren(xmlNodePtr parent, vector<${shortName}* >* 
 		throw AnException(0, FL, "xmlNodePtr passed to ${shortName}::createXmlChildren is NULL.");
 	}
 
-	for(size_t i = 0; i < vect->size(); i++){
-		(*vect)[i]->createXmlNode(parent);
+	if(vect != NULL){
+		for(size_t i = 0; i < vect->size(); i++){
+			(*vect)[i]->createXmlNode(parent);
+		}
 	}
 
 }
