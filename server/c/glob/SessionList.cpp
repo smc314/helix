@@ -171,8 +171,8 @@ void SessionList::initFromDB( )
 	for(size_t i = 0; i < sessions->size(); i++){
 		SessionInfo* si = new SessionInfo( ) ;
 		si->userid = (*sessions)[i]->Userid;
-		si->created = (*sessions)[i]->Created;
-		si->lastaccess = (*sessions)[i]->LastAccess;
+		si->created.SetValue( (*sessions)[i]->Created );
+		si->lastaccess.SetValue( (*sessions)[i]->LastAccess );
 		si->sessionGUID= (*sessions)[i]->guid;
 
 		m_sessions[ si->sessionGUID ] = si;

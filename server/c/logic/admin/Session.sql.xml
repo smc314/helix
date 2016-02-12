@@ -9,8 +9,8 @@
 		</Sql>
 		<Input name="guid" type="twine"/>
 		<Input name="Userid" type="int"/>
-		<Input name="Created" type="Date"/>
-		<Input name="LastAccess" type="Date"/>
+		<Input name="Created" type="twine"/>
+		<Input name="LastAccess" type="twine"/>
 		<Input name="Active" type="int"/>
 	</SqlStatement>
 	<SqlStatement methodName="update" methodType="UPDATE" target="sqldb">
@@ -26,8 +26,8 @@
 			where guid = ?
 		</Sql>
 		<Input name="Userid" type="int"/>
-		<Input name="Created" type="Date"/>
-		<Input name="LastAccess" type="Date"/>
+		<Input name="Created" type="twine"/>
+		<Input name="LastAccess" type="twine"/>
 		<Input name="Active" type="int"/>
 		<Input name="guid" type="twine"/>
 	</SqlStatement>
@@ -51,8 +51,8 @@
 		</Sql>
 		<Output name="guid" type="twine"/>
 		<Output name="Userid" type="int"/>
-		<Output name="Created" type="Date"/>
-		<Output name="LastAccess" type="Date"/>
+		<Output name="Created" type="twine"/>
+		<Output name="LastAccess" type="twine"/>
 		<Output name="Active" type="int"/>
 	</SqlStatement>
 	<SqlStatement methodName="selectByID" methodType="SELECTTOXML" target="sqldb">
@@ -66,8 +66,8 @@
 		</Sql>
 		<Output name="guid" type="twine"/>
 		<Output name="Userid" type="int"/>
-		<Output name="Created" type="Date"/>
-		<Output name="LastAccess" type="Date"/>
+		<Output name="Created" type="twine"/>
+		<Output name="LastAccess" type="twine"/>
 		<Output name="Active" type="int"/>
 		<Input name="guid" type="twine"/>
 	</SqlStatement>

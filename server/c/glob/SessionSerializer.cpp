@@ -101,19 +101,22 @@ void SessionSerializer::ProcessSessionInfo(SessionInfo* si)
 	try {
 		SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
 
+		// Convert to a Session sqldo
+		Session s;
+		s.guid = si->sessionGUID;
+		s.Userid = si->userid;
+		s.Created = si->created.GetValue();
+		s.LastAccess = si->lastaccess.GetValue();
+		s.Active = 1;
+
+		// Look it up:
 		Session_svect sessions = Session::selectByID( sqldb, si->sessionGUID);
 		if(sessions->size() == 0){
 			// Brand new session - do an insert:
-			Session s;
-			s.guid = si->sessionGUID;
-			s.Userid = si->userid;
-			s.Created = si->created;
-			s.LastAccess = si->lastaccess;
-			s.Active = 1;
 			Session::insert( sqldb, s );
 		} else {
 			// Existing session - do an update:
-			Session::update( sqldb, si->userid, si->created, si->lastaccess, 1, si->sessionGUID );
+			Session::update( sqldb, s.Userid, s.Created, s.LastAccess, s.Active, si->sessionGUID );
 		}
 
 		/*
