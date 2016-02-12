@@ -7,6 +7,9 @@ qx.Class.define("${package}.sqldo.${shortName}", {
 
 	construct : function() {
 		this.base(arguments);
+
+		// Setup our date formatter for reading/writing sqldo dates in the XML
+		this.sqldoDFMT = new qx.util.format.DateFormat( "yyyy-MM-dd HH:mm:ss.SSS" );
 	},
 
 	properties : {

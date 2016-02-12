@@ -21,6 +21,7 @@ using namespace SLib;
 using namespace Helix::Glob;
 
 static size_t throwAwaySize;
+static SQLLEN sqlNullData = SQL_NULL_DATA;
 
 OdbcObj::OdbcObj()
 {
@@ -390,13 +391,23 @@ void OdbcObj::BindInput(int pos, twine& data)
 	
 
 	/* bind the input variable */
-	check_err(
-		SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
-			dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.data(), 
-			data.size(), NULL),
-		SQL_HANDLE_STMT, m_statement_handle
-	);
-
+	//if(data.size() > 0){
+		// Bind with real data and length
+		check_err(
+			SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
+				dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.data(), 
+				data.size(), NULL),
+			SQL_HANDLE_STMT, m_statement_handle
+		);
+	/*} else {
+		// Bind as a null input
+		check_err(
+			SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
+				dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.data(), 
+				data.size(), &sqlNullData),
+			SQL_HANDLE_STMT, m_statement_handle
+		);
+	}*/
 }
 
 void OdbcObj::BindInput(int pos, MemBuf& data)
@@ -418,7 +429,7 @@ void OdbcObj::BindInput(int pos, MemBuf& data)
 
 }
 
-void OdbcObj::BindInput(int pos, Date& data)
+void OdbcObj::BindInput(int pos, OdbcDate& data)
 {
 	EnEx ee(FL, "OdbcObj::BindInput(int, Date&)");
 
@@ -428,10 +439,11 @@ void OdbcObj::BindInput(int pos, Date& data)
 	
 
 	/* bind the input variable */
+	data.InternalToOdbc();
 	check_err(
 		SQLBindParameter(m_statement_handle, pos, SQL_PARAM_INPUT,
-			dbtype2(DB_CHAR), dbtype(DB_CHAR), tmp_colsize, 0, data.GetValue(), 
-			tmp_colsize, NULL),
+			dbtype2(DB_DATETIME), dbtype(DB_DATETIME), 0, 0, data.GetOdbcStruct(), 
+			sizeof(SQL_TIMESTAMP_STRUCT), NULL),
 		SQL_HANDLE_STMT, m_statement_handle
 	);
 
@@ -513,20 +525,18 @@ void OdbcObj::BindOutput(int pos, twine& data)
 
 }
 
-void OdbcObj::BindOutput(int pos, Date& data)
+void OdbcObj::BindOutput(int pos, OdbcDate& data)
 {
 	EnEx ee(FL, "OdbcObj::BindOutput(int, twine&)");
 	SanityCheck();
 
-	size_t size = 20;
-
-	// Now bind the twine data buffer to the column itself:
+	// Now bind the date structure to the column itself:
 	check_err(
 		SQLBindCol(m_statement_handle,
 			pos, // remember positions start at 1, not 0
-			dbtype2(DB_CHAR),
-			data.GetValue(),
-			size,
+			dbtype2(DB_DATETIME),
+			data.GetOdbcStruct(),
+			sizeof(SQL_TIMESTAMP_STRUCT),
 			(SQLLEN*) &throwAwaySize ),
 		SQL_HANDLE_STMT, m_statement_handle
 	);

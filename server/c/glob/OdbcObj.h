@@ -23,6 +23,8 @@ using namespace std;
 #include <Date.h>
 using namespace SLib;
 
+#include "OdbcDate.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -160,7 +162,7 @@ class DLLEXPORT OdbcObj
 
 		virtual void BindInput(int pos, MemBuf& data);
 
-		virtual void BindInput(int pos, Date& data);
+		virtual void BindInput(int pos, OdbcDate& data);
 
 		/**
 		  * The BindOutput method allows the user to bind the
@@ -178,7 +180,7 @@ class DLLEXPORT OdbcObj
 
 		virtual void BindOutput(int pos, twine& data);
 
-		virtual void BindOutput(int pos, Date& data);
+		virtual void BindOutput(int pos, OdbcDate& data);
 
 		/**
 		  * The ExecStmt method does the actual execution 

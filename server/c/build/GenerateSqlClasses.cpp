@@ -1326,17 +1326,7 @@ map<twine, twine> buildObjectParms( twine& objName )
 		}
 		twine& attrType = objAttrs[attrName];
 		
-		if(attrType == "cdata"){
-			defineDataMembers.append("\t\ttwine " + attrName + ";\n");
-		} else if(attrType == "base64"){
-			defineDataMembers.append("\t\ttwine " + attrName + ";\n");
-		} else if(attrType == "bin"){
-			defineDataMembers.append("\t\tMemBuf " + attrName + ";\n");
-		} else if(attrType == "int"){
-			defineDataMembers.append("\t\tintptr_t " + attrName + ";\n");
-		} else {
-			defineDataMembers.append("\t\t" + attrType + " " + attrName + ";\n");
-		}
+		defineDataMembers.append("\t\t" + convertType(attrType) + " " + attrName + ";\n");
 	}
 	vars[ "DefineDataMembers" ] = defineDataMembers;
 
@@ -1423,7 +1413,14 @@ map<twine, twine> buildObjectParms( twine& objName )
 				"\t" + attrName + ".check_size();\n"
 				"\t" + attrName + ".rtrim();\n"
 			);
+		} else if(attrType == "Timestamp" || attrType == "Date" || attrType == "Datetime"){
+			memberCheckSizeStatements.append(
+				"\t" + attrName + ".check_size();\n"
+				"\t" + attrName + ".rtrim();\n"
+				//"\t" + attrName + ".OdbcToInternal();\n"
+			);
 		}
+
 	}
 	vars[ "MemberCheckSizeStatements" ] = memberCheckSizeStatements;
 
@@ -2721,7 +2718,8 @@ twine convertArg(twine type)
 	} else if(type == "int" || type == "autogen"){
 		return "intptr_t";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return "Date";
+		//return "OdbcDate";
+		return "twine";
 	} else {
 		return type;
 	}
@@ -2748,7 +2746,8 @@ twine convertType(twine type)
 	} else if(type == "bin"){
 		return "MemBuf";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return "Date";
+		//return "OdbcDate";
+		return "twine";
 	} else {
 		return type;
 	}
@@ -2776,7 +2775,8 @@ twine paramForType(twine name, twine type)
 	} else if(type == "int" || type == "autogen" ){
 		return ", intptr_t " + name;
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return ", Date& " + name;
+		//return ", OdbcDate& " + name;
+		return ", twine& " + name;
 	} else {
 		// default to twine
 		return ", " + convertType(type) + "& " + name;
@@ -2838,7 +2838,7 @@ twine odbcBindInputForType(size_t pos, twine name, twine type)
 			"\t\t\todbc.BindInput(" + pos_string + ", &" + name + ", &sizeof_float, DB_FLOAT);\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return 
-			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", " + name + ".GetValue() );\n"
+			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", " + name + "() );\n"
 			"\t\t\todbc.BindInput(" + pos_string + ", " + name + ");\n";
 	} else {
 		// default to twine
@@ -2954,7 +2954,7 @@ twine odbcBindInputForType2(size_t pos, twine name, twine type)
 			"\t\t\todbc.BindInput(" + pos_string + ", &(obj." + name + "), &sizeof_float, DB_FLOAT);\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return 
-			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", obj." + name + ".GetValue() );\n"
+			"\t\t\tDEBUG(FL, \"Setting input (%d) to value: %s\", " + pos_string + ", obj." + name + "() );\n"
 			"\t\t\todbc.BindInput(" + pos_string + ", obj." + name + ");\n";
 	} else {
 		// default to twine
@@ -3032,7 +3032,8 @@ twine xmlSetForType(twine name, twine type, twine elemname)
 	} else if(type == "float"){
 		return "XmlHelpers::setFloatAttr(" + elemname + ", \"" + name + "\", " + name + ");\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return "XmlHelpers::setDateAttr(" + elemname + ", \"" + name + "\", " + name + ");\n";
+		//return "XmlHelpers::setDateAttr(" + elemname + ", \"" + name + "\", " + name + ");\n";
+		return "xmlSetProp(" + elemname + ", (const xmlChar*)\"" + name + "\", " + name + ");\n";
 	} else if(type == "base64"){
 		return "XmlHelpers::setBase64(xmlNewChild(" + elemname + ", NULL, (const xmlChar*)\"" + name + "\", NULL), " + name + ");\n";
 	} else if(type == "bin"){
@@ -3051,7 +3052,8 @@ twine xmlGetForType(twine name, twine type, twine elemname)
 	} else if(type == "float"){
 		return name + " = (float)XmlHelpers::getFloatAttr(" + elemname + ", \"" + name + "\");\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return name + ".SetValue( xmlGetProp(" + elemname + ", (const xmlChar*)\"" + name + "\") );\n";
+		return name + ".getAttribute(" + elemname + ", \"" + name + "\");\n";
+		//return name + ".SetValue( xmlGetProp(" + elemname + ", (const xmlChar*)\"" + name + "\") );\n";
 		//return name + " = XmlHelpers::getTimestampAttr(" + elemname + ", \"" + name + "\");\n";
 	} else if(type == "cdata"){
 		return "xmlNodePtr " + name + "_child = XmlHelpers::FindChild(" + elemname + ", \"" + name + "\"); if( " + name + "_child != NULL) " + name + " = XmlHelpers::getCDATASection(" + name + "_child);\n";
@@ -3071,7 +3073,7 @@ twine jsPropDefinition( twine name, twine type )
 	} else if(type == "long"){
 		return name + " : {init : 0, event: \"change" + name + "\", check : \"Number\" }" ;
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return name + " : {event: \"change" + name + "\", check : \"Date\" }" ;
+		return name + " : {init: new Date(), event: \"change" + name + "\", check : \"Date\" }" ;
 	} else {
 		return name + " : {init : \"\", event: \"change" + name + "\", check : \"String\" }";
 	}
@@ -3086,7 +3088,7 @@ twine jsGetForType(twine name, twine type, twine elemname)
 	} else if(type == "long"){
 		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( Number(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( Date(" + elemname + ".getAttribute(\"" + name + "\").substr(0,19) ) ); }\n";
+		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( this.sqldoDFMT.parse(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
 	} else if(type == "base64" || type == "bin"){
 		return 
 			"this.set" + ucase + "(\n"
@@ -3108,7 +3110,7 @@ twine jsSetForType(twine name, twine type, twine elemname)
 	} else if(type == "long"){
 		return elemname + ".setAttribute( \"" + name + "\", String(this.get" + ucase + "() ) );\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return elemname + ".setAttribute( \"" + name + "\", String(this.get" + ucase + "() ) );\n";
+		return elemname + ".setAttribute( \"" + name + "\", this.sqldoDFMT.format(this.get" + ucase + "() ) );\n";
 	} else if(type == "cdata"){
 		return 
 			"var sub = doc.createElement(\"" + name + "\");\n"
