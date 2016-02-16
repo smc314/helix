@@ -1062,8 +1062,12 @@ void dumpJSDataObject(twine& objName)
 		const twine& childName = it->first;
 		const twine& childType = it->second;
 		out.append(
-			"\t\t\tthis." + childName + " = PACKAGE.sqldo." + childType + ".readElementChildren( \n"
-			"\t\t\t\tPACKAGE.Statics.xmlFindChild( elem, \"" + childName + "\") );\n"
+			"\t\t\tvar " + childName + "Elem = PACKAGE.Statics.xmlFindChild( elem, \"" + childName + "\" );\n"
+			"\t\t\tif( " + childName + "Elem ){\n"
+			"\t\t\t\tthis." + childName + " = PACKAGE.sqldo." + childType + ".readElementChildren( \n"
+			"\t\t\t\t\t" + childName + "Elem\n"
+			"\t\t\t\t);\n"
+			"\t\t\t}\n"
 		);
 	}
 

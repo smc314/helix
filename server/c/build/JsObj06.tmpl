@@ -12,6 +12,9 @@
 		  */
 		readElementChildren : function ( elem ){
 			var ret = [];
+			if( elem === null || elem === undefined ){
+				return ret;
+			}
 			var i, l;
 			for (i=0, l = elem.childNodes.length; i<l; i++) {
 				var node = elem.childNodes[i];
