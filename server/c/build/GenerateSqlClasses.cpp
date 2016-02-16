@@ -3077,7 +3077,7 @@ twine jsPropDefinition( twine name, twine type )
 	} else if(type == "long"){
 		return name + " : {init : 0, event: \"change" + name + "\", check : \"Number\" }" ;
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return name + " : {init: null, event: \"change" + name + "\", check : \"Date\" }" ;
+		return name + " : {init : null, nullable: true, event: \"change" + name + "\", check : \"Date\" }" ;
 	} else {
 		return name + " : {init : \"\", event: \"change" + name + "\", check : \"String\" }";
 	}
