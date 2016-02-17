@@ -3092,7 +3092,8 @@ twine jsGetForType(twine name, twine type, twine elemname)
 	} else if(type == "long"){
 		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( Number(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( this.sqldoDFMT.parse(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
+		return "this.readDate( " + elemname + ", \"" + name + "\" );\n";
+		//return "if(" + elemname + ".getAttribute(\"" + name + "\")){ this.set" + ucase + "( this.sqldoDFMT.parse(" + elemname + ".getAttribute(\"" + name + "\") ) ); }\n";
 	} else if(type == "base64" || type == "bin"){
 		return 
 			"this.set" + ucase + "(\n"
@@ -3114,7 +3115,8 @@ twine jsSetForType(twine name, twine type, twine elemname)
 	} else if(type == "long"){
 		return elemname + ".setAttribute( \"" + name + "\", String(this.get" + ucase + "() ) );\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
-		return elemname + ".setAttribute( \"" + name + "\", this.sqldoDFMT.format(this.get" + ucase + "() ) );\n";
+		return "this.writeDate( " + elemname + ", \"" + name + "\" );\n";
+		//return elemname + ".setAttribute( \"" + name + "\", this.sqldoDFMT.format(this.get" + ucase + "() ) );\n";
 	} else if(type == "cdata"){
 		return 
 			"var sub = doc.createElement(\"" + name + "\");\n"

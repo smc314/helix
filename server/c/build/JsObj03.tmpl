@@ -5,6 +5,36 @@
 			return qx.util.Serializer.toJson( this );
 		},
 		
+		/** Handles reading a date value from an XML attribute
+		  * 
+		  */
+		readDate: function( elem, dateAttrName ){
+			var attrValue = elem.getAttribute( dateAttrName );
+			var setter = "set" + dateAttrName;
+			if(attrValue){
+				if(attrValue === "null"){
+					this[ setter ]( null );
+				} else {
+					this[ setter ]( this.sqldoDFMT.parse( attrValue ) );
+				}
+			} else {
+				this[ setter ]( null );
+			}
+		},
+
+		/** Handles writing a date value into an XML attribute
+		  *
+		  */
+		writeDate : function( elem, dateAttrName ){
+			var getter = "get" + dateAttrName;
+			var dateString = this.sqldoDFMT.format(this[ getter ]());
+			if(dateString === "null"){
+				elem.setAttribute( dateAttrName, "" );
+			} else {
+				elem.setAttribute( dateAttrName, dateString );
+			}
+		},
+		
 		/** Populates our object from the given XML node
 		  * 
 		  * @param elem {Object} The XML node that we will read to populate our object.
