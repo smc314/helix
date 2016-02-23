@@ -23,9 +23,9 @@ mkdir -p ${PROJECT_FOLDER}/server/c/client
 mkdir -p ${PROJECT_FOLDER}/server/c/client/apitests
 mkdir -p ${PROJECT_FOLDER}/server/c/glob
 mkdir -p ${PROJECT_FOLDER}/server/c/logic
-mkdir -p ${PROJECT_FOLDER}/server/c/logic/admin
-mkdir -p ${PROJECT_FOLDER}/server/c/logic/dev
-mkdir -p ${PROJECT_FOLDER}/server/c/logic/util
+mkdir -p ${PROJECT_FOLDER}/server/c/logic/admin/sqldo
+mkdir -p ${PROJECT_FOLDER}/server/c/logic/dev/sqldo
+mkdir -p ${PROJECT_FOLDER}/server/c/logic/util/sqldo
 
 
 #
@@ -38,10 +38,13 @@ cp server/c/bin/helixdev.db.xml ${PROJECT_FOLDER}/server/c/bin/
 cp server/c/build/*.tmpl ${PROJECT_FOLDER}/server/c/build/
 cp server/c/glob/*.h ${PROJECT_FOLDER}/server/c/glob/
 cp server/c/logic/admin/*.h ${PROJECT_FOLDER}/server/c/logic/admin/
+cp server/c/logic/admin/sqldo/*.h ${PROJECT_FOLDER}/server/c/logic/admin/sqldo/
 grep LOGICCODEGEN server/c/logic/admin/*.cpp |sed -e "s/^.*://" > ${PROJECT_FOLDER}/server/c/logic/admin/LogicCodeGen.cpp
 cp server/c/logic/dev/*.h ${PROJECT_FOLDER}/server/c/logic/dev/
+cp server/c/logic/dev/sqldo/*.h ${PROJECT_FOLDER}/server/c/logic/dev/sqldo/
 grep LOGICCODEGEN server/c/logic/dev/*.cpp |sed -e "s/^.*://" > ${PROJECT_FOLDER}/server/c/logic/dev/LogicCodeGen.cpp
 cp server/c/logic/util/*.h ${PROJECT_FOLDER}/server/c/logic/util/
+cp server/c/logic/util/sqldo/*.h ${PROJECT_FOLDER}/server/c/logic/util/sqldo/
 grep LOGICCODEGEN server/c/logic/util/*.cpp |sed -e "s/^.*://" > ${PROJECT_FOLDER}/server/c/logic/util/LogicCodeGen.cpp
 cp server/c/logic/*.sh ${PROJECT_FOLDER}/server/c/logic/
 cp server/c/client/HelixApi_Part1.cpp ${PROJECT_FOLDER}/server/c/client/

@@ -8,8 +8,8 @@
 
 *************************************************************************** */
 
-#ifndef GetUsers_H
-#define GetUsers_H
+#ifndef GetHelixUsers_H
+#define GetHelixUsers_H
 
 #include <xmlinc.h>
 #include <twine.h>
@@ -22,20 +22,20 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class DLLEXPORT GetUsers : public ActionClass
+class DLLEXPORT GetHelixUsers : public ActionClass
 {
 	public:
 		/// Standard Constructor
-		GetUsers(xmlNodePtr action);
+		GetHelixUsers(xmlNodePtr action);
 
 		/// Standard Copy Constructor
-		GetUsers(const GetUsers& c);
+		GetHelixUsers(const GetHelixUsers& c);
 
 		/// Standard Copy operator
-		GetUsers& operator=(const GetUsers& c);
+		GetHelixUsers& operator=(const GetHelixUsers& c);
 
 		/// Standard Destructor
-		virtual ~GetUsers();
+		virtual ~GetHelixUsers();
 
 		/// We implement the ExecuteRequest method
 		virtual void ExecuteRequest(IOConn& ioc);
@@ -49,10 +49,10 @@ class DLLEXPORT GetUsers : public ActionClass
 	private:
 
 		// Registers us with the global factory map:
-		static ActionClassRegister<GetUsers> reg;
+		static ActionClassRegister<GetHelixUsers> reg;
 
 };
 
 }}} // End of Namespace definitions
 
-#endif // GetUsers_H Defined
+#endif // GetHelixUsers_H Defined

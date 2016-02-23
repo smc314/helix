@@ -1,4 +1,4 @@
-<SQLXml generateClass="User" package="logic/admin" >
+<SQLXml generateClass="HelixUser" package="logic/admin" >
 	<ChildVector name="GroupMembership" type="UserGroup"/>
 	<ChildVector name="AllowedActions" type="Action"/>
 

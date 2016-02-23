@@ -8,8 +8,8 @@
 
 *************************************************************************** */
 
-#ifndef GetOneUser_H
-#define GetOneUser_H
+#ifndef UpdateHelixUser_H
+#define UpdateHelixUser_H
 
 #include <xmlinc.h>
 #include <twine.h>
@@ -22,20 +22,20 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class DLLEXPORT GetOneUser : public ActionClass
+class DLLEXPORT UpdateHelixUser : public ActionClass
 {
 	public:
 		/// Standard Constructor
-		GetOneUser(xmlNodePtr action);
+		UpdateHelixUser(xmlNodePtr action);
 
 		/// Standard Copy Constructor
-		GetOneUser(const GetOneUser& c);
+		UpdateHelixUser(const UpdateHelixUser& c);
 
 		/// Standard Copy operator
-		GetOneUser& operator=(const GetOneUser& c);
+		UpdateHelixUser& operator=(const UpdateHelixUser& c);
 
 		/// Standard Destructor
-		virtual ~GetOneUser();
+		virtual ~UpdateHelixUser();
 
 		/// We implement the ExecuteRequest method
 		virtual void ExecuteRequest(IOConn& ioc);
@@ -49,10 +49,10 @@ class DLLEXPORT GetOneUser : public ActionClass
 	private:
 
 		// Registers us with the global factory map:
-		static ActionClassRegister<GetOneUser> reg;
+		static ActionClassRegister<UpdateHelixUser> reg;
 
 };
 
 }}} // End of Namespace definitions
 
-#endif // GetOneUser_H Defined
+#endif // UpdateHelixUser_H Defined

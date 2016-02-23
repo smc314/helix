@@ -12,7 +12,7 @@
 #include "OdbcObj.h"
 using namespace Helix::Glob;
 
-#include "DeleteUser.h"
+#include "DeleteHelixUser.h"
 using namespace Helix::Logic::admin;
 
 #include "Statics.h"
@@ -27,42 +27,42 @@ using namespace Helix::Logic::util;
 using namespace SLib;
 
 // Include local data objects here
-#include "User.h"
+#include "HelixUser.h"
 
 // This adds us to the global ActionClass Registry:
-ActionClassRegister<DeleteUser> DeleteUser::reg("DeleteUser", 1, "/logic/admin/DeleteUser");
+ActionClassRegister<DeleteHelixUser> DeleteHelixUser::reg("DeleteHelixUser", 1, "/logic/admin/DeleteHelixUser");
 
 // Used for auto generating the API on the javascript side:
-// LOGICCODEGEN API=/logic/admin/DeleteUser Input=User
+// LOGICCODEGEN API=/logic/admin/DeleteHelixUser Input=HelixUser
 
-DeleteUser::DeleteUser(xmlNodePtr action)
+DeleteHelixUser::DeleteHelixUser(xmlNodePtr action)
 {
-	EnEx ee(FL, "DeleteUser::DeleteUser(xmlNodePtr action)");
+	EnEx ee(FL, "DeleteHelixUser::DeleteHelixUser(xmlNodePtr action)");
 	
 }
 
-DeleteUser::DeleteUser(const DeleteUser& c)
+DeleteHelixUser::DeleteHelixUser(const DeleteHelixUser& c)
 {
-	EnEx ee(FL, "DeleteUser::DeleteUser(const DeleteUser& c)");
+	EnEx ee(FL, "DeleteHelixUser::DeleteHelixUser(const DeleteHelixUser& c)");
 
 }
 
-DeleteUser& DeleteUser::operator=(const DeleteUser& c)
+DeleteHelixUser& DeleteHelixUser::operator=(const DeleteHelixUser& c)
 {
-	EnEx ee(FL, "DeleteUser::operator=(const DeleteUser& c)");
+	EnEx ee(FL, "DeleteHelixUser::operator=(const DeleteHelixUser& c)");
 
 	return *this;
 }
 
-DeleteUser::~DeleteUser()
+DeleteHelixUser::~DeleteHelixUser()
 {
-	EnEx ee(FL, "DeleteUser::~DeleteUser()");
+	EnEx ee(FL, "DeleteHelixUser::~DeleteHelixUser()");
 
 }
 
-bool DeleteUser::isLongRunning()
+bool DeleteHelixUser::isLongRunning()
 {
-	EnEx ee(FL, "DeleteUser::isLongRunning()");
+	EnEx ee(FL, "DeleteHelixUser::isLongRunning()");
 
 	// If we are a long running transaction, we need to return true here.  This will trigger
 	// special logic that causes an immediate return to the caller, and for us to be executed
@@ -77,27 +77,27 @@ bool DeleteUser::isLongRunning()
 	return false;
 }
 
-twine DeleteUser::lrTaskName()
+twine DeleteHelixUser::lrTaskName()
 {
-	EnEx ee(FL, "DeleteUser::lrTaskName()");
+	EnEx ee(FL, "DeleteHelixUser::lrTaskName()");
 
 	// Read above comments in isLongRunning.  Delete this method if not required.
-	return "DeleteUser Request";
+	return "DeleteHelixUser Request";
 }
 
 
-void DeleteUser::ExecuteRequest(IOConn& ioc)
+void DeleteHelixUser::ExecuteRequest(IOConn& ioc)
 {
 	// The "true" parameter at the end here indicates to the entry/exit timing
 	// mechanism that it should copy this thread's stats to the global collection.
 	// This should not be done everywhere, but is appropriate to do at this point.
-	EnEx ee(FL, "DeleteUser::ExecuteRequest(IOConn& ioc)", true);
+	EnEx ee(FL, "DeleteHelixUser::ExecuteRequest(IOConn& ioc)", true);
 
 	// Set up the response document name
-	ioc.initializeResponseDocument("DeleteUser");
+	ioc.initializeResponseDocument("DeleteHelixUser");
 
 	// Pick up the input object from the request document
-	User local( XmlHelpers::FindChild( ioc.GetRequestRoot(), User::Name()() ) );
+	HelixUser local( XmlHelpers::FindChild( ioc.GetRequestRoot(), HelixUser::Name()() ) );
 
 	// Read from our configuration database - change this to get data from elsewhere
 	SqlDB& db = TheMain::getInstance()->GetConfigDB( );
@@ -112,12 +112,12 @@ void DeleteUser::ExecuteRequest(IOConn& ioc)
 	// Transaction trans(db); // Transaction will be rolled back when this object goes out of scope
 
 	// Delete the requested object - adjust this to use the correct inputs and delete call
-	User::deleteByID( db, local.id );
+	HelixUser::deleteByID( db, local.id );
 
 	// Delete any other related records here
-	User::deleteAuthByID( db, local.id );
+	HelixUser::deleteAuthByID( db, local.id );
 	UserGroup::deleteGroupsForUser( db, local.id);
-	User::deleteActionsForUser( db, local.id);
+	HelixUser::deleteActionsForUser( db, local.id);
 
 	// Commit the transaction:
 	trans.Commit();

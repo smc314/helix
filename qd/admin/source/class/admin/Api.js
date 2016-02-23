@@ -559,6 +559,22 @@ qx.Class.define("admin.Api", {
 				completionFunction, theThis);
 		},
 
+		/** This function will call the /logic/admin/DeleteHelixUser
+		  * server API.
+		  */
+		DeleteHelixUser : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "DeleteHelixUser");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			admin.Api.SendRequest(requestDoc, "/logic/admin/DeleteHelixUser",
+				completionFunction, theThis);
+		},
+
 		/** This function will call the /logic/admin/DeleteIAFile
 		  * server API.
 		  */
@@ -607,22 +623,6 @@ qx.Class.define("admin.Api", {
 				completionFunction, theThis);
 		},
 
-		/** This function will call the /logic/admin/DeleteUser
-		  * server API.
-		  */
-		DeleteUser : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "DeleteUser");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			admin.Api.SendRequest(requestDoc, "/logic/admin/DeleteUser",
-				completionFunction, theThis);
-		},
-
 		/** This function will call the /logic/admin/GetActions
 		  * server API.
 		  */
@@ -648,6 +648,20 @@ qx.Class.define("admin.Api", {
 
 			// Now send the request to the server.
 			admin.Api.SendRequest(requestDoc, "/logic/admin/GetGroups",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/GetHelixUsers
+		  * server API.
+		  */
+		GetHelixUsers : function (
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetHelixUsers");
+
+			// Now send the request to the server.
+			admin.Api.SendRequest(requestDoc, "/logic/admin/GetHelixUsers",
 				completionFunction, theThis);
 		},
 
@@ -699,6 +713,22 @@ qx.Class.define("admin.Api", {
 				completionFunction, theThis);
 		},
 
+		/** This function will call the /logic/admin/GetOneHelixUser
+		  * server API.
+		  */
+		GetOneHelixUser : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "GetOneHelixUser");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			admin.Api.SendRequest(requestDoc, "/logic/admin/GetOneHelixUser",
+				completionFunction, theThis);
+		},
+
 		/** This function will call the /logic/admin/GetOneScheduleItem
 		  * server API.
 		  */
@@ -712,22 +742,6 @@ qx.Class.define("admin.Api", {
 
 			// Now send the request to the server.
 			admin.Api.SendRequest(requestDoc, "/logic/admin/GetOneScheduleItem",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/GetOneUser
-		  * server API.
-		  */
-		GetOneUser : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetOneUser");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			admin.Api.SendRequest(requestDoc, "/logic/admin/GetOneUser",
 				completionFunction, theThis);
 		},
 
@@ -774,20 +788,6 @@ qx.Class.define("admin.Api", {
 
 			// Now send the request to the server.
 			admin.Api.SendRequest(requestDoc, "/logic/admin/GetSQLWork",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/GetUsers
-		  * server API.
-		  */
-		GetUsers : function (
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "GetUsers");
-
-			// Now send the request to the server.
-			admin.Api.SendRequest(requestDoc, "/logic/admin/GetUsers",
 				completionFunction, theThis);
 		},
 
@@ -903,6 +903,38 @@ qx.Class.define("admin.Api", {
 				completionFunction, theThis);
 		},
 
+		/** This function will call the /logic/admin/InsertHelixUser
+		  * server API.
+		  */
+		InsertHelixUser : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "InsertHelixUser");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			admin.Api.SendRequest(requestDoc, "/logic/admin/InsertHelixUser",
+				completionFunction, theThis);
+		},
+
+		/** This function will call the /logic/admin/UpdateHelixUser
+		  * server API.
+		  */
+		UpdateHelixUser : function ( inputObj,
+			completionFunction, theThis
+		){
+			// First build the request XML Document
+			var requestDoc = qx.xml.Document.create(null, "UpdateHelixUser");
+			var requestRoot = requestDoc.documentElement;
+			inputObj.createXMLElement( requestRoot );
+
+			// Now send the request to the server.
+			admin.Api.SendRequest(requestDoc, "/logic/admin/UpdateHelixUser",
+				completionFunction, theThis);
+		},
+
 		/** This function will call the /logic/admin/InsertScheduleItem
 		  * server API.
 		  */
@@ -932,38 +964,6 @@ qx.Class.define("admin.Api", {
 
 			// Now send the request to the server.
 			admin.Api.SendRequest(requestDoc, "/logic/admin/UpdateScheduleItem",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/InsertUser
-		  * server API.
-		  */
-		InsertUser : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "InsertUser");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			admin.Api.SendRequest(requestDoc, "/logic/admin/InsertUser",
-				completionFunction, theThis);
-		},
-
-		/** This function will call the /logic/admin/UpdateUser
-		  * server API.
-		  */
-		UpdateUser : function ( inputObj,
-			completionFunction, theThis
-		){
-			// First build the request XML Document
-			var requestDoc = qx.xml.Document.create(null, "UpdateUser");
-			var requestRoot = requestDoc.documentElement;
-			inputObj.createXMLElement( requestRoot );
-
-			// Now send the request to the server.
-			admin.Api.SendRequest(requestDoc, "/logic/admin/UpdateUser",
 				completionFunction, theThis);
 		},
 

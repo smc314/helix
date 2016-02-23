@@ -12,7 +12,7 @@
 #include "OdbcObj.h"
 using namespace Helix::Glob;
 
-#include "GetOneUser.h"
+#include "GetHelixUsers.h"
 using namespace Helix::Logic::admin;
 
 #include "Statics.h"
@@ -27,45 +27,42 @@ using namespace Helix::Logic::util;
 using namespace SLib;
 
 // Include local data objects here
-#include "User.h"
-#include "Group.h"
-#include "Action.h"
-using namespace Helix::Logic::admin;
+#include "HelixUser.h"
 
 // This adds us to the global ActionClass Registry:
-ActionClassRegister<GetOneUser> GetOneUser::reg("GetOneUser", 1, "/logic/admin/GetOneUser");
+ActionClassRegister<GetHelixUsers> GetHelixUsers::reg("GetHelixUsers", 1, "/logic/admin/GetHelixUsers");
 
 // Used for auto generating the API on the javascript side:
-// LOGICCODEGEN API=/logic/admin/GetOneUser Input=User
+// LOGICCODEGEN API=/logic/admin/GetHelixUsers Input=NULL
 
-GetOneUser::GetOneUser(xmlNodePtr action)
+GetHelixUsers::GetHelixUsers(xmlNodePtr action)
 {
-	EnEx ee(FL, "GetOneUser::GetOneUser(xmlNodePtr action)");
+	EnEx ee(FL, "GetHelixUsers::GetHelixUsers(xmlNodePtr action)");
 	
 }
 
-GetOneUser::GetOneUser(const GetOneUser& c)
+GetHelixUsers::GetHelixUsers(const GetHelixUsers& c)
 {
-	EnEx ee(FL, "GetOneUser::GetOneUser(const GetOneUser& c)");
+	EnEx ee(FL, "GetHelixUsers::GetHelixUsers(const GetHelixUsers& c)");
 
 }
 
-GetOneUser& GetOneUser::operator=(const GetOneUser& c)
+GetHelixUsers& GetHelixUsers::operator=(const GetHelixUsers& c)
 {
-	EnEx ee(FL, "GetOneUser::operator=(const GetOneUser& c)");
+	EnEx ee(FL, "GetHelixUsers::operator=(const GetHelixUsers& c)");
 
 	return *this;
 }
 
-GetOneUser::~GetOneUser()
+GetHelixUsers::~GetHelixUsers()
 {
-	EnEx ee(FL, "GetOneUser::~GetOneUser()");
+	EnEx ee(FL, "GetHelixUsers::~GetHelixUsers()");
 
 }
 
-bool GetOneUser::isLongRunning()
+bool GetHelixUsers::isLongRunning()
 {
-	EnEx ee(FL, "GetOneUser::isLongRunning()");
+	EnEx ee(FL, "GetHelixUsers::isLongRunning()");
 
 	// If we are a long running transaction, we need to return true here.  This will trigger
 	// special logic that causes an immediate return to the caller, and for us to be executed
@@ -80,50 +77,27 @@ bool GetOneUser::isLongRunning()
 	return false;
 }
 
-twine GetOneUser::lrTaskName()
+twine GetHelixUsers::lrTaskName()
 {
-	EnEx ee(FL, "GetOneUser::lrTaskName()");
+	EnEx ee(FL, "GetHelixUsers::lrTaskName()");
 
 	// Read above comments in isLongRunning.  Delete this method if not required.
-	return "GetOneUser Request";
+	return "GetHelixUsers Request";
 }
 
 
-void GetOneUser::ExecuteRequest(IOConn& ioc)
+void GetHelixUsers::ExecuteRequest(IOConn& ioc)
 {
 	// The "true" parameter at the end here indicates to the entry/exit timing
 	// mechanism that it should copy this thread's stats to the global collection.
 	// This should not be done everywhere, but is appropriate to do at this point.
-	EnEx ee(FL, "GetOneUser::ExecuteRequest(IOConn& ioc)", true);
+	EnEx ee(FL, "GetHelixUsers::ExecuteRequest(IOConn& ioc)", true);
 
-	// Set up the response document name
-	ioc.initializeResponseDocument("GetOneUser");
-
-	User local( XmlHelpers::FindChild( ioc.GetRequestRoot(), User::Name()() ) );
-
+	// Example of accessing a local configuration database
 	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB( );
-	User_svect vect = User::selectByID( sqldb, local.id );
-	if(vect->size() == 0){
-		throw AnException(0, FL, "Unknown user: %d", local.id);
-	}
+	HelixUser_svect vect = HelixUser::selectAll( sqldb );
 
-	// Pull up the existing groups for the user:
-	(*vect)[0]->GroupMembership = UserGroup::selectGroupsForUser( sqldb, local.id );
-
-	// Pull up the existing actions for the user:
-	(*vect)[0]->AllowedActions = Action::selectActionsForUser( sqldb, local.id );
-
-	User::createXmlChildren( ioc.getResponseRoot(), vect );
-
-	// Pull up all the groups defined in the DB:
-	Group::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllGroups",
-		Group::selectAll( sqldb )
-	);
-
-	// Pull up all the actions defined in the DB:
-	Action::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllActions",
-		Action::selectAll( sqldb )
-	);
+	HelixUser::createXmlChildren( ioc.getResponseRoot(), vect );
 
 	// Send the response back to the caller and close the connection.
 	ioc.SendReturn();

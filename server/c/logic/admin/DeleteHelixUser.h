@@ -8,8 +8,8 @@
 
 *************************************************************************** */
 
-#ifndef DeleteUser_H
-#define DeleteUser_H
+#ifndef DeleteHelixUser_H
+#define DeleteHelixUser_H
 
 #include <xmlinc.h>
 #include <twine.h>
@@ -22,20 +22,20 @@ namespace Helix {
 namespace Logic {
 namespace admin {
 
-class DLLEXPORT DeleteUser : public ActionClass
+class DLLEXPORT DeleteHelixUser : public ActionClass
 {
 	public:
 		/// Standard Constructor
-		DeleteUser(xmlNodePtr action);
+		DeleteHelixUser(xmlNodePtr action);
 
 		/// Standard Copy Constructor
-		DeleteUser(const DeleteUser& c);
+		DeleteHelixUser(const DeleteHelixUser& c);
 
 		/// Standard Copy operator
-		DeleteUser& operator=(const DeleteUser& c);
+		DeleteHelixUser& operator=(const DeleteHelixUser& c);
 
 		/// Standard Destructor
-		virtual ~DeleteUser();
+		virtual ~DeleteHelixUser();
 
 		/// We implement the ExecuteRequest method
 		virtual void ExecuteRequest(IOConn& ioc);
@@ -49,10 +49,10 @@ class DLLEXPORT DeleteUser : public ActionClass
 	private:
 
 		// Registers us with the global factory map:
-		static ActionClassRegister<DeleteUser> reg;
+		static ActionClassRegister<DeleteHelixUser> reg;
 
 };
 
 }}} // End of Namespace definitions
 
-#endif // DeleteUser_H Defined
+#endif // DeleteHelixUser_H Defined

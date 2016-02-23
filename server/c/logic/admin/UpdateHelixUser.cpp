@@ -12,7 +12,7 @@
 #include "OdbcObj.h"
 using namespace Helix::Glob;
 
-#include "UpdateUser.h"
+#include "UpdateHelixUser.h"
 using namespace Helix::Logic::admin;
 
 #include "Statics.h"
@@ -27,49 +27,49 @@ using namespace Helix::Logic::util;
 using namespace SLib;
 
 // Include local data objects here
-#include "User.h"
+#include "HelixUser.h"
 #include "Group.h"
 #include "Action.h"
 
 
 // This adds us to the global ActionClass Registry:
-ActionClassRegister<UpdateUser> UpdateUser::reg("UpdateUser", 1, 
-	"/logic/admin/InsertUser",
-	"/logic/admin/UpdateUser"
+ActionClassRegister<UpdateHelixUser> UpdateHelixUser::reg("UpdateHelixUser", 1, 
+	"/logic/admin/InsertHelixUser",
+	"/logic/admin/UpdateHelixUser"
 );
 
 // Used for auto generating the API on the javascript side:
-// LOGICCODEGEN API=/logic/admin/InsertUser Input=User
-// LOGICCODEGEN API=/logic/admin/UpdateUser Input=User
+// LOGICCODEGEN API=/logic/admin/InsertHelixUser Input=HelixUser
+// LOGICCODEGEN API=/logic/admin/UpdateHelixUser Input=HelixUser
 
-UpdateUser::UpdateUser(xmlNodePtr action)
+UpdateHelixUser::UpdateHelixUser(xmlNodePtr action)
 {
-	EnEx ee(FL, "UpdateUser::UpdateUser(xmlNodePtr action)");
+	EnEx ee(FL, "UpdateHelixUser::UpdateHelixUser(xmlNodePtr action)");
 	
 }
 
-UpdateUser::UpdateUser(const UpdateUser& c)
+UpdateHelixUser::UpdateHelixUser(const UpdateHelixUser& c)
 {
-	EnEx ee(FL, "UpdateUser::UpdateUser(const UpdateUser& c)");
+	EnEx ee(FL, "UpdateHelixUser::UpdateHelixUser(const UpdateHelixUser& c)");
 
 }
 
-UpdateUser& UpdateUser::operator=(const UpdateUser& c)
+UpdateHelixUser& UpdateHelixUser::operator=(const UpdateHelixUser& c)
 {
-	EnEx ee(FL, "UpdateUser::operator=(const UpdateUser& c)");
+	EnEx ee(FL, "UpdateHelixUser::operator=(const UpdateHelixUser& c)");
 
 	return *this;
 }
 
-UpdateUser::~UpdateUser()
+UpdateHelixUser::~UpdateHelixUser()
 {
-	EnEx ee(FL, "UpdateUser::~UpdateUser()");
+	EnEx ee(FL, "UpdateHelixUser::~UpdateHelixUser()");
 
 }
 
-bool UpdateUser::isLongRunning()
+bool UpdateHelixUser::isLongRunning()
 {
-	EnEx ee(FL, "UpdateUser::isLongRunning()");
+	EnEx ee(FL, "UpdateHelixUser::isLongRunning()");
 
 	// If we are a long running transaction, we need to return true here.  This will trigger
 	// special logic that causes an immediate return to the caller, and for us to be executed
@@ -84,38 +84,38 @@ bool UpdateUser::isLongRunning()
 	return false;
 }
 
-twine UpdateUser::lrTaskName()
+twine UpdateHelixUser::lrTaskName()
 {
-	EnEx ee(FL, "UpdateUser::lrTaskName()");
+	EnEx ee(FL, "UpdateHelixUser::lrTaskName()");
 
 	// Read above comments in isLongRunning.  Delete this method if not required.
-	return "UpdateUser Request";
+	return "UpdateHelixUser Request";
 }
 
 
-void UpdateUser::ExecuteRequest(IOConn& ioc)
+void UpdateHelixUser::ExecuteRequest(IOConn& ioc)
 {
 	// The "true" parameter at the end here indicates to the entry/exit timing
 	// mechanism that it should copy this thread's stats to the global collection.
 	// This should not be done everywhere, but is appropriate to do at this point.
-	EnEx ee(FL, "UpdateUser::ExecuteRequest(IOConn& ioc)", true);
+	EnEx ee(FL, "UpdateHelixUser::ExecuteRequest(IOConn& ioc)", true);
 
 	// How were we called?
 	bool doingInsert = false;
-	if(strcmp((const char*)ioc.GetRequestRoot()->name, "InsertUser") == 0){
+	if(strcmp((const char*)ioc.GetRequestRoot()->name, "InsertHelixUser") == 0){
 		doingInsert = true;
 	}
 
 	// Set up the response document name
 	if(doingInsert){
-		ioc.initializeResponseDocument("InsertUser");
+		ioc.initializeResponseDocument("InsertHelixUser");
 	} else {
-		ioc.initializeResponseDocument("UpdateUser");
+		ioc.initializeResponseDocument("UpdateHelixUser");
 	}
 
-	User local( XmlHelpers::FindChild( ioc.GetRequestRoot(), User::Name()() ) );
+	HelixUser local( XmlHelpers::FindChild( ioc.GetRequestRoot(), HelixUser::Name()() ) );
 	if(local.Username.empty()){
-		throw AnException(0, FL, "User must have a valid name.");
+		throw AnException(0, FL, "HelixUser must have a valid name.");
 	}
 
 	SqlDB& db = TheMain::getInstance()->GetConfigDB( );
@@ -123,11 +123,11 @@ void UpdateUser::ExecuteRequest(IOConn& ioc)
 	SqlDBTransaction trans(db); // Transaction will be rolled back when this object goes out of scope
 
 	if(doingInsert){
-		User::insert( db, local );
-		User::insertAuth( db, local );
+		HelixUser::insert( db, local );
+		HelixUser::insertAuth( db, local );
 	} else {
-		User::update( db, local.Username, local.FullName, local.EMail, local.Active, local.id );
-		User::updateAuth( db, local.AuthMechanism, local.Password, local.id );
+		HelixUser::update( db, local.Username, local.FullName, local.EMail, local.Active, local.id );
+		HelixUser::updateAuth( db, local.AuthMechanism, local.Password, local.id );
 	}
 	// Pick up the new user ID for the groups and actions
 	for(size_t i = 0; i < local.GroupMembership->size(); i ++){
@@ -139,7 +139,7 @@ void UpdateUser::ExecuteRequest(IOConn& ioc)
 
 	// Now get the usergroup and useraction entries correct:
 	UserGroup::deleteGroupsForUser( db, local.id );
-	User::deleteActionsForUser( db, local.id );
+	HelixUser::deleteActionsForUser( db, local.id );
 
 	UserGroup::addUserGroup( db, local.GroupMembership, false ); // No new transaction for these inserts
 	Action::addUserToAction( db, local.AllowedActions, false ); // No new transaction for these inserts
