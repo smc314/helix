@@ -28,7 +28,7 @@ using namespace SLib;
 
 // Include local data objects here
 #include "Group.h"
-#include "User.h"
+#include "HelixUser.h"
 #include "Action.h"
 
 // This adds us to the global ActionClass Registry:
@@ -157,7 +157,7 @@ void UpdateGroup::ExecuteRequest(IOConn& ioc)
 	trans.Commit();
 
 	// Pull up users and actions defined in the DB:
-	User::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllUsers", User::selectAll( db ) );
+	HelixUser::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllUsers", HelixUser::selectAll( db ) );
 	Action::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllActions", Action::selectAll( db ) );
 
 	// Send the updated object back to the caller

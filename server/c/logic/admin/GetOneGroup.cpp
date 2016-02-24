@@ -28,7 +28,7 @@ using namespace SLib;
 
 // Include local data objects here
 #include "Group.h"
-#include "User.h"
+#include "HelixUser.h"
 #include "Action.h"
 
 // This adds us to the global ActionClass Registry:
@@ -124,8 +124,8 @@ void GetOneGroup::ExecuteRequest(IOConn& ioc)
 	ret.createXmlNode( ioc.getResponseRoot() );
 
 	// Also pull up all of the users defined in the DB:
-	User::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllUsers",
-		User::selectAll( db )
+	HelixUser::createXmlChildAndGrandchildren( ioc.getResponseRoot(), "AllUsers",
+		HelixUser::selectAll( db )
 	);
 
 	// Also pull up all of the actions defined in the DB:

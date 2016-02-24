@@ -16,7 +16,7 @@ using namespace Helix::Glob;
 #include "Statics.h"
 using namespace Helix::Logic::util;
 
-#include "User.h"
+#include "HelixUser.h"
 #include "Action.h"
 using namespace Helix::Logic::admin;
 
@@ -247,7 +247,7 @@ bool Authenticate::verifyUserNameAndPassword(IOConn* ioc, const twine& UserName,
 	storedin.getAttribute( security, "storedin" );
 
 	SqlDB& sqldb = TheMain::getInstance()->GetSqlDB( storedin );
-	User_svect users = User::selectByUsername( sqldb, (twine&)UserName );
+	HelixUser_svect users = HelixUser::selectByUsername( sqldb, (twine&)UserName );
 
 	// Now verify the user we found against the requested password
 	if(users->size() == 0){

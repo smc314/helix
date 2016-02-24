@@ -68,6 +68,8 @@ void SystemProperties::ExecuteRequest(IOConn& ioc)
 	// Set up the response document name
 	ioc.initializeResponseDocument("SystemProperties");
 
+	SessionInfo& si = ioc.getSessionInfo();
+
 	xmlNodePtr root = ioc.getResponseRoot();
 
 	// Add a series of properties from a couple of calls to the server and the driver
@@ -83,6 +85,14 @@ void SystemProperties::ExecuteRequest(IOConn& ioc)
 	elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
 	xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"AreWeHomeBase");
 	XmlHelpers::setBoolAttr(elem, "value", Statics::areWeHomeBase() );
+
+	elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
+	xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Username");
+	xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)si.username());
+
+	elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
+	xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Fullname");
+	xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)si.fullname());
 
 	// Send the response back to the caller and close the connection.
 	ioc.SendReturn();
