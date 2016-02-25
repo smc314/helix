@@ -54,6 +54,11 @@ IOConn::~IOConn()
 	ReleaseDB();
 }
 
+unsigned long IOConn::MsgRemoteIp(void)
+{
+	return 0;
+}
+
 void IOConn::overrideMsgTarget(const twine newTarget)
 {
 	EnEx ee(FL, "IOConn::overrideMsgTarget()");

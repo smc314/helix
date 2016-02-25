@@ -59,6 +59,11 @@ class DLLEXPORT IOConn
 		 */
 		virtual twine MsgTarget(void) = 0;
 
+		/** This allows the processing logic to see where the message
+		 * came from.
+		 */
+		virtual unsigned long MsgRemoteIp(void);
+
 		/** If the message processing setup decides that the user's request
 		 * needs to be re-routed then this is how it will signal us to do so.
 		 */

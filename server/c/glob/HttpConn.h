@@ -77,6 +77,11 @@ class DLLEXPORT HttpConn : public IOConn
 		  */
 		virtual twine MsgTarget();
 
+		/** This allows the processing logic to see where the message
+		 * came from.
+		 */
+		virtual unsigned long MsgRemoteIp(void);
+
 		/** This will retrieve the Session ID from the inbound message.  If
 		 * there is no session id on the inbound message, this will return null.
 		 */

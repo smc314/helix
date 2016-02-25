@@ -86,6 +86,9 @@ void SaveLogMsg::ExecuteRequest(IOConn& ioc)
 		lm->channel = (*vect)[i]->channel;
 		lm->appName = (*vect)[i]->appName;
 		lm->machineName = (*vect)[i]->machineName;
+		if(lm->machineName == "${ipaddr}"){
+			lm->machineName.format("IP = %lu", ioc.MsgRemoteIp() );
+		}
 		lm->msg = (*vect)[i]->msg;
 
 		// Then drop it onto the log queue to get it saved to our log file

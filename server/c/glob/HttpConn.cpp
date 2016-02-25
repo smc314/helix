@@ -132,6 +132,11 @@ twine HttpConn::MsgTarget()
 	}
 }
 
+unsigned long HttpConn::MsgRemoteIp()
+{
+	return m_ri->remote_ip;
+}
+
 twine HttpConn::getSessionID()
 {
 	EnEx ee(FL, "HttpConn::getSessionID()");
