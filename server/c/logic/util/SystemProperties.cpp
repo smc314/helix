@@ -16,6 +16,9 @@ using namespace Helix::Glob;
 #include "Statics.h"
 using namespace Helix::Logic::util;
 
+#include "HelixUser.h"
+using namespace Helix::Logic::admin;
+
 #include <Log.h>
 #include <dptr.h>
 #include <File.h>
@@ -86,13 +89,25 @@ void SystemProperties::ExecuteRequest(IOConn& ioc)
 	xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"AreWeHomeBase");
 	XmlHelpers::setBoolAttr(elem, "value", Statics::areWeHomeBase() );
 
-	elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
-	xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Username");
-	xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)si.username());
+	SqlDB& sqldb = TheMain::getInstance()->GetConfigDB();
+	HelixUser_svect vect = HelixUser::selectByID( sqldb, si.userid );
+	if(vect->size() != 0){
+		elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
+		xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Username");
+		xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)vect->at(0)->Username());
 
-	elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
-	xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Fullname");
-	xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)si.fullname());
+		elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
+		xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Fullname");
+		xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)vect->at(0)->FullName());
+	} else {
+		elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
+		xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Username");
+		xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)si.username());
+
+		elem = xmlNewChild(root, NULL, (const xmlChar*)"SystemProperty", NULL);
+		xmlSetProp(elem, (const xmlChar*)"name", (const xmlChar*)"Fullname");
+		xmlSetProp(elem, (const xmlChar*)"value", (const xmlChar*)si.fullname());
+	}
 
 	// Send the response back to the caller and close the connection.
 	ioc.SendReturn();
