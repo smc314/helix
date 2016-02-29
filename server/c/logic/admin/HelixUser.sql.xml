@@ -163,6 +163,25 @@
 		<Output name="Password" type="twine"/>
 		<Input name="Username" type="twine"/>
 	</SqlStatement>
+	<SqlStatement methodName="selectByEmail" methodType="SELECTTOXML" target="sqldb">
+		<Comment>
+			This is the statement that we use to pull up a single user entry in our database.
+		</Comment>
+		<Sql>
+			select id, user, fullname, email, active, authmechanism, password
+			from user, userauth
+			where user.email = ?
+			and   user.id = userauth.userid
+		</Sql>
+		<Output name="id" type="autogen"/>
+		<Output name="Username" type="twine"/>
+		<Output name="FullName" type="twine"/>
+		<Output name="EMail" type="twine"/>
+		<Output name="Active" type="int"/>
+		<Output name="AuthMechanism" type="int"/>
+		<Output name="Password" type="twine"/>
+		<Input name="EMail" type="twine"/>
+	</SqlStatement>
 	<SqlStatement methodName="selectUsersForGroup" methodType="SELECTTOXML" target="sqldb">
 		<Comment>
 			This is the statement that we use to pull up all of the users that are in a given group.
