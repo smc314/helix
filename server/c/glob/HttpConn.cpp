@@ -126,11 +126,16 @@ HttpConn::~HttpConn()
 twine HttpConn::MsgTarget()
 {
 	EnEx ee(FL, "HttpConn::MsgTarget()");
+	twine ret;
 	if(!m_override_target.empty()){
-		return m_override_target;
+		ret = m_override_target;
 	} else {
-		return m_ri->uri;
+		ret = m_ri->uri;
 	}
+	if(ret == "/"){
+		ret = "/index.html";
+	}
+	return ret;
 }
 
 unsigned long HttpConn::MsgRemoteIp()
