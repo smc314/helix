@@ -1381,6 +1381,8 @@ map<twine, twine> buildObjectParms( twine& objName )
 			memberInitStatements.append("\t" + attrName + " = 0;\n");
 		} else if(attrType == "float"){
 			memberInitStatements.append("\t" + attrName + " = 0.0f;\n");
+		} else if(attrType == "Timestamp" || attrType == "Date" || attrType == "Datetime"){
+			memberInitStatements.append("\t" + attrName + ".erase();\n");
 		} else if(attrType == "twine" ||
 				attrType == "cdata" ||
 				attrType == "base64" ||
