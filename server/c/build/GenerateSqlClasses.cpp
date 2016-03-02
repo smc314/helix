@@ -2903,12 +2903,13 @@ twine replaceInputForType(twine name, twine type)
 			"\t\tstmt.replace(idx, 1, " + name + "() );\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return
-			"\t\tstmt.replace(idx, 1, " + name + " );\n";
+			"\t\ttwine quoted; quoted.format(\"'%s'\", " + name + "() );\n"
+			"\t\tstmt.replace(idx, 1, quoted );\n";
 	} else {
 		// default to twine
 		return 
-			//"\t\tstmt.replace(idx, 1, \"'\" + " + name + " + \"'\");\n";
-			"\t\tstmt.replace(idx, 1, " + name + " );\n";
+			"\t\ttwine quoted; quoted.format(\"'%s'\", " + name + "() );\n"
+			"\t\tstmt.replace(idx, 1, quoted );\n";
 	}
 
 }
@@ -2932,12 +2933,13 @@ twine replaceInputForType2(twine name, twine type)
 			"\t\tstmt.replace(idx, 1, obj." + name + "() );\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return 
-			"\t\tstmt.replace(idx, 1, obj." + name + " );\n";
+			"\t\ttwine quoted; quoted.format(\"'%s'\", obj." + name + "() );\n"
+			"\t\tstmt.replace(idx, 1, quoted );\n";
 	} else {
 		// default to twine
 		return 
-			//"\t\tstmt.replace(idx, 1, \"'\" + " + name + " + \"'\");\n";
-			"\t\tstmt.replace(idx, 1, obj." + name + " );\n";
+			"\t\ttwine quoted; quoted.format(\"'%s'\", obj." + name + "() );\n"
+			"\t\tstmt.replace(idx, 1, quoted );\n";
 	}
 
 }
