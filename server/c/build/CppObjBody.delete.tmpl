@@ -13,9 +13,10 @@ void ${doName}::${methodName}(OdbcObj& odbc${TypedParms} )
 {
 	EnEx ee(FL, "${doName}::${methodName}()");
 
-	twine stmt = "${flatSql}";
+	// Replace all parameter markers
+	twine stmt = ${doName}::${methodName}_prepSQL(odbc${UntypedParms} );
 
-	${doName}::${methodName}(odbc, stmt, true${UntypedParms} );
+	${doName}::${methodName}(odbc, stmt, false${UntypedParms} );
 
 }
 
@@ -72,12 +73,31 @@ twine ${doName}::${methodName}_prepSQL(IOConn& ioc${TypedParms} )
 	EnEx ee(FL, "${doName}::${methodName}_prepSQL()");
 
 	size_t idx = 0;
-	twine stmt = "${flatSql}";
+	twine stmt = ${doName}::${methodName}_getSQL();
 
 ${SqlReplaceParms}
 
 	// Also take a look at the statement and replace any session variables
 	Statics::ReplaceSessionVars(ioc, stmt);
+
+	return stmt;
+
+}
+
+/* ************************************************************************************** */
+/* This method will do a replacement of all of the parameter markers in                   */
+/* the sql statement with the standard parameter list that is defined.                    */
+/* This is useful for automatically prepping a SQL statement that doesn't                 */
+/* work with parameter markers.                                                           */
+/* ************************************************************************************** */
+twine ${doName}::${methodName}_prepSQL(OdbcObj& odbc${TypedParms} )
+{
+	EnEx ee(FL, "${doName}::${methodName}_prepSQL()");
+
+	size_t idx = 0;
+	twine stmt = ${doName}::${methodName}_getSQL();
+
+${SqlReplaceParms}
 
 	return stmt;
 

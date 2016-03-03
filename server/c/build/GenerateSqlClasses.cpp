@@ -1999,9 +1999,17 @@ void generateSelectToDO(xmlNodePtr stmt)
 		"{\n"
 		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "()\");\n"
 		"\n"
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
+		"\t// Replace all parameter markers\n"
+		"\ttwine stmt = " + doName + "::" + twine(stmt, "methodName") + "_prepSQL(odbc"
+	);
+	for(size_t i = 0; i < inputs.size(); i++){
+		xmlNodePtr input = inputs[i];
+		m_output.append(", " + twine(input, "name") );
+	}
+	m_output.append(
+		");\n"
 		"\n"
-		"\treturn " + doName + "::" + twine(stmt, "methodName") + "(odbc, stmt, true"
+		"\treturn " + doName + "::" + twine(stmt, "methodName") + "(odbc, stmt, false"
 	);
 	for(size_t i = 0; i < inputs.size(); i++){
 		xmlNodePtr input = inputs[i];
@@ -2243,7 +2251,7 @@ void generateSelectToDO(xmlNodePtr stmt)
 		);
 	}
 	m_output.append(
-		"\ttwine stmt = \"" + flattenSql(stmt) + "\";\n"
+		"\ttwine stmt = " + doName + "::" + twine(stmt, "methodName") + "_getSQL();\n"
 		"\n"
 	);
 	for(size_t i = 0; i < inputs.size(); i++){
@@ -2261,6 +2269,66 @@ void generateSelectToDO(xmlNodePtr stmt)
 		"\t// Also take a look at the statement and replace any session variables\n"
 		"\tStatics::ReplaceSessionVars(ioc, stmt);\n"
 		"\n"
+		"\treturn stmt;\n"
+		"\n"
+		"}\n"
+		"\n"
+	);
+
+	m_output_header.append(
+		"\n"
+		"\t\t/** This method will do a replacement of all of the parameter markers in\n"
+		"\t\t  * the sql statement with the standard parameter list that is defined.\n"
+		"\t\t  * This is useful for automatically prepping a SQL statement that doesn't\n"
+		"\t\t  * work with parameter markers.\n"
+		"\t\t  */\n"
+		"\t\tstatic twine " + twine(stmt, "methodName") + "_prepSQL(OdbcObj& odbc"
+	);
+	m_output.append(
+		"/* ************************************************************************************** */\n"
+		"/* This method will do a replacement of all of the parameter markers in                   */\n"
+		"/* the sql statement with the standard parameter list that is defined.                    */\n"
+		"/* This is useful for automatically prepping a SQL statement that doesn't                 */\n"
+		"/* work with parameter markers.                                                           */\n"
+		"/* ************************************************************************************** */\n"
+		"twine " + doName + "::" + twine(stmt, "methodName") + 
+		"_prepSQL(OdbcObj& odbc"
+
+	);
+
+	for(size_t i = 0; i < inputs.size(); i++){
+		xmlNodePtr input = inputs[i];
+		m_output_header.append(paramForType(twine(input, "name"), twine(input, "type")) );
+		m_output.append(paramForType(twine(input, "name"), twine(input, "type")) );
+	}
+	m_output_header.append(");\n\n");
+	m_output.append(
+		")\n"
+		"{\n"
+		"\tEnEx ee(FL, \"" + doName + "::" + twine(stmt, "methodName") + "_prepSQL()\");\n"
+		"\n"
+	);
+	if(inputs.size() != 0){
+		m_output.append(
+			"\tsize_t idx = 0;\n"
+		);
+	}
+	m_output.append(
+		"\ttwine stmt = " + doName + "::" + twine(stmt, "methodName") + "_getSQL();\n"
+		"\n"
+	);
+	for(size_t i = 0; i < inputs.size(); i++){
+		xmlNodePtr input = inputs[i];
+		m_output.append(
+			"\t// Replace the " + twine(input, "name") + " parameter marker.\n"
+			"\tidx = stmt.find('?', idx);\n"
+			"\tif(idx != TWINE_NOT_FOUND){\n" +
+			replaceInputForType(twine(input, "name"), twine(input, "type")) +
+			"\t}\n"
+			"\n"
+			);
+	}
+	m_output.append(
 		"\treturn stmt;\n"
 		"\n"
 		"}\n"
@@ -2903,13 +2971,11 @@ twine replaceInputForType(twine name, twine type)
 			"\t\tstmt.replace(idx, 1, " + name + "() );\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return
-			"\t\ttwine quoted; quoted.format(\"'%s'\", " + name + "() );\n"
-			"\t\tstmt.replace(idx, 1, quoted );\n";
+			"\t\tstmt.replace(idx, 1, OdbcObj::EscapeStringInput( " + name + " ) );\n";
 	} else {
 		// default to twine
 		return 
-			"\t\ttwine quoted; quoted.format(\"'%s'\", " + name + "() );\n"
-			"\t\tstmt.replace(idx, 1, quoted );\n";
+			"\t\tstmt.replace(idx, 1, OdbcObj::EscapeStringInput( " + name + " ) );\n";
 	}
 
 }
@@ -2933,13 +2999,11 @@ twine replaceInputForType2(twine name, twine type)
 			"\t\tstmt.replace(idx, 1, obj." + name + "() );\n";
 	} else if(type == "Timestamp" || type == "Date" || type == "DateTime"){
 		return 
-			"\t\ttwine quoted; quoted.format(\"'%s'\", obj." + name + "() );\n"
-			"\t\tstmt.replace(idx, 1, quoted );\n";
+			"\t\tstmt.replace(idx, 1, OdbcObj::EscapeStringInput( obj." + name + " ) );\n";
 	} else {
 		// default to twine
 		return 
-			"\t\ttwine quoted; quoted.format(\"'%s'\", obj." + name + "() );\n"
-			"\t\tstmt.replace(idx, 1, quoted );\n";
+			"\t\tstmt.replace(idx, 1, OdbcObj::EscapeStringInput( obj." + name + " ) );\n";
 	}
 
 }

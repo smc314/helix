@@ -926,7 +926,7 @@ void OdbcObj::SanityCheck(void)
 
 twine OdbcObj::GetDataTypeName( int sql_data_type )
 {
-	EnEx ee(FL, "OdbcObj::SanityCheck()");
+	EnEx ee(FL, "OdbcObj::GetDataTypeName()");
 
 	// Reference http://msdn.microsoft.com/en-us/library/windows/desktop/ms710150(v=vs.85).aspx
 	// for the source of this lookup.
@@ -1009,4 +1009,26 @@ twine OdbcObj::GetDataTypeName( int sql_data_type )
 		default :
 			return "SQL_UNKNOWN_TYPE";
 	}
+}
+
+twine OdbcObj::EscapeStringInput( const twine& input )
+{
+	EnEx ee(FL, "OdbcObj::EscapeStringInput( const twine& input)");
+
+	DEBUG(FL, "Input = (%s)", input() );
+
+	twine ret;
+	ret = input; // make a copy
+	size_t ptr = ret.find("'");
+	while(ptr != TWINE_NOT_FOUND){
+		ret.replace(ptr, 1, "''" );
+		ptr += 2;
+		ptr = ret.find("'", ptr);
+	}
+
+	// Finally, wrap it in single quotes
+	ret = "'" + ret + "'";
+
+	DEBUG(FL, "Output = (%s)", ret() );
+	return ret;
 }

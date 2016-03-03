@@ -23,6 +23,13 @@
 		  */
 		static twine ${methodName}_prepSQL(IOConn& ioc, ${doName}& obj );
 
+		/** This method will do a replacement of all of the parameter markers in
+		  * the sql statement with the standard parameter list that is defined.
+		  * This is useful for automatically prepping a SQL statement that doesn't
+		  * work with parameter markers.
+		  */
+		static twine ${methodName}_prepSQL(OdbcObj& odbc, ${doName}& obj );
+
 		/** This method returns the sql statement that is used by the above functions.
 		  */
 		static twine ${methodName}_getSQL() {

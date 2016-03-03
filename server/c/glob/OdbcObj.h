@@ -243,6 +243,11 @@ class DLLEXPORT OdbcObj
 		static twine GetDataTypeName( int sql_data_type );
 		
 		/**
+		  * This escapes a string input by doubling up all single quotes: '
+		  */
+		static twine EscapeStringInput( const twine& input );
+		
+		/**
 		  * This returns the number of rows affected by an UPDATE, INSERT, or DELETE.
 		  * This is only valid after a call to ExecStmt.
 		  */
