@@ -116,8 +116,8 @@ void DumpColumns(twine tableName )
 				break;
 			}
 		}
-		printf("\t\t\t<Column name=\"%s\" type=\"%s\"\n\t\t\t\tsystype=\"%s\" length=\"%s\" precision=\"%s\" scale=\"%s\" nullable=\"%s\" identity=\"%s\" pk=\"%s\"/>\n",
-			cols[i].name(), FormatType(cols[i])(), SysType(cols[i].system_type_id)(),
+		printf("\t\t\t<Column name=\"%s\" \n\t\t\t\tsystype=\"%s\" length=\"%s\" precision=\"%s\" scale=\"%s\" nullable=\"%s\" identity=\"%s\" pk=\"%s\"/>\n",
+			cols[i].name(), SysType(cols[i].system_type_id)(),
 			cols[i].max_length(), cols[i].precision(), cols[i].scale(), cols[i].is_nullable(),
 			cols[i].is_identity(), 
 			isPkCol ? "true" : "false"

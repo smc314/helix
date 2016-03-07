@@ -39,6 +39,7 @@ extern "C"
 #include "IOAdapter.h"
 #include "SessionSerializer.h"
 #include "MySqlDbInit.h"
+#include "SqlServerDbInit.h"
 #include "ActionMap.h"
 using namespace Helix::Glob;
 
@@ -569,6 +570,10 @@ void TheMain::InitStorageDB(void)
 		} else if ( dbType == "MySQL" ){
 			m_connection_pools[ dbName ] = new ConnectionPool( dbName );
 			MySqlDbInit dbinit( dbName );
+			dbinit.VerifyInstallSchema();
+		} else if ( dbType == "SqlServer" ){
+			m_connection_pools[ dbName ] = new ConnectionPool( dbName );
+			SqlServerDbInit dbinit( dbName );
 			dbinit.VerifyInstallSchema();
 		}
 	}

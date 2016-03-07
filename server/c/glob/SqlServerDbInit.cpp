@@ -49,6 +49,20 @@ SqlServerDbInit::SqlServerDbInit( const twine& dbName )
 
 }
 
+SqlServerDbInit::SqlServerDbInit( const twine& dbName, const twine& targetDbName, const twine& layoutFile,
+	const twine& user, const twine& pass, OdbcObj* odbc)
+{
+	EnEx ee(FL, "SqlServerDbInit::SqlServerDbInit(const twine& dbName, const twine& targetDbName, const twine& layoutFile, const twine& user, const twine& pass, OdbcObj* odbc)");
+
+	_targetDbName = targetDbName;
+	_layoutFileName = layoutFile;
+	_dbUser = user;
+	_dbPass = pass;
+	m_connection = NULL;
+	m_odbc = odbc;
+
+}
+
 SqlServerDbInit::~SqlServerDbInit()
 {
 	EnEx ee(FL, "SqlServerDbInit::~SqlServerDbInit()");
@@ -85,6 +99,7 @@ void SqlServerDbInit::ProcessFile( const twine& fileName )
 	_dbSetup = xmlParseFile( fileName() );
 
 	xmlNodePtr root = xmlDocGetRootElement( _dbSetup );
+	_layoutRoot = root;
 	_targetSchema.getAttribute(root, "schema");
 	if(_targetSchema.length() == 0){
 		_targetSchema = "dbo";
@@ -127,6 +142,7 @@ void SqlServerDbInit::VerifyCreateDatabase()
 
 	// If we get to here, then the target db was not found.  Create it.
 	stmt = "create database [" + _targetDbName + "] collate SQL_Latin1_General_CP1_CS_AS";
+	INFO(FL, "Creating new database [%s]", _targetDbName() );
 	SQLTRACE(FL, "%s", stmt() );
 	m_odbc->SetStmt( stmt, SQL_TYPE_INSERT );
 	m_odbc->ExecStmt();
@@ -166,6 +182,21 @@ void SqlServerDbInit::VerifyTable(xmlNodePtr table)
 	CreateTable(table);
 }
 
+xmlNodePtr SqlServerDbInit::FindTable(const twine& tableName)
+{
+	EnEx ee(FL, "SqlServerDbInit::CreateTable(xmlNodePtr table)");
+
+	xmlNodePtr tables_node = XmlHelpers::FindChild(_layoutRoot, "Tables");
+	vector<xmlNodePtr> tables = XmlHelpers::FindChildren(tables_node, "Table");
+	for(size_t i = 0; i < tables.size(); i++){
+		twine name(tables[i], "name");
+		if(name == tableName){
+			return tables[i];
+		}
+	}
+	return NULL;
+}
+
 void SqlServerDbInit::CreateTable(xmlNodePtr table)
 {
 	EnEx ee(FL, "SqlServerDbInit::CreateTable(xmlNodePtr table)");
@@ -178,7 +209,7 @@ void SqlServerDbInit::CreateTable(xmlNodePtr table)
 	vector<xmlNodePtr> cols = XmlHelpers::FindChildren( table, "Column" );
 	for(size_t i = 0; i < cols.size(); i++){
 		twine colName(cols[i], "name");
-		twine colType(cols[i], "type");
+		twine colType = FormatType(cols[i]);
 		bool pk = XmlHelpers::getBoolAttr(cols[i], "pk");
 		bool colDelete = XmlHelpers::getBoolAttr(cols[i], "delete");
 		if(colDelete) continue; // skip these
@@ -193,12 +224,17 @@ void SqlServerDbInit::CreateTable(xmlNodePtr table)
 	vector<xmlNodePtr> foreignKeys = XmlHelpers::FindChildren( table, "ForeignKey" );
 	for(size_t i = 0; i < foreignKeys.size(); i++){
 		stmt += "\t, " + FormatForeignKey( foreignKeys[i], table );
+
+		// Find the foreign table that this references, and ensure that it is set up first
+		twine fkTableName(foreignKeys[i], "references");
+		VerifyTable( FindTable( fkTableName ) );
 	}
 
 	stmt += ")\n"; // End the create table statement
 
 
 	SQLTRACE(FL, "%s", stmt() );
+	INFO(FL, "Creating new table [%s].[%s]", _targetSchema(), tableName() );
 	m_odbc->SetStmt( stmt, SQL_TYPE_INSERT );
 	m_odbc->ExecStmt();
 
@@ -324,6 +360,7 @@ void SqlServerDbInit::CreateIndexes(xmlNodePtr table)
 		twine stmt = FormatIndex(indexes[i], table);
 
 		SQLTRACE(FL, "%s", stmt() );
+		INFO(FL, "Creating index %s", stmt() );
 		m_odbc->SetStmt( stmt, SQL_TYPE_INSERT );
 		m_odbc->ExecStmt();
 	}
@@ -344,6 +381,7 @@ void SqlServerDbInit::RunCreateSql(xmlNodePtr table)
 	for(size_t i = 0; i < stmt_vect.size(); i++){
 		if(stmt_vect[i].ltrim().rtrim().length() != 0){
 			SQLTRACE(FL, "%s", stmt_vect[i]() );
+			INFO(FL, "Running post-create sql");
 			m_odbc->SetStmt( stmt_vect[i], SQL_TYPE_INSERT );
 			m_odbc->ExecStmt();
 			m_odbc->Commit();
@@ -413,14 +451,14 @@ vector<SqlServerCol> SqlServerDbInit::GetColsForTable(twine tableName)
 	return ret;
 }
 
-bool SqlServerDbInit::ColumnExists(const vector<SqlServerCol>& cols, const twine& colName)
+SqlServerCol* SqlServerDbInit::ColumnExists(vector<SqlServerCol>& cols, const twine& colName)
 {
 	for(size_t j = 0; j < cols.size(); j++){
 		if(cols[j].name == colName){
-			return true; // found it
+			return &cols[j]; // found it
 		}
 	}
-	return false; // Didn't find it
+	return NULL; // Didn't find it
 }
 
 
@@ -441,11 +479,12 @@ void SqlServerDbInit::VerifyColumns(xmlNodePtr table)
 		twine colName(xmlCols[i], "name");
 		bool toDelete = XmlHelpers::getBoolAttr(xmlCols[i], "delete");
 		// Delete if the col exists
-		if(toDelete && ColumnExists(cols, colName)){
+		if(toDelete && (ColumnExists(cols, colName) != NULL)){
 			twine dropCommand;
 			dropCommand.format("ALTER TABLE [%s] DROP COLUMN [%s]", tableName(), colName() );
 
 			SQLTRACE(FL, "%s", dropCommand() );
+			INFO(FL, "Dropping table column: [%s].[%s]", tableName(), colName() );
 			m_odbc->SetStmt( dropCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
 		}
@@ -457,23 +496,41 @@ void SqlServerDbInit::VerifyColumns(xmlNodePtr table)
 	// Run through the list of columns that should be there
 	for(size_t i = 0; i < xmlCols.size(); i++){
 		twine colName(xmlCols[i], "name");
-		twine colType(xmlCols[i], "type");
+		twine colType = FormatType(xmlCols[i]);
 		bool toDelete = XmlHelpers::getBoolAttr(xmlCols[i], "delete");
 		if(toDelete) continue; // Skip deleted columns
-		if(ColumnExists(cols, colName) == false){
+		SqlServerCol* sqlCol = ColumnExists(cols, colName);
+		if(sqlCol == NULL){
 			twine addCommand;
 			addCommand.format("ALTER TABLE [%s] ADD [%s] %s", tableName(), colName(), colType() );
 
 			SQLTRACE(FL, "%s", addCommand() );
+			INFO(FL, "Adding table column: [%s].[%s]", tableName(), colName() );
 			m_odbc->SetStmt( addCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
 		} else {
 			// Column exists, verify structure
+			twine systype(xmlCols[i], "systype");
+			twine length(xmlCols[i], "length");
+			twine precision(xmlCols[i], "precision");
+			twine scale(xmlCols[i], "scale");
+			twine nullable(xmlCols[i], "nullable");
+			if(SysType(sqlCol->system_type_id) != systype ||
+				sqlCol->max_length != length ||
+				sqlCol->precision != precision ||
+				sqlCol->scale != scale ||
+				sqlCol->is_nullable != nullable
+			){
+				twine alterCommand;
+				alterCommand.format("ALTER TABLE [%s] ALTER COLUMN [%s] %s", tableName(), colName(), colType() );
 
+				SQLTRACE(FL, "%s", alterCommand() );
+				INFO(FL, "Altering table column: [%s].[%s]", tableName(), colName() );
+				m_odbc->SetStmt( alterCommand, SQL_TYPE_SELECT );
+				m_odbc->ExecStmt();
+			}
 		}
 	}
-				
-
 }
 
 void SqlServerDbInit::VerifyIndexes(xmlNodePtr table)
@@ -495,6 +552,7 @@ void SqlServerDbInit::VerifyIndexes(xmlNodePtr table)
 			dropCommand.format("DROP INDEX [%s] ON [%s]", idxName(), tableName() );
 
 			SQLTRACE(FL, "%s", dropCommand() );
+			INFO(FL, "Dropping Index [%s].[%s]", tableName(), idxName() );
 			m_odbc->SetStmt( dropCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
 		}
@@ -509,6 +567,7 @@ void SqlServerDbInit::VerifyIndexes(xmlNodePtr table)
 			twine addCommand = FormatIndex( xmlIndexes[i], table );
 
 			SQLTRACE(FL, "%s", addCommand() );
+			INFO(FL, "Adding index [%s]", idxName() );
 			m_odbc->SetStmt( addCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
 		} else {
@@ -559,6 +618,7 @@ void SqlServerDbInit::VerifyForeignKeys(xmlNodePtr table)
 			dropCommand.format("ALTER TABLE [%s] DROP CONSTRAINT [%s]", tableName(), idxName() );
 
 			SQLTRACE(FL, "%s", dropCommand() );
+			INFO(FL, "Dropping foreign key [%s].[%s]", tableName(), idxName() );
 			m_odbc->SetStmt( dropCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
 		}
@@ -574,6 +634,7 @@ void SqlServerDbInit::VerifyForeignKeys(xmlNodePtr table)
 			addCommand.format("ALTER TABLE [%s] ADD %s", tableName(), FormatForeignKey( xmlIndexes[i], table ) );
 
 			SQLTRACE(FL, "%s", addCommand() );
+			INFO(FL, "Adding foreign key [%s].[%s]", tableName(), idxName() );
 			m_odbc->SetStmt( addCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
 		} else {
@@ -609,4 +670,78 @@ void SqlServerDbInit::VerifyPrimaryKey(xmlNodePtr table)
 	EnEx ee(FL, "SqlServerDbInit::VerifyPrimaryKey(xmlNodePtr table)");
 
 }
+
+twine SqlServerDbInit::FormatType(xmlNodePtr col)
+{
+	EnEx ee(FL, "SqlServerDbInit::FormatType(xmlNodePtr col)");
+
+	twine systype(col, "systype");
+	twine length(col, "length");
+	twine precision(col, "precision");
+	twine scale(col, "scale");
+	bool isNullable = XmlHelpers::getBoolAttr(col, "nullable");
+	bool isIdentity = XmlHelpers::getBoolAttr(col, "identity");
+
+	twine ret;
+	if(systype == "int"){
+		if(isIdentity){
+			ret = "int IDENTITY(1,1)";
+		} else {
+			ret = "int";
+		}
+	} else if(systype == "nvarchar"){
+		ret = "nvarchar(" + length + ")";
+	} else if(systype == "varchar"){
+		ret = "varchar(" + length + ")";
+	} else if(systype == "varbinary"){
+		if(length == "-1"){
+			ret = "varbinary(max)";
+		} else {
+			ret = "varbinary(" + length + ")";
+		}
+	} else if(systype == "datetime"){
+		ret = "datetime";
+	} else if(systype == "datetimeoffset"){
+		ret = "datetimeoffset(" + scale + ")";
+	} else if(systype == "decimal"){
+		ret = "decimal(" + precision + ", " + scale + ")";
+	} else if(systype == "bit"){
+		ret = "bit";
+	} else {
+		ret = "unknown";
+	}
+
+	if(isNullable){
+		ret += " null";
+	} else {
+		ret += " not null";
+	}
+	return ret;
+}
+
+twine SqlServerDbInit::SysType(const twine& system_type_id)
+{
+	EnEx ee(FL, "SqlServerDbInit::SysType(const twine& system_type_id)");
+
+	if(system_type_id == "56"){
+		return "int";
+	} else if(system_type_id == "231"){
+		return "nvarchar";
+	} else if(system_type_id == "167"){
+		return "varchar";
+	} else if(system_type_id == "165"){
+		return "varbinary";
+	} else if(system_type_id == "61"){
+		return "datetime";
+	} else if(system_type_id == "43"){
+		return "datetimeoffset";
+	} else if(system_type_id == "106"){
+		return "decimal";
+	} else if(system_type_id == "104"){
+		return "bit";
+	} else {
+		return "unknown";
+	}
+}
+
 

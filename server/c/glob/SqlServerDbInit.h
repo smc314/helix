@@ -143,6 +143,7 @@ class DLLEXPORT SqlServerDbInit {
 	protected:
 		map<twine, TableActions> _setupSummary; 
 		sptr<xmlDoc, xmlFreeDoc>  _dbSetup;
+		xmlNodePtr _layoutRoot;
 		twine _SetupFilesPath;
 		twine _targetDbName;
 		twine _targetSchema;
@@ -163,6 +164,10 @@ class DLLEXPORT SqlServerDbInit {
 		/// Standard constructor
 		SqlServerDbInit( const twine& dbName );
 
+		/// Standard constructor
+		SqlServerDbInit( const twine& dbName, const twine& targetDbName, const twine& layoutFile,
+			const twine& user, const twine& pass, OdbcObj* odbc);
+
 		/// Standard destructor
 		virtual ~SqlServerDbInit();
 
@@ -178,6 +183,8 @@ class DLLEXPORT SqlServerDbInit {
 
 		void VerifyTable(xmlNodePtr table);
 
+		xmlNodePtr FindTable(const twine& tableName);
+
 		void CreateTable(xmlNodePtr table);
 		twine FormatPrimaryKey(xmlNodePtr table);
 		twine FormatForeignKey(xmlNodePtr fk, xmlNodePtr table);
@@ -192,9 +199,12 @@ class DLLEXPORT SqlServerDbInit {
 		void VerifyPrimaryKey(xmlNodePtr table);
 
 		vector<SqlServerCol> GetColsForTable( twine tableName );
-		bool ColumnExists(const vector<SqlServerCol>& cols, const twine& colName);
+		SqlServerCol* ColumnExists(vector<SqlServerCol>& cols, const twine& colName);
 		bool IndexExists(const twine& indexName);
 		bool ForeignKeyExists(const twine& indexName);
+
+		static twine SysType(const twine& system_type_id);
+		static twine FormatType(xmlNodePtr col);
 	
 };
 
