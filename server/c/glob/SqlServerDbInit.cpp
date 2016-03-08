@@ -631,7 +631,7 @@ void SqlServerDbInit::VerifyForeignKeys(xmlNodePtr table)
 		if(toDelete) continue; // Skip deleted indexes
 		if(ForeignKeyExists(idxName) == false){
 			twine addCommand;
-			addCommand.format("ALTER TABLE [%s] ADD %s", tableName(), FormatForeignKey( xmlIndexes[i], table ) );
+			addCommand.format("ALTER TABLE [%s] ADD %s", tableName(), FormatForeignKey( xmlIndexes[i], table )() );
 
 			SQLTRACE(FL, "%s", addCommand() );
 			INFO(FL, "Adding foreign key [%s].[%s]", tableName(), idxName() );
