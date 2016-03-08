@@ -412,7 +412,8 @@ vector<SqlServerCol> SqlServerDbInit::GetColsForTable(twine tableName)
 	EnEx ee(FL, "SqlServerDbInit::GetColsForTable(table tableName)");
 
 	vector<SqlServerCol> ret;
-	twine stmt = "select sys.columns.name, column_id, system_type_id, max_length, precision, scale, is_nullable, is_identity "
+	twine stmt = 
+		"select sys.columns.name, column_id, system_type_id, max_length, precision, scale, is_nullable, is_identity "
 		"from sys.columns, sys.tables "
 		"where sys.tables.object_id = sys.columns.object_id "
 		"and sys.tables.name = '" + tableName + "' "
@@ -681,6 +682,7 @@ twine SqlServerDbInit::FormatType(xmlNodePtr col)
 	twine scale(col, "scale");
 	bool isNullable = XmlHelpers::getBoolAttr(col, "nullable");
 	bool isIdentity = XmlHelpers::getBoolAttr(col, "identity");
+	twine defaultVal(col, "default");
 
 	twine ret;
 	if(systype == "int"){
@@ -716,6 +718,11 @@ twine SqlServerDbInit::FormatType(xmlNodePtr col)
 	} else {
 		ret += " not null";
 	}
+	
+	if(defaultVal.length() != 0){
+		ret += " default(" + defaultVal + ")";
+	}
+
 	return ret;
 }
 
