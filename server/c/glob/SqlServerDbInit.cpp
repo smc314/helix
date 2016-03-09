@@ -209,7 +209,7 @@ void SqlServerDbInit::CreateTable(xmlNodePtr table)
 	vector<xmlNodePtr> cols = XmlHelpers::FindChildren( table, "Column" );
 	for(size_t i = 0; i < cols.size(); i++){
 		twine colName(cols[i], "name");
-		twine colType = FormatType(cols[i]);
+		twine colType = FormatType(cols[i], true);
 		bool pk = XmlHelpers::getBoolAttr(cols[i], "pk");
 		bool colDelete = XmlHelpers::getBoolAttr(cols[i], "delete");
 		if(colDelete) continue; // skip these
@@ -389,9 +389,34 @@ void SqlServerDbInit::RunCreateSql(xmlNodePtr table)
 	}
 }
 
+void SqlServerDbInit::RunChangeSql(xmlNodePtr table)
+{
+	EnEx ee(FL, "SqlServerDbInit::RunChangeSql(xmlNodePtr table)");
+
+	xmlNodePtr changeSqlNode = XmlHelpers::FindChild(table, "SqlChange");
+	if(changeSqlNode == NULL){
+		return; // nothing to do
+	}
+
+	twine stmts = XmlHelpers::getTextNodeValue( changeSqlNode );
+
+	vector<twine> stmt_vect = stmts.split(";");
+	for(size_t i = 0; i < stmt_vect.size(); i++){
+		if(stmt_vect[i].ltrim().rtrim().length() != 0){
+			SQLTRACE(FL, "%s", stmt_vect[i]() );
+			INFO(FL, "Running post-change sql");
+			m_odbc->SetStmt( stmt_vect[i], SQL_TYPE_INSERT );
+			m_odbc->ExecStmt();
+			m_odbc->Commit();
+		}
+	}
+}
+
 void SqlServerDbInit::VerifyTableStructure(xmlNodePtr table)
 {
 	EnEx ee(FL, "SqlServerDbInit::VerifyTableStructure(xmlNodePtr table)");
+
+	m_table_changed = false;
 
 	// Verify Columns
 	VerifyColumns( table );
@@ -404,6 +429,10 @@ void SqlServerDbInit::VerifyTableStructure(xmlNodePtr table)
 
 	// Verify Primary Key
 	VerifyPrimaryKey( table );
+
+	if(m_table_changed){
+		RunChangeSql( table );
+	}
 
 }
 
@@ -488,6 +517,7 @@ void SqlServerDbInit::VerifyColumns(xmlNodePtr table)
 			INFO(FL, "Dropping table column: [%s].[%s]", tableName(), colName() );
 			m_odbc->SetStmt( dropCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
+			m_table_changed = true;
 		}
 	}
 
@@ -497,7 +527,7 @@ void SqlServerDbInit::VerifyColumns(xmlNodePtr table)
 	// Run through the list of columns that should be there
 	for(size_t i = 0; i < xmlCols.size(); i++){
 		twine colName(xmlCols[i], "name");
-		twine colType = FormatType(xmlCols[i]);
+		twine colType = FormatType(xmlCols[i], true);
 		bool toDelete = XmlHelpers::getBoolAttr(xmlCols[i], "delete");
 		if(toDelete) continue; // Skip deleted columns
 		SqlServerCol* sqlCol = ColumnExists(cols, colName);
@@ -509,6 +539,7 @@ void SqlServerDbInit::VerifyColumns(xmlNodePtr table)
 			INFO(FL, "Adding table column: [%s].[%s]", tableName(), colName() );
 			m_odbc->SetStmt( addCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
+			m_table_changed = true;
 		} else {
 			// Column exists, verify structure
 			twine systype(xmlCols[i], "systype");
@@ -523,12 +554,14 @@ void SqlServerDbInit::VerifyColumns(xmlNodePtr table)
 				sqlCol->is_nullable != nullable
 			){
 				twine alterCommand;
+				colType = FormatType(xmlCols[i], false);
 				alterCommand.format("ALTER TABLE [%s] ALTER COLUMN [%s] %s", tableName(), colName(), colType() );
 
 				SQLTRACE(FL, "%s", alterCommand() );
 				INFO(FL, "Altering table column: [%s].[%s]", tableName(), colName() );
 				m_odbc->SetStmt( alterCommand, SQL_TYPE_SELECT );
 				m_odbc->ExecStmt();
+				m_table_changed = true;
 			}
 		}
 	}
@@ -556,6 +589,7 @@ void SqlServerDbInit::VerifyIndexes(xmlNodePtr table)
 			INFO(FL, "Dropping Index [%s].[%s]", tableName(), idxName() );
 			m_odbc->SetStmt( dropCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
+			m_table_changed = true;
 		}
 	}
 
@@ -571,6 +605,7 @@ void SqlServerDbInit::VerifyIndexes(xmlNodePtr table)
 			INFO(FL, "Adding index [%s]", idxName() );
 			m_odbc->SetStmt( addCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
+			m_table_changed = true;
 		} else {
 			// Index exists, verify structure
 
@@ -622,6 +657,7 @@ void SqlServerDbInit::VerifyForeignKeys(xmlNodePtr table)
 			INFO(FL, "Dropping foreign key [%s].[%s]", tableName(), idxName() );
 			m_odbc->SetStmt( dropCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
+			m_table_changed = true;
 		}
 	}
 
@@ -638,6 +674,7 @@ void SqlServerDbInit::VerifyForeignKeys(xmlNodePtr table)
 			INFO(FL, "Adding foreign key [%s].[%s]", tableName(), idxName() );
 			m_odbc->SetStmt( addCommand, SQL_TYPE_SELECT );
 			m_odbc->ExecStmt();
+			m_table_changed = true;
 		} else {
 			// Index exists, verify structure
 
@@ -672,7 +709,7 @@ void SqlServerDbInit::VerifyPrimaryKey(xmlNodePtr table)
 
 }
 
-twine SqlServerDbInit::FormatType(xmlNodePtr col)
+twine SqlServerDbInit::FormatType(xmlNodePtr col, bool includeDefault)
 {
 	EnEx ee(FL, "SqlServerDbInit::FormatType(xmlNodePtr col)");
 
@@ -719,8 +756,8 @@ twine SqlServerDbInit::FormatType(xmlNodePtr col)
 		ret += " not null";
 	}
 	
-	if(defaultVal.length() != 0){
-		ret += " default(" + defaultVal + ")";
+	if(includeDefault && defaultVal.length() != 0){
+		ret += " default " + defaultVal;
 	}
 
 	return ret;

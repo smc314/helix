@@ -152,6 +152,7 @@ class DLLEXPORT SqlServerDbInit {
 		twine _dbPass;
 		OdbcObj* m_odbc;
 		Connection* m_connection;
+		bool m_table_changed;
 	
 	private:
 		/// Copy constructor is private to prevent use
@@ -191,6 +192,7 @@ class DLLEXPORT SqlServerDbInit {
 		twine FormatIndex(xmlNodePtr idx, xmlNodePtr table);
 		void CreateIndexes(xmlNodePtr table);
 		void RunCreateSql(xmlNodePtr table);
+		void RunChangeSql(xmlNodePtr table);
 
 		void VerifyTableStructure(xmlNodePtr table);
 		void VerifyColumns(xmlNodePtr table);
@@ -204,7 +206,7 @@ class DLLEXPORT SqlServerDbInit {
 		bool ForeignKeyExists(const twine& indexName);
 
 		static twine SysType(const twine& system_type_id);
-		static twine FormatType(xmlNodePtr col);
+		static twine FormatType(xmlNodePtr col, bool includeDefault = false);
 	
 };
 
