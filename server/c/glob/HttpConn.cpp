@@ -196,6 +196,10 @@ xmlDocPtr HttpConn::GetMsg()
 				// GET's don't have a body.
 				m_doc_loaded = true;
 				m_doc = NULL;
+			} else if(strcmp(m_ri->request_method, "HEAD") == 0){
+				// HEAD's don't have a body.
+				m_doc_loaded = true;
+				m_doc = NULL;
 			} else {
 				const char* contentLength = mg_get_header(m_conn, "Content-Length");
 				if(contentLength == NULL){
@@ -212,7 +216,9 @@ xmlDocPtr HttpConn::GetMsg()
 					DEBUG(FL, "Bad XML Document Text:\n%s", buff());
 				}
 				m_doc_loaded = true;
-				DEBUG(FL, "%s", XmlHelpers::docToStringPretty(m_doc)());
+				if(m_doc != NULL){
+					DEBUG(FL, "%s", XmlHelpers::docToStringPretty(m_doc)());
+				}
 			}
 		} catch (AnException& e){
 			WARN(FL, "AnException reading input doc:\n%s", e.Msg() );
