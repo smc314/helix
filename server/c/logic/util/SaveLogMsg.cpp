@@ -26,6 +26,7 @@ using namespace SLib;
 
 // Include local data objects here
 #include "LogObj.h"
+#include "Statics.h"
 
 // This adds us to the global ActionClass Registry:
 ActionClassRegister<SaveLogMsg> SaveLogMsg::reg("SaveLogMsg", 1, "/logic/util/SaveLogMsg");
@@ -87,7 +88,7 @@ void SaveLogMsg::ExecuteRequest(IOConn& ioc)
 		lm->appName = (*vect)[i]->appName;
 		lm->machineName = (*vect)[i]->machineName;
 		if(lm->machineName == "${ipaddr}"){
-			lm->machineName.format("IP = %lu", ioc.MsgRemoteIp() );
+			lm->machineName.format("%s", Statics::convertIP( (unsigned int)ioc.MsgRemoteIp() )() );
 		}
 		lm->msg = (*vect)[i]->msg;
 

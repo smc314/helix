@@ -51,6 +51,9 @@ void Statics::ReplaceSessionVars(IOConn& ioc, twine& target)
 		idx1 -= 2;
 		if(si.userProperties.count(varName) != 0){
 			target.replace(idx1, idx2-idx1 + 1, si.userProperties[ varName ] );
+		} else if(varName == "userid"){
+			twine useridStr; useridStr.format("%d", si.userid);
+			target.replace(idx1, idx2-idx1 + 1, useridStr );
 		} else {
 			idx1 += 2;
 		}
