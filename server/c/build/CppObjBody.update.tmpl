@@ -99,6 +99,11 @@ twine ${doName}::${methodName}_prepSQL(OdbcObj& odbc${TypedParms} )
 
 ${SqlReplaceParms}
 
+	// Also take a look at the statement and replace any session variables
+	if(odbc.GetSessionInfo() != NULL){
+		Statics::ReplaceSessionVars(*odbc.GetSessionInfo(), stmt);
+	}
+
 	return stmt;
 
 }

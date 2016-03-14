@@ -385,6 +385,9 @@ OdbcObj* IOConn::getDBConnection()
 	//Make sure that auto commit is set to true
 	m_db->odbc->SetAutoCommit(true);
 
+	// Set the current session info on the db object
+	m_db->odbc->SetSessionInfo( &getSessionInfo() );
+
 	// Return the odbc connection:
 	return m_db->odbc;
 }

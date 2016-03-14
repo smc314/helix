@@ -18,6 +18,7 @@
 using namespace SLib;
 
 #include "OdbcObj.h"
+#include "SessionInfo.h"
 using namespace Helix::Glob;
 
 static size_t throwAwaySize;
@@ -41,6 +42,7 @@ OdbcObj::OdbcObj()
 
 	m_last_status = SQL_SUCCESS;
 
+	m_session_info = NULL;
 }
 
 OdbcObj::OdbcObj(const twine& user, const twine& pass, const twine& inst)
@@ -60,6 +62,7 @@ OdbcObj::OdbcObj(const twine& user, const twine& pass, const twine& inst)
 	m_stmt_defined = 0;
 
 	m_last_status = SQL_SUCCESS;
+	m_session_info = NULL;
 
 	Connect(user, pass, inst);
 
@@ -1032,3 +1035,14 @@ twine OdbcObj::EscapeStringInput( const twine& input )
 	DEBUG(FL, "Output = (%s)", ret() );
 	return ret;
 }
+
+void OdbcObj::SetSessionInfo(SessionInfo* si)
+{
+	m_session_info = si;
+}
+
+SessionInfo* OdbcObj::GetSessionInfo()
+{
+	return m_session_info;
+}
+

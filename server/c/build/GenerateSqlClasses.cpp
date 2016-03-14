@@ -2329,6 +2329,11 @@ void generateSelectToDO(xmlNodePtr stmt)
 			);
 	}
 	m_output.append(
+		"\t// Also take a look at the statement and replace any session variables\n"
+		"\tif(odbc.GetSessionInfo() != NULL){\n"
+		"\t\tStatics::ReplaceSessionVars(*odbc.GetSessionInfo(), stmt);\n"
+		"\t}\n"
+		"\n"
 		"\treturn stmt;\n"
 		"\n"
 		"}\n"

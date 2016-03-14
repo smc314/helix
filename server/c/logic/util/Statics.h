@@ -34,6 +34,7 @@ class DLLEXPORT Statics
 		 * if found, replace the token in the string with the value from the session settings.
 		 */
 		static void ReplaceSessionVars(IOConn& ioc, twine& target);
+		static void ReplaceSessionVars(SessionInfo& si, twine& target);
 
 		/** This method will convert the given string to either 1 or 0.  If the given string
 		 * starts with either a Y or a y, then it will be converted into a 1.  Otherwise it will

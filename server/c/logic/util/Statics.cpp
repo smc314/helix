@@ -32,7 +32,13 @@ void Statics::ReplaceSessionVars(IOConn& ioc, twine& target)
 	EnEx ee(FL, "Statics::ReplaceSessionVars(IOConn& ioc, twine& target)");
 
 	// Pull out the normal user-properties from the session.
-	SessionInfo& si = ioc.getSessionInfo();
+	ReplaceSessionVars( ioc.getSessionInfo(), target );
+
+}
+
+void Statics::ReplaceSessionVars(SessionInfo& si, twine& target)
+{
+	EnEx ee(FL, "Statics::ReplaceSessionVars(SessionInfo& ioc, twine& target)");
 
 	DEBUG(FL, "ReplaceSessionVars - original string: %s", target() );
 

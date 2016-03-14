@@ -34,6 +34,10 @@ using namespace SLib;
 namespace Helix {
 namespace Glob {
 
+// Forward declaration
+class SessionInfo;
+
+
 /** This class is used when querying about result set column metadata.
  */
 class DLLEXPORT ColumnInfo
@@ -253,6 +257,16 @@ class DLLEXPORT OdbcObj
 		  */
 		virtual int GetSQLRowCount(void);
 
+		/**
+		  * Allows us to know which session is currently using this database object.
+		  */
+		virtual void SetSessionInfo(SessionInfo* si);
+
+		/**
+		  * Allows the caller to retrieve the current session info for this db object.
+		  */
+		virtual SessionInfo* GetSessionInfo(void);
+
 	protected:
 
 		/**
@@ -326,6 +340,9 @@ class DLLEXPORT OdbcObj
 
 		/// Number of fetches we have performed:
 		int m_fetch_count;
+
+		/// Current session info - may be null
+		SessionInfo* m_session_info;
 
 };
 
